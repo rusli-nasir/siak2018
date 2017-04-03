@@ -57,12 +57,9 @@
 
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<ul class="nav menu">
-<<<<<<< HEAD
 			<li <?= $tab=='beranda'?'class="active"':'' ?>><a href="<?php echo site_url('akuntansi/beranda'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>Beranda</a></li>
             <li <?= $tab=='rsa_gup'?'class="active"':'' ?>><a href="<?php echo site_url('akuntansi/rsa_gup'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>RSA GUP</a></li>
-=======
-			<li class="active"><a href="<?php echo site_url('/dashboard'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi</a></li>
->>>>>>> a3a2d14026e3efe1ac5b4538fd84bb52647fc1d6
+            <li class="active"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi</a></li>
 		</ul>
 
 	</div><!--/.sidebar-->
