@@ -1,0 +1,168 @@
+<?php
+	// mulai proses untuk pengambilan gaji
+	$_cari1 = ""; $_cari2 = ""; $_cari3 = ""; $_cari4 = ""; $_cari5 = "";
+	$_unit_id = "";
+	$_status_kepeg = "";
+	$_bulan = date('n');
+	$_tahun = "";
+	$_classTab[1] = "active";
+	$_classTab_[1] = " active";
+	$_classTab_[2] = "";
+	$_classTab[2] = "";
+	$_classTab_[3] = "";
+	$_classTab[3] = "";
+	if(isset($_SESSION['tunjangantkk'])){
+		if(isset($_SESSION['tunjangantkk']['unit_id']) && isExist($_SESSION['tunjangantkk']['unit_id'],'kepeg_unit','id')){
+			$_unit_id = $_SESSION['tunjangantkk']['unit_id'];
+			$_cari1 = " has-success";
+		}
+		if(isset($_SESSION['tunjangantkk']['status_kepeg'])){
+			$_status_kepeg = $_SESSION['tunjangantkk']['status_kepeg'];
+			$_cari2 = " has-success";
+		}
+		if(isset($_SESSION['tunjangantkk']['bulan']) && is_numeric($_SESSION['tunjangantkk']['bulan'])){
+			$_bulan = $_SESSION['tunjangantkk']['bulan'];
+			$_cari3 = " has-success";
+		}
+		if(isset($_SESSION['tunjangantkk']['tahun']) && strlen(trim($_SESSION['tunjangantkk']['tahun']))==4){
+			$_tahun = " value=\"".$_SESSION['tunjangantkk']['tahun']."\"";
+			$_cari4 = " has-success";
+		}
+		if(isset($_SESSION['tunjangantkk']['proses']['status'])){
+			$_cari5 = " has-success";
+		}
+		// open tab sessionally
+	  if(isset($_SESSION['tunjangantkk']['form']['tab']) && $_SESSION['tunjangantkk']['form']['tab']>1 && $_SESSION['tunjangantkk']['form']['tab']<=3){
+			foreach ($_classTab as $key => $value) {
+				$_classTab[$key] = "";
+				$_classTab_[$key] = "";
+			}
+	    $_classTab[$_SESSION['tunjangantkk']['form']['tab']] = "active";
+	    $_classTab_[$_SESSION['tunjangantkk']['form']['tab']] = " active";
+	  }
+	}
+?>
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-primary box-solid">
+      <div class="box-header with-border">
+        <h3 class="box-title">
+          <i class="fa fa-spinner"></i>&nbsp;&nbsp;&nbsp;Proses Tunjangan Kinerja Tenaga Kontrak
+        </h3>
+      </div>
+      <div class="box-body">
+        <p class="text-right">
+					<?php
+						if(isset($_SESSION['tunjangantkk'])){
+					?>
+						<button type="button" class="btn btn-default btn-flat btn-sm reset_data"><i class="fa fa-television"></i>&nbsp;&nbsp;&nbsp;Bersihkan layar</button>
+					<?php
+						}
+					?>
+          <button type="button" class="btn btn-default btn-flat btn-sm" data-toggle="modal" data-target="#kriteria_tunjangantkk"><i class="fa fa-spinner"></i>&nbsp;&nbsp;&nbsp;Pilih Kriteria Proses Tunjangan Kinerja Tenaga Kontrak</button>
+        </p>
+        <div class="result_data">
+          <?php
+            if(isset($_SESSION['tunjangantkk'])){
+					?>
+					<div class="nav-tabs-custom">
+		        <ul class="nav nav-tabs">
+		          <li class="<?php echo $_classTab[1]; ?>"><a href="#tab_1" class="_tab_" data-toggle="tab" aria-expanded="false">Tunjangan Kinerja 30%</a></li>
+		          <li class="<?php echo $_classTab[2]; ?>"><a href="#tab_2" class="_tab_" data-toggle="tab" aria-expanded="false">Tunjangan Kinerja 70%</a></li>
+							<li class="<?php echo $_classTab[3]; ?>"><a href="#tab_3" class="_tab_" data-toggle="tab" aria-expanded="false">Pajak (?)</a></li>
+		        </ul>
+		        <div class="tab-content">
+							<?php
+								foreach ($_classTab as $key => $value) {
+							?>
+		          <div class="tab-pane <?php echo $_classTab_[$key]; ?>" id="tab_<?php echo $key; ?>">
+								Tab #<?php echo $key; ?>
+							</div>
+		          <!-- /.tab-pane -->
+							<?php
+								}
+							?>
+		        </div>
+		        <!-- /.tab-content -->
+		      </div>
+					<?php
+            }else{
+          ?>
+          <p class="alert alert-warning text-center"><i class="glyphicon glyphicon-lamp"></i>&nbsp;&nbsp;Gunakan &nbsp;&nbsp;<span class="small text-bold"><i class="fa fa-spinner"></i>&nbsp;&nbsp;&nbsp;Pilih Kriteria Proses Tunjangan Kinerja Tenaga Kontrak </span>&nbsp;&nbsp; untuk memulai proses data uang makan.</p>
+          <?php
+            }
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- /.modal-dialog untuk menambahkan item transaksi-->
+<div class="modal fade" id="kriteria_tunjangantkk" tabindex="-1" role="dialog" arialabelledby="myModalLabel">
+  <!-- /.modal-content -->
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="form-uangmakan" action="<?php echo $_PATH; ?>/process.php?page=<?php echo $_GET['page']; ?>" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="act" name="act" value="tunjangantkk_proses"/>
+				<input type="hidden" id="status_kepeg" name="status_kepeg" value="4"/>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+          <h5 class="modal-title" id="myModalLabel"><i class="fa fa-spinner"></i>&nbsp;&nbsp;&nbsp;Kriteria Proses Data Tunjangan Kinerja Tenaga Kontrak</h5>
+        </div>
+        <div class="modal-body">
+          <span class="message"></span>
+          <div class="form-group<?php echo $_cari1; ?>">
+            <label for="unit_id">Unit Pegawai:</label>
+            <select name="unit_id" id="unit_id" class="form-control input-sm">
+            	<option value="">seluruhnya</option>
+              <?php echo getUnitOption($_unit_id); ?>
+            </select>
+          </div>
+					<div class="form-group<?php echo $_cari5; ?>">
+						<label>Status Pegawai:</label>
+            <div class="scroll-150">
+						<?php
+							$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar');
+							foreach ($stt as $k => $v) {
+								$ch = "";
+								if(isset($_SESSION['tunjangantkk']['proses']['status']) && in_array($k,$_SESSION['tunjangantkk']['proses']['status'])){
+									$ch = " checked = \"checked\"";
+								}
+						?>
+              <div class="checkbox small">
+                <label>
+                  <input type="checkbox" name="status[]" id="status" value="<?php echo $k; ?>"<?php echo $ch; ?>/>
+                  <?php echo $v; ?>
+                </label>
+              </div>
+						<?php
+							}
+						?>
+            </div>
+          </div>
+          <div class="form-group<?php echo $_cari3; ?>">
+            <label for="bulan">Bulan Uang Makan:</label>
+            <select name="bulan" id="bulan" class="form-control input-sm">
+              <?php echo getBulanOption($_bulan); ?>
+            </select>
+          </div>
+          <div class="form-group<?php echo $_cari4; ?>">
+            <label for="tahun">Tahun Uang Makan:</label>
+            <input type="text" class="form-control input-sm" id="tahun" name="tahun" maxlength="4" placeholder="Tahun"<?php echo $_tahun; ?>/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="btn-group pull-right">
+            <button type="submit" class="btn btn-primary btn-flat btn-sm do_data"><i class="fa fa-spinner"></i>&nbsp;&nbsp;&nbsp;Proses Data</button>
+            <button type="button" class="btn btn-default btn-flat btn-sm lihat_data"><i class="fa fa-search"></i>&nbsp;&nbsp;&nbsp;Lihat Data</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

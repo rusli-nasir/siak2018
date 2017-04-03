@@ -1,0 +1,8 @@
+.input-group-addon {
+    min-width:150px;// if you want width please write here //
+    
+}
+
+.ui-datepicker-calendar {
+    display: none;
+    }

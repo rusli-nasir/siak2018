@@ -1,0 +1,383 @@
+/* kalo yang umum2 dimari */
+body{
+	padding:0;
+	margin:0;
+	font-size: 100%;
+	font-family: monospace;
+}
+
+fieldset{
+	-moz-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #999;
+}
+legend{
+	font-size:13px;
+	font-weight:bold;
+}
+
+table{
+	font-size: 100%;
+	font-family: monospace;
+	padding:0;
+	margin:0;
+	width:100%;
+	border-collapse: collapse;
+
+}
+table td, table th{
+	padding:5px;
+	border:1px solid #aaa;
+}
+table th{
+	background-color: #333;
+	color:#fff;
+}
+table td{
+	vertical-align:top;
+}
+.tr_odd{
+	background-color: #eee;
+}
+a,a:visited{
+	color:#000;
+	text-decoration:none;
+}
+a:hover{
+	text-decoration:underline;
+}
+
+
+/* header jelas dimari */
+#header{
+	background-color:#002b75;
+	color:#fff;
+	padding:5px;
+	top:0;
+	width:100%;
+	text-align:left;
+	position:fixed;
+	z-index:9999;
+	border-bottom:0;
+}
+#header a,#header a:visited{
+	font-weight:lighter;
+	text-decoration:none;
+	color:#fff;
+	font-size:130%;
+	margin-right:10px;
+	font-family: monospace;
+}
+#header a:hover{
+/*	text-decoration:underline; */
+}
+#header a.last{
+	margin-right:0;
+}
+
+#header #bar1{
+	float:right;
+	position:fixed;
+	z-index:1000;
+	top:0;
+	right:0;
+	padding:5px;
+}
+
+/* konten masuk dimari */
+#content{
+	margin:10px;
+	margin-top:10px;
+	font-size:12px;
+	padding:10px;
+	border:1px dashed #ccc;
+	min-height:100px;
+/*	-moz-border-radius:3px;
+	border-radius:3px;*/
+}
+
+/* khusus footer saja */
+#footer{
+	text-align:center;
+	font-size:11px;
+}
+#footer a, #footer a:visited{
+	font-weight:bold;
+	text-decoration:none;
+	color:#000;
+}
+#footer a:hover{
+	text-decoration:underline;
+}
+
+/* form inputan saja dimari */
+form{
+
+}
+form label{
+	font-weight:bold;
+}
+form .title{
+	font-weight:bold;
+	font-size:120%;
+}
+form button, form input[type="button"], input[type="button"], button{
+	border:1px solid #ccc;
+	background-color:#eee;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:10px;
+	padding-right:10px;
+	font-size:100%;
+	font-family: monospace;
+}
+form input[type="text"], form input[type="password"], input[type="text"], input[type="password"], form select, select{
+	padding:5px;
+	font-size:100%;
+	border:1px solid #ccc;
+	font-family: monospace;
+}
+form textarea,textarea{
+	width:100%;
+	height:50px;
+	font-size:100%;
+	font-family: monospace;
+	border:1px solid #ccc;
+	padding:5px;
+}
+
+/* .pemberitahuan message */
+.warning{
+	text-align:center;
+	font-size:100%;
+	margin:10px;
+	padding:5px;
+	color:#8A8A00;
+	border:1px solid #8A8A00;
+	font-weight:bold;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	background-color:#FFFFC7;
+}
+.success{
+	color:#247509;
+	text-align:center;
+	font-size:100%;
+	margin:10px;
+	padding:5px;
+	border:1px solid #247509;
+	font-weight:bold;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	background-color:#E0FAD7;
+}
+
+.keterangan{
+	color:#00779C;
+	text-align:center;
+	font-size:100%;
+	margin:10px;
+	padding:10px;
+	border:1px solid #00779C;
+	font-weight:bold;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	background-color:#C2F1FF;
+}
+
+h3{
+	border-bottom:1px solid #002b75;
+	font-size:140%;
+	margin-left:3px;
+	margin-right:3px;
+	margin-bottom:20px;
+	margin-top:0px;
+	font-family: Georgia;
+	color:#002b75;
+	font-weight: lighter;
+}
+
+.pagination{
+	padding:10px;
+	background-color:#aaa;
+	text-align:center;
+	font-weight:normal;
+	margin-bottom:10px;
+}
+
+.pagination a:link, .pagination a:visited{
+	color:#666;
+	font-weight:bold;
+	margin-right: 5px;
+	margin-left: 5px;
+	border:1px solid #fff;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	background-color: #fff;
+	text-decoration: none;
+}
+
+.pagination a:hover{
+	color: #fff;
+	background-color: #666;
+	border-color:#666;
+}
+
+.pagination .prev{
+	
+}
+
+#searchform{
+	border:1px solid #0099ff;
+	padding:auto;
+	margin:auto;
+	width:auto;
+	background-color:#77ceee;
+}
+#searchform tr, #searchform td, #searchform th{
+	border:0;
+	padding:auto;
+	margin:auto;
+	width:auto;
+}
+
+.finished{
+	background-color:#FF9D57;
+}
+.stopped{
+	background-color:#fc7777;
+}
+
+/*Loader style*/
+.ias_loader, .ias_trigger {
+	text-align:center;
+	margin: 30px 0 40px;
+}
+.ias_trigger a:link,
+.ias_trigger a:visited {
+    padding: 4px 50px;
+    background-color: #f9f9f9;
+    border: solid 1px #ddd;
+    font: bold 12px Arial, sans-serif;
+    color: #555;
+    text-decoration: none;
+}
+.ias_trigger a:hover,
+.ias_trigger a:active {
+    border-color: #ccc;
+}
+
+.wrap{
+	width: 90%;
+	margin: 15px auto;
+	padding: 15px 10px;
+	background: white;
+	overflow: hidden;
+}
+
+.item{
+	margin: 10px 0;
+	border:0;
+}
+
+#clear, #clear td, #clear th{
+	border:0;
+	padding:auto;
+	margin:auto;
+	width:auto;
+}
+
+#date, #date th, #date td {
+	border:0;
+	padding:auto;
+	margin:auto;
+	width:auto;
+}
+
+#date{
+	border:1px solid #fff;
+	width:100%;
+}
+
+#date .tanggal{
+	font-size:40px;
+	font-weight:bold;
+	color:#fff;
+	padding:0;margin:0;
+	vertical-align:middle;
+	width:40px;
+}
+#date .bulan{
+	font-size:120%;
+	font-weight:bold;
+	color:#fff;
+	padding:0;margin:0;vertical-align:middle;text-align:left;
+	text-align:left;
+}
+#date .tahun{
+	font-size:120%;
+	font-weight:bold;
+	color:#fff;
+	padding:0;
+	margin:0;vertical-align:middle;
+	text-align:left;
+}
+#anakitem, #anakitem th, #anakitem td{
+	border:0;
+	padding:auto;
+	margin:auto;
+	width:auto;
+}
+.kotakdate{
+	width:130px;
+	background-color:#FFAA17;
+	border:0;
+}
+.kotakkonten{
+	border:0;
+	border-top:2px solid #FFAA17;
+}
+.p-ktrangan{
+	margin:0;
+	margin-top:-15px;
+	padding:0;
+}
+.kotakkonten h2{
+	color:#666;
+}
+
+#judul{
+/*	background-color:#6ba5d1; */
+	background-color: #333;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-left:10px;
+	padding-right:10px;
+}
+#judul h1{
+	font-size:1.35em;
+	margin:0;
+	padding:0;
+	color: #fff;
+	font-family: Georgia;
+	text-align:right;
+	font-weight: lighter;
+	font-style: italic;
+}
+#judul h1:hover{
+	color:#2580a2;
+}
+form table{
+	border:none;
+	width: auto;
+}
+form table td,form table th{
+	padding:auto;
+	margin: auto;
+	border: 0;
+}
+.ubah,.hapus{
+	cursor: pointer;
+}

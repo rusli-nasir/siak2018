@@ -1,0 +1,68 @@
+#menu {padding-left:5px; padding-right:5px;height:28px;}
+#menu ul {margin:0; padding:0px 5px 0px 0px; list-style:none; white-space:nowrap; text-align:left;}
+#menu ul {display:inline-block;} 
+
+#menu ul li.label {padding: 7px;list-style:none;}
+#menu ul li {margin:0; padding:0; list-style:none;}
+#menu ul li {display:block; display:block;}
+#menu ul ul {position:absolute; left:-9999px;}
+#menu ul {margin:0 auto;}
+#menu ul li.level1-li {display:block; position:relative;}
+
+ul.child {background:#fff; border-left:1px solid #15428b; border-right:1px solid #15428b; border-bottom:1px solid #15428b; z-index: 1000; position: relative;}
+ul.sub-child {background:#fff; border:1px solid #15428b; z-index: 1000; position: relative;}
+
+#menu ul.level2 {background:#ae4621;}
+#menu ul.level3 {background:#c98b14;}
+#menu ul.level4 {background:#9f690e;}
+
+#menu ul b {position:absolute;} /* -- for IE6 non-flyout dropdowns to stop flickering - who knows why --*/
+
+#menu ul a {display:block;text-decoration:none;}
+#menu ul li.level1-li a.level1-a {background:transparent url(../images/down-row2.png) no-repeat 80% 60%; padding-right: 25px;}
+#menu ul li.level1-li a.level1-a:hover {background:#fff url(../images/down-row.png) no-repeat 80% 60%;}
+
+#menu ul li:hover > ul {visibility:visible; left:0; top:31px;}
+#menu ul ul li:hover > ul {visibility:visible; left:100%; top:auto; margin-top:-31px;}
+#menu ul li.left:hover > ul {visibility:visible; left:auto; right:0; top:31px;}
+#menu ul li.left ul li:hover > ul {visibility:visible; left:auto; right:100%; top:auto; margin-top:-31px;}
+
+
+#menu ul a:hover ul {left:0; top:23px;}
+#menu ul li.left a:hover ul {left:auto; right:-1px; top:23px;}
+
+#menu ul li.right ul a {color:#15428b;}
+#menu ul li.right ul a:hover {color:#15428b; text-decoration: underline;}
+
+#menu ul li.left ul a {text-align:right; padding:7px 10px 8px 10px; color:#15428b;}
+#menu ul li.left ul a:hover {color:#15428b; text-decoration: underline;}
+
+
+#menu ul a:hover a:hover ul, 
+#menu ul a:hover a:hover a:hover ul {left:100%; visibility:visible;}
+#menu ul li.left a:hover a:hover ul, 
+#menu ul li.left a:hover a:hover a:hover ul {left:auto; right:0; visibility:visible;}
+
+#menu ul a:hover ul ul, 
+#menu ul a:hover a:hover ul ul {left:-9999px;}
+#menu ul li.left a:hover ul ul, 
+#menu ul li.left a:hover a:hover ul ul {left:-9999px;}
+
+
+#menu ul li a.fly {padding-right:20px; background:transparent url(../images/right-row.png) no-repeat right center;}
+#menu ul li.left ul a.fly {padding-right:20px; background:transparent url(../images/left-row.png) no-repeat left center;}
+
+#menu ul li a:hover,
+#menu ul li a.fly:hover {background-color:#fff;} 
+
+#menu ul li.single a:hover{background-color: #48b60c; color:#fff;} /* 5C75AA */
+
+
+#menu ul li:hover > a,
+#menu ul li:hover > a.fly {background-color:#fff; color:#15428b;}
+
+#menu ul table {position:absolute; height:0; width:0; left:0; border-collapse:collapse; margin-top:-4px;}
+#menu ul table table {position:absolute; left:99%; height:0; width:0; border-collapse:collapse; margin-top:-29px;}
+
+#menu ul li.left table {position:absolute; height:0; width:0; left:auto; right:0; border-collapse:collapse; margin-top:-4px;}
+#menu ul li.left table table {position:absolute; left:auto; right:100%; height:0; width:0; border-collapse:collapse; margin-top:-29px;}

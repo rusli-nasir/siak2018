@@ -1,0 +1,457 @@
+
+/*=============================================================
+    Authour URI: www.binarycart.com
+    License: Commons Attribution 3.0
+
+    http://creativecommons.org/licenses/by/3.0/
+
+    100% To use For Personal And Commercial Use.
+    IN EXCHANGE JUST GIVE US CREDITS AND TELL YOUR FRIENDS ABOUT US
+   
+    ========================================================  */
+/*==============================================
+    GENERAL  STYLES    
+    =============================================*/
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+    line-height:30px;
+    margin-bottom: 70px;
+}
+
+ #wrapper {
+    width: 100%;
+    margin-top:50px;
+}
+
+
+
+#page-wrapper {
+    padding: 0;
+    /* min-height: 600px; */
+    background:#F3F3F3;
+   
+}
+
+#panel-user {
+    padding: 0;
+    /* min-height: 600px; */
+    background:#F3F3F3;
+   
+}
+
+#page-inner {
+    width:100%;
+    margin:0 20px 0 0;
+    background-color:#fff!important;
+    padding:10px;
+    /* min-height:1050px; */
+}
+
+#panel-inner {
+    width:100%;
+    margin:0 20px 0 0;
+    background-color:#fff!important;
+    padding:10px;
+    /* min-height:1050px; */
+}
+
+.pad-top {
+    padding-top:15px;
+}
+/*==============================================
+    MENU STYLES    
+    =============================================*/
+
+.sidebar-collapse .nav {
+    padding:0;
+    padding-top:50px;
+}
+
+.sidebar-collapse > .nav > li > a {
+	padding:15px 10px;
+    color: #214761;
+font-weight: 900;
+font-size: 14px;
+}
+.sidebar-collapse > .nav > li {
+	border-bottom:1px solid #e1e1e1;
+}
+.sidebar-collapse .nav > li > a:hover,
+.sidebar-collapse .nav > li > a:focus {
+	
+	background:#F3F3F3;
+	outline:0;
+}
+
+.navbar-side {
+	border:none;
+	background-color: #fff;
+	
+}
+.navbar-inverse {
+
+background-color: #214761;
+border-color: #F0F0F0;
+min-height: 80px;
+
+}
+
+
+.nav > li > a > i {
+    margin-right:10px;
+}
+.logout-spn {
+    float:right;
+    color:#fff;
+    font-size:25px;
+    font-weight:800;
+    margin:20px;
+    margin: 10px 25px 10px 50px;
+}
+    .logout-spn a {
+        text-decoration:none;
+    }
+.active-link {
+    background-color:#f3f3f3;
+}
+    
+/*==============================================
+    DASHBOARD STYLES    
+    =============================================*/
+.div-square {
+    padding:5px;
+    border:3px double #e1e1e1;
+    -webkit-border-radius:8px;
+   -moz-border-radius:8px;
+    border-radius:8px;
+    margin:5px;
+
+}
+
+.div-square> a,.div-square> a:hover {
+    color:#808080;
+     text-decoration:none;
+}
+/*==============================================
+    FOOTER STYLES     
+    =============================================*/
+.footer {
+    background-color:#214761;
+    width:100%;
+    color:#fff;
+    padding:20px 50px 20px 50px;
+    padding-left:20px;
+     
+    position: absolute;
+    bottom: 0;
+}
+
+
+    .footer > a, .footer>a:hover {
+       
+        color:#fff;
+    }
+
+/*==============================================
+    MEDIA QUERIES     
+    =============================================*/
+ 
+ @media(min-width:768px) {
+     #page-wrapper{
+        margin: 0 0 0 260px;
+        padding: 0px 30px 0px 30px;
+        /* min-height: 1050px; */
+		
+    }
+    #panel-user{
+        margin: 0 0 0 260px;
+        padding: 0 30px 15px 30px;
+        /* min-height: 1050px; */
+		
+    }
+    .navbar-inverse {
+        /*min-height: 80px;*/
+    }
+    
+	
+	
+    .navbar-side {
+        /* z-index: 1; */
+        position: absolute;
+        width: 260px;
+       
+    }
+
+ 
+}
+
+
+/* ==============================================
+
+	CSS EDITED BY BAPSI
+	
+	=============================================== */
+	
+#form-login{	
+/*	margin: 10px;
+	margin-top: 50px;*/
+
+margin-left: 10px;
+margin-right: 10px;
+margin-bottom: 10px;
+
+}
+.navbar-header {
+    float: none;
+}
+.navbar-inverse {
+    background-color: #0089ff;
+}
+
+.navbar-brand{
+	padding: 10px 15px;
+}
+
+h3.app-title{
+    color: #FFF;
+    margin-top: 12.5px;
+    text-shadow: 2px 2px #000000;
+    
+}
+h4.app-title{
+    color:#fff;
+}
+
+
+.body-msg-text .alert{
+    margin-bottom: 0px; 
+}
+.badge-danger {
+  background-color: #d43f3a;
+}
+.badge-warning {
+background-color: #d58512;
+}
+
+.badge-success {
+background-color: #398439;
+}
+
+.badge-info {
+background-color: #269abc;
+}
+
+.badge-inverse {
+background-color: #333333;
+}
+
+.badge-gup{
+    background-color: #26bc60;
+}
+
+.badge-tup{
+    background-color: #26a0bc;
+}
+
+.badge-ks{
+    background-color: #5e26bc;
+}
+
+.badge-lp{
+    background-color: #bc2626;
+}
+
+.badge-l3{
+    background-color: #ffbd29;
+}
+
+.square-up {
+    background-color: #fbd7d7;
+}
+
+.square-gup {
+    background-color: #b0ffce;
+}
+
+.square-tup {
+    background-color: #ffcf8a;
+}
+
+.square-ks {
+    background-color: #d4bcfb;
+}
+
+.square-l3 {
+    background-color: #d0eeff;
+}
+
+.square-lp {
+    background-color: #fdff83;
+}
+
+.row{
+    margin-bottom: 10px;
+}
+
+input[readonly]
+{
+   background-color: #FEFEFE !important;
+}
+
+    @media (min-width: 768px) {
+      .modal-xl {
+        width: 90%;
+        max-width:1200px;
+      }
+    }
+    
+#kuitansi tr td:first-child { padding-left: 10px }
+#kuitansi tr td:last-child  { padding-right: 10px }
+
+#kuitansi {
+    margin: 0 auto;
+}
+
+#spp_up tr td:first-child { padding-left: 10px }
+#spp_up tr td:last-child  { padding-right: 10px }
+
+#spp_up {
+    margin: 0 auto;
+}
+
+#spm_up tr td:first-child { padding-left: 10px }
+#spm_up tr td:last-child  { padding-right: 10px }
+
+#spm_up {
+    margin: 0 auto;
+}
+
+#table_spp tr td:first-child { padding-left: 10px }
+#table_spp tr td:last-child  { padding-right: 10px }
+
+#table_spp {
+    margin: 0 auto;
+}
+
+#table_spm tr td:first-child { padding-left: 10px }
+#table_spm tr td:last-child  { padding-right: 10px }
+
+#table_spm {
+    margin: 0 auto;
+}
+
+/*.table_lamp tr td:first-child { padding-left: 10px }*/
+/*.table_lamp tr td:last-child  { padding-right: 10px }*/
+
+.table_lamp {
+    margin: 0 auto;
+}
+
+[contenteditable="true"] {
+    /*background-color: #EEE;*/
+    /*padding-left: 10px;*/
+    padding-right: 10px;
+}
+
+[contenteditable="true"]:focus {
+
+}
+
+.edit_here{
+    display: inline-block;
+    
+    /*margin-right: 10px;*/
+    /*background-color: #EEE;*/
+}
+tr.tr_new{
+    line-height: 22px;
+}
+tr.tr_new > td{
+    vertical-align: top;
+}
+
+tr.tr_up > td{
+    vertical-align: top;
+}
+
+.input-pjk > tbody > tr > td > .checkbox{
+    margin-top: 5px;margin-bottom: 0;
+}
+.input-pjk > tbody > tr > td > input[type=text]{
+    text-align: right;
+}
+.input-pjk > tbody > tr > td{
+    padding: 2.5px;
+}
+
+#spm_tab .active a {
+    background-color: #EEE;
+}
+
+.progress-round {
+  width: 1000px;
+  margin: 20px auto;
+  text-align: center;
+}
+.progress-round .circle,
+.progress-round .bar {
+  display: inline-block;
+  background: #fff;
+  width: 40px; height: 40px;
+  border-radius: 40px;
+  border: 1px solid #d5d5da;
+}
+.progress-round .bar {
+  position: relative;
+  width: 80px;
+  height: 6px;
+  margin: 0 -5px 17px -5px;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
+.progress-round .circle .label {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  line-height: 28px;
+  border-radius: 32px;
+  margin-top: 3px;
+  color: #b5b5ba;
+  font-size: 17px;
+}
+.progress-round .circle .title {
+  color: #b5b5ba;
+  font-size: 13px;
+  line-height: 30px;
+  margin-left: -5px;
+}
+
+/* Done / Active */
+.progress-round .bar.done,
+.progress-round .circle.done {
+  background: #eee;
+}
+.progress-round .bar.active {
+  background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+}
+.progress-round .circle.done .label {
+  color: #FFF;
+  background: #8bc435;
+  box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+.progress-round .circle.done .title {
+  color: #444;
+}
+.progress-round .circle.active .label {
+  color: #FFF;
+  background: #0c95be;
+  box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+.progress-round .circle.active .title {
+  color: #0c95be;
+}
