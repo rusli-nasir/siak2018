@@ -117,4 +117,9 @@ class Kuitansi extends MY_Controller {
 		$this->session->unset_userdata('keyword');
 		redirect($_SERVER['HTTP_REFERER']);
 	}
+
+	public function reset_search_ls(){
+		$this->session->unset_userdata('keyword_ls');
+		redirect($_SERVER['HTTP_REFERER']);
+	}
 }
