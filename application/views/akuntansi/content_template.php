@@ -46,7 +46,7 @@
 						<ul class="dropdown-menu" role="menu">
 							
 							<li><a href="<?php echo site_url('user_setting');?>"><svg class="glyph stroked gear"><use xlink:href="#stroked-gear"></use></svg> Settings</a></li>
-							<li><a href="<?php echo site_url('login/logout');?>"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
+							<li><a href="<?php echo site_url('akuntansi/login/logout');?>"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
 						</ul>
 					</li>
 				</ul>

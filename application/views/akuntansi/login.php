@@ -38,7 +38,7 @@
 						Username / Password anda salah.
 					</div>
 				<?php } ?>	
-				<form role="form" method="post">
+				<form role="form" method="post" action="<?php echo site_url('akuntansi/login/login_proses'); ?>">
 					<fieldset>
 						<div class="form-group">
 							<input class="form-control form-log" placeholder="Username" name="username" type="text" autofocus="">
