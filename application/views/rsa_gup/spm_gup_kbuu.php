@@ -611,7 +611,7 @@ function terbilang(bilangan) {
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
                                     <td style="text-align: center;border-left: none;border-right: none;border-top:none;" colspan="2" >&nbsp;</td>
-                                                                                                                          <td style="border-left: none;border-top:none;"><b>Nomor : <span id="nomor_trx"><?=$nomor_spp?></span><!--00001/<?=$alias?>/SPP-UP/JAN/<?=$cur_tahun?>--></b></td>
+                                    <td style="border-left: none;border-top:none;"><b>Nomor : <span id="nomor_trx"><?=$nomor_spp?></span><!--00001/<?=$alias?>/SPP-UP/JAN/<?=$cur_tahun?>--></b></td>
                                 </tr>
                                 <tr >
                                     <td colspan="5"><b>Satuan Unit Kerja Pengguna Anggaran (SUKPA) : <?=$unit_kerja?></b></td>
@@ -1228,9 +1228,6 @@ function terbilang(bilangan) {
                 
                                 
                                 </tr>
-                        
-                                            
-                                    </tr>
 
                             <tr >
                                                             <td colspan="3" style="vertical-align: top;border-bottom: none;border-top:none;padding-left: 0;">

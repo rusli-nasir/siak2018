@@ -10,7 +10,8 @@ class Beranda extends MY_Controller {
     }
 
 	public function index(){
-		$temp_data['content'] = $this->load->view('akuntansi/rup_list',$this->data,true);
-		$this->load->view('akuntansi/content_template',$temp_data,false);
+        $data['tab'] = 'beranda';
+		$data['content'] = $this->load->view('akuntansi/rup_list',$this->data,true);
+		$this->load->view('akuntansi/content_template',$data,false);
 	}
 }

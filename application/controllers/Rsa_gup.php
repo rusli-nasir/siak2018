@@ -13,8 +13,8 @@
             $this->load->helper('form');
             $this->load->model(array('rsa_gup_model','setting_up_model','kuitansi_model'));
             $this->load->model("user_model");
-                        $this->load->model("unit_model");
-                        $this->load->model('menu_model');
+            $this->load->model("unit_model");
+            $this->load->model('menu_model');
             $this->load->helper("security");
                         
 
