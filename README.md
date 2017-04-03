@@ -1,2 +1,2 @@
-# rsa_aja
-aplikasi akuntantsi untuk rsa
+# rsa
+Aplikasi akuntansi Universitas Diponegoro
