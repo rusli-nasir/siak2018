@@ -42,7 +42,7 @@
 				<a href="#"><img class="img-responsive" src="<?php echo base_url(); ?>/assets/akuntansi/assets/images/logo-konten.png" alt="" /></a>
 				<ul class="user-menu">
 					<li class="dropdown pull-right">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> <?php if($this->session->userdata('level')!='5'){ echo $this->session->userdata('nama_subunit'); }else{ echo 'Rektor'; } ?> <span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> <?php echo $this->session->userdata('username'); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							
 							<li><a href="<?php echo site_url('user_setting');?>"><svg class="glyph stroked gear"><use xlink:href="#stroked-gear"></use></svg> Settings</a></li>
@@ -57,8 +57,12 @@
 
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<ul class="nav menu">
+<<<<<<< HEAD
 			<li <?= $tab=='beranda'?'class="active"':'' ?>><a href="<?php echo site_url('akuntansi/beranda'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>Beranda</a></li>
             <li <?= $tab=='rsa_gup'?'class="active"':'' ?>><a href="<?php echo site_url('akuntansi/rsa_gup'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>RSA GUP</a></li>
+=======
+			<li class="active"><a href="<?php echo site_url('/dashboard'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi</a></li>
+>>>>>>> a3a2d14026e3efe1ac5b4538fd84bb52647fc1d6
 		</ul>
 
 	</div><!--/.sidebar-->
