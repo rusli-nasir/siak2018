@@ -44,7 +44,11 @@ class Login extends MY_Controller {
 		$this->load->view('akuntansi/login', $data);
 
 		if ($login) {
-			redirect(site_url('akuntansi/kuitansi'));
+			if($this->session->userdata('level')==1){
+				redirect(site_url('akuntansi/kuitansi'));
+			}else{
+				redirect(site_url('akuntansi/kuitansi/jadi'));
+			}
 		}
 	}
 

@@ -93,10 +93,16 @@
 					<td><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->kode_akun; ?></td>
 					<td><?php echo '?'; ?></td>
-					<td><?php echo '?'; ?></td>
-					<td>
-						<a href="#"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
-						<a href="#"><button type="button" class="btn btn-sm btn-danger">Isi Kredit</button></a>
+					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
+					<td>						
+							<a href="#"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
+						<?php if($this->session->userdata('level')==1){ ?>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi); ?>"><button type="button" class="btn btn-sm btn-danger">Isi Kredit</button></a>
+						<?php }else if($this->session->userdata('level')==2){ ?>
+							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
+						<?php }else if($this->session->userdata('level')==3){ ?>
+							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
+						<?php } ?>
 					</td>
 				</tr>
 				<?php $no++; } ?>
@@ -105,3 +111,15 @@
 		<center><?php echo $halaman; ?></center>
 	</div>
 </div>
+
+<?php
+function get_pengeluaran($id_kuitansi){
+	$ci =& get_instance();
+
+	$query = "SELECT SUM(volume*harga_satuan) AS pengeluaran FROM rsa_kuitansi_detail WHERE id_kuitansi='$id_kuitansi'";
+	$q = $ci->db->query($query)->result();
+	foreach($q as $result){
+		return number_format($result->pengeluaran);
+	}
+}
+?>

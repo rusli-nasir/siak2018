@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 1);
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Jurnal_rsa extends MY_Controller {
@@ -14,6 +15,7 @@ class Jurnal_rsa extends MY_Controller {
 	public function input_jurnal($id_kuitansi){
 		$isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi);
         $data['tab'] = 'beranda';
+        $data['menu1'] = true;
         // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
 		$data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);
 		$this->load->view('akuntansi/content_template',$data,false);

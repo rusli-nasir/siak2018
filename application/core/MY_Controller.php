@@ -15,7 +15,11 @@ class MY_Controller extends CI_Controller{
 
 	public function cek_session_out(){
 		if($this->session->userdata('id')!=null){
-			redirect(site_url('akuntansi/beranda'));
+			if($this->session->userdata('level')==1){
+				redirect(site_url('akuntansi/kuitansi'));
+			}else{
+				redirect(site_url('akuntansi/kuitansi/jadi'));
+			}
 		}
 	}
 
