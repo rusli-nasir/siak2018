@@ -12,12 +12,14 @@ class Jurnal_rsa_model extends CI_Model {
     public function get_kuitansi($id_kuitansi)
     {
     	$hasil = $this->db->get_where('rsa_kuitansi',array('id_kuitansi'=>$id_kuitansi))->row_array();
+
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
     	$hasil['tanggal'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));
     	$hasil['akun_debet_kas'] = $hasil['kode_akun'] . " - ". $this->db->get_where('akun_belanja',array('kode_akun'=>$hasil['kode_akun']))->row_array()['nama_akun'];
 
     	$query = "SELECT SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran FROM rsa_kuitansi,rsa_kuitansi_detail WHERE rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi AND rsa_kuitansi.id_kuitansi=$id_kuitansi GROUP BY rsa.rsa_kuitansi.id_kuitansi";
     	$hasil['pengeluaran'] = number_format($this->db->query($query)->row_array()['pengeluaran'],2,',','.');
+
 
     	return $hasil;
     }
