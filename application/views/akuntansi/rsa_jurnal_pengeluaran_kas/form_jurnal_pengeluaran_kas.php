@@ -81,8 +81,8 @@
     <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control">
       <option value="">Pilih Jenis</option>
       <option value="terikat">Tidak Terikat</option>
-      <option value="tidak_terikat">Terikat</option>
-      <option value="???">???</option>
+      <option value="tidak_terikat">Terikat Temporer</option>
+      <option value="terikat_permanen">terikat_permanen</option>
     </select>
   </div>
 </div>
@@ -114,15 +114,39 @@
 
   <!-- Text input-->
   <div class="form-group">
-    <label class="col-md-2 control-label" for="kas_akun_kredit">Akun Kredit </label>  
+<!--     <label class="col-md-2 control-label" for="kas_akun_kredit">Akun Kredit </label>  
     <div class="col-md-3">
     <input id="kas_akun_kredit" name="kas_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
       
-    </div>
-    <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>  
+    </div> -->
+    <label class="col-md-2 control-label" for="kas_akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
+      <select id="kas_akun_kredit" name="kas_akun_kredit" class="form-control">
+        <option value="">Pilih Akun</option>
+        <?php foreach ($akun_kas as $akun) {
+          ?>
+          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <?php
+        }
+        ?>
+      </select>
+    </div>
+    <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->
+    <!-- <div class="col-md-3">
     <input id="akrual_akun_kredit" name="akrual_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
       
+    </div> -->
+    <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>
+    <div class="col-md-3">
+      <select id="akrual_akun_kredit" name="akrual_akun_kredit" class="form-control">
+        <option value="">Pilih Akun</option>
+        <?php foreach ($akun_kas as $akun) {
+          ?>
+          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <?php
+        }
+        ?>
+      </select>
     </div>
     <div class="col-md-3">
     <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" required="">
