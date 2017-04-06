@@ -88,7 +88,7 @@
 					<td><?php echo $result->no_bukti; ?></td>
 					<td><?php echo $result->str_nomor_trx_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
-					<td><?php echo '?'; ?></td>
+					<td><?php echo $result->kode_usulan_belanja; ?></td>
 					<td><?php echo $result->kode_unit; ?></td>
 					<td><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->kode_akun; ?></td>
@@ -97,7 +97,7 @@
 					<td>						
 							<a href="#"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi); ?>"><button type="button" class="btn btn-sm btn-danger">Isi Kredit</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi); ?>"><button type="button" class="btn btn-sm btn-danger">Isi Kesetaraan</button></a>
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
 						<?php }else if($this->session->userdata('level')==3){ ?>
