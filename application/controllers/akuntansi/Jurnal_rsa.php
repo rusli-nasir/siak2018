@@ -9,25 +9,67 @@ class Jurnal_rsa extends MY_Controller {
         parent::__construct();
         // $this->cek_session_in();
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->load->model('akuntansi/Akun_kas_rsa_model', 'Akun_kas_rsa_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
         $this->load->model('Rsa_unit_model');
     }
 
 	public function input_jurnal($id_kuitansi){
-		$isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi);
-		$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
-		$isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
-        $data['tab'] = 'beranda';
-        $data['menu1'] = true;
-        // print_r($isian['akun_kas']);die();
-        // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
-		$data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);
-		$this->load->view('akuntansi/content_template',$data,false);
+
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
+		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (Akrual)','required');
+		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
+		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
+
+		if($this->form_validation->run())     
+        {   
+            $entry = $this->input->post();
+            $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi);
+            unset($entry['simpan']);
+
+            $entry = array_merge($kuitansi,$entry);
+
+            $entry['jumlah_kredit'] = $entry['jumlah_debet'];
+            $entry['flag'] = 1;
+
+            $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
+
+            $updater =  array();
+            $updater['flag_proses_akuntansi'] = 1;
+
+            $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$updater);
+
+            if ($q1 and $q2)
+            	$this->session->set_flashdata('success','Berhasil menyimpan !');
+            else
+            	$this->session->set_flashdata('warning','Gagal menyimpan !');
+
+            redirect('akuntansi/kuitansi');
+
+        }
+        else
+        {
+
+			$isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi);
+			$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
+			$isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+	        $data['tab'] = 'beranda';
+	        $data['menu1'] = true;
+	        // print_r($isian['akun_kas']);die();
+	        // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
+			$data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);
+			$this->load->view('akuntansi/content_template',$data,false);
+        }
+
+
+		
 	}
 
 	public function coba()
 	{
-		print_r($this->Akun_belanja_rsa_model->get_all_akun_belanja());
+		print_r($this->db->list_fields('akuntansi_kuitansi_jadi'));
 	}
 }

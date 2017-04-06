@@ -176,4 +176,5 @@ class Kuitansi extends MY_Controller {
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
+
 }

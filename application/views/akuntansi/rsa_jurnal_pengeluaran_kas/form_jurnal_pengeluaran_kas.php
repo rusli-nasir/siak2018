@@ -8,9 +8,10 @@
     <li class="active">Kuitansi</li>
   </ol>
 </div><!--/.row-->
-<form class="form-horizontal">
+<?php echo form_open('akuntansi/jurnal_rsa/input_jurnal/'.$id_kuitansi,array("class"=>"form-horizontal")); ?>
 <fieldset>
 
+<?php echo validation_errors(); ?>
 <!-- Form Name -->
 <legend><center>INPUT JURNAL PENGELUARAN KAS</center></legend>
 
@@ -81,7 +82,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="jenis_pembatasan_dana">Jenis Pembatasan Dana</label>
   <div class="col-md-4">
-    <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control">
+    <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control" required="">
       <option value="">Pilih Jenis</option>
       <option value="terikat">Tidak Terikat</option>
       <option value="tidak_terikat">Terikat Temporer</option>
@@ -111,9 +112,9 @@
     <input id="akrual_akun_debet" name="akrual_akun_debet" value="<?=$akun_debet_kas?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>      
     </div> -->
 
-    <label class="col-md-1 control-label" for="akrual_akun_debet">Akun Debet</label>
+    <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
-      <select id="akrual_akun_debet" name="akrual_akun_debet" class="form-control">
+      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_belanja as $akun) {
           ?>
@@ -138,9 +139,9 @@
     <input id="kas_akun_kredit" name="kas_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
       
     </div> -->
-    <label class="col-md-2 control-label" for="kas_akun_kredit">Akun Kredit</label>
+    <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
-      <select id="kas_akun_kredit" name="kas_akun_kredit" class="form-control">
+      <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
@@ -155,9 +156,9 @@
     <input id="akrual_akun_kredit" name="akrual_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
       
     </div> -->
-    <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>
+    <label class="col-md-1 control-label" for="akun_kredit_akrual">Akun Kredit</label>
     <div class="col-md-3">
-      <select id="akrual_akun_kredit" name="akrual_akun_kredit" class="form-control">
+      <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
@@ -181,8 +182,8 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="simpan"></label>
   <div class="col-md-8">
-    <button id="simpan" name="simpan" class="btn btn-success">Simpan</button>
-    <button id="keluar" name="keluar" class="btn btn-danger">Keluar</button>
+    <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
+    <button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button>
   </div>
 </div>
 
@@ -190,7 +191,7 @@
 </form>
 
 <script>
-  var $select = $('#akrual_akun_debet').selectize();  // This initializes the selectize control
+  var $select = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
   var selectize = $select[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   // selectize.setValue('<?=$kode_akun?>');
