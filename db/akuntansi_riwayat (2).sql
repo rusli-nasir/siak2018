@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 13, 2017 at 06:48 AM
+-- Generation Time: Apr 13, 2017 at 07:08 PM
 -- Server version: 5.6.15-log
 -- PHP Version: 5.5.8
 
@@ -28,11 +28,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `akuntansi_riwayat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_kuitansi` int(11) NOT NULL,
+  `id_kuitansi_jadi` int(11) NOT NULL,
+  `status` enum('proses','terima','revisi','posted','direvisi') NOT NULL,
   `flag` int(11) NOT NULL,
   `komentar` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -75,6 +75,7 @@ class Kuitansi_model extends CI_Model {
 
 	public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail)
     {
+    	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
     	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
@@ -104,9 +105,61 @@ class Kuitansi_model extends CI_Model {
     	return $hasil;
     }
 
-    public function get_kuitansi_jadi($id_kuitansi)
+    public function get_kuitansi_jadi($id_kuitansi_jadi)
     {
-    	return $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi'=>$id_kuitansi))->row_array();
+    	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+    	$hasil =  $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi'=>$id_kuitansi_jadi))->row_array();
+    	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['unit_kerja']))->row_array()['nama_unit'];
+    	$hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
+    	$hasil['akun_debet_kas'] = $hasil['akun_debet'] . " - ". $this->db->get_where('akun_belanja',array('kode_akun'=>$hasil['akun_debet']))->row_array()['nama_akun'];
+    	return $hasil;
+
+    }
+
+    public function get_kuitansi_nk($id_spmls)
+    {
+    	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+    	$hasil =  $this->db->get_where('kepeg_tr_spmls',array('id_spmls'=>$id_spmls))->row_array();
+    	$hasil['no_bukti'] = '';
+    	$hasil['kode_usulan_belanja'] =  $hasil['detail_belanja'];
+    	$hasil['unit_kerja'] = '';
+    	$hasil['jenis'] = 'NK';
+    	$hasil['pengeluaran'] = $hasil['jumlah_bayar'];
+    	$hasil['str_nomor_trx_spm'] = $hasil['nomor'];
+    	$hasil['tgl_kuitansi'] = $hasil['tanggal'];
+    	$hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
+    	$hasil['kode_akun'] = $hasil['akun_cair'];
+    	$hasil['uraian'] = '';
+    	$hasil['akun_debet'] = $hasil['akun_cair'];
+    	$hasil['akun_debet_kas'] = $hasil['akun_debet'] . " - ". $this->db->get_where('akun_kas6',array('kd_kas_6'=>$hasil['akun_debet']))->row_array()['nm_kas_6'];
+    	return $hasil;
+    }
+
+    public function get_kuitansi_transfer_nk($id_spmls)
+    {
+    	$hasil = $this->get_kuitansi_nk($id_spmls);
+
+    	$hasil['akun_debet'] = $hasil['kode_akun'];
+
+    	$hasil['jumlah_debet'] = $hasil['pengeluaran'];
+
+
+    	$hasil['tanggal'] = $hasil['tgl_kuitansi'];
+    	$hasil['no_spm'] = $hasil['str_nomor_trx_spm'];
+    	$hasil['kode_kegiatan'] = $hasil['kode_usulan_belanja'];
+    	$hasil['unit_kerja'] = '';
+
+    	$field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');
+    	$field_asal = array_keys($hasil);
+
+    	foreach ($field_asal as $field) {
+    		if (!in_array($field, $field_tujuan)){
+    			unset($hasil[$field]);
+    		}
+    	}
+
+
+    	return $hasil;
     }
 
     function add_kuitansi_jadi($params)
@@ -137,6 +190,34 @@ class Kuitansi_model extends CI_Model {
         $this->db->where('id_kuitansi',$id_kuitansi);
         $response = $this->db->update($tabel,$params);
         if($response)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public function update_kuitansi_jadi($id_kuitansi_jadi,$params)
+    {
+    	$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+        $response = $this->db->update('akuntansi_kuitansi_jadi',$params);
+         if($response)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public function update_kuitansi_nk($id_spmls,$params)
+    {
+    	$this->db->where('id_spmls',$id_spmls);
+        $response = $this->db->update('kepeg_tr_spmls',$params);
+         if($response)
         {
             return 1;
         }

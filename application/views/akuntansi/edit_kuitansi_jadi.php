@@ -8,7 +8,10 @@
     <li class="active">Kuitansi</li>
   </ol>
 </div><!--/.row-->
-<?php echo form_open('akuntansi/jurnal_rsa/input_jurnal/'.$id_kuitansi.'/'.$jenis,array("class"=>"form-horizontal")); ?>
+<?php
+    echo form_open('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$id_kuitansi_jadi.'/'.$mode,array("class"=>"form-horizontal"));
+?>
+
 <fieldset>
 
 <?php echo validation_errors(); ?>
@@ -29,7 +32,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_spm">No. SPM</label>  
   <div class="col-md-4">
-  <input id="no_spm" name="no_spm" type="text" value="<?=$str_nomor_trx_spm?>" placeholder="No. SPM" class="form-control input-md" required="" disabled>
+  <input id="no_spm" name="no_spm" type="text" value="<?=$no_spm?>" placeholder="No. SPM" class="form-control input-md" required="" disabled>
     
   </div>
 </div>
@@ -56,7 +59,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="kode_kegiatan">Kode Kegiatan</label>  
   <div class="col-md-4">
-  <input id="kode_kegiatan" name="kode_kegiatan" type="text" value="<?=$kode_usulan_belanja?>" placeholder="Kode Kegiatan" class="form-control input-md" required="" disabled>
+  <input id="kode_kegiatan" name="kode_kegiatan" type="text" value="<?=$kode_kegiatan?>" placeholder="Kode Kegiatan" class="form-control input-md" required="" disabled>
     
   </div>
 </div>
@@ -82,14 +85,11 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="jenis_pembatasan_dana">Jenis Pembatasan Dana</label>
   <div class="col-md-4">
-    <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control" required="">
-      <option value="">Pilih Jenis</option><!-- 
-      <option value="terikat">Tidak Terikat</option>
-      <option value="tidak_terikat">Terikat Temporer</option>
-      <option value="terikat_permanen">Terikat Permanen</option> -->
-      <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'tidak_terikat'): ?> selected <?php endif ?> value="tidak_terikat" >Tidak Terikat</option>
-      <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'terikat_temporer'): ?> selected <?php endif ?> value="terikat_temporer">Terikat Temporer</option>
-      <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'terikat_permanen'): ?> selected <?php endif ?> value="terikat_permanen">Terikat Permanen</option>
+    <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control" required="" >
+      <option value="">Pilih Jenis</option>
+      <option <?php if ($jenis_pembatasan_dana == 'tidak_terikat'): ?> selected <?php endif ?> value="tidak_terikat" >Tidak Terikat</option>
+      <option <?php if ($jenis_pembatasan_dana == 'terikat_temporer'): ?> selected <?php endif ?> value="terikat_temporer">Terikat Temporer</option>
+      <option <?php if ($jenis_pembatasan_dana == 'terikat_permanen'): ?> selected <?php endif ?> value="terikat_permanen">Terikat Permanen</option>
     </select>
   </div>
 </div>
@@ -119,11 +119,11 @@
     <div class="col-md-3">
       <?php $akun_debet_akrual = $akun_debet_kas;
             $akun_debet_akrual[0] = 7;
-            $kode_akun_akrual = $kode_akun;
+            $kode_akun_akrual = $akun_debet;
             $kode_akun_akrual[0] = 7;
        ?>
-      <input id="akun_debet_akrual" name="akun_debet_akrual_" value="<?=$akun_debet_akrual?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
-      <input type="hidden" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>">
+      <input id="akun_debet_akrual" name="akun_debet_akrual_" value="<?=$akun_debet_akrual?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
+      <input type="hidden" id="akun_debet_akrual" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>" disabled>
         
 <!--       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>
@@ -138,7 +138,7 @@
     </div>
 
     <div class="col-md-3">
-    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text" value="<?=$pengeluaran?>" placeholder="Jumlah Akun Debet" class="form-control input-md" required="" disabled>
+    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text" value="<?=number_format($jumlah_debet,2,',','.');?>" placeholder="Jumlah Akun Debet" class="form-control input-md" required="" disabled>
       
     </div>
 
@@ -157,7 +157,7 @@
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option <?php if ($akun['kd_kas_6'] == $akun_kredit): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
           <?php
         }
         ?>
@@ -170,21 +170,23 @@
     </div> -->
     <label class="col-md-1 control-label" for="akun_kredit_akrual">Akun Kredit</label>
     <div class="col-md-3">
-      <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
+      <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="" >
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option <?php if ($akun['kd_kas_6'] == $akun_kredit_akrual): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
           <?php
         }
         ?>
       </select>
     </div>
     <div class="col-md-3">
-    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?=$pengeluaran?>" disabled required="">
+    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?=number_format($jumlah_kredit,2,',','.');?>" disabled required="">
       
     </div>
   </div>
+  <hr/>
+
 
 
 </fieldset>

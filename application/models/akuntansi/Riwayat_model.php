@@ -9,6 +9,8 @@ class Riwayat_model extends CI_Model
     function __construct()
     {
         parent::__construct();
+        $this->load->database('default', TRUE);
+        $this->db2 = $this->load->database('rba',TRUE);
     }
 
     public function get_last_riwayat($level = null,$id_tahap = null,$status = null)
