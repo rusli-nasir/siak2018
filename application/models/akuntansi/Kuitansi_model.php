@@ -11,14 +11,25 @@ class Kuitansi_model extends CI_Model {
 	
 	function read_kuitansi($limit = null, $start = null, $keyword = null){
 		if($limit!=null OR $start!=null){
-			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND 
+			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND 
 			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') LIMIT $start, $limit");
 		}else{
-			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND 
+			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND 
 			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%')");
 		}
 		return $query;
 	}
+
+    function read_kuitansi_jadi($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE 
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
 
 	function read_kuitansi_ls($limit = null, $start = null, $keyword = null){
 		if($limit!=null OR $start!=null){
@@ -30,6 +41,17 @@ class Kuitansi_model extends CI_Model {
 		}
 		return $query;
 	}
+
+    function read_kuitansi_jadi_ls($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE 
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
 
 	public function get_kuitansi_transfer($id_kuitansi)
     {
