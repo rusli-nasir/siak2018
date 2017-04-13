@@ -20,6 +20,26 @@ class Kuitansi_model extends CI_Model {
 		return $query;
 	}
 
+    function read_spm($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE nomor LIKE '%$keyword%' LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE nomor LIKE '%$keyword%'");
+        }
+        return $query;
+    }
+
+    function read_kuitansi_jadi($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE 
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
+
 	function read_kuitansi_ls($limit = null, $start = null, $keyword = null){
 		if($limit!=null OR $start!=null){
 			$query = $this->db->query("SELECT * FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND 
@@ -30,6 +50,28 @@ class Kuitansi_model extends CI_Model {
 		}
 		return $query;
 	}
+
+    function read_kuitansi_jadi_ls($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
+
+    function read_kuitansi_jadi_spm($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='SPM' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='SPM' AND
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
 
 	public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail)
     {
