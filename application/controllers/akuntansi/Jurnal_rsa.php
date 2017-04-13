@@ -28,7 +28,7 @@ class Jurnal_rsa extends MY_Controller {
 		if($this->form_validation->run())     
         {   
             $entry = $this->input->post();
-            $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
+            $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
             unset($entry['simpan']);
 
             $entry = array_merge($kuitansi,$entry);

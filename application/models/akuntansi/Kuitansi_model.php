@@ -31,7 +31,7 @@ class Kuitansi_model extends CI_Model {
 		return $query;
 	}
 
-	public function get_kuitansi_transfer($id_kuitansi,$tabel)
+	public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail)
     {
     	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
@@ -40,7 +40,7 @@ class Kuitansi_model extends CI_Model {
 
 
 
-    	$query = "SELECT SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran FROM rsa_kuitansi,rsa_kuitansi_detail WHERE rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi AND rsa_kuitansi.id_kuitansi=$id_kuitansi GROUP BY rsa.rsa_kuitansi.id_kuitansi";
+    	$query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
     	$hasil['jumlah_debet'] = $this->db->query($query)->row_array()['pengeluaran'];
 
 
