@@ -31,9 +31,9 @@ class Kuitansi_model extends CI_Model {
 		return $query;
 	}
 
-	public function get_kuitansi_transfer($id_kuitansi)
+	public function get_kuitansi_transfer($id_kuitansi,$tabel)
     {
-    	$hasil = $this->db->get_where('rsa_kuitansi',array('id_kuitansi'=>$id_kuitansi))->row_array();
+    	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
     	$hasil['akun_debet'] = $hasil['kode_akun'];
@@ -62,16 +62,38 @@ class Kuitansi_model extends CI_Model {
     	return $hasil;
     }
 
+    public function get_kuitansi_jadi($id_kuitansi)
+    {
+    	return $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi'=>$id_kuitansi))->row_array();
+    }
+
     function add_kuitansi_jadi($params)
     {
         $this->db->insert('akuntansi_kuitansi_jadi',$params);
         return $this->db->insert_id();
     }
 
-    function update_kuitansi($id_kuitansi,$params)
+    public function get_tabel_by_jenis($jenis)
+    {
+    	if ($jenis == 'GP') {
+    		return 'rsa_kuitansi';
+    	}elseif ($jenis == 'L3') {
+    		return 'rsa_kuitansi_lsphk3';
+    	}
+    }
+    public function get_tabel_detail_by_jenis($jenis)
+    {
+    	if ($jenis == 'GP') {
+    		return 'rsa_kuitansi_detail';
+    	}elseif ($jenis == 'L3') {
+    		return 'rsa_kuitansi_detail_lsphk3';
+    	}
+    }
+
+    function update_kuitansi($id_kuitansi,$tabel,$params)
     {
         $this->db->where('id_kuitansi',$id_kuitansi);
-        $response = $this->db->update('rsa_kuitansi',$params);
+        $response = $this->db->update($tabel,$params);
         if($response)
         {
             return 1;

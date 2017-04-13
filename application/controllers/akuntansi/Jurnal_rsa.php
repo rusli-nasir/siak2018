@@ -10,12 +10,13 @@ class Jurnal_rsa extends MY_Controller {
         // $this->cek_session_in();
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
+        $this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
         $this->load->model('akuntansi/Akun_kas_rsa_model', 'Akun_kas_rsa_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
         $this->load->model('Rsa_unit_model');
     }
 
-	public function input_jurnal($id_kuitansi){
+	public function input_jurnal($id_kuitansi,$jenis){
 
 		$this->load->library('form_validation');
 
@@ -27,7 +28,7 @@ class Jurnal_rsa extends MY_Controller {
 		if($this->form_validation->run())     
         {   
             $entry = $this->input->post();
-            $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi);
+            $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
             unset($entry['simpan']);
 
             $entry = array_merge($kuitansi,$entry);
@@ -40,7 +41,7 @@ class Jurnal_rsa extends MY_Controller {
             $updater =  array();
             $updater['flag_proses_akuntansi'] = 1;
 
-            $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$updater);
+            $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($kuitansi['jenis']),$updater);
 
             if ($q1 and $q2)
             	$this->session->set_flashdata('success','Berhasil menyimpan !');
@@ -53,7 +54,7 @@ class Jurnal_rsa extends MY_Controller {
         else
         {
 
-			$isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi);
+			$isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
 			$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
 			$isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 	        $data['tab'] = 'beranda';
@@ -67,6 +68,43 @@ class Jurnal_rsa extends MY_Controller {
 
 		
 	}
+
+
+    public function detail_kuitansi($mode,$id_kuitansi)
+    {
+        
+    }
+
+    public function ganti_status($id_kuitansi)
+    {
+        $updater = array();
+        $status = $this->input->post('status');
+
+        $riwayat['status'] = $status;
+        $riwayat['id_kuitansi'] = $id_kuitansi;
+        $riwayat['komentar'] = $this->input->post('komentar');
+        
+
+        $this->Riwayat_model->add_riwayat($riwayat);
+        $komentar = $this->input->post('komentar');
+
+        $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi);
+
+        if ($status == 2){
+            $status = 1;
+            $riwayat['status'] = $status;
+            $riwayat['id_kuitansi'] = $id_kuitansi;
+            $flag++;
+        }
+
+        $updater['status'] = $status;
+        $updater['flag'] = $kuitansi['flag'];
+        $this->Kuitansi_model->update_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($kuitansi['jenis']),$updater);
+
+
+    }
+
+
 
 	public function coba()
 	{
