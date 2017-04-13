@@ -114,15 +114,24 @@
 
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
-      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
+      <?php $akun_debet_akrual = $akun_debet_kas;
+            $akun_debet_akrual[0] = 7;
+            $kode_akun_akrual = $kode_akun;
+            $kode_akun_akrual[0] = 7;
+       ?>
+      <input id="akun_debet_akrual" name="akun_debet_akrual_" value="<?=$akun_debet_akrual?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
+      <input type="hidden" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>">
+        
+<!--       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>
-        <?php foreach ($akun_belanja as $akun) {
+        <option value="">
+         <?php foreach ($akun_belanja as $akun) {
           ?>
           <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
           <?php
         }
-        ?>
-      </select>
+        ?> 
+      </select> -->
     </div>
 
     <div class="col-md-3">
@@ -191,8 +200,8 @@
 </form>
 
 <script>
-  var $select = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
-  var selectize = $select[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  // var $select = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
+  // var selectize = $select[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   // selectize.setValue('<?=$kode_akun?>');
 </script>

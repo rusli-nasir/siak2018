@@ -70,7 +70,7 @@ class Kuitansi_model extends CI_Model {
 
     function update_kuitansi($id_kuitansi,$params)
     {
-        $this->db->where('id_kuitansi',$id_usulan);
+        $this->db->where('id_kuitansi',$id_kuitansi);
         $response = $this->db->update('rsa_kuitansi',$params);
         if($response)
         {
