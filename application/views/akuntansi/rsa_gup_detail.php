@@ -1,3 +1,26 @@
+<script type="text/javascript">
+
+$(document).ready(function(){
+    
+    $('#spm_tab a').click(function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+}
+</script>
+
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="spm_tab">
+        <li role="presentation" class="active"><a href="#spp" aria-controls="home" role="tab" data-toggle="tab">SPP</a></li>
+        <li role="presentation"><a href="#spm" aria-controls="profile" role="tab" data-toggle="tab">SPM</a></li>
+        <li role="presentation"><a href="#lampiran" aria-controls="profile" role="tab" data-toggle="tab">LAMPIRAN</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+
 <div role="tabpanel" class="tab-pane active" id="spp">
           
 <div style="background-color: #EEE; padding: 10px;">
@@ -1476,6 +1499,7 @@
     
 </div>
 <br />
-
-          
-      </div>
+    </div>
+      
+</div>
+</div>
