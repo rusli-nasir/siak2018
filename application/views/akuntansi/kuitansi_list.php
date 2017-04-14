@@ -96,7 +96,7 @@
 					<td><?php echo '?'; ?></td>
 					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
 					<td>						
-							<a href="#"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx_spm));?>"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/GP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Kesetaraan</button></a>
