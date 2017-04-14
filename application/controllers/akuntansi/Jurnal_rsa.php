@@ -93,7 +93,10 @@ class Jurnal_rsa extends MY_Controller {
         $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
         $isian['mode'] = $mode;
         $data['tab'] = 'beranda';
-        $data['menu1'] = true;
+        $data['menu2'] = true;
+
+        $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
+        $isian['komentar'] = $query_riwayat['komentar'];
         // print_r($isian['akun_kas']);die();
         // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
         $data['content'] = $this->load->view('akuntansi/detail_kuitansi_jadi',$isian,true);
@@ -130,7 +133,7 @@ class Jurnal_rsa extends MY_Controller {
         $updater['flag'] = $flag;
         $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$updater);
 
-        redirect('akuntansi/kuitansi');
+        redirect('akuntansi/jurnal_rsa/detail_kuitansi/'.$id_kuitansi_jadi.'/lihat');
 
     }
 
@@ -167,7 +170,7 @@ class Jurnal_rsa extends MY_Controller {
             else
                 $this->session->set_flashdata('warning','Gagal menyimpan !');
 
-            redirect('akuntansi/kuitansi');
+            redirect('akuntansi/jurnal_rsa/detail_kuitansi/'.$id_kuitansi_jadi.'/lihat');
 
         }
         else
@@ -179,6 +182,9 @@ class Jurnal_rsa extends MY_Controller {
             $isian['mode'] = $mode;
             $data['tab'] = 'beranda';
             $data['menu1'] = true;
+
+            $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
+            $isian['komentar'] = $query_riwayat['komentar'];
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
             $data['content'] = $this->load->view('akuntansi/edit_kuitansi_jadi',$isian,true);

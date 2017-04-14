@@ -25,6 +25,22 @@
 <!-- Text input-->
 
 <div class="form-group">
+  <label class="col-md-2 control-label" for="no_bukti">Status</label>  
+  <div class="col-md-4" style="margin-top:5px;">
+    <?php if($flag==1){ ?>
+      <?php if($status=='revisi'){ ?>
+        <button class="btn btn-xs btn-danger disabled"><span class="glyphicon glyphicon-repeat"></span> Revisi</button>
+        <br/>Alasan: <?php echo $komentar; ?>
+      <?php }else{ ?>
+        <button class="btn btn-xs btn-default disabled">Proses verifikasi</button>
+      <?php } ?>
+    <?php }else if($flag==2){ ?>
+      <button class="btn btn-xs btn-success">Disetujui</button>
+    <?php } ?>
+  </div>
+</div>
+
+<div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
   <input id="no_bukti" name="no_bukti" value="<?=$no_bukti?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" disabled>
@@ -216,8 +232,10 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="simpan"></label>
   <div class="col-md-8">
+    <?php if ($mode == 'evaluasi'): ?>
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
-    <button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button>
+    <?php endif ?>
+    <a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
 
