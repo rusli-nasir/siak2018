@@ -2,13 +2,9 @@
 if (!defined('BASEPATH')) exit('No direct script access allowed');
     
 class rsa_gup extends MY_Controller{
-    private $data;
     public function __construct(){ 
         parent::__construct();
         $this->cek_session_in();
-        $this->load->model('akuntansi/Notifikasi_model', 'Notifikasi_model');
-        
-        $this->data['jumlah_notifikasi'] = $this->Notifikasi_model->get_jumlah_notifikasi();
     }
     
     function index(){

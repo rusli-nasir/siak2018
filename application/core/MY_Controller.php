@@ -2,11 +2,18 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class MY_Controller extends CI_Controller{
+    protected $data;
 	public function __construct(){
 		parent::__construct();
 		$this->load->driver('session');
 		error_reporting(E_ALL);
 		ini_set('display_errors', 'On');
+        
+        if($this->session->userdata('level')){
+            $this->load->model('akuntansi/Notifikasi_model', 'Notifikasi_model');
+
+            $this->data['jumlah_notifikasi'] = $this->Notifikasi_model->get_jumlah_notifikasi();
+        }
 	}
 
 	public function cek_session_in(){

@@ -2,8 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends MY_Controller {
-	private $data;
-
 	public function __construct(){
         parent::__construct();    
 

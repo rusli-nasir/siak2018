@@ -3,8 +3,6 @@ ini_set('display_errors', 1);
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Jurnal_rsa extends MY_Controller {
-	private $data;
-
 	public function __construct(){
         parent::__construct();
         // $this->cek_session_in();
@@ -71,13 +69,13 @@ class Jurnal_rsa extends MY_Controller {
             // print_r($isian);die();
 			$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
 			$isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
-	        $data['tab'] = 'beranda';
-	        $data['menu1'] = true;
+	        $this->data['tab'] = 'beranda';
+	        $this->data['menu1'] = true;
             $isian['jenis'] = $jenis;
 	        // print_r($isian['akun_kas']);die();
 	        // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
-			$data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);
-			$this->load->view('akuntansi/content_template',$data,false);
+			$this->data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);
+			$this->load->view('akuntansi/content_template',$this->data,false);
         }
 
 
@@ -92,15 +90,15 @@ class Jurnal_rsa extends MY_Controller {
         $isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
         $isian['mode'] = $mode;
-        $data['tab'] = 'beranda';
-        $data['menu2'] = true;
+        $this->data['tab'] = 'beranda';
+        $this->data['menu2'] = true;
 
         $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
         $isian['komentar'] = $query_riwayat['komentar'];
         // print_r($isian['akun_kas']);die();
         // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
-        $data['content'] = $this->load->view('akuntansi/detail_kuitansi_jadi',$isian,true);
-        $this->load->view('akuntansi/content_template',$data,false);
+        $this->data['content'] = $this->load->view('akuntansi/detail_kuitansi_jadi',$isian,true);
+        $this->load->view('akuntansi/content_template',$this->data,false);
     }
 
     public function ganti_status($id_kuitansi_jadi)
@@ -180,15 +178,15 @@ class Jurnal_rsa extends MY_Controller {
             $isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
             $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
             $isian['mode'] = $mode;
-            $data['tab'] = 'beranda';
-            $data['menu1'] = true;
+            $this->data['tab'] = 'beranda';
+            $this->data['menu1'] = true;
 
             $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
             $isian['komentar'] = $query_riwayat['komentar'];
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
-            $data['content'] = $this->load->view('akuntansi/edit_kuitansi_jadi',$isian,true);
-            $this->load->view('akuntansi/content_template',$data,false);
+            $this->data['content'] = $this->load->view('akuntansi/edit_kuitansi_jadi',$isian,true);
+            $this->load->view('akuntansi/content_template',$this->data,false);
         }
     }
 
