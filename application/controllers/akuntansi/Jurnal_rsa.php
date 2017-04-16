@@ -196,6 +196,8 @@ class Jurnal_rsa extends MY_Controller {
 
 	public function coba()
 	{
-		print_r($this->db->list_fields('akuntansi_kuitansi_jadi'));
+        $this->load->model('akuntansi/Notifikasi_model', 'Notifikasi_model');
+		print_r($this->Notifikasi_model->get_jumlah_notifikasi(2));
+        print_r($_SESSION);
 	}
 }
