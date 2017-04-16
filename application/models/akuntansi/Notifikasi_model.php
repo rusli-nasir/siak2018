@@ -9,7 +9,8 @@ class Notifikasi_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
     }
 
-    public function get_jumlah_notifikasi($level,$status = 'proses')
+
+    public function get_jumlah_notifikasi_new($level,$status = 'proses')
     {
         return $this->db->get_where('akuntansi_kuitansi_jadi',array('flag'=>$level-1,'status' => $status))->num_rows();
         // $hasil = array();
@@ -21,4 +22,13 @@ class Notifikasi_model extends CI_Model {
     }
 
     
+    
+    function get_jumlah_notifikasi(){
+		$query = $this->db->query("SELECT (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=".($this->session->userdata('level') - 1) . ") AS gup, (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=".($this->session->userdata('level') - 1) . ") AS ls, (SELECT COUNT(*) FROM kepeg_tr_spmls) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi) AS gup_jadi, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3') AS ls_jadi, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='SPM') AS spm_jadi");
+        $result =  $query->row_array();
+        $result['kuitansi'] = $result['gup'] + $result['ls'] + $result['spm'];
+        $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['ls_jadi'] + $result['spm_jadi'];
+        return (object)$result;
+	}
+
 }
