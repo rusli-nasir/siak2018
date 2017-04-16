@@ -10,6 +10,8 @@ class Kuitansi extends MY_Controller {
         $this->data['menu1'] = true;
         $this->cek_session_in();
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
+        
+        $this->data['jumlah_notifikasi'] = $this->Kuitansi_model->get_jumlah_notifikasi();
     }
 
 	public function index($id = 0){

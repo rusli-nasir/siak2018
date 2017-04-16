@@ -15,6 +15,11 @@
 <script src="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.js'); ?>"></script>
 
 <link rel="icon" type="image/png" href="<?php echo base_url();?>/assets/akuntansi/assets/images/favicon.png">
+    <style>
+        .badge-notify{
+           background:red;
+        }
+    </style>
 
 <!--Icons-->
 <script src="<?php echo base_url();?>/assets/akuntansi/js/lumino.glyphs.js"></script>
@@ -58,8 +63,8 @@
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<ul class="nav menu">
 			<?php if($this->session->userdata('level')==1){ ?>
-            	<li class="<?php if(isset($menu1)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi</a></li>
-            	<li class="<?php if(isset($menu2)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi Jadi</a></li>
+            	<li class="<?php if(isset($menu1)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi<span class="badge <?= $jumlah_notifikasi->kuitansi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->kuitansi; ?></span></a></li>
+            	<li class="<?php if(isset($menu2)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi Jadi<span class="badge <?= $jumlah_notifikasi->kuitansi_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->kuitansi_jadi; ?></span></a></li>
             	<li class="<?php if(isset($menu3)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Revisi</a></li>
 			<?php }else if($this->session->userdata('level')==2){ ?>
 				<li class="<?php if(isset($menu2)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi Jadi</a></li>
