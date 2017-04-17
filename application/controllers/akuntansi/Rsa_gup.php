@@ -19,6 +19,13 @@ class rsa_gup extends MY_Controller{
         $this->load->model('akuntansi/rsa_gup2_model');
         $_spm = $this->rsa_gup2_model->get_spm_detail($no_spm, array('tahun', 'kode_unit', 'str_nomor_trx'));
         
+        if(!$_spm){
+            $this->data['tab'] = 'rsa_gup';
+            $this->data['content'] = "<h1>Jurnal tidak ditemukan</h1>";
+            $this->load->view('akuntansi/content_template',$this->data);
+            return;
+        }
+        
         $kd_unit = $_spm->kode_unit;
         $tahun = $_spm->tahun;
                                 
@@ -40,7 +47,7 @@ class rsa_gup extends MY_Controller{
         }
                                 
                                
-        $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($no_spm);
+        $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($kd_unit,$tahun);
 
         $this->data['doc_up'] = $dokumen_gup;
 

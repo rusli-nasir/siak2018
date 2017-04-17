@@ -76,7 +76,7 @@
 					<td><?php echo '-'; ?></td>
 					<td><?php echo number_format($result->jumlah_bayar); ?></td>
 					<td>						
-							<a href="#"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->nomor));?>"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_spmls); ?>"><button type="button" class="btn btn-sm btn-danger">Isi Kesetaraan</button></a>
 						<?php }else if($this->session->userdata('level')==2){ ?>

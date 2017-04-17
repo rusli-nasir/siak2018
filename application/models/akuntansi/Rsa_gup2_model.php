@@ -15,7 +15,10 @@ class rsa_gup2_model extends CI_Model {
                     ->where('str_nomor_trx_spm', $no_spm)
                     ->limit(1)
                     ->get('rsa_kuitansi')
-                    ->row();
+                    ->row() /*or 
+                $this->db
+                    ->query("SELECT kepeg_tr_spmls.tahun as tahun, kepeg_tr_spmls.unitsukpa as kode_unit, kepeg_tr_sppls.nomor as str_nomor_trx FROM kepeg_tr_spmls, kepeg_tr_sppls WHERE kepeg_tr_spmls.id_tr_sppls = kepeg_tr_sppls.id_sppls AND kepeg_tr_spmls.nomor = '$no_spm'")
+                    ->row()*/;
     }
 
 }
