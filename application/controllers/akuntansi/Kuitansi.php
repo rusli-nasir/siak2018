@@ -351,4 +351,10 @@ class Kuitansi extends MY_Controller {
 		$this->session->unset_userdata('keyword_spm_jadi');
 		redirect($_SERVER['HTTP_REFERER']);
 	}
+
+	public function send_service($id_kuitansi_jadi = 0){
+		$query = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
+
+		echo json_encode($query);
+	}
 }
