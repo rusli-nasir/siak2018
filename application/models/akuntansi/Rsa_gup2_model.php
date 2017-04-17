@@ -9,7 +9,7 @@ class rsa_gup2_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
     }
     
-    function get_spm_detail($no_spm, ... $columns){
+    function get_spm_detail($no_spm, $columns){
         return $this->db
                     ->select($columns)
                     ->where('str_nomor_trx_spm', $no_spm)
