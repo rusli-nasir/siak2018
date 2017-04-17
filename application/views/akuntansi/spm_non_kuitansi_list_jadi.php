@@ -76,7 +76,7 @@
 					<td><?php echo $result->akun_kredit; ?></td>
 					<td><?php echo number_format($result->jumlah_debet); ?></td>
 					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
+							<a href="#" target="_blank"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 						<?php }else if($this->session->userdata('level')==2){ ?>
