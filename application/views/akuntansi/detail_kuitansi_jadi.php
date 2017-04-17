@@ -14,6 +14,9 @@
   elseif ($mode == 'evaluasi') {
     echo form_open('akuntansi/jurnal_rsa/ganti_status/'.$id_kuitansi_jadi,array("class"=>"form-horizontal"));
   }
+  elseif ($mode == 'posting') {
+    echo form_open('akuntansi/rest_kuitansi/posting_kuitansi/'.$id_kuitansi_jadi,array("class"=>"form-horizontal"));
+  }
 ?>
 
 <fieldset>
@@ -234,6 +237,9 @@
   <div class="col-md-8">
     <?php if ($mode == 'evaluasi'): ?>
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
+    <?php endif ?>
+    <?php if ($mode == 'posting'): ?>
+    <button id="posting" name="posting" class="btn btn-success" type="submit" onclick="return confirm('Yakin memposting ini?')">Posting</button>
     <?php endif ?>
     <?php if($mode=='lihat' AND $this->session->userdata('level')==3){ ?>
     <a href="<?php echo site_url('akuntansi/kuitansi/send_service/'.$id_kuitansi_jadi); ?>" onclick="return confirm('Kirim data ke aplikasi Laporan Akuntansi?')"><button name="posting" class="btn btn-success" type="button">Posting</button></a>

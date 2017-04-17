@@ -235,6 +235,8 @@ switch (ENVIRONMENT)
 	// Name of the "system" directory
 	define('SYSDIR', basename(BASEPATH));
 
+	define('EXT', '.php');
+
 	// The path to the "application" directory
 	if (is_dir($application_folder))
 	{

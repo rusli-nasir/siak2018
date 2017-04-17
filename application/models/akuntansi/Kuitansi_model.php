@@ -185,6 +185,14 @@ class Kuitansi_model extends CI_Model {
     	}
     }
 
+    public function get_kuitansi_posting($id_kuitansi_jadi)
+    {
+        $hasil = $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi'=>$id_kuitansi_jadi))->row_array();
+        unset($hasil['status']);
+        unset($hasil['flag']);
+        return $hasil;
+    }
+
     function update_kuitansi($id_kuitansi,$tabel,$params)
     {
         $this->db->where('id_kuitansi',$id_kuitansi);
