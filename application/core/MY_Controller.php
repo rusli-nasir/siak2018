@@ -6,8 +6,6 @@ class MY_Controller extends CI_Controller{
 	public function __construct(){
 		parent::__construct();
 		$this->load->driver('session');
-		error_reporting(E_ALL);
-		ini_set('display_errors', 'On');
         
         if($this->session->userdata('level')){
             $this->load->model('akuntansi/Notifikasi_model', 'Notifikasi_model');
