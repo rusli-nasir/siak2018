@@ -235,6 +235,9 @@
     <?php if ($mode == 'evaluasi'): ?>
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
     <?php endif ?>
+    <?php if($mode=='lihat' AND $this->session->userdata('level')==3){ ?>
+    <a href="<?php echo site_url('akuntansi/kuitansi/send_service/'.$id_kuitansi_jadi); ?>" onclick="return confirm('Kirim data ke aplikasi Laporan Akuntansi?')"><button name="posting" class="btn btn-success" type="button">Posting</button></a>
+    <?php } ?>
     <a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
