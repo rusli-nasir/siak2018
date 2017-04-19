@@ -11,19 +11,48 @@
   </ol>
 </div><!--/.row-->
 
+
+<?php
+    echo form_open('akuntansi/memorial/edit_memorial/'.$id_kuitansi_jadi.'/'.$mode,array("class"=>"form-horizontal"));
+?>
+
 <fieldset>
 
 <?php echo validation_errors(); ?>
 <!-- Form Name -->
-<legend><center>INPUT JURNAL PENERIMAAN KAS</center></legend>
+<legend><center>DETAIL JURNAL UMUM (MEMORIAL)</center></legend>
 
 <!-- Text input-->
-<?php echo form_open('akuntansi/penerimaan/input_penerimaan',array("class"=>"form-horizontal")); ?>
+
+<div class="form-group">
+  <label class="col-md-2 control-label" for="no_bukti">Status</label>  
+  <div class="col-md-4" style="margin-top:5px;">
+    <?php if($flag==1){ ?>
+      <?php if($status=='revisi'){ ?>
+        <button class="btn btn-xs btn-danger disabled"><span class="glyphicon glyphicon-repeat"></span> Revisi</button>
+        <br/>Alasan: <?php echo $komentar; ?>
+      <?php }else{ ?>
+        <button class="btn btn-xs btn-default disabled">Proses verifikasi</button>
+      <?php } ?>
+    <?php }else if($flag==2){ ?>
+      <button class="btn btn-xs btn-success">Disetujui</button>
+    <?php } ?>
+  </div>
+</div>
 
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" type="text" placeholder="No.Bukti" class="form-control input-md" required="">
+  <input id="no_bukti" name="no_bukti" type="text" value="<?=$no_bukti?>" placeholder="No.Bukti" class="form-control input-md" required="">
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="no_spm">No. SPM</label>  
+  <div class="col-md-4">
+  <input name="no_spm" type="text" value="<?=$no_spm?>" placeholder="No. SPM" class="form-control input-md" required="">
     
   </div>
 </div>
@@ -32,8 +61,32 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="tanggal">Tanggal</label>  
   <div class="col-md-4">
-  <input id="tanggal" name="tanggal" type="text" placeholder="Tanggal" class="form-control input-md" required="">
+  <input id="tanggal" name="tanggal" type="text" value="<?=$tgl_kuitansi?>" placeholder="Tanggal" class="form-control input-md" required="">
     
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="jenis">Jenis Transaksi</label>  
+  <div class="col-md-4">
+  <!-- <input name="jenis" type="text" placeholder="Jenis Transaksi" class="form-control input-md" required=""> -->
+  <select id="jenis" name="jenis" class="form-control" required="">
+      <option value="">Pilih Jenis</option>
+      <option <?php if ($jenis == 'GP'): ?> selected <?php endif ?> value="GP" >GUP</option>
+      <option <?php if ($jenis == 'LS-Gaji'): ?> selected <?php endif ?> value="LS-Gaji">LS-Gaji</option>
+      <option <?php if ($jenis == 'TUP'): ?> selected <?php endif ?> value="TUP">TUP</option>
+    </select>
+  </div>
+    
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="kode_kegiatan">Kode Kegiatan</label>  
+  <div class="col-md-4">
+  <input id="kode_kegiatan" name="kode_kegiatan" type="text" value="<?=$kode_kegiatan?>" placeholder="Kode Kegiatan" class="form-control input-md" required="">
+
   </div>
 </div>
 
@@ -51,6 +104,7 @@
         }
         ?>
       </select>
+    
   </div>
 </div>
 
@@ -58,7 +112,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="uraian">Uraian</label>
   <div class="col-md-6">                     
-    <textarea class="form-control" id="uraian" name="uraian"></textarea>
+    <textarea class="form-control" id="uraian" name="uraian"><?=$uraian?></textarea>
   </div>
 </div>
 
@@ -68,9 +122,9 @@
   <div class="col-md-4">
     <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control" required="">
       <option value="">Pilih Jenis</option>
-      <option value="tidak_terikat" >Tidak Terikat</option>
-      <option value="terikat_temporer">Terikat Temporer</option>
-      <option value="terikat_permanen">Terikat Permanen</option>
+      <option <?php if ($jenis_pembatasan_dana == 'tidak_terikat'): ?> selected <?php endif ?>  value="tidak_terikat" >Tidak Terikat</option>
+      <option <?php if ($jenis_pembatasan_dana == 'terikat_temporer'): ?> selected <?php endif ?> value="terikat_temporer">Terikat Temporer</option>
+      <option <?php if ($jenis_pembatasan_dana == 'terikat_permanen'): ?> selected <?php endif ?>  value="terikat_permanen">Terikat Permanen</option>
     </select>
   </div>
 </div>
@@ -85,7 +139,7 @@
   <div class="form-group">
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
     <div class="col-md-3">
-
+    <!-- <input id="kas_akun_debet" name="kas_akun_debet"  type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
           <option value="">Pilih Akun</option>
           <option value="">
@@ -96,7 +150,6 @@
           }
           ?> 
       </select> 
-    <!-- <input id="kas_akun_debet" name="kas_akun_debet"  type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       
     </div>
 
@@ -109,7 +162,7 @@
 
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
-      <!-- <input id="akun_debet_akrual" name="akun_debet_akrual" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
+      <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
           <option value="">Pilih Akun</option>
           <option value="">
@@ -124,9 +177,8 @@
         
     </div>
 
-
     <div class="col-md-3">
-    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md" required="">
+    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text"  placeholder="Jumlah Akun Debet" value="<?=$jumlah_debet?>" class="form-control input-md" required="">
       
     </div>
 
@@ -145,7 +197,7 @@
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option  <?php if ($akun['kd_kas_6'] == $akun_kredit): ?> selected <?php endif ?>value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
           <?php
         }
         ?>
@@ -162,14 +214,14 @@
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option <?php if ($akun['kd_kas_6'] == $akun_kredit_akrual): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
           <?php
         }
         ?>
       </select>
     </div>
     <div class="col-md-3">
-    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md"  required="">
+    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" value="<?=$jumlah_kredit?>" class="form-control input-md"  required="">
       
     </div>
   </div>
@@ -178,7 +230,6 @@
 </fieldset>
 
 
-<!-- Button (Double) -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="simpan"></label>
   <div class="col-md-8">
@@ -186,6 +237,7 @@
     <a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
+
 
 </fieldset>
 </form>
@@ -207,16 +259,15 @@
   var $select2 = $('#kas_akun_debet').selectize();  // This initializes the selectize control
   var selectize2 = $select2[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  <?php if (isset($kas_akun_debet)): ?>
-      selectize2.setValue('<?=$kas_akun_debet?>');
+  <?php if (isset($akun_debet)): ?>
+      selectize2.setValue('<?=$akun_debet?>');
   <?php endif ?>
 
   var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
   var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($unit_kerja)): ?>
-      selectize3.setValue('<?=$unit_kerja?>');
+      selectize3.setValue('<?=$kode_unit?>');
   <?php endif ?>
-
 
 </script>

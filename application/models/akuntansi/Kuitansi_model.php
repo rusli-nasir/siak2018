@@ -109,7 +109,9 @@ class Kuitansi_model extends CI_Model {
     {
     	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
     	$hasil =  $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi'=>$id_kuitansi_jadi))->row_array();
+        $hasil['kode_unit'] = $hasil['unit_kerja'];
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['unit_kerja']))->row_array()['nama_unit'];
+        $hasil['tgl_kuitansi'] = $hasil['tanggal'];
     	$hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
     	$hasil['akun_debet_kas'] = $hasil['akun_debet'] . " - ". $this->db->get_where('akun_belanja',array('kode_akun'=>$hasil['akun_debet']))->row_array()['nama_akun'];
     	return $hasil;

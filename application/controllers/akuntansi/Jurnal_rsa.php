@@ -39,6 +39,7 @@ class Jurnal_rsa extends MY_Controller {
 
             $entry['jumlah_kredit'] = $entry['jumlah_debet'];
             $entry['flag'] = 1;
+            $entry['tipe'] = 'pengeluaran';
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
