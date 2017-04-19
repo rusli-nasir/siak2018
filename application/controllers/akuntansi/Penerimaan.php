@@ -15,19 +15,19 @@ class Penerimaan extends MY_Controller {
     }
 
 	public function index($id = 0){
-		/*//search
-		if(isset($_POST['keyword'])){
-			$keyword = $this->input->post('keyword');
-			$this->session->set_userdata('keyword', $keyword);		
+		//search
+		if(isset($_POST['keyword_penerimaan'])){
+			$keyword = $this->input->post('keyword_penerimaan');
+			$this->session->set_userdata('keyword_penerimaan', $keyword);		
 		}else{
-			if($this->session->userdata('keyword')!=null){
-				$keyword = $this->session->userdata('keyword');
+			if($this->session->userdata('keyword_penerimaan')!=null){
+				$keyword = $this->session->userdata('keyword_penerimaan');
 			}else{
 				$keyword = '';
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_by_tipe(null, null, $keyword, 'penerimaan');
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -39,7 +39,7 @@ class Penerimaan extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/penerimaan/index');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -58,7 +58,7 @@ class Penerimaan extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword);*/
+		$this->data['query'] = $this->Kuitansi_model->read_by_tipe($config['per_page'], $id, $keyword, 'penerimaan');
 		
 		$temp_data['content'] = $this->load->view('akuntansi/penerimaan_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -113,7 +113,7 @@ class Penerimaan extends MY_Controller {
 
             $this->Riwayat_model->add_riwayat($riwayat);
 
-            redirect('akuntansi/kuitansi');
+            redirect('akuntansi/penerimaan');
 
 
         } else {
@@ -179,7 +179,7 @@ class Penerimaan extends MY_Controller {
             else
                 $this->session->set_flashdata('warning','Gagal menyimpan !');
 
-            redirect('akuntansi/kuitansi');
+            redirect('akuntansi/penerimaan');
 
         } else {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);

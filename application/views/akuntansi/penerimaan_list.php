@@ -42,7 +42,7 @@
 	    </form>
 	</div>
 	<div class="col-sm-8" align="right">
-		<a href="<?php echo site_url('akuntansi/penerimaan/tambah'); ?>"><button type="button" class="btn btn-primary">Isi Penerimaan</button></a>
+		<a href="<?php echo site_url('akuntansi/penerimaan/input_penerimaan'); ?>"><button type="button" class="btn btn-primary">Isi Penerimaan</button></a>
 	</div>
 </div>
 <br/>
@@ -66,6 +66,49 @@
 				</tr>
 			</thead>
 			<tbody>
+				<?php foreach($query->result() as $result){ ?>
+				<tr>
+					<td><?php echo $no; ?></td>
+					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
+					<td><?php echo $result->no_bukti; ?></td>
+					<td><?php echo $result->no_spm; ?></td>
+					<td><?php echo $result->jenis; ?></td>
+					<td><?php echo $result->kode_kegiatan; ?></td>
+					<td><?php echo get_unit($result->unit_kerja); ?></td>
+					<td><?php echo $result->uraian; ?></td>
+					<td><?php echo $result->akun_debet; ?></td>
+					<td><?php echo $result->akun_kredit; ?></td>
+					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
+					<td>
+						<?php if($result->flag==1){ ?>
+							<?php if($result->status=='revisi'){ ?>
+							<button class="btn btn-xs btn-danger disabled"><span class="glyphicon glyphicon-repeat"></span> Revisi</button>
+							<?php }else{ ?>
+							<button class="btn btn-xs btn-default disabled">Proses verifikasi</button>
+							<?php } ?>
+						<?php }else if($result->flag==2){ ?>
+						<button class="btn btn-xs btn-success disabled">Disetujui</button>
+						<?php } ?>
+					</td>
+					<td>						
+						<?php if($this->session->userdata('level')==1){ ?>
+							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
+								<a href="<?php echo site_url('akuntansi/penerimaan/edit_penerimaan/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
+							<?php }else{ ?>
+								<a href="<?php echo site_url('akuntansi/penerimaan/detail_penerimaan/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
+							<?php } ?>
+						<?php }else if($this->session->userdata('level')==2){ ?>
+							<?php if($result->flag==1 AND ($result->status=='proses' OR $result->status=='direvisi')){ ?>
+								<a href="<?php echo site_url('akuntansi/penerimaan/detail_penerimaan/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
+							<?php }else{ ?>
+								<a href="<?php echo site_url('akuntansi/penerimaan/detail_penerimaan/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
+							<?php } ?>
+						<?php }else if($this->session->userdata('level')==3){ ?>
+							<a href="<?php echo site_url('akuntansi/penerimaan/detail_penerimaan/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
+						<?php } ?>
+					</td>
+				</tr>
+				<?php $no++; } ?>
 			</tbody>
 		</table>
 	</div>
@@ -79,6 +122,17 @@ function get_pengeluaran($id_kuitansi){
 	$q = $ci->db->query($query)->result();
 	foreach($q as $result){
 		return number_format($result->pengeluaran);
+	}
+}
+
+function get_unit($unit){
+	$ci =& get_instance();
+	$ci->db2 = $ci->load->database('rba', true);
+
+	$query = "SELECT * FROM unit WHERE kode_unit='$unit'";
+	$q = $ci->db2->query($query)->result();
+	foreach($q as $result){
+		return $result->alias;
 	}
 }
 ?>

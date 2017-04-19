@@ -91,7 +91,7 @@
 					<td><?php echo $result->no_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
 					<td><?php echo $result->kode_kegiatan; ?></td>
-					<td><?php echo $result->unit_kerja; ?></td>
+					<td><?php echo get_unit($result->unit_kerja); ?></td>
 					<td><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->akun_debet; ?></td>
 					<td><?php echo $result->akun_kredit; ?></td>
@@ -141,6 +141,16 @@ function get_pengeluaran($id_kuitansi){
 	$q = $ci->db->query($query)->result();
 	foreach($q as $result){
 		return number_format($result->pengeluaran);
+	}
+}
+function get_unit($unit){
+	$ci =& get_instance();
+	$ci->db2 = $ci->load->database('rba', true);
+
+	$query = "SELECT * FROM unit WHERE kode_unit='$unit'";
+	$q = $ci->db2->query($query)->result();
+	foreach($q as $result){
+		return $result->alias;
 	}
 }
 ?>

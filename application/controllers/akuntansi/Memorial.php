@@ -15,7 +15,7 @@ class Memorial extends MY_Controller {
     }
 
 	public function index($id = 0){
-		/*//search
+		//search
 		if(isset($_POST['keyword'])){
 			$keyword = $this->input->post('keyword');
 			$this->session->set_userdata('keyword', $keyword);		
@@ -27,7 +27,7 @@ class Memorial extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_by_tipe(null, null, $keyword, 'memorial');
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -58,7 +58,7 @@ class Memorial extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword);*/
+		$this->data['query'] = $this->Kuitansi_model->read_by_tipe($config['per_page'], $id, $keyword, 'memorial');
 		
 		$temp_data['content'] = $this->load->view('akuntansi/memorial_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -112,7 +112,7 @@ class Memorial extends MY_Controller {
 
             $this->Riwayat_model->add_riwayat($riwayat);
 
-            redirect('akuntansi/kuitansi');
+            redirect('akuntansi/memorial');
 
 
         } else {
@@ -177,7 +177,7 @@ class Memorial extends MY_Controller {
             else
                 $this->session->set_flashdata('warning','Gagal menyimpan !');
 
-            redirect('akuntansi/kuitansi');
+            redirect('akuntansi/memorial');
 
         } else {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);

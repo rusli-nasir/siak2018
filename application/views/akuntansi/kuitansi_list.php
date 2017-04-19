@@ -90,7 +90,7 @@
 					<td><?php echo $result->str_nomor_trx_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
 					<td><?php echo $result->kode_usulan_belanja; ?></td>
-					<td><?php echo $result->kode_unit; ?></td>
+					<td><?php echo get_unit($result->kode_unit); ?></td>
 					<td><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->kode_akun; ?></td>
 					<td><?php echo '?'; ?></td>
@@ -125,6 +125,17 @@ function get_pengeluaran($id_kuitansi){
 	$q = $ci->db->query($query)->result();
 	foreach($q as $result){
 		return number_format($result->pengeluaran);
+	}
+}
+
+function get_unit($unit){
+	$ci =& get_instance();
+	$ci->db2 = $ci->load->database('rba', true);
+
+	$query = "SELECT * FROM unit WHERE kode_unit='$unit'";
+	$q = $ci->db2->query($query)->result();
+	foreach($q as $result){
+		return $result->alias;
 	}
 }
 ?>

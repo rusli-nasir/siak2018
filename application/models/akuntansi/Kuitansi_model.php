@@ -73,6 +73,26 @@ class Kuitansi_model extends CI_Model {
         return $query;
     }
 
+    /*----------------Penerimaan & memorial ---------------------*/
+
+    function read_by_tipe($limit = null, $start = null, $keyword = null, $tipe = 'penerimaan'){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
+
+    /*----------------Penerimaan & memorial ---------------------*/
+
+    public function get_nama_unit($kode_unit){
+        $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$kode_unit))->row_array()['nama_unit'];
+        return $hasil;
+    }
+
 	public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail)
     {
     	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');

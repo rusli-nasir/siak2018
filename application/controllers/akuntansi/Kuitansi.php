@@ -8,6 +8,7 @@ class Kuitansi extends MY_Controller {
         $this->data['menu1'] = true;
         $this->cek_session_in();
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
+        $this->data['db2'] = $this->load->database('rba',TRUE);
     }
 
 	public function index($id = 0){

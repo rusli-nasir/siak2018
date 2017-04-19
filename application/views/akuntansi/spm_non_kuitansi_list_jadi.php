@@ -61,6 +61,7 @@
 					<th>AKUN DEBET</th>
 					<th>AKUN KREDIT</th>
 					<th>JUMLAH</th>
+					<th>STATUS</th>
 					<th>AKSI</th>
 				</tr>
 			</thead>
@@ -75,6 +76,17 @@
 					<td><?php echo $result->akun_debet; ?></td>
 					<td><?php echo $result->akun_kredit; ?></td>
 					<td><?php echo number_format($result->jumlah_debet); ?></td>
+					<td>
+						<?php if($result->flag==1){ ?>
+							<?php if($result->status=='revisi'){ ?>
+							<button class="btn btn-xs btn-danger disabled"><span class="glyphicon glyphicon-repeat"></span> Revisi</button>
+							<?php }else{ ?>
+							<button class="btn btn-xs btn-default disabled">Proses verifikasi</button>
+							<?php } ?>
+						<?php }else if($result->flag==2){ ?>
+						<button class="btn btn-xs btn-success disabled">Disetujui</button>
+						<?php } ?>
+					</td>
 					<td>						
 							<a href="#" target="_blank"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
