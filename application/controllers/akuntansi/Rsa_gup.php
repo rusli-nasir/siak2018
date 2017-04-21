@@ -13,8 +13,24 @@ class rsa_gup extends MY_Controller{
         $this->load->view('akuntansi/content_template',$this->data,false);
     }
     
+    function get_data_kuitansi(){
+        $this->load->model('kuitansi_model');
+        $id = $this->input->post('id');
+        $cur_tahun = $this->input->post('t');
+        if($id){
+            $data_kuitansi = $this->kuitansi_model->get_data_kuitansi($id,$cur_tahun);
+            $data_detail_kuintansi = $this->kuitansi_model->get_data_detail_kuitansi($id,$cur_tahun);
+            $data_detail_pajak_kuintansi = $this->kuitansi_model->get_data_detail_pajak_kuitansi($id,$cur_tahun);
+            echo json_encode(array(
+                'kuitansi' => $data_kuitansi,
+                'kuitansi_detail' => $data_detail_kuintansi,
+                'kuitansi_detail_pajak' => $data_detail_pajak_kuintansi
+                    )
+                );
+        }
+    }
+    
     function jurnal(){
-//        $no_spm="00003/FTE/SPM-GUP/FEB/2017";
         $no_spm = urldecode($this->input->get('spm'));
         $this->load->model('akuntansi/rsa_gup2_model');
         $_spm = $this->rsa_gup2_model->get_spm_detail($no_spm, array('tahun', 'kode_unit', 'str_nomor_trx'));

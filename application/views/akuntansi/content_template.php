@@ -12,6 +12,7 @@
 <!-- datepicker -->
 <link rel="stylesheet" href="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.css'); ?>">
 <script src="<?php echo base_url('assets/akuntansi/assets/datepicker/jquery-1.10.2.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/moment-with-locales.js"></script>
 <script src="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.js'); ?>"></script>
 
 <link rel="icon" type="image/png" href="<?php echo base_url();?>/assets/akuntansi/assets/images/favicon.png">

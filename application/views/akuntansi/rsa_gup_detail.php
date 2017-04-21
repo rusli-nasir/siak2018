@@ -6,8 +6,493 @@ $(document).ready(function(){
         e.preventDefault();
         $(this).tab('show');
       });
+
+      // store the currently selected tab in the hash value
+      $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
+        var id = $(e.target).attr("href").substr(1);
+        window.location.hash = id;
+      });
+
+      // on load of the page: switch to the currently selected tab
+      var hash = window.location.hash;
+      $('#spm_tab a[href="' + hash + '"]').tab('show');
+    
+    var id_cetak = 'div-cetak' ;
+    
+    var id_cetak_2 = 'div-cetak-2' ;
+    
+    var id_cetak_3 = 'div-cetak-lampiran-spj' ;
+    
+    var keluaran = [];
+//    var pj_p_nilai_all = [];
+    
+    $('#myCarousel').on('slid.bs.carousel', function (e) {
+  // do something…
+        var id = e.relatedTarget.id;
+//        console.log(id);
+        if(id == 'a'){
+            id_cetak = 'div-cetak' ;
+        }else if(id == 'b'){
+            id_cetak = 'div-cetak-f1a' ;
+        }
+    });
+    
+    $('#myCarouselSPM').on('slid.bs.carousel', function (e) {
+  // do something…
+        var id = e.relatedTarget.id;
+//        console.log(id);
+        if(id == 'e'){
+            id_cetak_2 = 'div-cetak-2' ;
+        }else if(id == 'f'){
+            id_cetak_2 = 'div-cetak-f1a-2' ;
+        }
+    });
+    
+    $('#myCarouselLampiran').on('slid.bs.carousel', function (e) {
+  // do something…
+        var id = e.relatedTarget.id;
+//        console.log(id);
+        if(id == 'c'){
+            id_cetak_3 = 'div-cetak-lampiran-spj' ;
+        }else if(id == 'd'){
+            id_cetak_3 = 'div-cetak-lampiran-rekapakun' ;
+        }
+    });
+    
+    
+    $("#cetak").click(function(){
+                    var mode = 'iframe'; //popup
+                    var close = mode == "popup";
+                    var options = { mode : mode, popClose : close};
+//                    console.log($("#" + id_cetak).html());
+                    $("#" + id_cetak).printArea( options );
+                });
+                
+    $("#cetak-spm").click(function(){
+                    var mode = 'iframe'; //popup
+                    var close = mode == "popup";
+                    var options = { mode : mode, popClose : close};
+//                    console.log($("#" + id_cetak_2).html());
+                    $("#" + id_cetak_2).printArea( options );
+                });
+    
+    $("#cetak-lampiran").click(function(){
+                    var mode = 'iframe'; //popup
+                    var close = mode == "popup";
+                    var options = { mode : mode, popClose : close};
+//                    console.log($("#" + id_cetak).html());
+                    $("#" + id_cetak_3).printArea( options );
+                });
+                
+    $("#cetak-kuitansi").click(function(){
+                    var mode = 'iframe'; //popup
+                    var close = mode == "popup";
+                    var options = { mode : mode, popClose : close};
+//                    console.log($("#" + id_cetak).html());
+                    $("#div-cetak-kuitansi").printArea( options );
+                });
+    
+    var pos = $('.ttd').position();
+
+    // .outerWidth() takes into account border and padding.
+    var width = $('.ttd').width();
+
+    //show the menu directly over the placeholder
+//    $("#status_spp").css({
+//        position: "absolute",
+//        top: (pos.top - 10) + "px",
+//        left: (pos.left - 10) + "px"
+//    }).show();
+
+$('#myModalKonfirm').on('hidden.bs.modal', function (e) {
+            // do something...
+            $('#proses_spm_').hide();
+            $('#proses_spm').show();
+        })
+        
+    $(document).on("click",'#btn-proses',function(){
+        if($('input[name="kd_akun_kas"]:checked').length > 0){
+            var kd_akun_kas = $("input[name='kd_akun_kas']:checked").val();
+            var jumlah_bayar = string_to_angka($('#jumlah_bayar').html());
+            var saldo_kas = string_to_angka($('#h_input_' + kd_akun_kas).val());
+            
+//            console.log(nominal + ' ' + saldo_kas);
+            
+            if(parseInt(saldo_kas) < parseInt(jumlah_bayar)){
+                alert('Mohon maaf, saldo kas tidak mencukupi');
+                    
+            }else{
+                if(confirm('Apakah anda yakin ?')){
+                    
+                    var data = 'proses=' + 'SPM-FINAL-KBUU' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&tahun=' + '<?=$cur_tahun?>' +'&kd_unit=' + '<?=$kd_unit?>' + '&kd_akun_kas=' + kd_akun_kas + '&kredit=' + '<?php echo isset($detail_gup_spm['nom'])?$detail_gup_spm['nom']:''?>' + '&deskripsi=' + 'GUP <?=$alias?>' + '&nominal=' + jumlah_bayar + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') ;
+                    $.ajax({
+                        type:"POST",
+                        url :"<?=site_url('rsa_gup/proses_final_gup')?>",
+                        data:data,
+                        success:function(data){
+        //                        console.log(data)
+        //                        $('#no_bukti').html(data);
+        //                        $('#myModalKuitansi').modal('show');
+                                if(data=='sukses'){
+                                    location.reload();
+                                }
+        //                        
+                        }
+                    });
+                }
+            }
+            
+        }else{
+            alert('Mohon pilih salah satu akun dahulu.');
+        }
+    });
+    
+    $(document).on("click",'#proses_spm_kpa',function(){
+        if(confirm('Apakah anda yakin ?')){
+            var data = 'proses=' + 'SPM-FINAL-KBUU' + '&kd_unit=' + '<?=$kd_unit?>';
+            $.ajax({
+                type:"POST",
+                url :"<?=site_url('rsa_up/proses_spm_up')?>",
+                data:data,
+                success:function(data){
+//                        console.log(data)
+//                        $('#no_bukti').html(data);
+//                        $('#myModalKuitansi').modal('show');
+                        if(data=='sukses'){
+                            location.reload();
+                        }
+//                        
+                }
+            });
+        }
+    });
+    
+    $(document).on("click",'#tolak_spm_kpa',function(){
+        if(confirm('Apakah anda yakin ?')){
+            var data = 'proses=' + 'SPM-DITOLAK-KBUU' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&kd_unit=' + '<?=$kd_unit?>' + '&tahun=' + '<?=$cur_tahun?>';
+            $.ajax({
+                type:"POST",
+                url :"<?=site_url('rsa_gup/proses_spm_gup')?>",
+                data:data,
+                success:function(data){
+//                        console.log(data)
+//                        $('#no_bukti').html(data);
+//                        $('#myModalKuitansi').modal('show');
+                        if(data=='sukses'){
+                            location.reload();
+                        }
+//                        
+                }
+            });
+        }
+    });
+    
+ $('#myModalTolakSPMPPK').on('shown.bs.modal', function (e) {
+        // do something...
+        $('#ket').focus();
+      })
+    
+    $(document).on("click","#down",function(){
+                    var uri = $("#table_spp_up").excelexportjs({
+                                    containerid: "table_spp_up"
+                                    , datatype: "table"
+                                    , returnUri: true
+                                });
+
+        $('#dtable').val(uri);
+        $('#form_spp').submit();
+
+    
+    });
+    
+    $(document).on("click","#down_2",function(){
+                    var uri = $("#table_spm_up").excelexportjs({
+                                    containerid: "table_spm_up"
+                                    , datatype: "table"
+                                    , returnUri: true
+                                });
+
+        $('#dtable_2').val(uri);
+        $('#form_spm').submit();
+
+    
+    });
+    
+       $(document).on("click",'#btn-lihat',function(){
+        var rel = $(this).attr('rel');
+        var tahun = $(this).attr('data-tahun');
+        $.ajax({
+            type:"POST",
+            url :"<?=site_url("akuntansi/rsa_gup/get_data_kuitansi")?>",
+            data:'id=' + rel + "&t="+tahun,
+            success:function(data){
+//                                    console.log(data);
+                    var obj = jQuery.parseJSON(data);
+                    var kuitansi = obj.kuitansi ;
+                    var kuitansi_detail = obj.kuitansi_detail ;
+                    var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
+                    $('#kode_badge').text('GP');
+                    $('#kuitansi_tahun').text(kuitansi.tahun);
+                    $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
+                    $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
+                    $('#uraian').text(kuitansi.uraian);
+                    $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
+                    $('#penerima_uang').text(kuitansi.penerima_uang);
+                    $('#penerima_uang_nip').text(kuitansi.penerima_uang_nip);
+                    var a = moment(kuitansi.tgl_kuitansi);
+//                                    var b = moment(a).add('hours', 1);
+//                                    var c = b.format("YYYY-MM-DD HH-mm-ss");
+                    $('#tgl_kuitansi').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
+                    $('#nmpppk').text(kuitansi.nmpppk);
+                    $('#nippppk').text(kuitansi.nippppk);
+                    $('#nmbendahara_kuitansi').text(kuitansi.nmbendahara);
+                    $('#nipbendahara_kuitansi').text(kuitansi.nipbendahara);
+                    if(kuitansi.nmpumk != ''){
+                        $('#td_tglpumk').show();
+                        $('#td_nmpumk').show();
+                    }else{
+                        $('#td_tglpumk').hide();
+                        $('#td_nmpumk').hide();
+                    }
+                    $('#nmpumk').text(kuitansi.nmpumk);
+                    $('#nippumk').text(kuitansi.nippumk);
+                    $('#penerima_barang').text(kuitansi.penerima_barang);
+                    $('#penerima_barang_nip').text(kuitansi.penerima_barang_nip);
+
+                    $('#tr_isi').remove();
+                    $('.tr_new').remove();
+                    $('<tr id="tr_isi"><td colspan="11">&nbsp;</td></tr>').insertAfter($('#before_tr_isi'));
+
+                    var str_isi = '';
+                    $.each(kuitansi_detail,function(i,v){ 
+                        str_isi = str_isi + '<tr class="tr_new">';
+                        str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                        str_isi = str_isi + '<td style="text-align:center">' + v.volume + '</td>' ;
+                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
+                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string(v.bruto) + '</td>' ;
+                        var str_pajak = '' ;
+                        var str_pajak_nom = '' ;
+                        $.each(kuitansi_detail_pajak,function(ii,vv){
+                            if(vv.id_kuitansi_detail == v.id_kuitansi_detail){
+                                var jenis_pajak_ = vv.jenis_pajak ;
+                                var jenis_pajak = jenis_pajak_.split("_").join(" ");
+                                var dpp = vv.dpp == '0' ? '' : '(dpp)';
+                                var str_99 = (vv.persen_pajak == '99')? '' : vv.persen_pajak + '% ' ;
+                                str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
+
+                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
+                            }
+                        });
+                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
+                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
+                        str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
+
+                        str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                        str_isi = str_isi + '<td style="text-align:right" class="sub_tot_netto_'+ i +'">0</td>' ; 
+
+                            str_isi = str_isi + '</tr>' ;
+
+                            });
+
+
+
+                            $('#tr_isi').replaceWith(str_isi);
+
+                            var sum_tot_bruto = 0 ;
+                            $('[class^="sub_tot_bruto_"').each(function(){
+                                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
+                            });
+                            $('.sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
+
+                            var sub_tot_pajak = 0 ;
+                            $('[class^="sub_tot_pajak_"]').each(function(){
+                                sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
+                            });
+                            $('.sum_tot_pajak').html(angka_to_string(sub_tot_pajak));
+
+                            $('[class^="sub_tot_pajak_"]').each(function(){
+                                var prel = $(this).attr('rel');
+                                var sub_tot_pajak__  = 0 ;
+//                                                console.log(prel + ' ' + sub_tot_pajak__);
+                                $('[class^="sub_tot_pajak_' + prel + '"]').each(function(){
+                                    sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
+                                });
+                                var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_' + prel ).text())) ;
+                                $('.sub_tot_netto_' + prel).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                            });
+
+                            var sum_tot_netto = 0 ;
+                            $('[class^="sub_tot_netto_"').each(function(){
+                                sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
+                            });
+
+                            $('.sum_tot_netto').html(angka_to_string(sum_tot_netto));
+
+                            $('.text_tot').html(terbilang(sum_tot_bruto));
+
+                            $('#nbukti').val(kuitansi.no_bukti);
+                            $('#myModalKuitansi').modal('show');
+//                                        i++ ;
+                        }
+
+//                        location.reload();
+        });
+
+
+    });
+
+});
+
+function string_to_angka(str){
+	//I.S str merupakan string yang berisi angka berformat (.000.000,00)
+	//F.S num merupakan angka tanpa format
+
+		// var num;
+		
+		// if (!isNaN(str)){
+		// 	return 0;
+		// }
+		// // str = str.replace(/\./g,"");
+
+		// str = str.split('.').join("");
+		// //num = parseInt(str);
+		// return str;
+		
+		return str.split('.').join("");
+		
+
+		
+	}
+
+	function angka_to_string(num){
+	//I.S num merupakan angka tanpa format
+	//F.S str_hasil merupakan string yang berisi angka berformat (.000.000,00)
+		// var str;
+		// var str_hasil="";
+		// str = num +"";
+		// for (var j=str.length-1;j>=0;j--){
+		// 	if (((str.length-1-j)%3==0) && (j!=(str.length-1)) && ((str[0]!='-') || (j!=0))){
+		// 		str_hasil="."+str_hasil;
+		// 	}
+		// 	str_hasil=str[j]+str_hasil;
+		// }
+
+		var str_hasil = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+		return str_hasil;
+	}
+
+
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, {type: contentType});
+    return blob;
 }
-</script>
+
+function terbilang(bilangan) {
+
+ bilangan    = String(bilangan);
+ var angka   = new Array('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
+ var kata    = new Array('','Satu','Dua','Tiga','Empat','Lima','Enam','Tujuh','Delapan','Sembilan');
+ var tingkat = new Array('','Ribu','Juta','Milyar','Triliun');
+
+ var panjang_bilangan = bilangan.length;
+
+ /* pengujian panjang bilangan */
+ if (panjang_bilangan > 15) {
+   kaLimat = "Diluar Batas";
+   return kaLimat;
+ }
+
+ /* mengambil angka-angka yang ada dalam bilangan, dimasukkan ke dalam array */
+ for (i = 1; i <= panjang_bilangan; i++) {
+   angka[i] = bilangan.substr(-(i),1);
+ }
+
+ i = 1;
+ j = 0;
+ kaLimat = "";
+
+
+ /* mulai proses iterasi terhadap array angka */
+ while (i <= panjang_bilangan) {
+
+   subkaLimat = "";
+   kata1 = "";
+   kata2 = "";
+   kata3 = "";
+
+   /* untuk Ratusan */
+   if (angka[i+2] != "0") {
+     if (angka[i+2] == "1") {
+       kata1 = "Seratus";
+     } else {
+       kata1 = kata[angka[i+2]] + " Ratus";
+     }
+   }
+
+   /* untuk Puluhan atau Belasan */
+   if (angka[i+1] != "0") {
+     if (angka[i+1] == "1") {
+       if (angka[i] == "0") {
+         kata2 = "Sepuluh";
+       } else if (angka[i] == "1") {
+         kata2 = "Sebelas";
+       } else {
+         kata2 = kata[angka[i]] + " Belas";
+       }
+     } else {
+       kata2 = kata[angka[i+1]] + " Puluh";
+     }
+   }
+
+   /* untuk Satuan */
+   if (angka[i] != "0") {
+     if (angka[i+1] != "1") {
+       kata3 = kata[angka[i]];
+     }
+   }
+
+   /* pengujian angka apakah tidak nol semua, lalu ditambahkan tingkat */
+   if ((angka[i] != "0") || (angka[i+1] != "0") || (angka[i+2] != "0")) {
+     subkaLimat = kata1+" "+kata2+" "+kata3+" "+tingkat[j]+" ";
+   }
+
+   /* gabungkan variabe sub kaLimat (untuk Satu blok 3 angka) ke variabel kaLimat */
+   kaLimat = subkaLimat + kaLimat;
+   i = i + 3;
+   j = j + 1;
+
+ }
+
+ /* mengganti Satu Ribu jadi Seribu jika diperlukan */
+ if ((angka[5] == "0") && (angka[6] == "0")) {
+   kaLimat = kaLimat.replace("Satu Ribu","Seribu");
+ }
+
+ return kaLimat + "Rupiah";
+}
+</script>  
+
 
 <div>
 
@@ -16,11 +501,109 @@ $(document).ready(function(){
         <li role="presentation" class="active"><a href="#spp" aria-controls="home" role="tab" data-toggle="tab">SPP</a></li>
         <li role="presentation"><a href="#spm" aria-controls="profile" role="tab" data-toggle="tab">SPM</a></li>
         <li role="presentation"><a href="#lampiran" aria-controls="profile" role="tab" data-toggle="tab">LAMPIRAN</a></li>
+        <li role="presentation"><a href="#kuitansi" aria-controls="profile" role="tab" data-toggle="tab">KUITANSI</a></li>
   </ul>
 
   <!-- Tab panes -->
   <div class="tab-content">
 
+      <div role="tabpanel" class="tab-pane" id="kuitansi">
+          
+          <div style="background-color: #EEE; padding: 10px;">
+              	<div class="row">
+			<div class="col-md-12 table-responsive">
+                            <div style="background-color: #FFF;">
+				<table class="table table-bordered table-striped table-hover small">
+					<thead>
+					<tr>
+                                                <th class="text-center col-md-1" style="vertical-align: middle;">No</th>
+                                                <th class="text-center col-md-2" style="vertical-align: middle;">Nomor</th>
+						<th class="text-center col-md-2" style="vertical-align: middle;">Tanggal</th>
+                                                <th class="text-center col-md-2" style="vertical-align: middle;">Uraian</th>
+						<th class="text-center col-md-2" style="vertical-align: middle;">Pengeluaran</th>
+						<th class="text-center col-md-1" style="vertical-align: middle;">&nbsp;</th>
+                                                <!--<th class="text-center col-md-1" style="vertical-align: middle;">Status</th>-->
+                                                <!--<th class="text-center col-md-1">Proses</th>-->
+<!--                                                <th class="text-center col-md-1">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon" style="background-color: #f9ff83;"> 
+                                                            <input type="checkbox" aria-label="" rel="" class="all_ck">
+                                                        </span>
+                                                    </div>
+                                                </th>-->
+					</tr>
+					</thead>
+					<tbody>
+	<?php
+		if(!empty($daftar_kuitansi)){
+//                    echo '<pre>';var_dump($daftar_kuitansi);echo '</pre>';
+            $tot_kuitansi = 0 ;
+			foreach ($daftar_kuitansi as $key => $value) {
+	?>
+					<tr>
+						<td class="text-center"><?php echo $key + 1; ?>.</td>
+						<td class="text-center"><?php echo $value->no_bukti; ?></td>
+                                                <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
+						<td class=""><?php echo $value->uraian; ?></td>
+						<td class="text-right">
+                            <?=number_format($value->pengeluaran, 0, ",", ".")?>
+                            <?php $tot_kuitansi = $tot_kuitansi + $value->pengeluaran ; ?>
+                        </td>
+                                                <td class="text-center">
+                                                    <div class="btn-group">
+                                                                <button  class="btn btn-default btn-sm" rel="<?php echo $value->id_kuitansi; ?>" id="btn-lihat" data-tahun="<?= $cur_tahun; ?>" ><i class="glyphicon glyphicon-search"></i></button>
+							</div>
+                                                </td>
+					</tr>
+                    
+	<?php
+			} 
+    ?>
+            <tr class="alert-warning" style="" >
+                        <td colspan="4" class="text-right">
+                            <b>Total :</b>
+                        </td>
+                        <td  class="text-right">
+                            <b><?=number_format($tot_kuitansi, 0, ",", ".")?></b>
+                        </td>
+                        <td >
+                        &nbsp;
+                        </td>
+                    </tr>
+	<?php   
+            }else{
+	?>
+					<tr>
+						<td colspan="6" class="text-center alert-warning">
+						Tidak ada data
+						</td>
+					</tr>
+	<?php
+		}
+	?>
+					<tr>
+						<td colspan="6" >&nbsp;</td>
+					</tr>
+                                        </tbody>
+				</table>
+                            </div>
+			</div>
+		</div>
+          </div>
+          
+          <br />
+          
+          <div class="alert alert-warning" style="text-align:center">
+                
+              &nbsp;
+                
+
+                    
+
+              </div>
+          
+      </div>
+      
 <div role="tabpanel" class="tab-pane active" id="spp">
           
 <div style="background-color: #EEE; padding: 10px;">
@@ -1502,4 +2085,218 @@ $(document).ready(function(){
     </div>
       
 </div>
+</div>
+
+<div class="modal " id="myModalKuitansi" role="dialog" aria-labelledby="myModalKuitansiLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+              <h4 class="modal-title" id="myModalLabel">Kuitansi : <span id="kode_badge">-</span></h4>
+          </div>
+          <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
+              <div id="div-cetak-kuitansi">
+              <table class="table_print" id="kuitansi" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+                <tr>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                </tr>
+                  <tr>
+                                <td rowspan="3" style="text-align: center" colspan="2">
+					<img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+				</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+
+                                <td colspan="2">Tahun Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2"><span id="kuitansi_tahun">0000</span></td>
+                        </tr>
+                        <tr>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Nomor Bukti</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="kuitansi_no_bukti">-</td>
+                        </tr>
+                        <tr class="tr_up">
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="kuitansi_txt_akun">-</td>
+
+			</tr>
+			<tr>
+                                <td colspan="11">
+                                    &nbsp;
+				</td>
+                        </tr>
+			<tr>
+				<td colspan="11">
+                                    <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
+				</td>
+			</tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+				</td>
+                        </tr>
+			<tr class="tr_up">
+				<td colspan="3">Sudah Diterima dari</td>
+				<td>: </td>
+                                <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$unit_kerja?></td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Jumlah Uang</td>
+				<td>: </td>
+                                <td colspan="7"><b>Rp. <span class="sum_tot_bruto">0</span>,-</b></td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Terbilang</td>
+				<td>: </td>
+                                <td colspan="7"><b><span class="text_tot">-</span></b></td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Untuk Pembayaran</td>
+				<td>: </td>
+                                <td colspan="7"><span id="uraian">-</span></td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Sub Kegiatan</td>
+				<td>: </td>
+                                <td colspan="7"><span id="nm_subkomponen">-</span></td>
+			</tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+				</td>
+                        </tr>
+                        <tr id="before_tr_isi">
+                            <td colspan="3"><b>Deskripsi</b></td>
+                            <td style="text-align:center"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
+                            <td >&nbsp;</td>
+                            <td ><b>Netto</b></td>
+			</tr>
+                        <tr id="tr_isi">
+                            <td colspan="11">&nbsp;</td>
+			</tr>
+                        <tr>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td ><b>Jumlah</b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_bruto">0</span></b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_pajak">0</span></b></td>
+                            <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right"><b><span class="sum_tot_netto">0</span></b></td>
+			</tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+				</td>
+                        </tr>
+			<tr>
+                            <td colspan="8">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                                a.n. Kuasa Pengguna Anggaran <br />
+                                Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                            </td>
+                            <td colspan="3">
+                                Semarang, <span id="tgl_kuitansi">-</span><br />
+                                Penerima Uang
+                            </td>
+			</tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+				</td>
+                        </tr>
+                        <tr >
+                            <td colspan="8" style="border-bottom: 1px solid #000"><span id="nmpppk">-</span><br>
+                                    NIP. <span id="nippppk">-</span></td>
+                            <td colspan="3" style="border-bottom: 1px solid #000"><span class="edit_here" id="penerima_uang">-</span><br />
+                                NIP. <span class="edit_here" id="penerima_uang_nip">-</span>
+                            </td>
+			</tr>
+                        <tr >
+                            <td colspan="8">Setuju dibayar tgl : <br>
+                                Bendahara Pengeluaran
+                            </td>
+                            <td colspan="3" ><span style="display: none" id="td_tglpumk">Lunas dibayar tgl : <br>
+                                    Pemegang Uang Muka Kerja</span>
+                            </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+				</td>
+                        </tr>
+                         <tr>
+                             <td colspan="8"><span id="nmbendahara_kuitansi"></span><br>
+                                 NIP. <span id="nipbendahara_kuitansi"></span>
+                            </td>
+                            <td colspan="3" ><span style="display: none" id="td_nmpumk"><span id="nmpumk"></span><br>
+                                    NIP. <span id="nippumk"></span></span>
+                            </td>
+                        </tr>
+			<tr >
+				<td colspan="11" style="border-top:1px solid #000">
+				Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+				Penerima Barang/jasa
+				</td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+				</td>
+                        </tr>
+                        <tr>
+                            <td colspan="11" ><span id="penerima_barang">-</span><br />
+                                    NIP. <span id="penerima_barang_nip">-</span>
+				</td>
+			</tr>
+
+		</table>
+              </div>
+              </div> 
+          
+            
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" id="cetak-kuitansi" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+          </div>
+        </div>
+    </div>
 </div>
