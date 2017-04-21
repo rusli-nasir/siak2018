@@ -114,16 +114,27 @@
     <div class="col-md-3">
     <input id="akrual_akun_debet" name="akrual_akun_debet" value="<?=$akun_debet_kas?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>      
     </div> -->
-
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
-      <?php $akun_debet_akrual = $akun_debet_kas;
-            $akun_debet_akrual[0] = 7;
-            $kode_akun_akrual = $kode_akun;
-            $kode_akun_akrual[0] = 7;
-       ?>
+      <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
+      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
+          <option value="">Pilih Akun</option>
+          <option value="">
+           <?php foreach ($akun_belanja as $akun) {
+            $akun['kode_akun'][0] = 7;
+            ?>
+            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+            <?php
+          }
+          ?> 
+      </select> 
+        
+    </div>
+
+    <!-- <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
+    <div class="col-md-3">
       <input id="akun_debet_akrual" name="akun_debet_akrual_" value="<?=$akun_debet_akrual?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
-      <input type="hidden" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>">
+      <input type="hidden" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>"> -->
         
 <!--       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>
@@ -135,7 +146,6 @@
         }
         ?> 
       </select> -->
-    </div>
 
     <div class="col-md-3">
     <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text" value="<?=$pengeluaran?>" placeholder="Jumlah Akun Debet" class="form-control input-md" required="" disabled>
@@ -203,8 +213,10 @@
 </form>
 
 <script>
-  // var $select = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
-  // var selectize = $select[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
+  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  // selectize.setValue('<?=$kode_akun?>');
+  <?php if (isset($akun_debet_akrual)): ?>
+        selectize1.setValue('<?=$akun_debet_akrual?>');  
+  <?php endif ?>
 </script>

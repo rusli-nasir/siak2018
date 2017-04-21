@@ -23,6 +23,19 @@ class Jurnal_rsa_model extends CI_Model {
     	return $hasil;
     }
 
+    public function get_jenis_pembatasan_dana($id_kuitansi,$tabel)
+    {
+        $jenis = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array()['sumber_dana'];
+
+        if ($jenis == 'SELAIN-APBN' or $jenis == 'SPI-SILPA'){
+            return 'tidak_terikat';
+        } elseif ($jenis == 'APBN-BPPTNBH' or $jenis == 'APBN-LAINNYA') {  
+            return 'terikat_temporer';
+        }elseif ($jenis =='DANA-ABADI' ) {
+            return 'terikat_permanen';
+        }
+    }
+
 
     public function reKonversiTanggal($value = null)
 	{

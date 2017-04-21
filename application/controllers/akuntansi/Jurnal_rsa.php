@@ -61,11 +61,16 @@ class Jurnal_rsa extends MY_Controller {
         }
         else
         {
-            if ($jenis != 'NK')
+            if ($jenis != 'NK'){
 			    $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
-            else {
+                $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
+                $akun_debet_akrual = $isian['kode_akun'];
+                $akun_debet_akrual[0] = 7;
+                $isian['akun_debet_akrual'] = $akun_debet_akrual;
+            } else {
                 $isian = $this->Kuitansi_model->get_kuitansi_nk($id_kuitansi);
                 $isian['id_kuitansi'] = $id_kuitansi;
+                $isian['jenis_pembatasan_dana'] = '';
             }
             // print_r($isian);die();
 			$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
