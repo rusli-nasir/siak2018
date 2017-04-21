@@ -27,7 +27,7 @@
 </ul>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Kuitansi Jadi</h1>
+		<h1 class="page-header">Kuitansi Jadi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
@@ -60,6 +60,11 @@
 	    </form>
 	    <?php } ?>
 	</div>
+	<?php if($this->session->userdata('level')!='1'){ ?>
+	<div class="col-sm-4">	
+		<a href="<?php echo site_url('akuntansi/kuitansi/pilih_unit'); ?>"><button type="button" class="btn btn-primary">Pilih Unit</button></a>
+	</div>
+	<?php } ?>
 </div>
 <br/>
 <div class="row">
@@ -151,6 +156,16 @@ function get_unit($unit){
 	$q = $ci->db2->query($query)->result();
 	foreach($q as $result){
 		return $result->alias;
+	}
+}
+function get_nama_unit($unit){
+	$ci =& get_instance();
+	$ci->db2 = $ci->load->database('rba', true);
+
+	$query = "SELECT * FROM unit WHERE kode_unit='$unit'";
+	$q = $ci->db2->query($query)->result();
+	foreach($q as $result){
+		return $result->nama_unit;
 	}
 }
 ?>

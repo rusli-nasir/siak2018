@@ -11,8 +11,27 @@ class Kuitansi extends MY_Controller {
         $this->data['db2'] = $this->load->database('rba',TRUE);
     }
 
+    public function pilih_unit(){
+    	$this->db2 = $this->load->database('rba', true);
+    	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+    	$temp_data['content'] = $this->load->view('akuntansi/pilih_unit',$this->data,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+    public function set_unit_session($kode_unit){
+    	$this->session->set_userdata('kode_unit', $kode_unit);
+    	redirect(site_url('akuntansi/kuitansi/jadi'));
+    }
+
 	public function index($id = 0){
 		$this->data['tab1'] = true;
+		//level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			$kode_unit = null;
+		}
+
 		//search
 		if(isset($_POST['keyword'])){
 			$keyword = $this->input->post('keyword');
@@ -25,7 +44,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit);
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -56,7 +75,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit);
 		
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -64,6 +83,13 @@ class Kuitansi extends MY_Controller {
 
 	public function index_ls($id = 0){
 		$this->data['tab2'] = true;
+		//level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			$kode_unit = null;
+		}
+
 		//search
 		if(isset($_POST['keyword_ls'])){
 			$keyword = $this->input->post('keyword_ls');
@@ -115,6 +141,13 @@ class Kuitansi extends MY_Controller {
 
 	public function index_spm($id = 0){
 		$this->data['tab3'] = true;
+		//level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			$kode_unit = null;
+		}
+
 		//search
 		if(isset($_POST['keyword_spm'])){
 			$keyword = $this->input->post('keyword_spm');
@@ -168,6 +201,14 @@ class Kuitansi extends MY_Controller {
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
 		$this->data['tab1'] = true;
+		//level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+			$kode_unit = null;
+		}
+
 		//search
 		if(isset($_POST['keyword_jadi'])){
 			$keyword = $this->input->post('keyword_jadi');
@@ -180,7 +221,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword, $kode_unit);
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -211,7 +252,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit);
 		
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);

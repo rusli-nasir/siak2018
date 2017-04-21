@@ -27,7 +27,7 @@
 </ul>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Kuitansi</h1>
+		<h1 class="page-header">Kuitansi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
@@ -136,6 +136,16 @@ function get_unit($unit){
 	$q = $ci->db2->query($query)->result();
 	foreach($q as $result){
 		return $result->alias;
+	}
+}
+function get_nama_unit($unit){
+	$ci =& get_instance();
+	$ci->db2 = $ci->load->database('rba', true);
+
+	$query = "SELECT * FROM unit WHERE kode_unit='$unit'";
+	$q = $ci->db2->query($query)->result();
+	foreach($q as $result){
+		return $result->nama_unit;
 	}
 }
 ?>

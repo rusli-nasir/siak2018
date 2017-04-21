@@ -9,13 +9,19 @@ class Kuitansi_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
     }
 	
-	function read_kuitansi($limit = null, $start = null, $keyword = null){
+	function read_kuitansi($limit = null, $start = null, $keyword = null, $kode_unit = null){
+        if($kode_unit!=null){
+            $unit = 'AND kode_unit="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
 		if($limit!=null OR $start!=null){
 			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
-			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') LIMIT $start, $limit");
+			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit LIMIT $start, $limit");
 		}else{
 			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
-			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%')");
+			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit");
 		}
 		return $query;
 	}
@@ -29,13 +35,19 @@ class Kuitansi_model extends CI_Model {
         return $query;
     }
 
-    function read_kuitansi_jadi($limit = null, $start = null, $keyword = null){
+    function read_kuitansi_jadi($limit = null, $start = null, $keyword = null, $kode_unit = null){
+        if($kode_unit!=null){
+            $unit = 'AND unit_kerja="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
         if($limit!=null OR $start!=null){
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit LIMIT $start, $limit");
         }else{
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit");
         }
         return $query;
     }
