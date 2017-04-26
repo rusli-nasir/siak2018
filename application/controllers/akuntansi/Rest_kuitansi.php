@@ -54,4 +54,44 @@ class Rest_kuitansi extends MY_Controller {
      	// echo 'selesai';
 
 	}
+
+	public function posting_kuitansi_batch(){
+		$this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
+		$this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
+
+		$ids = $this->input->post('id_kuitansi_jadi');
+		// $ids=[9,17,18];
+
+		$data = array();
+		foreach ($ids as $id) {
+			$data[] = $this->Kuitansi_model->get_kuitansi_posting($id);
+		}
+		$hasil = $this->rest->post('input_batch', $data, 'json');
+		
+		if ($hasil !== null){
+			foreach ($hasil as $id) {
+				$data = $this->Kuitansi_model->get_kuitansi_posting($id_kuitansi_jadi);
+
+		    	$riwayat = array();
+
+		        $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
+		        $riwayat['flag'] = $kuitansi['flag'] + 1;
+		        $riwayat['status'] = 4;
+		        $riwayat['komentar'] ='';
+		        $riwayat['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+
+		        $entry['flag'] = $riwayat['flag'];
+		        $entry['status'] = 4;
+		        $this->Riwayat_model->add_riwayat($riwayat);
+		        $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
+			}			
+	        $this->session->set_flashdata('success','Berhasil menyimpan !');
+		} else{
+            $this->session->set_flashdata('warning','Gagal menyimpan !');
+     	}
+
+		redirect('akuntansi/kuitansi');
+     	// echo 'selesai';
+
+	}
 }
