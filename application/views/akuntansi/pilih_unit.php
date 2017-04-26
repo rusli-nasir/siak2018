@@ -29,9 +29,10 @@
 				<th>Aksi</th>
 			</tr>		
 		<?php foreach($query_unit->result() as $result){ ?>
+            <?php if(isset($jumlah[$result->kode_unit])) $jml = $jumlah[$result->kode_unit]; else $jml = null?>
 			<tr>
 				<td><?php echo $result->nama_unit; ?></td>
-				<td align="center"><div class="badge new-badge">2</div></td>
+				<td align="center"><div class="badge <?= $jml?'badge-notify':'' ?>"><?= $jml?$jml:'0' ?></div></td>
 				<td>
 					<a href="<?php echo site_url('akuntansi/kuitansi/set_unit_session/'.$result->kode_unit); ?>"><button type="button" class="btn btn-primary">Pilih</button></a>
 				</td>

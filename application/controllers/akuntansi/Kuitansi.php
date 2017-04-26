@@ -12,8 +12,13 @@ class Kuitansi extends MY_Controller {
     }
 
     public function pilih_unit(){
+        //$this->db3 = $this->load->database('rsa', true);
     	$this->db2 = $this->load->database('rba', true);
     	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+        $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
+        foreach($this->data['tmp']->result_array() as $token){
+            $this->data['jumlah'][$token['unit_kerja']] = $token['jumlah'];
+        }
     	$temp_data['content'] = $this->load->view('akuntansi/pilih_unit',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
     }
