@@ -17,15 +17,19 @@ class Kuitansi extends MY_Controller {
     	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
         $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
         foreach($this->data['tmp']->result_array() as $token){
-            $this->data['jumlah'][$token['unit_kerja']] = $token['jumlah'];
+            $this->data['jumlah_verifikasi'][$token['unit_kerja']] = $token['jumlah'];
+        }
+        $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=2 AND (status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
+        foreach($this->data['tmp']->result_array() as $token){
+            $this->data['jumlah_posting'][$token['unit_kerja']] = $token['jumlah'];
         }
     	$temp_data['content'] = $this->load->view('akuntansi/pilih_unit',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
     }
 
-    public function set_unit_session($kode_unit){
+    public function set_unit_session($kode_unit, $posting=null){
     	$this->session->set_userdata('kode_unit', $kode_unit);
-    	redirect(site_url('akuntansi/kuitansi/jadi'));
+    	if($posting) redirect(site_url('akuntansi/kuitansi/posting')); else redirect(site_url('akuntansi/kuitansi/jadi'));
     }
 
 	public function index($id = 0){

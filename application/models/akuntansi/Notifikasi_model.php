@@ -18,6 +18,7 @@ class Notifikasi_model extends CI_Model {
             $unit = '';
             $unit_jadi = '';
         }
+        $condstr=$condstr2="";
         switch($level){
             case 0: //operator
                 $condstr = "((flag=1 AND status='revisi') OR (flag=2 AND status='proses'))";
@@ -25,13 +26,13 @@ class Notifikasi_model extends CI_Model {
                 
             case 1: //verifikator
                 $condstr = "(flag=1 AND (status='direvisi' OR status='proses'))";
-                break;
+                //break;
                 
             case 2: //posting
-                $condstr = "(flag=2 AND status='proses')";
+                $condstr2 = ",(SELECT COUNT(*) FROM kepeg_tr_spmls) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND (flag=2 AND status='proses') $unit_jadi) AS gup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND (flag=2 AND status='proses')) AS ls_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND (flag=2 AND status='proses')) AS spm_posting";
                 break;
         }
-		$query = $this->db->query("SELECT (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS gup, (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=$level) AS ls, (SELECT COUNT(*) FROM kepeg_tr_spmls) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND $condstr $unit_jadi) AS gup_jadi, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND $condstr) AS ls_jadi, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND $condstr) AS spm_jadi");
+		$query = $this->db->query("SELECT (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS gup, (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=$level) AS ls, (SELECT COUNT(*) FROM kepeg_tr_spmls) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND $condstr $unit_jadi) AS gup_jadi, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND $condstr) AS ls_jadi, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND $condstr) AS spm_jadi $condstr2");
         $result =  $query->row_array();
         $result['kuitansi'] = $result['gup'] + $result['ls'] + $result['spm'];
         $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['ls_jadi'] + $result['spm_jadi'];

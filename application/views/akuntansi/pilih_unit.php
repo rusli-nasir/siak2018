@@ -25,14 +25,17 @@
 		<table class="table table-striped">
 			<tr>
 				<th>Nama Unit</th>
-				<th align="center">Jumlah Notifikasi</th>
+				<th align="center">Menunggu Verifikasi</th>
+                <th align="center">Menunggu Posting</th>
 				<th>Aksi</th>
 			</tr>		
 		<?php foreach($query_unit->result() as $result){ ?>
-            <?php if(isset($jumlah[$result->kode_unit])) $jml = $jumlah[$result->kode_unit]; else $jml = null?>
+            <?php if(isset($jumlah_verifikasi[$result->kode_unit])) $jmlv = $jumlah_verifikasi[$result->kode_unit]; else $jmlv = null?>
+            <?php if(isset($jumlah_posting[$result->kode_unit])) $jmlp = $jumlah_posting[$result->kode_unit]; else $jmlp = null?>
 			<tr>
 				<td><?php echo $result->nama_unit; ?></td>
-				<td align="center"><div class="badge <?= $jml?'badge-notify':'' ?>"><?= $jml?$jml:'0' ?></div></td>
+				<td align="center"><a class="badge <?= $jmlv?'badge-notify':'' ?>" href="<?php echo site_url('akuntansi/kuitansi/set_unit_session/'.$result->kode_unit); ?>"><?= $jmlv?$jmlv:'0' ?></a></td>
+				<td align="center"><a class="badge <?= $jmlp?'badge-notify':'' ?>" href="<?php echo site_url('akuntansi/kuitansi/set_unit_session/'.$result->kode_unit.'/posting'); ?>"><?= $jmlp?$jmlp:'0' ?></a></td>
 				<td>
 					<a href="<?php echo site_url('akuntansi/kuitansi/set_unit_session/'.$result->kode_unit); ?>"><button type="button" class="btn btn-primary">Pilih</button></a>
 				</td>
