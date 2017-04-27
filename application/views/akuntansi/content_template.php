@@ -9,6 +9,7 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker3.css" rel="stylesheet">
 <link href="<?php echo base_url();?>/assets/akuntansi/css/styles.css" rel="stylesheet">
 <link href="<?php echo base_url();?>/assets/akuntansi/css/my_style.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>frontpage/css/custom.css" rel="stylesheet" />
 <!-- datepicker -->
 <link rel="stylesheet" href="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.css'); ?>">
 <script src="<?php echo base_url('assets/akuntansi/assets/datepicker/jquery-1.10.2.js'); ?>"></script>
