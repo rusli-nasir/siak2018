@@ -404,4 +404,168 @@ class Kuitansi extends MY_Controller {
 
 		echo json_encode($query);
 	}
+    
+    public function posting(){
+		$this->data['menu3'] = true;
+		$this->data['tab1'] = true;
+		//level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+			$kode_unit = null;
+		}
+
+		//search
+		if(isset($_POST['keyword_jadi'])){
+			$keyword = $this->input->post('keyword_jadi');
+			$this->session->set_userdata('keyword_jadi', $keyword);		
+		}else{
+			if($this->session->userdata('keyword_jadi')!=null){
+				$keyword = $this->session->userdata('keyword_jadi');
+			}else{
+				$keyword = '';
+			}
+		}
+
+		$total_data = $this->Kuitansi_model->read_kuitansi_posting(null, null, $keyword, $kode_unit);
+		$total = $total_data->num_rows();
+		//pagination
+		if($this->uri->segment('4')==null){
+			$id = 0;
+			$this->data['no'] = $id+1;
+		}else{
+			$id = ($id-1)*20;
+			$this->data['no'] = $id+1;
+		}
+		$this->load->library('pagination');
+		$config['total_rows'] = $total;
+		$config['base_url'] = site_url('akuntansi/kuitansi/jadi');
+	 	$config['per_page'] = '20';
+	 	$config['use_page_numbers'] = TRUE;
+		$config['first_link'] = 'Pertama';
+		$config['next_link'] = 'Lanjut';
+		$config['prev_link'] = 'Sebelum';
+		$config['last_link'] = 'Terakhir';
+		$config['full_tag_open'] = "<ul class=\"pagination\">";
+		$config['first_tag_open'] = $config['next_tag_open'] = $config['last_tag_open'] = "<li>";
+		$config['prev_tag_open'] = $config['num_tag_open'] = "<li>";
+		$config['cur_tag_open'] = '<li class="active"><a>';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_tag_close'] = $config['next_tag_close'] = $config['last_tag_close'] = "<li>";
+		$config['prev_tag_close'] = $config['num_tag_close'] = "</li>";
+		$config['full_tag_close'] = "</ul>";
+
+		$this->pagination->initialize($config); 
+		$this->data['halaman'] = $this->pagination->create_links();
+
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting($config['per_page'], $id, $keyword, $kode_unit);
+		
+		$temp_data['content'] = $this->load->view('akuntansi/posting_list',$this->data,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+    
+    public function posting_ls(){
+		$this->data['menu3'] = true;
+		$this->data['tab2'] = true;
+		//search
+		if(isset($_POST['keyword_jadi_ls'])){
+			$keyword = $this->input->post('keyword_jadi_ls');
+			$this->session->set_userdata('keyword_jadi_ls', $keyword);		
+		}else{
+			if($this->session->userdata('keyword_jadi_ls')!=null){
+				$keyword = $this->session->userdata('keyword_jadi_ls');
+			}else{
+				$keyword = '';
+			}
+		}
+
+		$total_data = $this->Kuitansi_model->read_kuitansi_posting_ls(null, null, $keyword);
+		$total = $total_data->num_rows();
+		//pagination
+		if($this->uri->segment('4')==null){
+			$id = 0;
+			$this->data['no'] = $id+1;
+		}else{
+			$id = ($id-1)*20;
+			$this->data['no'] = $id+1;
+		}
+		$this->load->library('pagination');
+		$config['total_rows'] = $total;
+		$config['base_url'] = site_url('akuntansi/kuitansi/jadi_ls');
+	 	$config['per_page'] = '20';
+	 	$config['use_page_numbers'] = TRUE;
+		$config['first_link'] = 'Pertama';
+		$config['next_link'] = 'Lanjut';
+		$config['prev_link'] = 'Sebelum';
+		$config['last_link'] = 'Terakhir';
+		$config['full_tag_open'] = "<ul class=\"pagination\">";
+		$config['first_tag_open'] = $config['next_tag_open'] = $config['last_tag_open'] = "<li>";
+		$config['prev_tag_open'] = $config['num_tag_open'] = "<li>";
+		$config['cur_tag_open'] = '<li class="active"><a>';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_tag_close'] = $config['next_tag_close'] = $config['last_tag_close'] = "<li>";
+		$config['prev_tag_close'] = $config['num_tag_close'] = "</li>";
+		$config['full_tag_close'] = "</ul>";
+
+		$this->pagination->initialize($config); 
+		$this->data['halaman'] = $this->pagination->create_links();
+
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_ls($config['per_page'], $id, $keyword);
+		
+		$temp_data['content'] = $this->load->view('akuntansi/posting_list',$this->data,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+    
+    public function posting_spm(){
+		$this->data['menu3'] = true;
+		$this->data['tab3'] = true;
+		//search
+		if(isset($_POST['keyword_spm_jadi'])){
+			$keyword = $this->input->post('keyword_spm_jadi');
+			$this->session->set_userdata('keyword_spm_jadi', $keyword);		
+		}else{
+			if($this->session->userdata('keyword_spm_jadi')!=null){
+				$keyword = $this->session->userdata('keyword_spm_jadi');
+			}else{
+				$keyword = '';
+			}
+		}
+
+		$total_data = $this->Kuitansi_model->read_kuitansi_posting_spm(null, null, $keyword);
+		$total = $total_data->num_rows();
+		//pagination
+		if($this->uri->segment('4')==null){
+			$id = 0;
+			$this->data['no'] = $id+1;
+		}else{
+			$id = ($id-1)*20;
+			$this->data['no'] = $id+1;
+		}
+		$this->load->library('pagination');
+		$config['total_rows'] = $total;
+		$config['base_url'] = site_url('akuntansi/kuitansi/jadi_spm');
+	 	$config['per_page'] = '20';
+	 	$config['use_page_numbers'] = TRUE;
+		$config['first_link'] = 'Pertama';
+		$config['next_link'] = 'Lanjut';
+		$config['prev_link'] = 'Sebelum';
+		$config['last_link'] = 'Terakhir';
+		$config['full_tag_open'] = "<ul class=\"pagination\">";
+		$config['first_tag_open'] = $config['next_tag_open'] = $config['last_tag_open'] = "<li>";
+		$config['prev_tag_open'] = $config['num_tag_open'] = "<li>";
+		$config['cur_tag_open'] = '<li class="active"><a>';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_tag_close'] = $config['next_tag_close'] = $config['last_tag_close'] = "<li>";
+		$config['prev_tag_close'] = $config['num_tag_close'] = "</li>";
+		$config['full_tag_close'] = "</ul>";
+
+		$this->pagination->initialize($config); 
+		$this->data['halaman'] = $this->pagination->create_links();
+
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_spm($config['per_page'], $id, $keyword);
+		
+		$temp_data['content'] = $this->load->view('akuntansi/posting_nk_list',$this->data,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);
+    }
 }

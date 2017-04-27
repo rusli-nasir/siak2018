@@ -69,6 +69,7 @@
             	<li class="<?php if(isset($menu3)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Revisi</a></li>
 			<?php }else if($this->session->userdata('level')==2){ ?>
 				<li class="<?php if(isset($menu2)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi Jadi</a></li>
+                <li class="<?php if(isset($menu3)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Posting</a></li>
 			<?php }else if($this->session->userdata('level')==3){ ?>
 				<li class="<?php if(isset($menu2)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi Jadi</a></li>
 			<?php } ?>

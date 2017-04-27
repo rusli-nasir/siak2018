@@ -84,6 +84,45 @@ class Kuitansi_model extends CI_Model {
         }
         return $query;
     }
+    
+    function read_kuitansi_posting($limit = null, $start = null, $keyword = null, $kode_unit = null){
+        if($kode_unit!=null){
+            $unit = 'AND unit_kerja="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='GP' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='GP' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit");
+        }
+        return $query;
+    }
+
+    function read_kuitansi_posting_ls($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='L3' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='L3' AND
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
+
+    function read_kuitansi_posting_spm($limit = null, $start = null, $keyword = null){
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
+        }
+        return $query;
+    }
 
     /*----------------Penerimaan & memorial ---------------------*/
 
