@@ -229,39 +229,44 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
 //                                    console.log(data);
                     var obj = jQuery.parseJSON(data);
                     var kuitansi = obj.kuitansi ;
+                    if($("#"+kuitansi.no_bukti).length != 0){$("#spm_tab").find("."+kuitansi.no_bukti).click(); return;} 
+                    var template = $("#kuitansi-template").clone().attr("id", kuitansi.no_bukti);
+                    template.attr("role", "tabpanel");
+                    template.attr("class", "tab-pane");
+                    template.removeAttr("style");
                     var kuitansi_detail = obj.kuitansi_detail ;
                     var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
-                    $('#kode_badge').text('GP');
-                    $('#kuitansi_tahun').text(kuitansi.tahun);
-                    $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
-                    $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
-                    $('#uraian').text(kuitansi.uraian);
-                    $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
-                    $('#penerima_uang').text(kuitansi.penerima_uang);
-                    $('#penerima_uang_nip').text(kuitansi.penerima_uang_nip);
+                    template.find('.kode_badge').text('GP');
+                    template.find('.kuitansi_tahun').text(kuitansi.tahun);
+                    template.find('.kuitansi_no_bukti').text(kuitansi.no_bukti);
+                    template.find('.kuitansi_txt_akun').text(kuitansi.nama_akun);
+                    template.find('.uraian').text(kuitansi.uraian);
+                    template.find('.nm_subkomponen').text(kuitansi.nama_subkomponen);
+                    template.find('.penerima_uang').text(kuitansi.penerima_uang);
+                    template.find('.penerima_uang_nip').text(kuitansi.penerima_uang_nip);
                     var a = moment(kuitansi.tgl_kuitansi);
 //                                    var b = moment(a).add('hours', 1);
 //                                    var c = b.format("YYYY-MM-DD HH-mm-ss");
-                    $('#tgl_kuitansi').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
-                    $('#nmpppk').text(kuitansi.nmpppk);
-                    $('#nippppk').text(kuitansi.nippppk);
-                    $('#nmbendahara_kuitansi').text(kuitansi.nmbendahara);
-                    $('#nipbendahara_kuitansi').text(kuitansi.nipbendahara);
+                    template.find('.tgl_kuitansi').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
+                    template.find('.nmpppk').text(kuitansi.nmpppk);
+                    template.find('.nippppk').text(kuitansi.nippppk);
+                    template.find('.nmbendahara_kuitansi').text(kuitansi.nmbendahara);
+                    template.find('.nipbendahara_kuitansi').text(kuitansi.nipbendahara);
                     if(kuitansi.nmpumk != ''){
-                        $('#td_tglpumk').show();
-                        $('#td_nmpumk').show();
+                        template.find('.td_tglpumk').show();
+                        template.find('.td_nmpumk').show();
                     }else{
-                        $('#td_tglpumk').hide();
-                        $('#td_nmpumk').hide();
+                        template.find('.td_tglpumk').hide();
+                        template.find('.td_nmpumk').hide();
                     }
-                    $('#nmpumk').text(kuitansi.nmpumk);
-                    $('#nippumk').text(kuitansi.nippumk);
-                    $('#penerima_barang').text(kuitansi.penerima_barang);
-                    $('#penerima_barang_nip').text(kuitansi.penerima_barang_nip);
+                    template.find('.nmpumk').text(kuitansi.nmpumk);
+                    template.find('.nippumk').text(kuitansi.nippumk);
+                    template.find('.penerima_barang').text(kuitansi.penerima_barang);
+                    template.find('.penerima_barang_nip').text(kuitansi.penerima_barang_nip);
 
-                    $('#tr_isi').remove();
-                    $('.tr_new').remove();
-                    $('<tr id="tr_isi"><td colspan="11">&nbsp;</td></tr>').insertAfter($('#before_tr_isi'));
+                    template.find('.tr_isi').remove();
+                    template.find('.tr_new').remove();
+                    $('<tr class="tr_isi"><td colspan="11">&nbsp;</td></tr>').insertAfter(template.find('.before_tr_isi'));
 
                     var str_isi = '';
                     $.each(kuitansi_detail,function(i,v){ 
@@ -270,7 +275,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                         str_isi = str_isi + '<td style="text-align:center">' + v.volume + '</td>' ;
                         str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
                         str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
-                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string(v.bruto) + '</td>' ;
+                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_ sub_tot_bruto_'+i+'">' + angka_to_string(v.bruto) + '</td>' ;
                         var str_pajak = '' ;
                         var str_pajak_nom = '' ;
                         $.each(kuitansi_detail_pajak,function(ii,vv){
@@ -281,15 +286,15 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                 var str_99 = (vv.persen_pajak == '99')? '' : vv.persen_pajak + '% ' ;
                                 str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
 
-                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
+                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_ sub_tot_pajak_'+i+'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
                             }
                         });
                         str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
-                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
+                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_ sub_tot_pajak_'+i+'">'+'0'+'</span>':str_pajak_nom;
                         str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
 
                         str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
-                        str_isi = str_isi + '<td style="text-align:right" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                        str_isi = str_isi + '<td style="text-align:right" class="sub_tot_netto_ sub_tot_netto_'+i+'">0</td>' ; 
 
                             str_isi = str_isi + '</tr>' ;
 
@@ -297,49 +302,65 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
 
 
 
-                            $('#tr_isi').replaceWith(str_isi);
+                            template.find('.tr_isi').replaceWith(str_isi);
 
                             var sum_tot_bruto = 0 ;
-                            $('[class^="sub_tot_bruto_"').each(function(){
+                            template.find('.sub_tot_bruto_').each(function(){
                                 sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
                             });
-                            $('.sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
+                            template.find('.sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
 
                             var sub_tot_pajak = 0 ;
-                            $('[class^="sub_tot_pajak_"]').each(function(){
+                            template.find('.sub_tot_pajak_').each(function(){
                                 sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
                             });
-                            $('.sum_tot_pajak').html(angka_to_string(sub_tot_pajak));
+                            template.find('.sum_tot_pajak').html(angka_to_string(sub_tot_pajak));
 
-                            $('[class^="sub_tot_pajak_"]').each(function(){
+                            template.find('.sub_tot_pajak_').each(function(){
                                 var prel = $(this).attr('rel');
                                 var sub_tot_pajak__  = 0 ;
 //                                                console.log(prel + ' ' + sub_tot_pajak__);
-                                $('[class^="sub_tot_pajak_' + prel + '"]').each(function(){
+                                template.find('.sub_tot_pajak_' + prel).each(function(){
                                     sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
                                 });
-                                var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_' + prel ).text())) ;
-                                $('.sub_tot_netto_' + prel).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                                var sub_tot_bruto_ = parseInt(string_to_angka(template.find('.sub_tot_bruto_' + prel ).text())) ;
+                                template.find('.sub_tot_netto_' + prel).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
                             });
 
                             var sum_tot_netto = 0 ;
-                            $('[class^="sub_tot_netto_"').each(function(){
+                            template.find('.sub_tot_netto_').each(function(){
                                 sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
                             });
 
-                            $('.sum_tot_netto').html(angka_to_string(sum_tot_netto));
+                            template.find('.sum_tot_netto').html(angka_to_string(sum_tot_netto));
 
-                            $('.text_tot').html(terbilang(sum_tot_bruto));
+                            template.find('.text_tot').html(terbilang(sum_tot_bruto));
 
-                            $('#nbukti').val(kuitansi.no_bukti);
-                            $('#myModalKuitansi').modal('show');
+                            template.find('.nbukti').val(kuitansi.no_bukti);
+                            
+                            $("#spm_tab-content").append(template);
+                            $("#spm_tab").append('<li role="presentation"><a href="#'+ kuitansi.no_bukti +'" class="'+kuitansi.no_bukti+'" aria-controls="profile" role="tab" data-toggle="tab"><button class="close closeTab" type="button" >×</button>'+ kuitansi.no_bukti +'</a></li>');
+                            $(".closeTab").click(function () {
+                                //there are multiple elements which has .closeTab icon so close the tab whose close icon is clicked
+                                var tabContentId = $(this).parent().attr("href");
+                                if($(this).parent().parent().attr("class") == "active"){
+                                    $(this).parent().parent().remove(); //remove li of tab
+                                    $('#spm_tab a:last').tab('show'); // Select first tab
+                                } else {
+                                    $(this).parent().parent().remove(); //remove li of tab
+                                }
+                                
+                                $(tabContentId).remove(); //remove respective tab content
+
+                            });
+                            $("#spm_tab a:last").click();
+                            
+                            //$('#myModalKuitansi').modal('show');
 //                                        i++ ;
                         }
 
 //                        location.reload();
         });
-
-
     });
 
 });
@@ -493,7 +514,6 @@ function terbilang(bilangan) {
 }
 </script>  
 
-
 <div>
 
   <!-- Nav tabs -->
@@ -505,7 +525,7 @@ function terbilang(bilangan) {
   </ul>
 
   <!-- Tab panes -->
-  <div class="tab-content">
+  <div class="tab-content" id="spm_tab-content">
 
       <div role="tabpanel" class="tab-pane" id="kuitansi">
           
@@ -2087,6 +2107,205 @@ function terbilang(bilangan) {
 </div>
 </div>
 
+<div id="kuitansi-template" style="display:none;">
+      <div id="div-cetak-kuitansi">
+      <table class="table_print kuitansi" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+        <tr>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+                    <td class="col-md-1">&nbsp;</td>
+        </tr>
+          <tr>
+                        <td rowspan="3" style="text-align: center" colspan="2">
+            <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+        </td>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+
+
+                        <td colspan="2">Tahun Anggaran</td>
+                        <td style="text-align: center">:</td>
+                        <td colspan="2"><span class="kuitansi_tahun">0000</span></td>
+                </tr>
+                <tr>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+
+                        <td colspan="2">Nomor Bukti</td>
+                        <td style="text-align: center">:</td>
+                        <td colspan="2" class="kuitansi_no_bukti">-</td>
+                </tr>
+                <tr class="tr_up">
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+                        <td >&nbsp;</td>
+
+                        <td colspan="2">Anggaran</td>
+                        <td style="text-align: center">:</td>
+                        <td colspan="2" class="kuitansi_txt_akun">-</td>
+
+    </tr>
+    <tr>
+                        <td colspan="11">
+                            &nbsp;
+        </td>
+                </tr>
+    <tr>
+        <td colspan="11">
+                            <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
+        </td>
+    </tr>
+                <tr>
+                        <td colspan="11">
+                            &nbsp;
+        </td>
+                </tr>
+    <tr class="tr_up">
+        <td colspan="3">Sudah Diterima dari</td>
+        <td>: </td>
+                        <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$unit_kerja?></td>
+    </tr>
+    <tr class="tr_up">
+        <td colspan="3">Jumlah Uang</td>
+        <td>: </td>
+                        <td colspan="7"><b>Rp. <span class="sum_tot_bruto">0</span>,-</b></td>
+    </tr>
+    <tr class="tr_up">
+        <td colspan="3">Terbilang</td>
+        <td>: </td>
+                        <td colspan="7"><b><span class="text_tot">-</span></b></td>
+    </tr>
+    <tr class="tr_up">
+        <td colspan="3">Untuk Pembayaran</td>
+        <td>: </td>
+                        <td colspan="7"><span class="uraian">-</span></td>
+    </tr>
+    <tr class="tr_up">
+        <td colspan="3">Sub Kegiatan</td>
+        <td>: </td>
+                        <td colspan="7"><span class="nm_subkomponen">-</span></td>
+    </tr>
+                <tr>
+                        <td colspan="11">
+                            &nbsp;
+        </td>
+                </tr>
+                <tr class="before_tr_isi">
+                    <td colspan="3"><b>Deskripsi</b></td>
+                    <td style="text-align:center"><b>Kuantitas</b></td>
+                    <td style="padding: 0 5px 0 5px;"><b>Satuan</b></td>
+                    <td style="padding: 0 5px 0 5px;"><b>Harga@</b></td>
+                    <td style="padding: 0 5px 0 5px;"><b>Bruto</b></td>
+                    <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
+                    <td >&nbsp;</td>
+                    <td ><b>Netto</b></td>
+    </tr>
+                <tr class="tr_isi">
+                    <td colspan="11">&nbsp;</td>
+    </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td ><b>Jumlah</b></td>
+                    <td >&nbsp;</td>
+                    <td style="text-align: right"><b><span class="sum_tot_bruto">0</span></b></td>
+                    <td >&nbsp;</td>
+                    <td style="text-align: right"><b><span class="sum_tot_pajak">0</span></b></td>
+                    <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                    <td style="text-align: right"><b><span class="sum_tot_netto">0</span></b></td>
+    </tr>
+                <tr>
+                        <td colspan="11">
+                            &nbsp;
+        </td>
+                </tr>
+    <tr>
+                    <td colspan="8">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                        a.n. Kuasa Pengguna Anggaran <br />
+                        Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                    </td>
+                    <td colspan="3">
+                        Semarang, <span class="tgl_kuitansi">-</span><br />
+                        Penerima Uang
+                    </td>
+    </tr>
+                <tr>
+                        <td colspan="11">
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+        </td>
+                </tr>
+                <tr >
+                    <td colspan="8" style="border-bottom: 1px solid #000"><span class="nmpppk">-</span><br>
+                            NIP. <span class="nippppk">-</span></td>
+                    <td colspan="3" style="border-bottom: 1px solid #000"><span class="edit_here penerima_uang">-</span><br />
+                        NIP. <span class="edit_here penerima_uang_nip">-</span>
+                    </td>
+    </tr>
+                <tr >
+                    <td colspan="8">Setuju dibayar tgl : <br>
+                        Bendahara Pengeluaran
+                    </td>
+                    <td colspan="3" ><span style="display: none" class="td_tglpumk">Lunas dibayar tgl : <br>
+                            Pemegang Uang Muka Kerja</span>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="11">
+                            <br>
+                            <br>
+                            <br>
+        </td>
+                </tr>
+                 <tr>
+                     <td colspan="8"><span class="nmbendahara_kuitansi"></span><br>
+                         NIP. <span class="nipbendahara_kuitansi"></span>
+                    </td>
+                    <td colspan="3" ><span style="display: none" class="td_nmpumk"><span class="nmpumk"></span><br>
+                            NIP. <span class="nippumk"></span></span>
+                    </td>
+                </tr>
+    <tr >
+        <td colspan="11" style="border-top:1px solid #000">
+        Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+        Penerima Barang/jasa
+        </td>
+                </tr>
+                <tr>
+                        <td colspan="11">
+                            <br>
+                            <br>
+                            <br>
+        </td>
+                </tr>
+                <tr>
+                    <td colspan="11" ><span class="penerima_barang">-</span><br />
+                            NIP. <span class="penerima_barang_nip">-</span>
+        </td>
+    </tr>
+
+</table>
+      </div>
+      </div> 
+
+<!--
 <div class="modal " id="myModalKuitansi" role="dialog" aria-labelledby="myModalKuitansiLabel">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -2299,4 +2518,4 @@ function terbilang(bilangan) {
           </div>
         </div>
     </div>
-</div>
+</div>-->

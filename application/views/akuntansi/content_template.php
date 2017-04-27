@@ -20,6 +20,17 @@
         .badge-notify{
            background:red;
         }
+        .close-tab-button {
+            height: 20px;
+            width: 20px;
+            line-height: 20px;
+
+            background-color: black;
+            padding: 0px 2px;
+            color: white;
+            text-align: center;
+            font-size: 1em;
+        }
     </style>
 
 <!--Icons-->
