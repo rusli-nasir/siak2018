@@ -123,7 +123,14 @@
            <?php foreach ($akun_belanja as $akun) {
             $akun['kode_akun'][0] = 7;
             ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - ';
+            $uraian_akun = explode(' ', $akun['nama_akun']);
+            if($uraian_akun[0]!='beban'){
+              $uraian_akun[0] = 'beban';
+            }
+            $hasil_uraian = implode(' ', $uraian_akun);
+            echo $hasil_uraian;
+            ?></option>
             <?php
           }
           ?> 
