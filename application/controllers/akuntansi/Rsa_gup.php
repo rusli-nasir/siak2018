@@ -319,4 +319,72 @@ class rsa_gup extends MY_Controller{
         $this->data['content'] = $this->load->view('akuntansi/rsa_gup_detail',$this->data,true);
         $this->load->view('akuntansi/content_template',$this->data);
     }
+    
+    function getMonth($date){
+        $exp=explode(" ",$date);
+        $exl=explode("-",$exp[0]);
+        return $exl[1];
+    }
+    
+    function wordMonthShort($nilai){
+        switch(intval($nilai)){
+            case 1 : return "Jan";break;
+            case 2 : return "Feb";break;
+            case 3 : return "Mar";break;
+            case 4 : return "Apr";break;
+            case 5 : return "Mei";break;
+            case 6 : return "Jun";break;
+            case 7 : return "Jul";break;
+            case 8 : return "Agu";break;
+            case 9 : return "Sep";break;
+            case 10 : return "Okt";break;
+            case 11 : return "Nov";break;
+            case 12 : return "Des";break;
+        }
+    }
+    
+    function spmls($garbage, $id){
+        $this->load->model("user_model");
+        $this->load->model("cantik_model");
+        $d['id'] = $id;
+        $sql = "SELECT a.*, b.untuk_bayar, b.penerima, b.alamat, b.nama_bank, b.rekening, b.npwp FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON b.id_sppls = a.id_tr_sppls WHERE id_spmls =".intval($d['id']);
+        // echo $sql; exit;
+        $sub = $this->db->query($sql)->result();
+        $akun = explode(",",$sub[0]->detail_belanja);
+        $sql = "SELECT * FROM rsa_detail_belanja_ WHERE id_rsa_detail!=0 AND";
+        $i=0;
+        foreach ($akun as $k => $v) {
+            $vSQL2[$i]="kode_usulan_belanja LIKE '".substr($v, 0, -3)."' AND kode_akun_tambah LIKE '".substr($v, -3)."'";
+            $i++;
+        }
+        $vSQL2 = implode(" OR ", $vSQL2);
+        $sql = $sql."(".$vSQL2.") ORDER BY kode_akun_tambah ASC";
+        $akun = $this->db->query($sql)->result();
+        $subdata['cur_tahun'] = $sub[0]->tahun;
+        $subdata['cur_bulan'] = $this->wordMonthShort($this->getMonth($sub['0']->tanggal));
+        $subdata['tgl_spp'] = $sub[0]->tanggal;
+        $subdata['unit_kerja'] = $sub[0]->namaunitsukpa;
+        // $subdata['unit_id'] = $this->check_session->get_unit();
+        $subdata['alias'] = "WR2";
+        $subdata['detail_up'] = $sub[0];
+        $subdata['akun_detail'] = $akun;
+        $jm = strlen($sub[0]->id_spmls);
+        $subdata['id_spmls'] = "";
+        for($i=0;$i<(5-$jm);$i++){
+            $subdata['id_spmls'] .= "0";
+        }
+        $subdata['id_spmls'] .= $sub[0]->id_spmls;
+        // $subdata['bpp'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '13');
+        // $subdata['ppk'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '14');
+        $subdata['kpa'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '2');
+        $subdata['buu'] = $this->user_model->get_detail_rsa_user('99', '5');
+        $subdata['kbuu'] = $this->user_model->get_detail_rsa_user('99', '11');
+        if(intval($_SESSION['rsa_level'])==3){
+          $subdata['bver'] = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
+        }
+        $this->data['user_menu']  = $this->load->view('user_menu','',TRUE);
+        $this->data['main_menu']  = $this->load->view('main_menu','',TRUE);
+        $this->data['content'] = $this->load->view("akuntansi/form-spmls",$subdata,TRUE);
+        $this->load->view('akuntansi/content_template',$this->data);
+    }
 }
