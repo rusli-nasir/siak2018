@@ -18,7 +18,7 @@ class Notifikasi_model extends CI_Model {
             $unit = '';
             $unit_jadi = '';
         }
-        $condstr=$condstr2="";
+        $condstr="1"; $condstr2="";
         switch($level){
             case 0: //operator
                 $condstr = "((flag=1 AND status='revisi') OR (flag=2 AND status='proses'))";

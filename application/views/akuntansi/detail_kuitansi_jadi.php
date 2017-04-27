@@ -145,7 +145,13 @@
             $kode_akun_akrual = $akun_debet;
             $kode_akun_akrual[0] = 7;
        ?>
-      <input id="akun_debet_akrual" name="akun_debet_akrual_" value="<?=$akun_debet_akrual?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
+      <input id="akun_debet_akrual" name="akun_debet_akrual_" value="<?php $uraian_akun = explode(' ', $akun_debet_akrual);
+            if($uraian_akun[2]!='beban'){
+              $uraian_akun[2] = 'beban';
+            }
+            $hasil_uraian = implode(' ', $uraian_akun);
+            echo $hasil_uraian;
+            ?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
       <input type="hidden" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>" disabled>
         
 <!--       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
