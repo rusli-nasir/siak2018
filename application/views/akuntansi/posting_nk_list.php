@@ -9,6 +9,9 @@
 		$("#filter_status").change(function(){
 			$("#form_filter").submit();
 		});
+        $("#select-all").click(function(){
+            $('.checkbox-posting').not(this).prop('checked', this.checked);
+        });
 	});
 </script>
 <!-- javascript -->
@@ -51,6 +54,10 @@
 <div class="row">
 	<div class="col-sm-12">
 		<table class="table table-striped" style="table-layout:fixed">
+            <?php
+                echo form_open('akuntansi/rest_kuitansi/posting_kuitansi_batch/',array("id"=>"form-posting"));
+                echo form_close();
+            ?>
 			<thead>
 				<tr>
 					<th width="5%">NO</th>
@@ -63,6 +70,7 @@
 					<th>JUMLAH</th>
 					<th>STATUS</th>
 					<th>AKSI</th>
+                    <th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting"><input type="checkbox" id="select-all" form="form-posting">  Check All</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -99,6 +107,7 @@
 							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
 						<?php } ?>
 					</td>
+                    <td><input type="checkbox" name="id_kuitansi_jadi[]" class="checkbox-posting" value="<?= $result->id_kuitansi_jadi; ?>" form="form-posting"></td>
 				</tr>
 				<?php $no++; } ?>
 			</tbody>

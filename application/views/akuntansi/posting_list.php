@@ -92,7 +92,7 @@
 					<th>JUMLAH</th>
 					<th>STATUS</th>
 					<th>AKSI</th>
-					<th><input type="submit" class="btn btn-primary" value="Batch Post"><input type="checkbox" id="select-all" form="form-posting">  Check All</th>
+					<th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting"><input type="checkbox" id="select-all" form="form-posting">  Check All</th>
 				</tr>
 			</thead>
 			<tbody>
