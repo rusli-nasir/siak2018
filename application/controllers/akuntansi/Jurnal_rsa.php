@@ -23,6 +23,7 @@ class Jurnal_rsa extends MY_Controller {
 		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
 		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
 
+
 		if($this->form_validation->run())     
         {   
             $entry = $this->input->post();
@@ -60,7 +61,7 @@ class Jurnal_rsa extends MY_Controller {
 
         }
         else
-        {
+        {          
             if ($jenis != 'NK'){
 			    $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
                 $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
@@ -73,11 +74,13 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['jenis_pembatasan_dana'] = '';
             }
             // print_r($isian);die();
-			$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
+			//$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
 			$isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 	        $this->data['tab'] = 'beranda';
 	        $this->data['menu1'] = true;
             $isian['jenis'] = $jenis;
+             //get rekening by unit
+            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
 	        // print_r($isian['akun_kas']);die();
 	        // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
 			$this->data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);

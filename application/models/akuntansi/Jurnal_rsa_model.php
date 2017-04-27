@@ -9,6 +9,11 @@ class Jurnal_rsa_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
     }
 
+    public function get_rekening_by_unit($kode_unit){
+        $query = $this->db->query("SELECT * FROM akuntansi_kas_rekening WHERE (kode_unit='".$kode_unit."' OR kode_unit='all')");
+        return $query;
+    }
+
     public function get_kuitansi($id_kuitansi,$tabel,$tabel_detail)
     {
     	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
