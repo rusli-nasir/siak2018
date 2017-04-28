@@ -43,10 +43,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND (flag=1 AND (status='direvisi' OR status='proses')) AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND (flag=1 AND (status='direvisi' OR status='proses')) AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit");
         }
         return $query;
@@ -65,10 +65,10 @@ class Kuitansi_model extends CI_Model {
 
     function read_kuitansi_jadi_ls($limit = null, $start = null, $keyword = null){
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND (flag=1 AND (status='direvisi' OR status='proses')) AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND (flag=1 AND (status='direvisi' OR status='proses')) AND
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
         }
         return $query;
@@ -76,10 +76,10 @@ class Kuitansi_model extends CI_Model {
 
     function read_kuitansi_jadi_spm($limit = null, $start = null, $keyword = null){
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND (flag=1 AND (status='direvisi' OR status='proses')) AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND (flag=1 AND (status='direvisi' OR status='proses')) AND
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
         }
         return $query;
