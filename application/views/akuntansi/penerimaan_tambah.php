@@ -3,6 +3,9 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+<script type="text/javascript">
+  
+</script>
 
 <div class="row">
   <ol class="breadcrumb">
@@ -23,7 +26,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" type="text" placeholder="No.Bukti" class="form-control input-md" required="">
+  <input id="no_bukti" name="no_bukti" type="text" value="<?php echo $no_bukti ?>" placeholder="No.Bukti" class="form-control input-md" required="" readonly="">
     
   </div>
 </div>
@@ -87,14 +90,7 @@
     <div class="col-md-3">
 
       <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
-          <option value="">Pilih Akun</option>
-          <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
-            <?php
-          }
-          ?> 
+          <option value="911101">911101 - SAL</option>
       </select> 
     <!-- <input id="kas_akun_debet" name="kas_akun_debet"  type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       
@@ -113,10 +109,9 @@
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
           <option value="">Pilih Akun</option>
           <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            $akun['kode_akun'][0] = 7;
+           <?php foreach ($data_akun_debet as $akun) {
             ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
             <?php
           }
           ?> 
@@ -143,9 +138,9 @@
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
         <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
+        <?php foreach ($data_akun_debet as $akun) {
           ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
         ?>
@@ -160,9 +155,9 @@
     <div class="col-md-3">
       <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
+        <?php foreach ($data_akun_kredit as $akun) {
           ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
         ?>
@@ -219,4 +214,26 @@
   <?php endif ?>
 
 
+  var $select4 = $('#akun_kredit').selectize();  // This initializes the selectize control
+  var selectize4 = $select2[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  <?php if (isset($kas_akun_debet)): ?>
+      selectize4.setValue('<?=$kas_akun_debet?>');
+  <?php endif ?>
+
+
+  var $select = $('#akun_kredit_akrual').selectize();  // This initializes the selectize control
+  var selectize = $select2[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  <?php if (isset($kas_akun_debet)): ?>
+      selectize.setValue('<?=$kas_akun_debet?>');
+  <?php endif ?>
+
+  $('#jumlah_akun_kredit').keyup(function () {
+    $('#jumlah_akun_debet').val(this.value)
+  })
+
+  $('#jumlah_akun_debet').keyup(function () {
+    $('#jumlah_akun_kredit').val(this.value)
+  })
 </script>

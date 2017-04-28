@@ -13,12 +13,12 @@ class Penerimaan extends MY_Controller {
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
+        $this->load->model('akuntansi/Penerimaan_model', 'Penerimaan_model');
     }
 
     public function coba($value='')
     {
-    	print_r($this->Akun_lra_model->get_akun_debet());
-    	print_r($this->Akun_lra_model->get_akun_kredit());
+    	print_r($this->Penerimaan_model->generate_nomor_bukti());
     }
 
 	public function index($id = 0){
@@ -84,7 +84,7 @@ class Penerimaan extends MY_Controller {
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
 		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
 		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
-		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
+		// $this->form_validation->set_rules('no_bukti','No. Bukti','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
 		$this->form_validation->set_rules('uraian','uraian','required');
@@ -98,6 +98,7 @@ class Penerimaan extends MY_Controller {
         {   
             $entry = $this->input->post();
             unset($entry['simpan']);
+            $entry['no_bukti'] = $this->Penerimaan_model->generate_nomor_bukti();
             $entry['id_kuitansi'] = null;
             $entry['no_spm'] = null;
             $entry['jenis'] = null;
@@ -124,9 +125,11 @@ class Penerimaan extends MY_Controller {
 
 
         } else {
+        	$this->data['no_bukti'] = $this->Penerimaan_model->generate_nomor_bukti();
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        	$this->data['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
-        	$this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+        	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+        	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+        	// $this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_tambah',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
@@ -192,8 +195,9 @@ class Penerimaan extends MY_Controller {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        	$this->data['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
-        	$this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+        	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+        	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+        	print_r($this->data['data_akun_debet']);die();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_edit',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
