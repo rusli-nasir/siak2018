@@ -12,6 +12,13 @@ class Penerimaan extends MY_Controller {
         $this->load->model('akuntansi/Akun_kas_rsa_model', 'Akun_kas_rsa_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
+        $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
+    }
+
+    public function coba($value='')
+    {
+    	print_r($this->Akun_lra_model->get_akun_debet());
+    	print_r($this->Akun_lra_model->get_akun_kredit());
     }
 
 	public function index($id = 0){
