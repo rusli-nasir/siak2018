@@ -67,6 +67,11 @@
 			</thead>
 			<tbody>
 				<?php foreach($query->result() as $result){ ?>
+                <?php 
+                    if($this->session->userdata('level') == 2){
+                        if(!($result->flag==1 && ($result->status=="direvisi" || $result->status=="proses"))) continue;
+                    }
+                ?>
 				<tr>
 					<td><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
