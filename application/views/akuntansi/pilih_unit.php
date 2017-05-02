@@ -21,7 +21,7 @@
 </div><!--/.row-->
 <hr/>
 <div class="row">
-	<div class="col-sm-6 col-sm-offset-3">
+	<div class="col-sm-4">
 		<table class="table table-striped">
 			<tr>
 				<th>Nama Unit</th>
@@ -29,7 +29,7 @@
                 <th align="center">Menunggu Posting</th>
 				<th>Aksi</th>
 			</tr>		
-		<?php foreach($query_unit->result() as $result){ ?>
+		<?php $no=1;foreach($query_unit->result() as $result){ ?>
             <?php if(isset($jumlah_verifikasi[$result->kode_unit])) $jmlv = $jumlah_verifikasi[$result->kode_unit]; else $jmlv = null?>
             <?php if(isset($jumlah_posting[$result->kode_unit])) $jmlp = $jumlah_posting[$result->kode_unit]; else $jmlp = null?>
 			<tr>
@@ -40,7 +40,18 @@
 					<a href="<?php echo site_url('akuntansi/kuitansi/set_unit_session/'.$result->kode_unit); ?>"><button type="button" class="btn btn-primary">Pilih</button></a>
 				</td>
 			</tr>
-		<?php } ?>
+		<?php $no++;
+		if($no%10==0){
+			echo '</table></div><div class="col-sm-4">
+		<table class="table table-striped">
+			<tr>
+				<th>Nama Unit</th>
+				<th align="center">Menunggu Verifikasi</th>
+                <th align="center">Menunggu Posting</th>
+				<th>Aksi</th>
+			</tr>';
+		}
+		} ?>
 		</table>
 	</div>
 </div>
