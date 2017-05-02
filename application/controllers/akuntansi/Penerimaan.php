@@ -127,6 +127,7 @@ class Penerimaan extends MY_Controller {
         } else {
         	$this->data['no_bukti'] = $this->Penerimaan_model->generate_nomor_bukti();
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
+        	$this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
         	// $this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
@@ -142,7 +143,6 @@ class Penerimaan extends MY_Controller {
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
 		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
 		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
-		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
 		$this->form_validation->set_rules('uraian','uraian','required');
@@ -196,6 +196,7 @@ class Penerimaan extends MY_Controller {
         	// print_r($this->data);die();
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
+        	$this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_edit',$this->data,true);
@@ -210,6 +211,7 @@ class Penerimaan extends MY_Controller {
         // print_r($isian);die();
         $isian['all_unit_kerja'] = $this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
         $isian['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+        $isian['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         $isian['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
         $isian['mode'] = $mode;
 
