@@ -43,16 +43,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" type="text" value="<?=$no_bukti?>" placeholder="No.Bukti" class="form-control input-md" required="">
-    
-  </div>
-</div>
-
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-2 control-label" for="no_spm">No. SPM</label>  
-  <div class="col-md-4">
-  <input name="no_spm" type="text" value="<?=$no_spm?>" placeholder="No. SPM" class="form-control input-md" required="">
+  <input id="no_bukti" name="no_bukti" value="<?= $no_bukti; ?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" readonly>
     
   </div>
 </div>
@@ -132,9 +123,8 @@
 <!-- Text input-->
 <fieldset>
   <legend>
-    <div class="col-md-2 control-label">Jurnal Basis Kas</div>
-    <div class="col-md-5 control-label">Jurnal Basis Akrual</div>
-    <div class="col-md-3 control-label">Jumlah (Rp)</div>
+    <div class="col-md-6 control-label">Kredit</div>
+    <div class="col-md-6 control-label">Debet</div>
   </legend> <br/>
   <div class="form-group">
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
@@ -152,13 +142,6 @@
       </select> 
       
     </div>
-
-    
-
-    <!-- <label class="col-md-1 control-label" for="akrual_akun_debet">Akun Debet</label>  
-    <div class="col-md-3">
-    <input id="akrual_akun_debet" name="akrual_akun_debet" value="<?=$akun_debet_kas?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>      
-    </div> -->
 
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
@@ -186,11 +169,6 @@
 
   <!-- Text input-->
   <div class="form-group">
-    <!-- <label class="col-md-2 control-label" for="kas_akun_kredit">Akun Kredit </label>  
-    <div class="col-md-3">
-    <input id="kas_akun_kredit" name="kas_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
-      
-    </div> -->
     <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
@@ -203,11 +181,7 @@
         ?>
       </select>
     </div>
-    <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->
-    <!-- <div class="col-md-3">
-    <input id="akrual_akun_kredit" name="akrual_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
-      
-    </div> -->
+    
     <label class="col-md-1 control-label" for="akun_kredit_akrual">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
@@ -240,7 +214,7 @@
 
 
 </fieldset>
-</form>
+<?= form_close(); ?>
 
 <script>
 

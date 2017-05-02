@@ -54,7 +54,6 @@
 					<th>NO</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
-					<th>NO.SPM</th>
 					<th>JENIS</th>
 					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
@@ -71,7 +70,6 @@
 					<td><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
-					<td><?php echo $result->no_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
 					<td><?php echo $result->kode_kegiatan; ?></td>
 					<td><?php echo get_unit($result->unit_kerja); ?></td>

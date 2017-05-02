@@ -23,16 +23,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" type="text" placeholder="No.Bukti" class="form-control input-md" required="">
-    
-  </div>
-</div>
-
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-2 control-label" for="no_spm">No. SPM</label>  
-  <div class="col-md-4">
-  <input name="no_spm" type="text" placeholder="No. SPM" class="form-control input-md" required="">
+  <input id="no_bukti" name="no_bukti" value="<?= $no_bukti; ?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" readonly>
     
   </div>
 </div>
@@ -112,120 +103,126 @@
 <!-- Text input-->
 <fieldset>
   <legend>
-    <div class="col-md-2 control-label">Jurnal Basis Kas</div>
-    <div class="col-md-5 control-label">Jurnal Basis Akrual</div>
-    <div class="col-md-3 control-label">Jumlah (Rp)</div>
+    <div class="col-md-6 control-label" style="text-align: center;">Kredit <button id="add-akunKredit" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></div>
+    <div class="col-md-6 control-label" style="text-align: center;">Debet <button id="add-akunDebet" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></div>
   </legend> <br/>
-  <div class="form-group">
-    <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
-    <div class="col-md-3">
-    <!-- <input id="kas_akun_debet" name="kas_akun_debet"  type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
-      <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
-          <option value="">Pilih Akun</option>
-          <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
-            <?php
-          }
-          ?> 
-      </select> 
-      
-    </div>
+  <div class="col-md-6" style="border-right:1px solid #eee" id="group-akunKredit">
+    <div class="form-group"> 
+      <div class="col-md-6">
+        <select name="kas_akun_kredit[]" class="form-control kas_akun_kredit" required="">
+            <option value="">Pilih Akun</option>
+            <option value="">
+             <?php foreach ($akun_belanja as $akun) {
+              ?>
+              <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+              <?php
+            }
+            ?> 
+        </select> 
+      </div>
 
-    
+      <div class="col-md-6">
+      <input name="jumlah_akun_kredit[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit" required="">
+      </div>
 
-    <!-- <label class="col-md-1 control-label" for="akrual_akun_debet">Akun Debet</label>  
-    <div class="col-md-3">
-    <input id="akrual_akun_debet" name="akrual_akun_debet" value="<?=$akun_debet_kas?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>      
-    </div> -->
-
-    <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
-    <div class="col-md-3">
-      <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
-      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
-          <option value="">Pilih Akun</option>
-          <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            $akun['kode_akun'][0] = 7;
-            ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
-            <?php
-          }
-          ?> 
-      </select> 
-        
-    </div>
-
-    <div class="col-md-3">
-    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md" required="">
-      
-    </div>
-
-  </div>
-
-  <!-- Text input-->
-  <div class="form-group">
-    <!-- <label class="col-md-2 control-label" for="kas_akun_kredit">Akun Kredit </label>  
-    <div class="col-md-3">
-    <input id="kas_akun_kredit" name="kas_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
-      
-    </div> -->
-    <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
-    <div class="col-md-3">
-      <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
-        <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
-          ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
-          <?php
-        }
-        ?>
-      </select>
-    </div>
-    <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->
-    <!-- <div class="col-md-3">
-    <input id="akrual_akun_kredit" name="akrual_akun_kredit" type="text" placeholder="Akun Kredit" class="form-control input-md" required="" >
-      
-    </div> -->
-    <label class="col-md-1 control-label" for="akun_kredit_akrual">Akun Kredit</label>
-    <div class="col-md-3">
-      <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
-        <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
-          ?>
-          <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
-          <?php
-        }
-        ?>
-      </select>
-    </div>
-    <div class="col-md-3">
-    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md"  required="">
-      
     </div>
   </div>
-  <hr/>
+  <div class="col-md-6" id="group-akunDebet">
+    <div class="form-group"> 
+      <div class="col-md-6">
+        <select name="kas_akun_debet[]" class="form-control kas_akun_debet" required="">
+            <option value="">Pilih Akun</option>
+            <option value="">
+             <?php foreach ($akun_belanja as $akun) {
+              ?>
+              <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+              <?php
+            }
+            ?> 
+        </select> 
+      </div>
+
+      <div class="col-md-6">
+      <input name="jumlah_akun_debet[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet" required="">
+      </div>
+
+    </div>
+  </div>
 
 </fieldset>
 
 
 <!-- Button (Double) -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="simpan"></label>
-  <div class="col-md-8">
+<div class="form-group" style="margin-top:12px;">
+  <div class="col-md-12" style="text-align:center;">
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
     <a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
 
 </fieldset>
-</form>
+<?= form_close(); ?>
+
+<!-- template akun kredit -->
+<div class="form-group" id="template_akun_kredit" style="display:none;"> 
+  <div class="col-md-6">
+    <select name="kas_akun_kredit[]" class="form-control kas_akun_kredit" required="">
+        <option value="">Pilih Akun</option>
+        <option value="">
+         <?php foreach ($akun_belanja as $akun) {
+          ?>
+          <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+          <?php
+        }
+        ?> 
+    </select> 
+  </div>
+
+  <div class="col-md-6">
+  <input name="jumlah_akun_kredit[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit" required="">
+  </div>
+
+</div>
+
+<!-- template akun kredit -->
+<div class="form-group" id="template_akun_debit" style="display:none;"> 
+  <div class="col-md-6">
+    <select name="kas_akun_debet[]" class="form-control kas_akun_debet" required="">
+        <option value="">Pilih Akun</option>
+        <option value="">
+         <?php foreach ($akun_belanja as $akun) {
+          ?>
+          <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+          <?php
+        }
+        ?> 
+    </select> 
+  </div>
+
+  <div class="col-md-6">
+  <input name="jumlah_akun_debet[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet" required="">
+  </div>
+
+</div>
 
 <script>
 
   $('#tanggal').datepicker({
       format: "yyyy-mm-dd"
+  });
+    
+  $('#add-akunKredit').click(function(){
+        var template = $("#template_akun_kredit").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunKredit').append(template);
+  });
+    
+  $('#add-akunDebet').click(function(){
+        var template = $("#template_akun_debet").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunDebet').append(template);
   });
 
   var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
