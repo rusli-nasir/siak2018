@@ -21,4 +21,10 @@ class Penerimaan_model extends CI_Model {
 
 		return 'P'.sprintf("%06d", $no_bukti);
 	}
+
+	public function hapus_penerimaan($id_kuitansi_jadi)
+	{
+		$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+		$this->db->delete('akuntansi_kuitansi_jadi');
+	}
 }

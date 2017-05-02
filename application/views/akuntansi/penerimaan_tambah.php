@@ -108,7 +108,6 @@
       <!-- <input id="akun_debet_akrual" name="akun_debet_akrual" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
           <option value="">Pilih Akun</option>
-          <option value="">
            <?php foreach ($data_akun_debet as $akun) {
             ?>
             <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
@@ -217,13 +216,13 @@
   var $select4 = $('#akun_kredit').selectize();  // This initializes the selectize control
   var selectize4 = $select2[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  <?php if (isset($kas_akun_debet)): ?>
-      selectize4.setValue('<?=$kas_akun_debet?>');
-  <?php endif ?>
+  // <?php if (isset($kas_akun_debet)): ?>
+  //     selectize4.setValue('<?=$kas_akun_debet?>');
+  // <?php endif ?>
 
 
-  var $select = $('#akun_kredit_akrual').selectize();  // This initializes the selectize control
-  var selectize = $select2[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  var $select5 = $('#akun_kredit_akrual').selectize();  // This initializes the selectize control
+  var selectize5 = $select5[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($kas_akun_debet)): ?>
       selectize.setValue('<?=$kas_akun_debet?>');

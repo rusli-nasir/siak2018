@@ -193,11 +193,11 @@ class Penerimaan extends MY_Controller {
 
         } else {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
+        	// print_r($this->data);die();
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
         	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
-        	print_r($this->data['data_akun_debet']);die();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_edit',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
@@ -209,8 +209,8 @@ class Penerimaan extends MY_Controller {
         $isian = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         // print_r($isian);die();
         $isian['all_unit_kerja'] = $this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        $isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
-        $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+        $isian['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+        $isian['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
         $isian['mode'] = $mode;
 
         $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
@@ -220,5 +220,11 @@ class Penerimaan extends MY_Controller {
 
         $this->data['content'] = $this->load->view('akuntansi/penerimaan_detail',$isian,true);
         $this->load->view('akuntansi/content_template',$this->data,false);
+    }
+
+    public function hapus_penerimaan($id_kuitansi_jadi)
+    {
+    	$this->Penerimaan_model->hapus_penerimaan($id_kuitansi_jadi);
+    	redirect('akuntansi/penerimaan');
     }
 }

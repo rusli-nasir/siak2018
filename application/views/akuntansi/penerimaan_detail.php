@@ -112,14 +112,7 @@
     <div class="col-md-3">
 
       <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
-          <option value="">Pilih Akun</option>
-          <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
-            <?php
-          }
-          ?> 
+          <option <?php if ($akun_debet == '911101'): ?> selected <?php endif ?> value="911101">911101 - SAL</option>
       </select> 
     <!-- <input id="kas_akun_debet" name="kas_akun_debet"  type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       
@@ -137,14 +130,12 @@
       <!-- <input id="akun_debet_akrual" name="akun_debet_akrual" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
           <option value="">Pilih Akun</option>
-          <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            $akun['kode_akun'][0] = 7;
+           <?php foreach ($data_akun_debet as $akun) {
             ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
             <?php
           }
-          ?> 
+          ?>
       </select> 
         
     </div>
@@ -168,9 +159,9 @@
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
         <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
+        <?php foreach ($data_akun_debet as $akun) {
           ?>
-          <option  <?php if ($akun['kd_kas_6'] == $akun_kredit): ?> selected <?php endif ?>value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
         ?>
@@ -185,9 +176,9 @@
     <div class="col-md-3">
       <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
+        <?php foreach ($data_akun_kredit as $akun) {
           ?>
-          <option <?php if ($akun['kd_kas_6'] == $akun_kredit_akrual): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
         ?>
@@ -251,20 +242,27 @@
   <?php if (isset($akun_debet_akrual)): ?>
         selectize1.setValue('<?=$akun_debet_akrual?>');  
   <?php endif ?>
-  
-
-  var $select2 = $('#kas_akun_debet').selectize();  // This initializes the selectize control
-  var selectize2 = $select2[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
-
-  <?php if (isset($akun_debet)): ?>
-      selectize2.setValue('<?=$akun_debet?>');
-  <?php endif ?>
 
   var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
   var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($kode_unit)): ?>
       selectize3.setValue('<?=$kode_unit?>');
+  <?php endif ?>
+
+  var $select4 = $('#akun_kredit').selectize();  // This initializes the selectize control
+  var selectize4 = $select4[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  <?php if (isset($akun_kredit)): ?>
+      selectize4.setValue('<?=$akun_kredit?>');
+  <?php endif ?>
+
+
+  var $select5 = $('#akun_kredit_akrual').selectize();  // This initializes the selectize control
+  var selectize5 = $select5[0].selectize; // This stores the selectize object to a variable (with 
+
+  <?php if (isset($akun_kredit_akrual)): ?>
+      selectize5.setValue('<?=$akun_kredit_akrual?>');
   <?php endif ?>
 
   $('input[type=text]').attr("disabled",true);
@@ -275,8 +273,10 @@
   <?php endif ?>
 
   selectize1.disable();
-  selectize2.disable();
+
   selectize3.disable();
+  selectize4.disable();
+  selectize5.disable();
 
 
 </script>
