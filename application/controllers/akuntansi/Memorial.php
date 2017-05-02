@@ -13,6 +13,7 @@ class Memorial extends MY_Controller {
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
+        $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
     }
 
 	public function index($id = 0){
@@ -95,15 +96,43 @@ class Memorial extends MY_Controller {
             $entry = $this->input->post();
             unset($entry['simpan']);
             $entry['id_kuitansi'] = null;
-            $entry['akun_debet'] = $entry['kas_akun_debet'];
+            $entry['akun_debet'] = $entry['kas_akun_debet'][0];
             unset($entry['kas_akun_debet']);
-            $entry['jumlah_debet'] = $entry['jumlah_akun_debet'];
+            $entry['jumlah_debet'] = $entry['jumlah_akun_debet'][0];
             unset($entry['jumlah_akun_debet']);
-            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'];
+            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'][0];
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'memorial';
             $entry['flag'] = 1;
             $entry['status'] = 'proses';
+
+            $akun = $this->input->post();
+
+            $relasi_debet = array();
+            $entry_relasi = array();
+            $relasi = array();
+            for ($i=0; $i < count($akun['kas_akun_debet']); $i++) { 
+            	$relasi['akun'] = $akun['kas_akun_debet'][$i];
+            	$relasi['jumlah'] = $akun['jumlah_akun_debet'][$i];
+            	$relasi['tipe'] = 'debet';
+            	$relasi['no_bukti'] = $entry['no_bukti'];
+            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+
+            	$entry_relasi[] = $relasi;
+            }
+
+            $relasi_kredit = array();
+            for ($i=0; $i < count($akun['kas_akun_kredit']); $i++) { 
+            	$relasi['akun'] = $akun['kas_akun_kredit'][$i];
+            	$relasi['jumlah'] = $akun['jumlah_akun_kredit'][$i];
+            	$relasi['tipe'] = 'kredit';
+            	$relasi['no_bukti'] = $entry['no_bukti'];
+            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+
+            	$entry_relasi[] = $relasi;
+            }
+
+            $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($id_kuitansi_jadi,$entry_relasi);
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
             $riwayat = array();
@@ -150,13 +179,39 @@ class Memorial extends MY_Controller {
             $entry = $this->input->post();
             unset($entry['simpan']);
             $entry['id_kuitansi'] = null;
-            $entry['akun_debet'] = $entry['kas_akun_debet'];
+            $entry['akun_debet'] = $entry['kas_akun_debet'][0];
             unset($entry['kas_akun_debet']);
-            $entry['jumlah_debet'] = $entry['jumlah_akun_debet'];
+            $entry['jumlah_debet'] = $entry['jumlah_akun_debet'][0];
             unset($entry['jumlah_akun_debet']);
-            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'];
+            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'][0];
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'memorial';
+
+            $akun = $this->input->post();
+
+            $relasi_debet = array();
+            $entry_relasi = array();
+            $relasi = array();
+            for ($i=0; $i < count($akun['kas_akun_debet']); $i++) { 
+            	$relasi['akun'] = $akun['kas_akun_debet'][$i];
+            	$relasi['jumlah'] = $akun['jumlah_akun_debet'][$i];
+            	$relasi['tipe'] = 'debet';
+            	$relasi['no_bukti'] = $entry['no_bukti'];
+            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+
+            	$entry_relasi[] = $relasi;
+            }
+
+            $relasi_kredit = array();
+            for ($i=0; $i < count($akun['kas_akun_kredit']); $i++) { 
+            	$relasi['akun'] = $akun['kas_akun_kredit'][$i];
+            	$relasi['jumlah'] = $akun['jumlah_akun_kredit'][$i];
+            	$relasi['tipe'] = 'kredit';
+            	$relasi['no_bukti'] = $entry['no_bukti'];
+            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+
+            	$entry_relasi[] = $relasi;
+            }
 
             
             if ($mode == 'revisi'){
@@ -174,7 +229,9 @@ class Memorial extends MY_Controller {
 
             $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
 
-            if ($q2)
+            $q1 = $this->Relasi_kuitansi_akun_model->update_relasi_kuitansi_akun($id_kuitansi_jadi,$entry_relasi);
+
+            if ($q2 and $q1)
                 $this->session->set_flashdata('success','Berhasil menyimpan !');
             else
                 $this->session->set_flashdata('warning','Gagal menyimpan !');
@@ -209,6 +266,11 @@ class Memorial extends MY_Controller {
 
         $this->data['content'] = $this->load->view('akuntansi/memorial_detail',$isian,true);
         $this->load->view('akuntansi/content_template',$this->data,false);
+    }
+
+    public function hapus_memorial($id_kuitansi_jadi)
+    {
+    	$this->Memorial_model->hapus_memorial($id_kuitansi_jadi);
     }
 	
 }

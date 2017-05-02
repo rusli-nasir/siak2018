@@ -21,4 +21,14 @@ class Memorial_model extends CI_Model {
 
 		return 'M'.sprintf("%06d", $no_bukti);
 	}
+
+	public function hapus_memorial($id_kuitansi_jadi)
+	{
+		$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+		$this->db->delete('akuntansi_kuitansi_jadi');
+
+
+		$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+		$this->db->delete('akuntansi_relasi_kuitansi_akun');
+	}
 }

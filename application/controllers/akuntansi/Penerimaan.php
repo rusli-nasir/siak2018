@@ -113,6 +113,7 @@ class Penerimaan extends MY_Controller {
             $entry['flag'] = 1;
             $entry['status'] = 'proses';
 
+
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
             $riwayat = array();
             $riwayat['id_kuitansi_jadi'] = $q1;
