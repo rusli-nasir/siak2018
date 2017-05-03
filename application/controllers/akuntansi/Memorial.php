@@ -14,6 +14,7 @@ class Memorial extends MY_Controller {
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
         $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
+        $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
     }
 
 	public function index($id = 0){
@@ -148,8 +149,8 @@ class Memorial extends MY_Controller {
         } else {
             $this->data['no_bukti'] = $this->Memorial_model->generate_nomor_bukti();
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        	$this->data['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
-        	$this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+        	$this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+        	$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
 			$temp_data['content'] = $this->load->view('akuntansi/memorial_tambah',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
@@ -242,8 +243,8 @@ class Memorial extends MY_Controller {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        	$this->data['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
-        	$this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+        	$this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+        	$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
 			$temp_data['content'] = $this->load->view('akuntansi/memorial_edit',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }

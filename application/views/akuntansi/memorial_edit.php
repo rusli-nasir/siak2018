@@ -123,125 +123,186 @@
 <!-- Text input-->
 <fieldset>
   <legend>
-    <div class="col-md-6 control-label">Kredit</div>
-    <div class="col-md-6 control-label">Debet</div>
+    <div class="col-md-6 control-label" style="text-align: center;">Kredit <button id="add-akunKredit" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></div>
+    <div class="col-md-6 control-label" style="text-align: center;">Debet <button id="add-akunDebet" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></div>
   </legend> <br/>
-  <div class="form-group">
-    <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
-    <div class="col-md-3">
-    <!-- <input id="kas_akun_debet" name="kas_akun_debet"  type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
-      <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
-          <option value="">Pilih Akun</option>
-          <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
-            <?php
-          }
-          ?> 
-      </select> 
-      
-    </div>
+  <div class="col-md-6" style="border-right:1px solid #eee" id="group-akunKredit">
+    <div class="form-group"> 
+      <div class="col-md-5">
+        <select name="kas_akun_kredit[]" class="form-control kas_akun_kredit" required="">
+            <option value="">Pilih Akun</option>
+            <option value="">
+             <?php foreach ($akun_kredit as $akun) {
+              ?>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <?php
+            }
+            ?> 
+        </select> 
+      </div>
 
-    <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
-    <div class="col-md-3">
-      <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
-      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
-          <option value="">Pilih Akun</option>
-          <option value="">
-           <?php foreach ($akun_belanja as $akun) {
-            $akun['kode_akun'][0] = 7;
-            ?>
-            <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - '.$akun['nama_akun']?></option>
-            <?php
-          }
-          ?> 
-      </select> 
-        
-    </div>
+      <div class="col-md-6">
+      <input name="jumlah_akun_kredit[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit" required="">
+      </div>
 
-    <div class="col-md-3">
-    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text"  placeholder="Jumlah Akun Debet" value="<?=$jumlah_debet?>" class="form-control input-md" required="">
-      
-    </div>
-
-  </div>
-
-  <!-- Text input-->
-  <div class="form-group">
-    <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
-    <div class="col-md-3">
-      <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
-        <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
-          ?>
-          <option  <?php if ($akun['kd_kas_6'] == $akun_kredit): ?> selected <?php endif ?>value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
-          <?php
-        }
-        ?>
-      </select>
-    </div>
-    
-    <label class="col-md-1 control-label" for="akun_kredit_akrual">Akun Kredit</label>
-    <div class="col-md-3">
-      <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
-        <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
-          ?>
-          <option <?php if ($akun['kd_kas_6'] == $akun_kredit_akrual): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
-          <?php
-        }
-        ?>
-      </select>
-    </div>
-    <div class="col-md-3">
-    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" value="<?=$jumlah_kredit?>" class="form-control input-md"  required="">
-      
     </div>
   </div>
-  <hr/>
+  <div class="col-md-6" style="border-left:1px solid #eee" id="group-akunDebet">
+    <div class="form-group"> 
+      <div class="col-md-5">
+        <select name="kas_akun_debet[]" class="form-control kas_akun_debet" required="">
+            <option value="">Pilih Akun</option>
+            <option value="">
+             <?php foreach ($akun_debet as $akun) {
+              ?>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <?php
+            }
+            ?> 
+        </select> 
+      </div>
+
+      <div class="col-md-6">
+      <input name="jumlah_akun_debet[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet" required="">
+      </div>
+
+    </div>
+  </div>
+  <legend>
+    <div class="col-md-6 control-label">Jumlah kredit : <span id="total_kredit">0</span></div>
+    <div class="col-md-6 control-label">Jumlah debet : <span id="total_debet">0</span></div>
+    <div class="col-md-12 control-label">Selisih : <span id="selisih">0</span></div>
+  </legend> <br/>
 
 </fieldset>
 
 
-<div class="form-group">
-  <label class="col-md-4 control-label" for="simpan"></label>
-  <div class="col-md-8">
+<!-- Button (Double) -->
+<div class="form-group" style="margin-top:12px;">
+  <div class="col-md-12" style="text-align:center;">
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
     <a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
 
-
 </fieldset>
 <?= form_close(); ?>
 
-<script>
+<!-- template akun kredit -->
+<div class="form-group" id="template_akun_kredit" style="display:none;"> 
+  <div class="col-md-5">
+    <select name="kas_akun_kredit[]" class="form-control kas_akun_kredit" required="">
+        <option value="">Pilih Akun</option>
+        <option value="">
+         <?php foreach ($akun_kredit as $akun) {
+          ?>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+          <?php
+        }
+        ?> 
+    </select> 
+  </div>
 
+  <div class="col-md-6">
+  <input name="jumlah_akun_kredit[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit" required="">
+  </div>
+    
+  <div class="col-md-1">
+      <button class="remove-entry" class="close" style="background:#F44336; padding: 0px 12px; color:white; opacity:1" type="button">-</button>
+  </div>
+
+</div>
+
+<!-- template akun kredit -->
+<div class="form-group" id="template_akun_debet" style="display:none;"> 
+  <div class="col-md-5">
+    <select name="kas_akun_debet[]" class="form-control kas_akun_debet" required="">
+        <option value="">Pilih Akun</option>
+        <option value="">
+         <?php foreach ($akun_debet as $akun) {
+          ?>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+          <?php
+        }
+        ?> 
+    </select> 
+  </div>
+
+  <div class="col-md-6">
+  <input name="jumlah_akun_debet[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet" required="">
+  </div>
+    
+  <div class="col-md-1">
+      <button class="remove-entry" class="close" style="background:#F44336; padding: 0px 12px; color:white; opacity:1" type="button">-</button>
+  </div>
+
+</div>
+
+<script>
+  var jml_kredit = 0;
+  var jml_debet = 0;
+  var jml_total = 0;
+    
+  function registerEvents(){
+      console.log("register");
+      $(".jumlah_akun_debet").on('input', function(){
+          jml_debet = 0;
+          $(".jumlah_akun_debet").each(function(){
+              jml_debet += $(this).val()*1;
+          });
+          jml_total = jml_kredit-jml_debet;
+          $('#total_debet').text(jml_debet);
+          updateSelisih();
+      });
+      $(".jumlah_akun_kredit").on('input', function(){
+          jml_kredit = 0;
+          $(".jumlah_akun_kredit").each(function(){
+              jml_kredit += $(this).val()*1;
+          });
+          jml_total = jml_kredit-jml_debet;
+          $('#total_kredit').text(jml_kredit);
+          updateSelisih();
+      });
+  }
+    
+  function updateSelisih(){
+      $('#selisih').text(jml_total);
+      if(jml_total==0) $('#selisih').removeAttr('style');
+      else $('#selisih').attr('style', 'color:red');
+  }
+  registerEvents();
   $('#tanggal').datepicker({
       format: "yyyy-mm-dd"
   });
-
-  var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
-  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
-
-  <?php if (isset($akun_debet_akrual)): ?>
-        selectize1.setValue('<?=$akun_debet_akrual?>');  
-  <?php endif ?>
-  
-
-  var $select2 = $('#kas_akun_debet').selectize();  // This initializes the selectize control
-  var selectize2 = $select2[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
-
-  <?php if (isset($akun_debet)): ?>
-      selectize2.setValue('<?=$akun_debet?>');
-  <?php endif ?>
+    
+  $('#add-akunKredit').click(function(){
+        var template = $("#template_akun_kredit").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunKredit').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        registerEvents();
+  });
+    
+  $('#add-akunDebet').click(function(){
+        var template = $("#template_akun_debet").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunDebet').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        registerEvents();
+  });
 
   var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
   var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($unit_kerja)): ?>
-      selectize3.setValue('<?=$kode_unit?>');
+      selectize3.setValue('<?=$unit_kerja?>');
   <?php endif ?>
+
 
 </script>
