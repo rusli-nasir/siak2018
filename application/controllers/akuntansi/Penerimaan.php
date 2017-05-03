@@ -14,6 +14,7 @@ class Penerimaan extends MY_Controller {
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
         $this->load->model('akuntansi/Penerimaan_model', 'Penerimaan_model');
+        $this->load->model('akuntansi/Posting_model', 'Posting_model');
     }
 
     public function coba($value='')
@@ -110,15 +111,16 @@ class Penerimaan extends MY_Controller {
             $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'];
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'penerimaan';
-            $entry['flag'] = 1;
-            $entry['status'] = 'proses';
+            $entry['flag'] =3;
+            $entry['status'] = 4;
 
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
+            $q2 = $this->Posting_model->posting_kuitansi_full($q1);
             $riwayat = array();
             $riwayat['id_kuitansi_jadi'] = $q1;
-            $riwayat['status'] = 'proses';
-            $riwayat['flag'] = 1;
+            $riwayat['status'] = 4;
+            $riwayat['flag'] = 3;
 
             $this->Riwayat_model->add_riwayat($riwayat);
 
