@@ -1,2 +1,0 @@
-ALTER TABLE `akuntansi_kuitansi_jadi` CHANGE `status` `status` ENUM('proses','terima','revisi','posted','') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
-ALTER TABLE `kepeg_tr_spmls` ADD `flag_proses_akuntansi` INT NOT NULL DEFAULT '0' ;
