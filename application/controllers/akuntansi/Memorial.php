@@ -78,19 +78,15 @@ class Memorial extends MY_Controller {
 		$this->load->library('form_validation');
 
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
-		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
-		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
 		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
-		$this->form_validation->set_rules('no_spm','No. SPM','required');
 		$this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('jenis','Jenis','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
 		$this->form_validation->set_rules('uraian','uraian','required');
-		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
-		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
-		$this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
-		$this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required|matches[jumlah_akun_debet]');
+//		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
+//		$this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
+//		$this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required|matches[jumlah_akun_debet]');
 
 		if($this->form_validation->run())     
         {   
@@ -161,19 +157,15 @@ class Memorial extends MY_Controller {
 		$this->load->library('form_validation');
 
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
-		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
-		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
 		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
-		$this->form_validation->set_rules('no_spm','No. SPM','required');
 		$this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('jenis','Jenis','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
 		$this->form_validation->set_rules('uraian','uraian','required');
 		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
-		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
-		$this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
-		$this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required|matches[jumlah_akun_debet]');
+//		$this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
+//		$this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required|matches[jumlah_akun_debet]');
 
 		if($this->form_validation->run())     
         {   
