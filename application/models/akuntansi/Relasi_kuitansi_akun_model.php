@@ -16,8 +16,19 @@ class Relasi_kuitansi_akun_model extends CI_Model {
 		return $this->db->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);
 	}
 
-	public function insert_relasi_kuitansi_akun($id_kuitansi_jadi,$entry)
+	public function hapus_relasi_kuitansi_akun($id_kuitansi_jadi)
+	{
+		$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+		return $this->db->delete('akuntansi_relasi_kuitansi_akun');
+	}
+
+	public function insert_relasi_kuitansi_akun($entry)
 	{
 		return $this->db->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);
+	}
+
+	public function get_relasi_kuitansi_akun($id_kuitansi_jadi)
+	{
+		return $this->db->get_where('akuntansi_relasi_kuitansi_akun',array('id_kuitansi_jadi' => $id_kuitansi_jadi))->row_array();
 	}
 }
