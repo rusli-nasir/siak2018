@@ -77,6 +77,7 @@ class Memorial extends MY_Controller {
 	{
 		$this->load->library('form_validation');
 
+
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
 		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
 		$this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
@@ -105,33 +106,37 @@ class Memorial extends MY_Controller {
 
             $akun = $this->input->post();
 
+
+            $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
+
+            $id_kuitansi_jadi = $q1;
+
             $relasi_debet = array();
             $entry_relasi = array();
             $relasi = array();
             for ($i=0; $i < count($akun['kas_akun_debet']); $i++) { 
-            	$relasi['akun'] = $akun['kas_akun_debet'][$i];
-            	$relasi['jumlah'] = $akun['jumlah_akun_debet'][$i];
-            	$relasi['tipe'] = 'debet';
-            	$relasi['no_bukti'] = $entry['no_bukti'];
-            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['akun'] = $akun['kas_akun_debet'][$i];
+                $relasi['jumlah'] = $akun['jumlah_akun_debet'][$i];
+                $relasi['tipe'] = 'debet';
+                $relasi['no_bukti'] = $entry['no_bukti'];
+                $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
 
-            	$entry_relasi[] = $relasi;
+                $entry_relasi[] = $relasi;
             }
 
             $relasi_kredit = array();
             for ($i=0; $i < count($akun['kas_akun_kredit']); $i++) { 
-            	$relasi['akun'] = $akun['kas_akun_kredit'][$i];
-            	$relasi['jumlah'] = $akun['jumlah_akun_kredit'][$i];
-            	$relasi['tipe'] = 'kredit';
-            	$relasi['no_bukti'] = $entry['no_bukti'];
-            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['akun'] = $akun['kas_akun_kredit'][$i];
+                $relasi['jumlah'] = $akun['jumlah_akun_kredit'][$i];
+                $relasi['tipe'] = 'kredit';
+                $relasi['no_bukti'] = $entry['no_bukti'];
+                $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
 
-            	$entry_relasi[] = $relasi;
+                $entry_relasi[] = $relasi;
             }
 
             $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($id_kuitansi_jadi,$entry_relasi);
 
-            $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
             $riwayat = array();
             $riwayat['id_kuitansi_jadi'] = $q1;
             $riwayat['status'] = 'proses';
