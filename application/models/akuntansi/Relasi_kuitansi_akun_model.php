@@ -29,6 +29,6 @@ class Relasi_kuitansi_akun_model extends CI_Model {
 
 	public function get_relasi_kuitansi_akun($id_kuitansi_jadi)
 	{
-		return $this->db->get_where('akuntansi_relasi_kuitansi_akun',array('id_kuitansi_jadi' => $id_kuitansi_jadi))->row_array();
+		return $this->db->get_where('akuntansi_relasi_kuitansi_akun',array('id_kuitansi_jadi' => $id_kuitansi_jadi))->result_array();
 	}
 }

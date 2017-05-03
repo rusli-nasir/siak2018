@@ -1,5 +1,4 @@
 
-<script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
@@ -218,6 +217,8 @@
 
 </div>
 
+<script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
+
 <script>
   var jml_kredit = 0;
   var jml_debet = 0;
@@ -254,8 +255,37 @@
   $('#tanggal').datepicker({
       format: "yyyy-mm-dd"
   });
-    
-  $('#add-akunKredit').click(function(){
+
+  var $select1 = $('.kas_akun_debet').selectize();  // This initializes the selectize control
+  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  var $select2 = $('.kas_akun_kredit').selectize();  // This initializes the selectize control
+  var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+
+  var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
+  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  function selectizeme(){
+      $('.kas_akun_debet').selectize({
+        create: true
+      });
+      $('.kas_akun_kredit').selectize({
+        create: true
+      });
+    }
+
+
+  $('body').on('click','#add-akunKredit',function () {
+
+        $('.kas_akun_kredit').each(function(){ // do this for every select with the 'combobox' class
+            if ($(this)[0].selectize) { // requires [0] to select the proper object
+               var value = $(this).val(); // store the current value of the select/input
+               $(this)[0].selectize.destroy(); // destroys selectize()
+               $(this).val(value);  // set back the value of the select/input
+            }
+         });
+
         var template = $("#template_akun_kredit").clone();
         template.removeAttr("id");
         template.removeAttr("style");
@@ -263,8 +293,22 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
+        selectizeme();
         registerEvents();
-  });
+  })
+
+    
+  // $('#add-akunKredit').click(function(){
+  //       var template = $("#template_akun_kredit").clone();
+  //       template.removeAttr("id");
+  //       template.removeAttr("style");
+  //       $('#group-akunKredit').append(template);
+  //       $(".remove-entry").click(function(){
+  //           $(this).parent().parent().remove();
+  //       });
+  //       $select2[0].selectize;
+  //       registerEvents();
+  // });
     
   $('#add-akunDebet').click(function(){
         var template = $("#template_akun_debet").clone();
@@ -274,11 +318,10 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
+        $select1[0].selectize;
         registerEvents();
   });
 
-  var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
-  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($unit_kerja)): ?>
       selectize3.setValue('<?=$unit_kerja?>');

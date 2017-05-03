@@ -11,7 +11,6 @@ class Posting_model extends CI_Model {
 
         $this->load->spark('curl/1.2.1');
         $this->load->spark('restclient/2.1.0');
-        $this->cek_session_in();
         $this->load->library('rest');
 
 	    $config = array('server'  => 'http://localhost/laporan_akuntansi/index.php/api/kuitansi/',
@@ -31,37 +30,18 @@ class Posting_model extends CI_Model {
 		$this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
 
 		$data = $this->Kuitansi_model->get_kuitansi_posting($id_kuitansi_jadi);
-		$relasi = $this->Relasi_kuitansi_akun_model->get_relasi_kuitansi_akun();
+		$relasi = $this->Relasi_kuitansi_akun_model->get_relasi_kuitansi_akun($id_kuitansi_jadi);
 		$hasil = $this->rest->post('input', $data, 'json');
 
-		if ($relasi != null){
+		if ($relasi != null and $hasil != null){
 			$hasil = $this->rest->post('input_relasi', $relasi, 'json');
 		}
 		
-		if ($hasil !== null){
-			$data = $this->Kuitansi_model->get_kuitansi_posting($id_kuitansi_jadi);
-
-	    	echo 'masuk';
-
-	    	$riwayat = array();
-
-	        $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
-	        $riwayat['flag'] = $kuitansi['flag'] + 1;
-	        $riwayat['status'] = 4;
-	        $riwayat['komentar'] ='';
-	        $riwayat['id_kuitansi_jadi'] = $id_kuitansi_jadi;
-
-	        $entry['flag'] = $riwayat['flag'];
-	        $entry['status'] = 4;
-	        $this->Riwayat_model->add_riwayat($riwayat);
-	        $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
-	        $this->session->set_flashdata('success','Berhasil menyimpan !');
+		if ($hasil){
+	        return true;
 		} else{
-            $this->session->set_flashdata('warning','Gagal menyimpan !');
+            return false;
      	}
-
-		redirect('akuntansi/kuitansi');
-     	// echo 'selesai';
 
 	}
 	

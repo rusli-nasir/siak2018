@@ -96,8 +96,8 @@
 	<?php echo $content;?>
 	</div>	<!--/.main-->
 
-	<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery-1.11.1.min.js"></script>
-	<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+	<!-- <script src="<?php echo base_url();?>/assets/akuntansi/js/jquery-1.11.1.min.js"></script>
+	<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script> -->
 	<!--<script src="<?php echo base_url();?>/js/chart.min.js"></script>
 	<script src="<?php echo base_url();?>/js/chart-data.js"></script>
 	<script src="<?php echo base_url();?>/js/easypiechart.js"></script>

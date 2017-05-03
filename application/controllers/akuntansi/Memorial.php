@@ -15,6 +15,12 @@ class Memorial extends MY_Controller {
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
         $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
+        $this->load->model('akuntansi/Posting_model', 'Posting_model');
+    }
+
+    public function coba($value='')
+    {
+        echo $this->Posting_model->posting_kuitansi_full($value);
     }
 
 	public function index($id = 0){
@@ -94,18 +100,20 @@ class Memorial extends MY_Controller {
             $entry = $this->input->post();
             unset($entry['simpan']);
             $entry['id_kuitansi'] = null;
+            $entry['no_bukti'] = $this->Memorial_model->generate_nomor_bukti();
             $entry['akun_debet'] = $entry['kas_akun_debet'][0];
+            $entry['akun_kredit'] = $entry['kas_akun_kredit'][0];
+            unset($entry['kas_akun_kredit']);
             unset($entry['kas_akun_debet']);
             $entry['jumlah_debet'] = $entry['jumlah_akun_debet'][0];
             unset($entry['jumlah_akun_debet']);
             $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'][0];
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'memorial';
-            $entry['flag'] = 1;
-            $entry['status'] = 'proses';
+            $entry['flag'] = 3;
+            $entry['status'] = 4;
 
             $akun = $this->input->post();
-
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
@@ -135,12 +143,14 @@ class Memorial extends MY_Controller {
                 $entry_relasi[] = $relasi;
             }
 
-            $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($id_kuitansi_jadi,$entry_relasi);
+            $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
+
+            $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
 
             $riwayat = array();
             $riwayat['id_kuitansi_jadi'] = $q1;
-            $riwayat['status'] = 'proses';
-            $riwayat['flag'] = 1;
+            $riwayat['status'] = 'posted';
+            $riwayat['flag'] = 3;
 
             $this->Riwayat_model->add_riwayat($riwayat);
 
