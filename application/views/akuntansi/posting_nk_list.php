@@ -53,37 +53,34 @@
 <br/>
 <div class="row">
 	<div class="col-sm-12">
-		<table class="table table-striped" style="table-layout:fixed">
+		<table class="table table-striped">
             <?php
                 echo form_open('akuntansi/rest_kuitansi/posting_kuitansi_batch/',array("id"=>"form-posting"));
                 echo form_close();
             ?>
 			<thead>
 				<tr>
-					<th width="5%">NO</th>
+					<th>NO</th>
 					<th>TANGGAL</th>
-					<th>NO.SPM</th>
-					<th width="20%">KODE KEGIATAN</th>
-					<th>UNIT</th>
-					<th>AKUN DEBET</th>
-					<th>AKUN KREDIT</th>
-					<th>JUMLAH</th>
+					<th>NO.BUKTI</th>
+					<th>NO. AKUN <br/><span style="color:blue;">KAS</span><br/>AKRUAL</th>
+					<th>DEBET</th>
+					<th>KREDIT</th>
 					<th>STATUS</th>
 					<th>AKSI</th>
-                    <th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting"><input type="checkbox" id="select-all" form="form-posting">  Check All</th>
+					<th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting"><input type="checkbox" id="select-all" form="form-posting">  Check All</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($query->result() as $result){ ?>
+                
+				<?php foreach($query as $result){ ?>
 				<tr>
 					<td><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
-					<td><?php echo $result->no_spm; ?></td>
-					<td><?php echo str_replace(',', '<br/>,', $result->kode_kegiatan); ?></td>
-					<td>-</td>
-					<td><?php echo $result->akun_debet; ?></td>
-					<td><?php echo $result->akun_kredit; ?></td>
-					<td><?php echo number_format($result->jumlah_debet); ?></td>
+					<td><?php echo $result->no_bukti; ?></td>
+					<td><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.'-'.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
+					<td><?php echo $result->jumlah_debet.'<br/><br/>'.$result->jumlah_debet; ?></td>
+					<td><?php echo '<br/>'.$result->jumlah_kredit.'<br/><br/>'.$result->jumlah_kredit; ?></td>
 					<td>
 						<?php if($result->flag==1){ ?>
 							<?php if($result->status=='revisi'){ ?>
@@ -96,15 +93,21 @@
 						<?php } ?>
 					</td>
 					<td>						
-							<a href="#" target="_blank"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
-						<?php }else if($this->session->userdata('level')==2){ ?>							
-                            
-								<a href="<?php echo site_url('akuntansi/rest_kuitansi/posting_kuitansi/'.$result->id_kuitansi_jadi); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
+							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
+							<?php }else{ ?>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
+							<?php } ?>
+						<?php }else if($this->session->userdata('level')==2){ ?>
+							
+                            <a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
+
+                           <!--  <a href="<?php echo site_url('akuntansi/rest_kuitansi/posting_kuitansi/'.$result->id_kuitansi_jadi); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a> -->
 							
 						<?php }else if($this->session->userdata('level')==3){ ?>
-							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
+<!-- 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a> -->
 						<?php } ?>
 					</td>
                     <td><input type="checkbox" name="id_kuitansi_jadi[]" class="checkbox-posting" value="<?= $result->id_kuitansi_jadi; ?>" form="form-posting"></td>

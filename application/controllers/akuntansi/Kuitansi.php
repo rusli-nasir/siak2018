@@ -464,7 +464,15 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting($config['per_page'], $id, $keyword, $kode_unit);
-		
+		$this->data['query'] = $this->data['query']->result_array();
+        $this->load->model('akuntansi/Akun_model');
+        foreach($this->data['query'] as $key=>$value){
+            $this->data['query'][$key]['nama_akun_debet'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet']);
+            $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
+            $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
+            $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            $this->data['query'][$key] = (object) $this->data['query'][$key];
+        }
 		$temp_data['content'] = $this->load->view('akuntansi/posting_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
     }
@@ -516,6 +524,15 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_ls($config['per_page'], $id, $keyword);
+        $this->data['query'] = $this->data['query']->result_array();
+        $this->load->model('akuntansi/Akun_model');
+        foreach($this->data['query'] as $key=>$value){
+            $this->data['query'][$key]['nama_akun_debet'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet']);
+            $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
+            $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
+            $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            $this->data['query'][$key] = (object) $this->data['query'][$key];
+        }
 		
 		$temp_data['content'] = $this->load->view('akuntansi/posting_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -568,6 +585,15 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_spm($config['per_page'], $id, $keyword);
+        $this->data['query'] = $this->data['query']->result_array();
+        $this->load->model('akuntansi/Akun_model');
+        foreach($this->data['query'] as $key=>$value){
+            $this->data['query'][$key]['nama_akun_debet'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet']);
+            $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
+            $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
+            $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            $this->data['query'][$key] = (object) $this->data['query'][$key];
+        }
 		
 		$temp_data['content'] = $this->load->view('akuntansi/posting_nk_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
