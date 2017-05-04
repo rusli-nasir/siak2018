@@ -16,11 +16,19 @@ class Memorial extends MY_Controller {
         $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
         $this->load->model('akuntansi/Posting_model', 'Posting_model');
+        $this->load->model('akuntansi/Akun_model', 'Akun_model');
     }
 
     public function coba($value='')
     {
-        echo $this->Posting_model->posting_kuitansi_full($value);
+        echo $this->Akun_model->get_nama_akun('411102');
+        echo $this->Akun_model->get_nama_akun('611102');
+        echo $this->Akun_model->get_nama_akun('511111');
+        echo $this->Akun_model->get_nama_akun('711111');
+        echo $this->Akun_model->get_nama_akun('711111');
+        echo $this->Akun_model->get_nama_akun('112111');
+        echo $this->Akun_model->get_nama_akun('911101');
+
     }
 
 	public function index($id = 0){
