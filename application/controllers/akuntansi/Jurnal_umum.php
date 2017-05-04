@@ -14,6 +14,12 @@ class Jurnal_umum extends MY_Controller {
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Jurnal_umum_model', 'Jurnal_umum_model');
         $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
+        $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
+    }
+
+    public function coba()
+    {
+        $this->Posting_model->posting_kuitansi_full(16);
     }
 
 	public function index($id = 0){
@@ -103,10 +109,14 @@ class Jurnal_umum extends MY_Controller {
             unset($entry['jumlah_akun_debet']);
             $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'][0];
             unset($entry['jumlah_akun_kredit']);
-            $entry['flag'] = 1;
-            $entry['status'] = 'proses';
+            $entry['flag'] = 3;
+            $entry['status'] = 4;
 
             $akun = $this->input->post();
+
+            $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
+
+            $id_kuitansi_jadi = $q1;
 
             $relasi_debet = array();
             $entry_relasi = array();
@@ -133,12 +143,15 @@ class Jurnal_umum extends MY_Controller {
             }
 
 
-            $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
-            $q2 = $this->Relasi_kuitansi_akun_model->update_relasi_kuitansi_akun($id_kuitansi_jadi,$entry_relasi);
+            
+            $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($id_kuitansi_jadi,$entry_relasi);
+
+            $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+
             $riwayat = array();
             $riwayat['id_kuitansi_jadi'] = $q1;
-            $riwayat['status'] = 'proses';
-            $riwayat['flag'] = 1;
+            $riwayat['status'] = 'posted';
+            $riwayat['flag'] = 3;
 
             $this->Riwayat_model->add_riwayat($riwayat);
 
@@ -147,8 +160,8 @@ class Jurnal_umum extends MY_Controller {
 
         } else {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        	$this->data['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
-        	$this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+            $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
 			$temp_data['content'] = $this->load->view('akuntansi/jurnal_umum_tambah',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
