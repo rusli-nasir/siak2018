@@ -187,7 +187,7 @@
   </div>
     
   <div class="col-md-1">
-      <button class="remove-entry" class="close" style="background:#F44336; padding: 0px 12px; color:white; opacity:1" type="button">-</button>
+      <a role="button" class="remove-entry close" style="background:#F44336; padding: 2px 8px; color:white; opacity:1">-</a>
   </div>
 
 </div>
@@ -295,7 +295,7 @@
         });
         selectizeme();
         registerEvents();
-  })
+  });
 
     
   // $('#add-akunKredit').click(function(){
@@ -310,7 +310,16 @@
   //       registerEvents();
   // });
     
-  $('#add-akunDebet').click(function(){
+  $('body').on('click','#add-akunDebet',function () {
+
+        $('.kas_akun_debet').each(function(){ // do this for every select with the 'combobox' class
+            if ($(this)[0].selectize) { // requires [0] to select the proper object
+               var value = $(this).val(); // store the current value of the select/input
+               $(this)[0].selectize.destroy(); // destroys selectize()
+               $(this).val(value);  // set back the value of the select/input
+            }
+         });
+
         var template = $("#template_akun_debet").clone();
         template.removeAttr("id");
         template.removeAttr("style");
@@ -318,9 +327,9 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
-        $select1[0].selectize;
+        selectizeme();
         registerEvents();
-  });
+  })
 
 
   <?php if (isset($unit_kerja)): ?>

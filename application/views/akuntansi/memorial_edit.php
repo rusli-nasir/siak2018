@@ -208,7 +208,7 @@
   </div>
     
   <div class="col-md-1">
-      <button class="remove-entry" class="close" style="background:#F44336; padding: 0px 12px; color:white; opacity:1" type="button">-</button>
+      <a role="button" class="remove-entry close" style="background:#F44336; padding: 2px 8px; color:white; opacity:1">-</a>
   </div>
 
 </div>
@@ -237,6 +237,8 @@
   </div>
 
 </div>
+
+<script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 
 <script>
   var jml_kredit = 0;
@@ -274,8 +276,37 @@
   $('#tanggal').datepicker({
       format: "yyyy-mm-dd"
   });
-    
-  $('#add-akunKredit').click(function(){
+
+  var $select1 = $('.kas_akun_debet').selectize();  // This initializes the selectize control
+  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  var $select2 = $('.kas_akun_kredit').selectize();  // This initializes the selectize control
+  var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+
+  var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
+  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  function selectizeme(){
+      $('.kas_akun_debet').selectize({
+        create: true
+      });
+      $('.kas_akun_kredit').selectize({
+        create: true
+      });
+    }
+
+
+  $('body').on('click','#add-akunKredit',function () {
+
+        $('.kas_akun_kredit').each(function(){ // do this for every select with the 'combobox' class
+            if ($(this)[0].selectize) { // requires [0] to select the proper object
+               var value = $(this).val(); // store the current value of the select/input
+               $(this)[0].selectize.destroy(); // destroys selectize()
+               $(this).val(value);  // set back the value of the select/input
+            }
+         });
+
         var template = $("#template_akun_kredit").clone();
         template.removeAttr("id");
         template.removeAttr("style");
@@ -283,10 +314,33 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
+        selectizeme();
         registerEvents();
   });
+
     
-  $('#add-akunDebet').click(function(){
+  // $('#add-akunKredit').click(function(){
+  //       var template = $("#template_akun_kredit").clone();
+  //       template.removeAttr("id");
+  //       template.removeAttr("style");
+  //       $('#group-akunKredit').append(template);
+  //       $(".remove-entry").click(function(){
+  //           $(this).parent().parent().remove();
+  //       });
+  //       $select2[0].selectize;
+  //       registerEvents();
+  // });
+    
+  $('body').on('click','#add-akunDebet',function () {
+
+        $('.kas_akun_debet').each(function(){ // do this for every select with the 'combobox' class
+            if ($(this)[0].selectize) { // requires [0] to select the proper object
+               var value = $(this).val(); // store the current value of the select/input
+               $(this)[0].selectize.destroy(); // destroys selectize()
+               $(this).val(value);  // set back the value of the select/input
+            }
+         });
+
         var template = $("#template_akun_debet").clone();
         template.removeAttr("id");
         template.removeAttr("style");
@@ -294,11 +348,10 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
+        selectizeme();
         registerEvents();
-  });
+  })
 
-  var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
-  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($unit_kerja)): ?>
       selectize3.setValue('<?=$unit_kerja?>');
