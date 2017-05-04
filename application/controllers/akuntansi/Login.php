@@ -36,6 +36,7 @@ class Login extends MY_Controller {
 					'id'	=>  $row->id,
 					'username'	=>  $set_username,
 					'kode_unit'	=>  $row->kode_unit,
+					'kode_user'	=>  $row->kode_user,
 					'level'	=>  $row->level
 				);
 				print_r($login_data);
