@@ -78,7 +78,7 @@
 					<td><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
-					<td><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.'-'.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
+					<td><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td><?php echo $result->jumlah_debet.'<br/><br/>'.$result->jumlah_debet; ?></td>
 					<td><?php echo '<br/>'.$result->jumlah_kredit.'<br/><br/>'.$result->jumlah_kredit; ?></td>
 					<td>
