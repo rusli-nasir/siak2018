@@ -43,13 +43,13 @@
 		<?php $no++;
 		if($no%10==0){
 			echo '</table></div><div class="col-sm-4">
-		<table class="table table-striped">
-			<tr>
-				<th>Nama Unit</th>
-				<th align="center">Menunggu Verifikasi</th>
-                <th align="center">Menunggu Posting</th>
-				<th>Aksi</th>
-			</tr>';
+			<table class="table table-striped">
+				<tr>
+					<th>Nama Unit</th>
+					<th align="center">Menunggu Verifikasi</th>
+	                <th align="center">Menunggu Posting</th>
+					<th>Aksi</th>
+				</tr>';
 		}
 		} ?>
 		</table>
