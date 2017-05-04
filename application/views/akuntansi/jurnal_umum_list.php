@@ -16,13 +16,13 @@
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Memorial</li>
+		<li class="active">Jurnal-APBN</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Memorial</h1>
+		<h1 class="page-header">Jurnal APBN</h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
@@ -42,7 +42,7 @@
 	    </form>
 	</div>
 	<div class="col-sm-8" align="right">
-		<a href="<?php echo site_url('akuntansi/memorial/input_memorial'); ?>"><button type="button" class="btn btn-primary">Isi Memorial</button></a>
+		<a href="<?php echo site_url('akuntansi/jurnal_umum/input_jurnal_umum'); ?>"><button type="button" class="btn btn-primary">Isi Jurnal APBN</button></a>
 	</div>
 </div>
 <br/>
@@ -93,18 +93,18 @@
 					<td>						
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
-								<a href="<?php echo site_url('akuntansi/memorial/edit_memorial/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
+								<a href="<?php echo site_url('akuntansi/jurnal_umum/edit_jurnal_umum/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
 							<?php }else{ ?>
-								<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
+								<a href="<?php echo site_url('akuntansi/jurnal_umum/detail_jurnal_umum/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<?php if($result->flag==1 AND ($result->status=='proses' OR $result->status=='direvisi')){ ?>
-								<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
+								<a href="<?php echo site_url('akuntansi/jurnal_umum/detail_jurnal_umum/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
 							<?php }else{ ?>
-								<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
+								<a href="<?php echo site_url('akuntansi/jurnal_umum/detail_jurnal_umum/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==3){ ?>
-							<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_umum/detail_jurnal_umum/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
 						<?php } ?>
 					</td>
 				</tr>

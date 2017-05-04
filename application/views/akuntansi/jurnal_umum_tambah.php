@@ -26,6 +26,14 @@
     
   </div>
 </div>
+    
+<div class="form-group">
+  <label class="col-md-2 control-label" for="no_bukti">No. SPM</label>  
+  <div class="col-md-4">
+  <input id="no_bukti" name="no_spm" type="text" placeholder="No. SPM" class="form-control input-md" required="">
+    
+  </div>
+</div>
 
 <!-- Text input-->
 <div class="form-group">

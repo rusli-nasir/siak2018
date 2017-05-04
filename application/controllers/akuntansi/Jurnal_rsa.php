@@ -96,7 +96,8 @@ class Jurnal_rsa extends MY_Controller {
     {
 
         $isian = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
-        $isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
+        $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
+
         $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
         $isian['mode'] = $mode;
         $this->data['tab'] = 'beranda';
