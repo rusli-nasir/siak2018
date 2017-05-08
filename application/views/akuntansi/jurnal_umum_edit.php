@@ -120,9 +120,13 @@
   </div>
 </div>
 
+<div class="form-group">
+  <input type="checkbox" id="no-kas">  Kosongkan Kas
+</div>
+<hr>
 <!-- Text input-->
 <fieldset>  
-  <div class="col-md-6" style="border-right:1px solid #eee">
+  <div class="col-md-6" style="border-right:1px solid #eee" id="group-kas">
       <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Kas</strong></h3></div>
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_kas" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_kas">
@@ -173,7 +177,7 @@
       <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_kas">0</span></div>
       <div class="col-md-12 control-label">Selisih : <span id="selisih_kas">0</span></div>
   </div>
-  <div class="col-md-6" style="border-left:1px solid #eee">
+  <div class="col-md-6" style="border-left:1px solid #eee" id="group-akrual">
       <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Akrual</strong></h3></div>
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_akrual">
@@ -378,12 +382,13 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
-        registerEvents();
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_kas');
         template.find('select').attr('name', 'akun_kredit_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_kas');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
         template.find('select').selectize();
+            registerEvents();
+
   });
     
   $('#add-akunDebet_kas').click(function () {
@@ -394,12 +399,13 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
-        registerEvents();
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_kas');
         template.find('select').attr('name', 'akun_debet_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_kas');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
         template.find('select').selectize();
+            registerEvents();
+
   });
 
   $('#add-akunKredit_akrual').click(function () {
@@ -410,12 +416,12 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
-        registerEvents();
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_akrual');
         template.find('select').attr('name', 'akun_kredit_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
         template.find('select').selectize();
+      registerEvents();
   });
     
   $('#add-akunDebet_akrual').click(function () {
@@ -426,12 +432,24 @@
         $(".remove-entry").click(function(){
             $(this).parent().parent().remove();
         });
-        registerEvents();
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_akrual');
         template.find('select').attr('name', 'akun_debet_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
         template.find('select').selectize();
+            registerEvents();
+
+  });
+    
+  $("#no-kas").click(function(){
+    if(this.checked) {
+        $('#group-kas').attr('style', 'display:none');
+        $('#group-akrual').attr('class', 'col-md-12');
+    }
+    else {
+        $('#group-kas').attr('style', 'border-right:1px solid #eee');
+        $('#group-akrual').attr('class', 'col-md-6');
+    }
   });
 
 
