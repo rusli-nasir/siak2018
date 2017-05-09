@@ -1,3 +1,4 @@
+<link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <style type="text/css">
 .form-control{border:1px solid #bdbdbd;}
 </style>
@@ -31,7 +32,7 @@
 			<div class="form-group">
 				<label class="control-label col-sm-3">Kode Akun</label>
 				<div class="col-sm-8">
-					<select name="kode_akun" class="form-control">
+					<select name="kode_akun" class="form-control" id="selectizemepleaseT_T">
 						<?php foreach($query_1->result() as $result){ ?>
 						<option value="<?php echo $result->akun_6; ?>" <?php if($query['akun']==$result->akun_6) echo 'selected'; ?>><?php echo $result->akun_6.' - '.$result->nama; ?></option>
 						<?php } ?>
@@ -78,6 +79,10 @@
 		</form>
 	</div>
 </div>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
+<script>
+    $("#selectizemepleaseT_T").selectize()
+</script>
 
 <?php
 function get_unit($unit){
