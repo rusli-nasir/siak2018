@@ -6,6 +6,7 @@ class Memorial_model extends CI_Model {
     {
         parent::__construct();
         $this->load->database('default', TRUE);
+        $this->db2 = $this->load->database('rba', TRUE);
     }
 	
 	public function generate_nomor_bukti()
@@ -30,5 +31,15 @@ class Memorial_model extends CI_Model {
 
 		$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
 		$this->db->delete('akuntansi_relasi_kuitansi_akun');
+	}
+
+	public function read_akun($table){
+		$query = $this->db->get($table);
+		return $query;
+	}
+
+	public function read_akun_rba($table){
+		$query = $this->db2->get($table);
+		return $query;
 	}
 }

@@ -174,8 +174,10 @@ class Memorial extends MY_Controller {
         } else {
             $this->data['no_bukti'] = $this->Memorial_model->generate_nomor_bukti();
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        	$this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
-        	$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+        	//$this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+            $this->data['akun_kredit'] = $this->get_akun_kas();
+            //$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+        	$this->data['akun_debet'] = $this->get_akun_akrual();
 			$temp_data['content'] = $this->load->view('akuntansi/memorial_tambah',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
@@ -264,7 +266,7 @@ class Memorial extends MY_Controller {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-        	$this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
         	$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
 			$temp_data['content'] = $this->load->view('akuntansi/memorial_edit',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -295,4 +297,95 @@ class Memorial extends MY_Controller {
     	$this->Memorial_model->hapus_memorial($id_kuitansi_jadi);
     }
 	
+    public function get_akun_kas(){
+        $query_1 = $this->Memorial_model->read_akun('akuntansi_aset_6');
+        $query_2 = $this->Memorial_model->read_akun('akuntansi_hutang_6');
+        $query_3 = $this->Memorial_model->read_akun('akuntansi_aset_bersih_6');
+        $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
+        $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
+        $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+
+        $i = 0;
+        foreach($query_1->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_2->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_3->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_4->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_5->result() as $result){
+            $data[$i]['akun_6'] = $result->kode_akun;
+            $data[$i]['nama'] = $result->nama_akun;
+            $i++;
+        }
+        foreach($query_6->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        $data[$i]['akun_6'] = '911101';
+        $data[$i]['nama'] = 'SAL';
+
+        return $data;
+    }
+
+    public function get_akun_akrual(){
+        $query_1 = $this->Memorial_model->read_akun('akuntansi_aset_6');
+        $query_2 = $this->Memorial_model->read_akun('akuntansi_hutang_6');
+        $query_3 = $this->Memorial_model->read_akun('akuntansi_aset_bersih_6');
+        $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
+        $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
+        $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+
+        $i = 0;
+        foreach($query_1->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_2->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_3->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_4->result() as $result){
+            $result->akun_6[0] = '6';
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_5->result() as $result){
+            $result->kode_akun[0] = '7';
+            $data[$i]['akun_6'] = $result->kode_akun;
+            $data[$i]['nama'] = $result->nama_akun;
+            $i++;
+        }
+        foreach($query_6->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        $data[$i]['akun_6'] = '911101';
+        $data[$i]['nama'] = 'SAL';
+
+        return $data;
+    }
 }

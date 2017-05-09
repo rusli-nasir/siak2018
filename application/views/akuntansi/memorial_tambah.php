@@ -113,9 +113,9 @@
             <select name="akun_kredit_kas[]" class="form-control akun_kredit_kas" required="">
                 <option value="">Pilih Akun</option>
                 <option value="">
-                 <?php foreach ($akun_kredit as $akun) {
+                 <?php foreach ($akun_kredit as $key => $value) {
                   ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <option value="<?=$value['akun_6']?>"><?=$value['akun_6'].' - '.$value['nama']?></option>
                   <?php
                 }
                 ?> 
@@ -135,9 +135,9 @@
             <select name="akun_debet_kas[]" class="form-control akun_debet_kas" required="">
                 <option value="">Pilih Akun</option>
                 <option value="">
-                 <?php foreach ($akun_debet as $akun) {
+                 <?php foreach ($akun_kredit as $key => $value) {
                   ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <option value="<?=$value['akun_6']?>"><?=$value['akun_6'].' - '.$value['nama']?></option>
                   <?php
                 }
                 ?> 
@@ -164,9 +164,9 @@
             <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual" required="">
                 <option value="">Pilih Akun</option>
                 <option value="">
-                 <?php foreach ($akun_kredit as $akun) {
+                 <?php foreach ($akun_debet as $key=>$value) {
                   ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <option value="<?=$value['akun_6']?>"><?=$value['akun_6'].' - '.$value['nama']?></option>
                   <?php
                 }
                 ?> 
@@ -186,9 +186,9 @@
             <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual" required="">
                 <option value="">Pilih Akun</option>
                 <option value="">
-                 <?php foreach ($akun_debet as $akun) {
+                 <?php foreach ($akun_debet as $key=>$value) {
                   ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <option value="<?=$value['akun_6']?>"><?=$value['akun_6'].' - '.$value['nama']?></option>
                   <?php
                 }
                 ?> 
