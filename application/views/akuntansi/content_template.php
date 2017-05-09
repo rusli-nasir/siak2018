@@ -88,6 +88,7 @@
 				<li class="<?php if(isset($menu6)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/jurnal_umum/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Jurnal-APBN</a></li>
 				<hr/>
 				<li class="<?php if(isset($menu7)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/rekening/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekening</a></li>
+				<li class="<?php if(isset($menu8)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/saldo/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Saldo</a></li>
 			<?php } ?>
 		</ul>
 
