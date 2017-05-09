@@ -7,7 +7,7 @@
 <div class="row">
   <ol class="breadcrumb">
     <li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-    <li class="active">Penerimaan</li>
+    <li class="active">JurnalAPBN</li>
   </ol>
 </div><!--/.row-->
 
@@ -26,7 +26,7 @@
 
 <?php echo validation_errors(); ?>
 <!-- Form Name -->
-<legend><center>DETAIL JURNAL UMUM </center></legend>
+<legend><center>DETAIL JURNAL APBN </center></legend>
 
 <!-- Text input-->
 

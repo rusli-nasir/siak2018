@@ -7,7 +7,7 @@
 <div class="row">
   <ol class="breadcrumb">
     <li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-    <li class="active">Penerimaan</li>
+    <li class="active">Jurnal APBN</li>
   </ol>
 </div><!--/.row-->
 
@@ -20,7 +20,7 @@
 
 <?php echo validation_errors(); ?>
 <!-- Form Name -->
-<legend><center>DETAIL JURNAL UMUM (MEMORIAL)</center></legend>
+<legend><center>JURNAL APBN</center></legend>
 
 <!-- Text input-->
 
@@ -337,7 +337,7 @@
           $(".jumlah_akun_kredit_akrual").each(function(){
               jml_kredit_akrual += $(this).val()*1;
           });
-          jml_tota_akruall = jml_kredit_akrual-jml_debet_akrual;
+          jml_total_akrual = jml_kredit_akrual-jml_debet_akrual;
           $('#total_kredit_akrual').text(jml_kredit_akrual);
           updateSelisih();
       });

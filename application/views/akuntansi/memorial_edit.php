@@ -337,7 +337,7 @@
           $(".jumlah_akun_kredit_akrual").each(function(){
               jml_kredit_akrual += $(this).val()*1;
           });
-          jml_tota_akruall = jml_kredit_akrual-jml_debet_akrual;
+          jml_total_akrual = jml_kredit_akrual-jml_debet_akrual;
           $('#total_kredit_akrual').text(jml_kredit_akrual);
           updateSelisih();
       });

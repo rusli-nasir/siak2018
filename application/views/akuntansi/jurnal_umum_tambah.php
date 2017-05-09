@@ -6,7 +6,7 @@
 <div class="row">
   <ol class="breadcrumb">
     <li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-    <li class="active">Memorial</li>
+    <li class="active">Jurnal APBN</li>
   </ol>
 </div><!--/.row-->
 
@@ -14,7 +14,7 @@
 
 <?php echo validation_errors(); ?>
 <!-- Form Name -->
-<legend><center>INPUT JURNAL UMUM (MEMORIAL)</center></legend>
+<legend><center>INPUT JURNAL APBN</center></legend>
 
 <!-- Text input-->
 <?php echo form_open('akuntansi/memorial/input_memorial',array("class"=>"form-horizontal")); ?>
@@ -101,7 +101,7 @@
     <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control" required="">
       <option value="">Pilih Jenis</option>
       <option value="tidak_terikat" >Tidak Terikat</option>
-      <option value="terikat_temporer">Terikat Temporer</option>
+      <option value="terikat_temporer" selected>Terikat Temporer</option>
       <option value="terikat_permanen">Terikat Permanen</option>
     </select>
   </div>
@@ -324,7 +324,7 @@
           $(".jumlah_akun_kredit_akrual").each(function(){
               jml_kredit_akrual += $(this).val()*1;
           });
-          jml_tota_akruall = jml_kredit_akrual-jml_debet_akrual;
+          jml_total_akrual = jml_kredit_akrual-jml_debet_akrual;
           $('#total_kredit_akrual').text(jml_kredit_akrual);
           updateSelisih();
       });
