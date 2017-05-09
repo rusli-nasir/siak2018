@@ -19,7 +19,7 @@
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Kuitansi Jadi</li>
+		<li class="active">Posting</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
@@ -98,8 +98,8 @@
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
 					<td><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
-					<td><?php echo $result->jumlah_debet.'<br/><br/>'.$result->jumlah_debet; ?></td>
-					<td><?php echo '<br/>'.$result->jumlah_kredit.'<br/><br/>'.$result->jumlah_kredit; ?></td>
+					<td><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
+					<td><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
 					<td>
 						<?php if($result->flag==1){ ?>
 							<?php if($result->status=='revisi'){ ?>
