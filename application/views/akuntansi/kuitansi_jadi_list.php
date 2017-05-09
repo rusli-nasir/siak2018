@@ -80,17 +80,15 @@
 					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
 					<th>URAIAN</th>
-					<th>AKUN DEBET KAS</th>
-					<th>AKUN KREDIT KAS</th>
-					<th>AKUN DEBET AKRUAL</th>
-					<th>AKUN KREDIT AKRUAL</th>
-					<th>JUMLAH</th>
+					<th>NO. AKUN <br/><span style="color:blue;">KAS</span><br/>AKRUAL</th>
+					<th>DEBET</th>
+					<th>KREDIT</th>
 					<th>STATUS</th>
 					<th>AKSI</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($query->result() as $result){ ?>
+				<?php foreach($query as $result){ ?>
                 <?php 
                     if($this->session->userdata('level') == 2){
                         if(!($result->flag==1 && ($result->status=="direvisi" || $result->status=="proses"))) continue;
@@ -105,11 +103,9 @@
 					<td><?php echo substr($result->kode_kegiatan,6,2); ?></td>
 					<td><?php echo get_unit($result->unit_kerja); ?></td>
 					<td><?php echo $result->uraian; ?></td>
-					<td><?php echo $result->akun_debet; ?></td>
-					<td><?php echo $result->akun_kredit; ?></td>
-					<td><?php echo $result->akun_debet_akrual; ?></td>
-					<td><?php echo $result->akun_kredit_akrual; ?></td>
-					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
+					<td><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
+					<td><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
+					<td><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
 					<td>
 						<?php if($result->flag==1){ ?>
 							<?php if($result->status=='revisi'){ ?>

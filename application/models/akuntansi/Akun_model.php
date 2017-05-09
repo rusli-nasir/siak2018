@@ -15,9 +15,11 @@ class Akun_model extends CI_Model {
 			$kode_akun[0] = 5;
 			$nama = $this->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
 			$uraian_akun = explode(' ', $nama);
-            if($uraian_akun[2]!='beban'){
-              $uraian_akun[2] = 'beban';
-            }
+			if(isset($uraian_akun[2])){
+	            if($uraian_akun[2]!='beban'){
+	              $uraian_akun[2] = 'beban';
+	            }
+	        }
             $hasil_uraian = implode(' ', $uraian_akun);
             return $hasil_uraian;
 		} else if ($kode_akun[0] == 6 or $kode_akun[0] == 4){
