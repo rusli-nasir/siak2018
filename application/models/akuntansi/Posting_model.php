@@ -13,7 +13,7 @@ class Posting_model extends CI_Model {
         $this->load->spark('restclient/2.1.0');
         $this->load->library('rest');
 
-	    $config = array('server'  => 'http://localhost/laporan_akuntansi/index.php/api/kuitansi/',
+	    $config = array('server'  => 'http://localhost/lapakuntansi/index.php/api/kuitansi/',
 	                //'api_key'         => 'Setec_Astronomy'
 	                //'api_name'        => 'X-API-KEY'
 	                'http_user'       => 'rsa',

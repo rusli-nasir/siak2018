@@ -9,7 +9,7 @@ class Rest_kuitansi extends MY_Controller {
         $this->cek_session_in();
         $this->load->library('rest');
 
-	    $config = array('server'  => 'http://localhost/laporan_akuntansi/index.php/api/kuitansi/',
+	    $config = array('server'  => 'http://localhost/lapakuntansi/index.php/api/kuitansi/',
 	                //'api_key'         => 'Setec_Astronomy'
 	                //'api_name'        => 'X-API-KEY'
 	                'http_user'       => 'rsa',

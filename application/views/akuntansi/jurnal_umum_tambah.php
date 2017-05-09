@@ -14,10 +14,10 @@
 
 <?php echo validation_errors(); ?>
 <!-- Form Name -->
-<legend><center>INPUT JURNAL UMUM (MEMORIAL)</center></legend>
+<legend><center>INPUT JURNAL UMUM</center></legend>
 
 <!-- Text input-->
-<?php echo form_open('akuntansi/memorial/input_memorial',array("class"=>"form-horizontal")); ?>
+<?php echo form_open('akuntansi/jurnal_umum/input_jurnal_umum',array("class"=>"form-horizontal")); ?>
 
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  

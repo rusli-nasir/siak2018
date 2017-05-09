@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.14
+-- version 4.5.1
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2017 at 06:17 AM
--- Server version: 5.6.26
--- PHP Version: 5.6.12
+-- Generation Time: May 09, 2017 at 05:53 AM
+-- Server version: 10.1.16-MariaDB
+-- PHP Version: 5.5.38
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -26,14 +26,14 @@ SET time_zone = "+00:00";
 -- Table structure for table `akuntansi_kuitansi_jadi`
 --
 
-CREATE TABLE IF NOT EXISTS `akuntansi_kuitansi_jadi` (
+CREATE TABLE `akuntansi_kuitansi_jadi` (
   `id_kuitansi_jadi` int(11) NOT NULL,
-  `id_kuitansi` int(11) NOT NULL,
+  `id_kuitansi` int(11) DEFAULT NULL,
   `no_bukti` varchar(50) NOT NULL,
-  `no_spm` varchar(150) NOT NULL,
+  `no_spm` varchar(150) DEFAULT NULL,
   `tanggal` date NOT NULL,
-  `jenis` varchar(50) NOT NULL,
-  `kode_kegiatan` varchar(100) NOT NULL,
+  `jenis` varchar(50) DEFAULT NULL,
+  `kode_kegiatan` varchar(100) DEFAULT NULL,
   `unit_kerja` int(11) NOT NULL,
   `uraian` text NOT NULL,
   `jenis_pembatasan_dana` varchar(100) NOT NULL,
@@ -43,7 +43,10 @@ CREATE TABLE IF NOT EXISTS `akuntansi_kuitansi_jadi` (
   `akun_kredit` varchar(10) NOT NULL,
   `akun_kredit_akrual` varchar(10) NOT NULL,
   `jumlah_kredit` bigint(20) NOT NULL,
-  `flag` int(2) NOT NULL
+  `tipe` varchar(20) NOT NULL,
+  `flag` int(2) NOT NULL,
+  `kode_user` varchar(255) NOT NULL,
+  `status` enum('proses','terima','revisi','posted','direvisi') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
