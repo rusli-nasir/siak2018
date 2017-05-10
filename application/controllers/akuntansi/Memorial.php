@@ -338,8 +338,13 @@ class Memorial extends MY_Controller {
 
         $i = 0;
         foreach($query_1->result() as $result){
-            $data[$i]['akun_6'] = $result->akun_6;
-            $data[$i]['nama'] = $result->nama;
+            if($i==0){
+                $data[$i]['akun_6'] = '911101';
+                $data[$i]['nama'] = 'SAL';
+            }else{
+                $data[$i]['akun_6'] = $result->akun_6;
+                $data[$i]['nama'] = $result->nama;
+            }
             $i++;
         }
         foreach($query_2->result() as $result){
@@ -383,8 +388,13 @@ class Memorial extends MY_Controller {
 
         $i = 0;
         foreach($query_1->result() as $result){
-            $data[$i]['akun_6'] = $result->akun_6;
-            $data[$i]['nama'] = $result->nama;
+            if($i==0){
+                $data[$i]['akun_6'] = '911101';
+                $data[$i]['nama'] = 'SAL';
+            }else{
+                $data[$i]['akun_6'] = $result->akun_6;
+                $data[$i]['nama'] = $result->nama;
+            }
             $i++;
         }
         foreach($query_2->result() as $result){
@@ -414,8 +424,6 @@ class Memorial extends MY_Controller {
             $data[$i]['nama'] = $result->nama;
             $i++;
         }
-        $data[$i]['akun_6'] = '911101';
-        $data[$i]['nama'] = 'SAL';
 
         return $data;
     }
