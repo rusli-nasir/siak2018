@@ -126,6 +126,7 @@ class Jurnal_umum extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['tipe'] = 'jurnal_umum';
+            $entry['kode_user'] = $this->session->userdata('kode_user');
 
             // print_r($entry);die();
 
@@ -197,8 +198,6 @@ class Jurnal_umum extends MY_Controller {
 
 
         } else {
-            echo validation_errors();
-            print_r($this->input->post());die();
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
             $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
             $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();

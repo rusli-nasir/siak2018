@@ -93,15 +93,21 @@ class Memorial extends MY_Controller {
 
 
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
-		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
-		$this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
-		$this->form_validation->set_rules('tanggal','Tanggal','required');
-		$this->form_validation->set_rules('jenis','Jenis','required');
-		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
-		$this->form_validation->set_rules('uraian','uraian','required');
-//		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
-//		$this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
-//		$this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required|matches[jumlah_akun_debet]');
+        $this->form_validation->set_rules('akun_kredit_akrual[]','Akun kredit (Akrual)','required');
+        $this->form_validation->set_rules('akun_debet_akrual[]','Akun debet (Akrual)','required');
+        $this->form_validation->set_rules('no_bukti','No. Bukti','required');
+        // $this->form_validation->set_rules('no_spm','No. SPM','required');
+        $this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
+        $this->form_validation->set_rules('tanggal','Tanggal','required');
+        $this->form_validation->set_rules('jenis','Jenis','required');
+        $this->form_validation->set_rules('unit_kerja','unit_kerja','required');
+        $this->form_validation->set_rules('uraian','uraian','required');
+        // $this->form_validation->set_rules('tipe','Tipe','required');
+        // $this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
+        // $this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
+        // $this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
+        $this->form_validation->set_rules('jumlah_akun_kredit_akrual[]','Jumlah Akun Kredit','required');
+        $this->form_validation->set_rules('jumlah_akun_debet_akrual[]','Jumlah Akun debet','required');
 
 		if($this->form_validation->run())     
         {   
@@ -117,15 +123,18 @@ class Memorial extends MY_Controller {
             unset($entry['akun_debet_kas']);
             unset($entry['akun_kredit_akrual']);
             unset($entry['akun_debet_akrual']);
-            $entry['jumlah_debet'] = $entry['jumlah_akun_debet_akrual'][0];
+            $entry['jumlah_debet'] = array_sum($entry['jumlah_akun_debet_kas']);
             unset($entry['jumlah_akun_debet_akrual']);
             unset($entry['jumlah_akun_debet_kas']);
-            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit_akrual'][0];
+            $entry['jumlah_kredit'] = array_sum($entry['jumlah_akun_kredit_akrual']);
             unset($entry['jumlah_akun_kredit_akrual']);
             unset($entry['jumlah_akun_kredit_kas']);
             $entry['tipe'] = 'memorial';
             $entry['flag'] = 3;
             $entry['status'] = 4;
+            $entry['kode_user'] = $this->session->userdata('kode_user');
+
+
 
             $akun = $this->input->post();
 
@@ -133,26 +142,48 @@ class Memorial extends MY_Controller {
 
             $id_kuitansi_jadi = $q1;
 
-            $relasi_debet = array();
             $entry_relasi = array();
             $relasi = array();
-            for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
-                $relasi['akun'] = $akun['akun_debet_kas'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_debet_kas'][$i];
+            for ($i=0; $i < count($akun['akun_debet_akrual']); $i++) { 
+                $relasi['akun'] = $akun['akun_debet_akrual'][$i];
+                $relasi['jumlah'] = $akun['jumlah_akun_debet_akrual'][$i];
                 $relasi['tipe'] = 'debet';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['jenis'] = 'akrual';
 
                 $entry_relasi[] = $relasi;
             }
 
-            $relasi_kredit = array();
             for ($i=0; $i < count($akun['akun_kredit_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_kredit_akrual'][$i];
                 $relasi['jumlah'] = $akun['jumlah_akun_kredit_akrual'][$i];
                 $relasi['tipe'] = 'kredit';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['jenis'] = 'akrual';
+
+                $entry_relasi[] = $relasi;
+            }
+
+            for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
+                $relasi['akun'] = $akun['akun_debet_kas'][$i];
+                $relasi['jumlah'] = $akun['jumlah_akun_debet_kas'][$i];
+                $relasi['tipe'] = 'debet';
+                $relasi['no_bukti'] = $entry['no_bukti'];
+                $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['jenis'] = 'kas';
+
+                $entry_relasi[] = $relasi;
+            }
+
+            for ($i=0; $i < count($akun['akun_kredit_kas']); $i++) { 
+                $relasi['akun'] = $akun['akun_kredit_kas'][$i];
+                $relasi['jumlah'] = $akun['jumlah_akun_kredit_kas'][$i];
+                $relasi['tipe'] = 'kredit';
+                $relasi['no_bukti'] = $entry['no_bukti'];
+                $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['jenis'] = 'kas';
 
                 $entry_relasi[] = $relasi;
             }

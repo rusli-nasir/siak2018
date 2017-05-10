@@ -139,6 +139,7 @@ class Jurnal_rsa extends MY_Controller {
 
         $updater['status'] = $status;
         $updater['flag'] = $flag;
+        $updater['kode_user'] = $this->session->userdata('kode_user');
         $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$updater);
 
         redirect('akuntansi/jurnal_rsa/detail_kuitansi/'.$id_kuitansi_jadi.'/lihat');
@@ -185,8 +186,13 @@ class Jurnal_rsa extends MY_Controller {
         {
 
             $isian = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
-            $isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
+            // $isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
+            // $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+
+            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
+
             $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+
             $isian['mode'] = $mode;
             $this->data['tab'] = 'beranda';
             $this->data['menu1'] = true;
