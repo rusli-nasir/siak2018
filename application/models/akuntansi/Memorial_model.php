@@ -42,4 +42,14 @@ class Memorial_model extends CI_Model {
 		$query = $this->db2->get($table);
 		return $query;
 	}
+
+	public function read_output($kode_kegiatan){
+		$query = $this->db2->query("SELECT * FROM output WHERE kode_kegiatan='".$kode_kegiatan."'");
+		return $query;
+	}
+
+	public function read_program($kode_kegiatan, $kode_output){
+		$query = $this->db2->query("SELECT * FROM program WHERE kode_kegiatan='".$kode_kegiatan."' AND kode_output='".$kode_output."'");
+		return $query;
+	}
 }

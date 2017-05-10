@@ -102,7 +102,6 @@
 								<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==3){ ?>
-							<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
 						<?php } ?>
 					</td>
 				</tr>

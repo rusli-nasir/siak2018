@@ -107,7 +107,7 @@
   </div>
 </div>
 
-<div class="form-group">
+<div class="form-group" align="center">
   <input type="checkbox" id="no-kas">  Kosongkan Kas
 </div>
 <hr>

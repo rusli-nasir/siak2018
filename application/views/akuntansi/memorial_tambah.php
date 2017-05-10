@@ -2,6 +2,33 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+<script type="text/javascript">
+$(document).ready(function(){
+  var host = location.protocol + '//' + location.host + '/rsa/index.php/';
+  $("#kegiatan").change(function(){
+    var kode_kegiatan = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_output/'+kode_kegiatan,
+      data:{},
+      success:function(data){
+        $("#output").html(data);
+      }
+    })
+  })
+
+  $("#output").change(function(){
+    var kode_kegiatan = $("#kegiatan").val();
+    var kode_output = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_program/'+kode_kegiatan+'/'+kode_output,
+      data:{},
+      success:function(data){
+        $("#program").html(data);
+      }
+    })
+  })
+})
+</script>
 
 <div class="row">
   <ol class="breadcrumb">
@@ -52,13 +79,13 @@
 </div>
 
 <!-- Text input-->
-<div class="form-group">
+<!-- <div class="form-group">
   <label class="col-md-2 control-label" for="kode_kegiatan">Kode Kegiatan</label>  
   <div class="col-md-4">
   <input id="kode_kegiatan" name="kode_kegiatan" type="text" placeholder="Kode Kegiatan" class="form-control input-md" required="">
 
   </div>
-</div>
+</div> -->
 
 <!-- Text input-->
 <div class="form-group">
@@ -73,6 +100,45 @@
           <?php
         }
         ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Kegiatan</label>  
+  <div class="col-md-6">
+      <select id="kegiatan" name="kegiatan" class="form-control" required="">
+        <option value="">Pilih Kegiatan</option>
+        <?php foreach ($kegiatan->result() as $result) {
+          ?>
+          <option value="<?=$result->kode_kegiatan;?>"><?=$result->kode_kegiatan.' - '.$result->nama_kegiatan?></option>
+          <?php
+        }
+        ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Output</label>  
+  <div class="col-md-6">
+      <select id="output" name="output" class="form-control" required="">
+        <option value="">----</option>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Program</label>  
+  <div class="col-md-6">
+      <select id="program" name="program" class="form-control" required="">
+        <option value="">----</option>
       </select>
     
   </div>
@@ -98,7 +164,7 @@
     </select>
   </div>
 </div>
-<div class="form-group">
+<div class="form-group" align="center">
   <input type="checkbox" id="no-kas">  Kosongkan Kas
 </div>
 <hr>

@@ -97,7 +97,7 @@ class Memorial extends MY_Controller {
         $this->form_validation->set_rules('akun_debet_akrual[]','Akun debet (Akrual)','required');
         $this->form_validation->set_rules('no_bukti','No. Bukti','required');
         // $this->form_validation->set_rules('no_spm','No. SPM','required');
-        $this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
+        $this->form_validation->set_rules('kegiatan','Kode Kegiatan','required');
         $this->form_validation->set_rules('tanggal','Tanggal','required');
         $this->form_validation->set_rules('jenis','Jenis','required');
         $this->form_validation->set_rules('unit_kerja','unit_kerja','required');
@@ -133,8 +133,10 @@ class Memorial extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
-
-
+            $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            unset($entry['kegiatan']);
+            unset($entry['output']);
+            unset($entry['program']);
 
             $akun = $this->input->post();
 
@@ -209,6 +211,10 @@ class Memorial extends MY_Controller {
             $this->data['akun_kredit'] = $this->get_akun_kas();
             //$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['akun_debet'] = $this->get_akun_akrual();
+
+            //kode kegiatan
+            $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
+
 			$temp_data['content'] = $this->load->view('akuntansi/memorial_tambah',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
@@ -426,5 +432,21 @@ class Memorial extends MY_Controller {
         }
 
         return $data;
+    }
+
+    public function get_output($kode_kegiatan){
+        $query = $this->Memorial_model->read_output($kode_kegiatan);
+        echo '<option value="">Pilih Output</option>';
+        foreach($query->result() as $result){
+            echo '<option value="'.$result->kode_output.'">'.$result->kode_output.' - '.$result->nama_output.'</option>';
+        }
+    }
+
+    public function get_program($kode_kegiatan, $kode_output){
+        $query = $this->Memorial_model->read_program($kode_kegiatan, $kode_output);
+        echo '<option value="">Pilih Program</option>';
+        foreach($query->result() as $result){
+            echo '<option value="'.$result->kode_program.'">'.$result->kode_program.' - '.$result->nama_program.'</option>';
+        }
     }
 }
