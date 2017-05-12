@@ -8,6 +8,7 @@ class Laporan_model extends CI_Model {
         $this->load->database('default', TRUE);
         $this->db2 = $this->load->database('rba',TRUE);
         $this->db_laporan = $this->load->database('laporan',TRUE);
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
     }
 
     function read_buku_besar_group($group = null){
@@ -15,8 +16,27 @@ class Laporan_model extends CI_Model {
         return $query;
     }
 
-    function read_buku_besar_akun_group($group = null,$akun){
-        $query = $this->db_laporan->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE $group LIKE '$akun%' AND tipe<>'memorial' AND tipe<>'jurnal_umum' GROUP BY $group")->result_array();
+    function read_buku_besar_akun_group($group = null,$akun = null,$sumber_dana=null,$start_date=null,$end_date=null){
+
+        $this->db_laporan
+            ->where("tipe != 'memorial' AND tipe != 'jurnal_umum'")
+            ->group_by($group);
+
+        if ($akun != null){
+            $this->db_laporan->like($group,$akun,'after');
+        }
+
+        if ($sumber_dana != null){
+            $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
+        }
+
+        if ($start_date != null and $end_date != null){
+            $this->db_laporan->where("(tanggal BETWEEN $start_date AND $end_date)");
+        }
+
+
+        $query = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
+        // $query = $this->db_laporan->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE $group LIKE '$akun%' AND tipe<>'memorial' AND tipe<>'jurnal_umum' GROUP BY $group")->result_array();
         return $query;
     }
 
@@ -27,9 +47,15 @@ class Laporan_model extends CI_Model {
 
 
 
-    public function get_akun_tabel_utama($array_akun){
+    public function get_akun_tabel_utama($array_akun=null,$jenis=null,$sumber_dana=null,$start_date=null,$end_date=null){
         $array_tipe  = array('debet','kredit');
-        $array_jenis = array('akrual','kas');
+
+        $jenis = array();
+        if ($jenis == null){
+            $array_jenis = array('akrual','kas');
+        }else {
+            $array_jenis[] = $jenis;
+        }
 
         $kolom = array(
                 'debet' => array(
@@ -53,10 +79,8 @@ class Laporan_model extends CI_Model {
                         $entry['jenis'] = $jenis;
                         $entry['akun'] = $hasil[$kolom[$tipe][$jenis]];
                         $entry['jumlah'] = $hasil['jumlah_'.$tipe];
+                        $entry['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($entry['tanggal']);
                         $data[] = $entry;
-
-                        
-                        
                     }
                 }
                 
@@ -67,16 +91,34 @@ class Laporan_model extends CI_Model {
 
     }
 
-    public function get_akun_tabel_relasi($array_akun)
+    public function get_akun_tabel_relasi($array_akun,$jenis=null,$sumber_dana=null,$start_date=null,$end_date=null)
     {
         $data = array();
         foreach ($array_akun as $akun) {
-            $query = $this->db_laporan->query("SELECT * FROM akuntansi_relasi_kuitansi_akun WHERE akun LIKE '$akun%'")->result_array();
+            // $query = $this->db_laporan->query("SELECT * FROM akuntansi_relasi_kuitansi_akun WHERE akun LIKE '$akun%'")->result_array();
+
+            $this->db_laporan->like('akun',$akun,'after');  
+
+            if ($sumber_dana != null){
+                $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
+            }
+
+            if ($start_date != null and $end_date != null){
+                $this->db_laporan->where("(tanggal BETWEEN $start_date AND $end_date)");
+            }
+
+            if ($jenis != null){
+                $this->db_laporan->where('jenis',$jenis);
+            }
+
+
+            $query = $this->db_laporan->get('akuntansi_relasi_kuitansi_akun')->result_array();
             // print_r($query);die();
             foreach ($query as $hasil) {
                 $entry = array();
                 $entry = $this->db_laporan->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi' =>$hasil['id_kuitansi_jadi']))->row_array();
                 $entry = array_merge($entry,$hasil);
+                $entry['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($entry['tanggal']);
                 $data[] = $entry;
             }
             

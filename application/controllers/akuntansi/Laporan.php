@@ -59,22 +59,6 @@ class Laporan extends MY_Controller {
 
     	$n_akun = count($data);
 
-    	// print_r($n_akun);
-    	// print_r($data);
-    	// die();
-
-    	
-
-        // $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-        // $rendererLibrary = 'mpdf';
-        // $rendererLibraryPath = APPPATH.'third_party/'.$rendererLibrary;
-        // if (!PHPExcel_Settings::setPdfRenderer($rendererName,$rendererLibraryPath)) {
-        //     die(
-        //         'Please set the $rendererName and $rendererLibraryPath values' .
-        //             PHP_EOL .
-        //         ' as appropriate for your directory structure'
-        //         );
-        // }
         $path_template = realpath(FCPATH).'/assets/akuntansi/template_excel/template_buku_besar.xls';
         $excel = new PHPExcel_Reader_Excel5();
         $objPHPExcel = $excel->load($path_template);
@@ -118,22 +102,6 @@ class Laporan extends MY_Controller {
     		$i++;
     		// $objWorksheet->setCellValueByColumnAndRow(2,$i+$row,$i+1);
     	}
-
-
-
-      
-
-        // $nilai = $data['nilai'];
-        // $baris = 22;
-        // for ($i=0; $i < count($nilai); $i++) { 
-        //     $objWorksheet->setCellValueByColumnAndRow(2,$i+$baris,$i+1);
-        //     $objWorksheet->setCellValueByColumnAndRow(3,$i+$baris,$nilai[$i]['nama_mapel']);
-        //     $objWorksheet->setCellValueByColumnAndRow(5,$i+$baris,$nilai[$i]['nilai']);
-        //     $objWorksheet->setCellValueByColumnAndRow(6,$i+$baris,$this->konversiNilai($nilai[$i]['nilai']));
-        // }
-        // $objWorksheet->setCellValue('F26',$data['jumlah']);
-        // $objWorksheet->setCellValue('G26',$this->konversiNilai($data['jumlah']));
-
 
         $objWriter = new PHPExcel_Writer_HTML($objPHPExcel);  
         $output['data'] = $objWriter->generateHTMLHeader();
