@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Jurnal_umum extends MY_Controller {
 	public function __construct(){
         parent::__construct();
-        $this->data['menu5'] = true;
+        $this->data['menu6'] = true;
         $this->cek_session_in();
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
@@ -36,7 +36,7 @@ class Jurnal_umum extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_by_tipe(null, null, $keyword, 'memorial');
+		$total_data = $this->Kuitansi_model->read_by_tipe(null, null, $keyword, 'jurnal_umum');
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -67,7 +67,7 @@ class Jurnal_umum extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_by_tipe($config['per_page'], $id, $keyword, 'memorial');
+		$this->data['query'] = $this->Kuitansi_model->read_by_tipe($config['per_page'], $id, $keyword, 'jurnal_umum');
 		
 		$temp_data['content'] = $this->load->view('akuntansi/jurnal_umum_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
