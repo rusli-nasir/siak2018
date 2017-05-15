@@ -4,6 +4,160 @@
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
 
+<script type="text/javascript">
+$(document).ready(function(){
+  var host = location.protocol + '//' + location.host + '/rsa/index.php/';
+  $("#kegiatan").change(function(){
+    var kode_kegiatan = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_output/'+kode_kegiatan,
+      data:{},
+      success:function(data){
+        $("#output").html(data);
+        $("#program").html('<option value="">----</option>')
+      }
+    })
+  })
+
+  $("#output").change(function(){
+    var kode_kegiatan = $("#kegiatan").val();
+    var kode_output = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_program/'+kode_kegiatan+'/'+kode_output,
+      data:{},
+      success:function(data){
+        $("#program").html(data);
+      }
+    })
+  })
+
+  //get akun
+  var id_kuitansi_jadi = <?=$id_kuitansi_jadi?>;
+  //kas kredit
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/kas',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_kredit").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunKredit_kas').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_kas');
+        template.find('select').attr('name', 'akun_kredit_kas[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_kas');
+        template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+      });
+    }
+  })
+
+  //kas debet
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/debet/kas',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_debet").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunDebet_kas').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_kas');
+        template.find('select').attr('name', 'akun_debet_kas[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_kas');
+        template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+      });
+    }
+  })
+
+  //akrual kredit
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/akrual',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_kredit").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunKredit_akrual').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_akrual');
+        template.find('select').attr('name', 'akun_kredit_akrual[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_akrual');
+        template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+
+      });
+    }
+  })
+
+  //akrual debet
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/debet/akrual',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_debet").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunDebet_akrual').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_akrual');
+        template.find('select').attr('name', 'akun_debet_akrual[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_akrual');
+        template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+      });
+    }
+  })
+})
+</script>
+
 <div class="row">
   <ol class="breadcrumb">
     <li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
@@ -74,15 +228,6 @@
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-2 control-label" for="kode_kegiatan">Kode Kegiatan</label>  
-  <div class="col-md-4">
-  <input id="kode_kegiatan" name="kode_kegiatan" type="text" value="<?=$kode_kegiatan?>" placeholder="Kode Kegiatan" class="form-control input-md" required="">
-
-  </div>
-</div>
-
-<!-- Text input-->
-<div class="form-group">
   <label class="col-md-2 control-label" for="unit_kerja">Unit Kerja</label>  
   <div class="col-md-4">
   <!-- <input id="unit_kerja" name="unit_kerja" type="text" placeholder="Unit Kerja" class="form-control input-md" required=""> -->
@@ -91,6 +236,55 @@
         <?php foreach ($all_unit_kerja as $unit) {
           ?>
           <option value="<?=$unit['kode_unit']?>"><?=$unit['kode_unit'].' - '.$unit['nama_unit']?></option>
+          <?php
+        }
+        ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Kegiatan</label>  
+  <div class="col-md-6">
+      <select id="kegiatan" name="kegiatan" class="form-control" required="">
+        <option value="">Pilih Kegiatan</option>
+        <?php foreach ($kegiatan->result() as $result) {
+          ?>
+          <option value="<?=$result->kode_kegiatan;?>" <?php if(substr($kode_kegiatan,8,2)==$result->kode_kegiatan) echo 'selected'; ?>><?=$result->kode_kegiatan.' - '.$result->nama_kegiatan?></option>
+          <?php
+        }
+        ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Output</label>  
+  <div class="col-md-6">
+      <select id="output" name="output" class="form-control" required="">
+        <?php foreach ($output->result() as $result) {
+          ?>
+          <option value="<?=$result->kode_output;?>" <?php if(substr($kode_kegiatan,10,2)==$result->kode_output) echo 'selected'; ?>><?=$result->kode_output.' - '.$result->nama_output?></option>
+          <?php
+        }
+        ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Program</label>  
+  <div class="col-md-6">
+      <select id="program" name="program" class="form-control" required="">
+        <?php foreach ($program->result() as $result) {
+          ?>
+          <option value="<?=$result->kode_program;?>" <?php if(substr($kode_kegiatan,12,2)==$result->kode_program) echo 'selected'; ?>><?=$result->kode_program.' - '.$result->nama_program?></option>
           <?php
         }
         ?>
@@ -120,7 +314,7 @@
   </div>
 </div>
 
-<div class="form-group">
+<div class="form-group" align="center">
   <input type="checkbox" id="no-kas">  Kosongkan Kas
 </div>
 <hr>
@@ -130,7 +324,7 @@
       <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Kas</strong></h3></div>
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_kas" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_kas">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_kredit_kas[]" class="form-control akun_kredit_kas" required="">
                 <option value="">Pilih Akun</option>
@@ -152,7 +346,7 @@
       </div>
       <div class="col-md-12 control-label" style="text-align: left"><h4>Debet<button id="add-akunDebet_kas" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunDebet_kas">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_debet_kas[]" class="form-control akun_debet_kas" required="">
                 <option value="">Pilih Akun</option>
@@ -173,15 +367,15 @@
         </div>
       </div>
       <hr>
-      <div class="col-md-12 control-label">Jumlah kredit : <span id="total_kredit_kas">0</span></div>
-      <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_kas">0</span></div>
-      <div class="col-md-12 control-label">Selisih : <span id="selisih_kas">0</span></div>
+      <div class="col-md-12 control-label">Jumlah kredit : <span id="total_kredit_kas"><?php echo $total_kas_kredit; ?></span></div>
+      <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_kas"><?php echo $total_kas_debet; ?></span></div>
+      <div class="col-md-12 control-label">Selisih : <span id="selisih_kas"><?php echo $total_kas_kredit-$total_kas_debet; ?></span></div>
   </div>
   <div class="col-md-6" style="border-left:1px solid #eee" id="group-akrual">
       <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Akrual</strong></h3></div>
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_akrual">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual" required="">
                 <option value="">Pilih Akun</option>
@@ -203,7 +397,7 @@
       </div>
       <div class="col-md-12 control-label" style="text-align: left"><h4>Debet<button id="add-akunDebet_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunDebet_akrual">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual" required="">
                 <option value="">Pilih Akun</option>
@@ -224,9 +418,9 @@
         </div>
       </div>
       <hr>
-      <div class="col-md-12 control-label">Jumlah kredit : <span id="total_kredit_akrual">0</span></div>
-      <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_akrual">0</span></div>
-      <div class="col-md-12 control-label">Selisih : <span id="selisih_akrual">0</span></div>
+      <div class="col-md-12 control-label">Jumlah kredit : <span id="total_kredit_akrual"><?php echo $total_akrual_kredit ?></span></div>
+      <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_akrual"><?php echo $total_akrual_debet ?></span></div>
+      <div class="col-md-12 control-label">Selisih : <span id="selisih_akrual"><?php echo $total_akrual_kredit-$total_akrual_debet ?></span></div>
   </div>
 
 </fieldset>
@@ -262,7 +456,7 @@
   <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" required="">
   </div>
     
-  <div class="col-md-1">
+  <div class="col-md-1 remove_btn">
       <a role="button" class="remove-entry close" style="background:#F44336; padding: 2px 8px; color:white; opacity:1">-</a>
   </div>
 
@@ -287,7 +481,7 @@
   <input type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md" required="">
   </div>
     
-  <div class="col-md-1">
+  <div class="col-md-1 remove_btn">
       <a role="button" class="remove-entry close" style="background:#F44336; padding: 2px 8px; color:white; opacity:1">-</a>
   </div>
 
@@ -302,7 +496,7 @@
   var jml_kredit_akrual = 0;
   var jml_debet_akrual = 0;
   var jml_total_akrual = 0;
-    
+
   function registerEvents(){
       console.log("register");
       $(".jumlah_akun_debet_kas").on('input', function(){
@@ -373,6 +567,7 @@
   var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
   var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
+  selectize3.setValue('<?=$kode_unit?>');
 
   $('#add-akunKredit_kas').click(function () {
         var template = $("#template_akun_kredit").clone();
@@ -421,7 +616,7 @@
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
         template.find('select').selectize();
-      registerEvents();
+        registerEvents();
   });
     
   $('#add-akunDebet_akrual').click(function () {
@@ -451,11 +646,4 @@
         $('#group-akrual').attr('class', 'col-md-6');
     }
   });
-
-
-  <?php if (isset($unit_kerja)): ?>
-      selectize3.setValue('<?=$unit_kerja?>');
-  <?php endif ?>
-
-
 </script>

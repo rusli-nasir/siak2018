@@ -303,12 +303,58 @@ class Memorial extends MY_Controller {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
-        	$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+            $this->data['akun_kredit'] = $this->get_akun_kas();
+        	$this->data['akun_debet'] = $this->get_akun_akrual();
+
+            //kode kegiatan
+            $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
+            //kode output
+            $this->data['output'] = $this->Memorial_model->read_output(substr($this->data['kode_kegiatan'],8,2));
+            //kode program
+            $this->data['program'] = $this->Memorial_model->read_program(substr($this->data['kode_kegiatan'],8,2), substr($this->data['kode_kegiatan'],10,2));
+
+            $query_kas_kredit = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'kredit','jenis'=>'kas'))->result();
+            $query_kas_debet = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'debet','jenis'=>'kas'))->result();
+            $query_akrual_kredit = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'kredit','jenis'=>'akrual'))->result();
+            $query_akrual_debet = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'debet','jenis'=>'akrual'))->result();
+
+            $this->data['total_kas_kredit'] = 0;
+            $this->data['total_kas_debet'] = 0;
+            $this->data['total_akrual_kredit'] = 0;
+            $this->data['total_akrual_debet'] = 0;
+            foreach($query_kas_kredit as $result){
+                $this->data['total_kas_kredit'] += $result->jumlah;
+            }
+            foreach($query_kas_debet as $result){
+                $this->data['total_kas_debet'] += $result->jumlah;
+            }
+            foreach($query_akrual_kredit as $result){
+                $this->data['total_akrual_kredit'] += $result->jumlah;
+            }
+            foreach($query_akrual_debet as $result){
+                $this->data['total_akrual_debet'] += $result->jumlah;
+            }
+
 			$temp_data['content'] = $this->load->view('akuntansi/memorial_edit',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
 	}
+
+    public function get_kas_debet($id_kuitansi_jadi, $tipe, $jenis){
+        $query = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>$tipe, 'jenis'=>$jenis));
+        $total = $query->num_rows();
+        $result = $query->result();
+        
+        $i=0;
+        foreach($result as $result){
+            $data['hasil'][$i]['akun'] = $result->akun;
+            $data['hasil'][$i]['jumlah'] = $result->jumlah;
+            $i++;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
 
 	public function detail_memorial($id_kuitansi_jadi,$mode='lihat')
     {

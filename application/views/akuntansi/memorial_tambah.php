@@ -12,6 +12,7 @@ $(document).ready(function(){
       data:{},
       success:function(data){
         $("#output").html(data);
+        $("#program").html('<option value="">----</option>');
       }
     })
   })

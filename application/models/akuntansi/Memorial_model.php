@@ -52,4 +52,10 @@ class Memorial_model extends CI_Model {
 		$query = $this->db2->query("SELECT * FROM program WHERE kode_kegiatan='".$kode_kegiatan."' AND kode_output='".$kode_output."'");
 		return $query;
 	}
+
+	public function read_akun_relasi($cond){
+		$this->db->where($cond);
+		$query = $this->db->get('akuntansi_relasi_kuitansi_akun');
+		return $query;
+	}
 }
