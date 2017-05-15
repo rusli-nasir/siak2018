@@ -29,6 +29,131 @@ $(document).ready(function(){
       }
     })
   })
+
+  //get akun
+  var id_kuitansi_jadi = <?=$id_kuitansi_jadi?>;
+  //kas kredit
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/kas',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_kredit").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunKredit_kas').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_kas');
+        template.find('select').attr('name', 'akun_kredit_kas[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_kas');
+        template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+      });
+    }
+  })
+
+  //kas debet
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/debet/kas',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_debet").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunDebet_kas').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_kas');
+        template.find('select').attr('name', 'akun_debet_kas[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_kas');
+        template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+      });
+    }
+  })
+
+  //akrual kredit
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/akrual',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_kredit").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunKredit_akrual').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_akrual');
+        template.find('select').attr('name', 'akun_kredit_akrual[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_akrual');
+        template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+
+      });
+    }
+  })
+
+  //akrual debet
+  $.ajax({
+    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/debet/akrual',
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var template = $("#template_akun_debet").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunDebet_akrual').append(template);
+        $(".remove-entry").click(function(){
+            $(this).parent().parent().remove();
+        });
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_akrual');
+        template.find('select').attr('name', 'akun_debet_akrual[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_akrual');
+        template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
+        if(index==0){
+          template.find('.remove_btn').remove();
+        }
+
+        var $select_akun = template.find('select').selectize();
+            registerEvents();
+
+        var selectize_akun = $select_akun[0].selectize;
+        selectize_akun.setValue(data['hasil'][index]['akun']);
+        template.find('.input-md').val(data['hasil'][index]['jumlah']);
+      });
+    }
+  })
 })
 </script>
 
@@ -198,7 +323,7 @@ $(document).ready(function(){
       <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Kas</strong></h3></div>
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_kas" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_kas">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_kredit_kas[]" class="form-control akun_kredit_kas" required="">
                 <option value="">Pilih Akun</option>
@@ -220,7 +345,7 @@ $(document).ready(function(){
       </div>
       <div class="col-md-12 control-label" style="text-align: left"><h4>Debet<button id="add-akunDebet_kas" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunDebet_kas">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_debet_kas[]" class="form-control akun_debet_kas" required="">
                 <option value="">Pilih Akun</option>
@@ -249,7 +374,7 @@ $(document).ready(function(){
       <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Akrual</strong></h3></div>
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_akrual">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual" required="">
                 <option value="">Pilih Akun</option>
@@ -271,7 +396,7 @@ $(document).ready(function(){
       </div>
       <div class="col-md-12 control-label" style="text-align: left"><h4>Debet<button id="add-akunDebet_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunDebet_akrual">
-        <div class="form-group"> 
+        <div class="form-group" style="display:none;"> 
           <div class="col-md-5">
             <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual" required="">
                 <option value="">Pilih Akun</option>
@@ -330,7 +455,7 @@ $(document).ready(function(){
   <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" required="">
   </div>
     
-  <div class="col-md-1">
+  <div class="col-md-1 remove_btn">
       <a role="button" class="remove-entry close" style="background:#F44336; padding: 2px 8px; color:white; opacity:1">-</a>
   </div>
 
@@ -355,7 +480,7 @@ $(document).ready(function(){
   <input type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md" required="">
   </div>
     
-  <div class="col-md-1">
+  <div class="col-md-1 remove_btn">
       <a role="button" class="remove-entry close" style="background:#F44336; padding: 2px 8px; color:white; opacity:1">-</a>
   </div>
 

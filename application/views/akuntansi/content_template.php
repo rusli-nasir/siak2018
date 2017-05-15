@@ -107,7 +107,6 @@
 	<script src="<?php echo base_url();?>/js/easypiechart.js"></script>
 	<script src="<?php echo base_url();?>/js/easypiechart-data.js"></script>-->
 	<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
-	<script src="<?php echo base_url();?>/assets/akuntansi/js/detail_kegiatan.js"></script>
 	<link rel="stylesheet" href="<?php echo base_url('assets/akuntansi/assets/EasyAutocomplete-1.3.5/easy-autocomplete.min.css'); ?>">
 	<script type="text/javascript" src="<?php echo base_url('assets/akuntansi/assets/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js'); ?>"></script>
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
