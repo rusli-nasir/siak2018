@@ -498,49 +498,57 @@ $(document).ready(function(){
   var jml_total_akrual = 0;
 
   function registerEvents(){
+      $(".remove-entry").click(function(){
+          $(this).parent().parent().remove();
+          updateSelisih_akrual();
+          updateSelisih_kas();
+      });
       console.log("register");
       $(".jumlah_akun_debet_kas").on('input', function(){
-          jml_debet_kas = 0;
-          $(".jumlah_akun_debet_kas").each(function(){
-              jml_debet_kas += $(this).val()*1;
-          });
-          jml_total_kas = jml_kredit_kas-jml_debet_kas;
-          $('#total_debet_kas').text(jml_debet_kas);
-          updateSelisih();
+          updateSelisih_kas();
       });
       $(".jumlah_akun_kredit_kas").on('input', function(){
-          jml_kredit_kas = 0;
-          $(".jumlah_akun_kredit_kas").each(function(){
-              jml_kredit_kas += $(this).val()*1;
-          });
-          jml_total_kas = jml_kredit_kas-jml_debet_kas;
-          $('#total_kredit_kas').text(jml_kredit_kas);
-          updateSelisih();
+          updateSelisih_kas();
       });
       $(".jumlah_akun_debet_akrual").on('input', function(){
-          jml_debet_akrual = 0;
-          $(".jumlah_akun_debet_akrual").each(function(){
-              jml_debet_akrual += $(this).val()*1;
-          });
-          jml_total_akrual = jml_kredit_akrual-jml_debet_akrual;
-          $('#total_debet_akrual').text(jml_debet_akrual);
-          updateSelisih();
+          updateSelisih_akrual();
       });
       $(".jumlah_akun_kredit_akrual").on('input', function(){
-          jml_kredit_akrual = 0;
-          $(".jumlah_akun_kredit_akrual").each(function(){
-              jml_kredit_akrual += $(this).val()*1;
-          });
-          jml_total_akrual = jml_kredit_akrual-jml_debet_akrual;
-          $('#total_kredit_akrual').text(jml_kredit_akrual);
-          updateSelisih();
+          updateSelisih_akrual();
       });
   }
     
-  function updateSelisih(){
+  function updateSelisih_kas(){
+      jml_debet_kas = 0;
+      $(".jumlah_akun_debet_kas").each(function(){
+          jml_debet_kas += $(this).val()*1;
+      });
+      $('#total_debet_kas').text(jml_debet_kas);
+      
+      jml_kredit_kas = 0;
+      $(".jumlah_akun_kredit_kas").each(function(){
+          jml_kredit_kas += $(this).val()*1;
+      });
+      jml_total_kas = jml_kredit_kas-jml_debet_kas;
+      $('#total_kredit_kas').text(jml_kredit_kas);
+      
       $('#selisih_kas').text(jml_total_kas);
       if(jml_total_kas==0) $('#selisih_kas').removeAttr('style');
       else $('#selisih_kas').attr('style', 'color:red');
+  }
+  function updateSelisih_akrual(){
+      jml_debet_akrual = 0;
+      $(".jumlah_akun_debet_akrual").each(function(){
+          jml_debet_akrual += $(this).val()*1;
+      });
+      $('#total_debet_akrual').text(jml_debet_akrual);
+      
+      jml_kredit_akrual = 0;
+      $(".jumlah_akun_kredit_akrual").each(function(){
+          jml_kredit_akrual += $(this).val()*1;
+      });
+      $('#total_kredit_akrual').text(jml_kredit_akrual);
+      jml_total_akrual = jml_kredit_akrual-jml_debet_akrual;
       
       $('#selisih_akrual').text(jml_total_akrual);
       if(jml_total_akrual==0) $('#selisih_akrual').removeAttr('style');
@@ -574,9 +582,6 @@ $(document).ready(function(){
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_kas').append(template);
-        $(".remove-entry").click(function(){
-            $(this).parent().parent().remove();
-        });
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_kas');
         template.find('select').attr('name', 'akun_kredit_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_kas');
@@ -591,9 +596,6 @@ $(document).ready(function(){
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_kas').append(template);
-        $(".remove-entry").click(function(){
-            $(this).parent().parent().remove();
-        });
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_kas');
         template.find('select').attr('name', 'akun_debet_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_kas');
@@ -608,9 +610,6 @@ $(document).ready(function(){
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_akrual').append(template);
-        $(".remove-entry").click(function(){
-            $(this).parent().parent().remove();
-        });
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_akrual');
         template.find('select').attr('name', 'akun_kredit_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_akrual');
@@ -624,9 +623,6 @@ $(document).ready(function(){
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_akrual').append(template);
-        $(".remove-entry").click(function(){
-            $(this).parent().parent().remove();
-        });
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_akrual');
         template.find('select').attr('name', 'akun_debet_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_akrual');
