@@ -1,3 +1,7 @@
+<link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
+<script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
+<link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
 <!-- javascript -->
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -9,7 +13,25 @@
 		$("#filter_status").change(function(){
 			$("#form_filter").submit();
 		});
+        $('.input-daterange input').each(function() {
+            $(this).datepicker();
+            $(this).datepicker('update', new Date());
+        });
+        $('#akun_kas_list').selectize();
+        $('#akun_akrual_list').selectize();
+        $('#unit_list').selectize();
 	});
+    
+    $('#basis').on('change', function (e) {
+        var optionSelected = $("option:selected", this);
+        if(optionSelected == 'kas'){
+            $('#kas_list').removeAttr('style');
+            $('#akrual_list').attr('style', 'display:none');
+        } else {
+            $('#akrual_list').removeAttr('style');
+            $('#kas_list').attr('style', 'display:none');
+        }
+    });
 </script>
 <!-- javascript -->
 
@@ -42,21 +64,97 @@
 	    </form>
 	</div>
 </div>
+<br />
+<div class="row">
+    <?php echo form_open('akuntansi/memorial/input_memorial',array("class"=>"form-horizontal")); ?>
+	<!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-2 control-label">Unit</label>  
+      <div class="col-md-6">
+          <select id="unit_list" name="unit" class="form-control" required="">
+            <?php foreach($query_unit->result() as $unit): ?>
+              <option><?= $unit->alias." - ".$unit->nama_unit ?></option>
+            <?php endforeach; ?>
+          </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Periode</label>  
+      <div class="col-md-6">
+          <div class="input-group input-daterange">
+            <input type="text" name="periode_awal" class="form-control">
+            <div class="input-group-addon">sampai</div>
+            <input type="text" name="periode_akhir" class="form-control">
+          </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Sumber Dana</label>  
+      <div class="col-md-6">
+          <select id="sumber_dana" name="output" class="form-control" required="">
+            <option value="tidak_terikat">Tidak Terikat</option>
+            <option value="terikat_temporer">Terikat Temporer</option>
+            <option value="terikat_permanen">Terikat Permanen</option>
+          </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Basis</label>  
+      <div class="col-md-6">
+          <select id="basis" name="basis" class="form-control" required="">
+            <option value="kas">Kas</option>
+            <option value="akrual">Akrual</option>
+          </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Akun</label>  
+      <div class="col-md-6">
+          <div id="kas_list">
+              <select id="akun_kas_list" name="akun_kas[]" class="form-control" required="">
+                <option value="semua_akun">Semua Akun</option>
+                <?php foreach ($query_akun_kas as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                } ?>
+              </select>
+          </div>
+          <div id="kas_list" style="display:none">
+              <select id="akun_akrual_list" name="akun_akrual[]" class="form-control" required="">
+                <option value="semua_akun">Semua Akun</option>
+                <?php foreach ($query_akun_akrual as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                } ?>
+              </select>
+          </div>
+      </div>
+    </div>
+    <!-- Button (Double) -->
+    <div class="form-group">
+      <div class="col-md-12" style="text-align:center;">
+        <button id="simpan" name="simpan" class="btn btn-success" type="submit">Buka Buku Besar</button>
+      </div>
+    </div>
+    <?php echo form_close(); ?>
+</div>
 <br/>
 <div class="row">
 	<div class="col-sm-12">
-		<?php foreach($query_debet->result() as $result){ ?>
-			<?php echo $result->akun_debet; ?><br/>
-		<?php } ?>
-		<?php foreach($query_debet_akrual->result() as $result){ ?>
-			<?php echo $result->akun_debet_akrual; ?><br/>
-		<?php } ?>
-		<?php foreach($query_kredit->result() as $result){ ?>
-			<?php echo $result->akun_kredit; ?><br/>
-		<?php } ?>
-		<?php foreach($query_kredit_akrual->result() as $result){ ?>
-			<?php echo $result->akun_kredit_akrual; ?><br/>
-		<?php } ?>
+		<?php //foreach($query_debet->result() as $result){ ?>
+			<?php //echo $result->akun_debet; ?><br/>
+		<?php //} ?>
+		<?php //foreach($query_debet_akrual->result() as $result){ ?>
+			<?php //echo $result->akun_debet_akrual; ?><br/>
+		<?php //} ?>
+		<?php //foreach($query_kredit->result() as $result){ ?>
+			<?php //echo $result->akun_kredit; ?><br/>
+		<?php //} ?>
+		<?php //foreach($query_kredit_akrual->result() as $result){ ?>
+			<?php //echo $result->akun_kredit_akrual; ?><br/>
+		<?php //} ?>
 	</div>
 </div>
 
