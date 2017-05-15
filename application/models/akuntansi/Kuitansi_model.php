@@ -7,6 +7,7 @@ class Kuitansi_model extends CI_Model {
         parent::__construct();
         $this->load->database('default', TRUE);
         $this->db2 = $this->load->database('rba',TRUE);
+        $this->db_laporan = $this->load->database('laporan',TRUE);
     }
 	
 	function read_kuitansi($limit = null, $start = null, $keyword = null, $kode_unit = null){
@@ -235,10 +236,15 @@ class Kuitansi_model extends CI_Model {
     	return $hasil;
     }
 
-    function add_kuitansi_jadi($params)
+    function add_kuitansi_jadi($params,$type = null)
     {
-        $this->db->insert('akuntansi_kuitansi_jadi',$params);
-        return $this->db->insert_id();
+        if ($type == 'post') {
+            $this->db_laporan->insert('akuntansi_kuitansi_jadi',$params);
+            return $this->db_laporan->insert_id();   
+        } else {
+            $this->db->insert('akuntansi_kuitansi_jadi',$params);
+            return $this->db->insert_id();
+        }
     }
 
     public function get_tabel_by_jenis($jenis)

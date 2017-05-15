@@ -31,10 +31,13 @@ class Posting_model extends CI_Model {
 
 		$data = $this->Kuitansi_model->get_kuitansi_posting($id_kuitansi_jadi);
 		$relasi = $this->Relasi_kuitansi_akun_model->get_relasi_kuitansi_akun($id_kuitansi_jadi);
-		$hasil = $this->rest->post('input', $data, 'json');
+
+		$hasil = $this->Kuitansi_model->add_kuitansi_jadi($data,'post');
+
+		// $hasil = $this->rest->post('input', $data, 'json');
 
 		if ($relasi != null and $hasil != null){
-			$hasil = $this->rest->post('input_relasi', $relasi, 'json');
+			$this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($relasi,'post');
 		}
 		
 		if ($hasil){

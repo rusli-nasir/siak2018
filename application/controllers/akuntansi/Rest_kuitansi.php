@@ -26,7 +26,8 @@ class Rest_kuitansi extends MY_Controller {
 		$this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
 
 		$data = $this->Kuitansi_model->get_kuitansi_posting($id_kuitansi_jadi);
-		$hasil = $this->rest->post('input', $data, 'json');
+		// $hasil = $this->rest->post('input', $data, 'json');
+		$hasil = $this->Kuitansi_model->add_kuitansi_jadi($data,'post');
 		
 		if ($hasil !== null){
 			$data = $this->Kuitansi_model->get_kuitansi_posting($id_kuitansi_jadi);
@@ -66,7 +67,11 @@ class Rest_kuitansi extends MY_Controller {
 		foreach ($ids as $id) {
 			$data[] = $this->Kuitansi_model->get_kuitansi_posting($id);
 		}
-		$hasil = $this->rest->post('input_batch', $data, 'json');
+
+		foreach ($data as $entry) {
+			$hasil[] = $this->Kuitansi_model->add_kuitansi_jadi($entry,'post');
+		}
+		// $hasil = $this->rest->post('input_batch', $data, 'json');
 		
 		if ($hasil != null){
 			foreach ($hasil as $id) {
@@ -86,9 +91,7 @@ class Rest_kuitansi extends MY_Controller {
 		        $this->Kuitansi_model->update_kuitansi_jadi($id,$entry);
 			}			
 	        $this->session->set_flashdata('success','Berhasil menyimpan !');
-	        die('bershasil');
 		} else{
-			die('gagal');
             $this->session->set_flashdata('warning','Gagal menyimpan !');
      	}
 

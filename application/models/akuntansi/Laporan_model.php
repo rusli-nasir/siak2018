@@ -126,16 +126,22 @@ class Laporan_model extends CI_Model {
         return ($data);
     }
 
-    public function get_data_buku_besar($array_akun)
+    public function get_data_buku_besar($array_akun,$jenis=null,$sumber_dana=null,$start_date=null,$end_date=null)
     {
-        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun);
-        $tabel_utama = $this->Laporan_model->get_akun_tabel_utama($array_akun);
+        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun,$jenis);
+        $tabel_utama = $this->Laporan_model->get_akun_tabel_utama($array_akun,$jenis);
 
         $hasil = array_merge($tabel_utama,$tabel_relasi);
 
         $data = array();
         foreach ($hasil as $entry) {
             $data[$entry['akun']][] = $entry;
+        }
+
+        foreach ($data as $key => $value) {
+            usort($data[$key],function($a,$b){
+                return strcmp($a['tanggal'],$b['tanggal']);
+            });
         }
 
         return $data;

@@ -150,6 +150,11 @@ class Laporan extends MY_Controller {
 		// $this->Relasi_kuitansi_akun_model->get_relasi_kuitansi_akun()
 	}
 
+	public function get_($value='')
+	{
+		# code...
+	}
+
 	public function get_buku_besar()
     {
     // 	if ($tipe == 'sak'){
@@ -169,39 +174,55 @@ class Laporan extends MY_Controller {
         $objPHPExcel = $excel->load($path_template);
         $objWorksheet = $objPHPExcel->getActiveSheet();
 
-        $row = 3;
+        $row = 5;
         $height = 12;
         for ($i=0; $i < $n_akun-1; $i++) { 
-    		$this->copyRows($objWorksheet,$row,$row+$height,10,6);
+    		$this->copyRows($objWorksheet,$row,$row+$height,12,7);
     		$row = $row+$height;
     	}
 
-    	$row = 10;
-    	$nama_row = $row-7;
+    	$row = 13;
     	$kode_row = $row-6;
+    	$nama_row = $row-5;
     	foreach ($data as $key => $entry) {
     		$i = 1;
     		$next_row = 11;
 
-	    	$nama_row = $row-7;
 	    	$kode_row = $row-6;
+	    	$nama_row = $row-5;
 
-	    	$objWorksheet->setCellValueByColumnAndRow(3,$nama_row,$this->Akun_model->get_nama_akun((string)$key));
-	    	$objWorksheet->setCellValueByColumnAndRow(3,$kode_row,$key);
+	    	$objWorksheet->setCellValueByColumnAndRow(2,$nama_row,$this->Akun_model->get_nama_akun((string)$key));
+	    	$objWorksheet->setCellValueByColumnAndRow(2,$kode_row,$key);
+
+	    	$saldo = $this->Akun_model->get_saldo_awal($key);
+	    	$jumlah_debet = 0;
+	    	$jumlah_kredit = 0;
+	    	$iter = 0;
 
     		foreach ($entry as $transaksi) {
+    			$iter++;
     			$objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
-    			$objWorksheet->setCellValueByColumnAndRow(0,$row,$transaksi['tanggal']);
-    			$objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['uraian']);
-    			$objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['kode_user']);
+    			$objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
+    			$objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['tanggal']);
+    			$objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['uraian']);
+    			$objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['kode_user']);
     			if ($transaksi['tipe'] == 'debet'){
-    				$objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['jumlah']);
+    				$objWorksheet->setCellValueByColumnAndRow(4,$row,number_format($transaksi['jumlah'],2,',','.'));
+    				$saldo += $transaksi['jumlah'];
+    				$jumlah_debet += $transaksi['jumlah'];
     			} else if ($transaksi['tipe'] == 'kredit'){
-					$objWorksheet->setCellValueByColumnAndRow(4,$row,$transaksi['jumlah']);
+					$objWorksheet->setCellValueByColumnAndRow(5,$row,number_format($transaksi['jumlah'],2,',','.'));
+					$saldo -= $transaksi['jumlah'];
+					$jumlah_kredit += $transaksi['jumlah'];
     			}
+    			$objWorksheet->setCellValueByColumnAndRow(6,$row,number_format($saldo,2,',','.'));
     			$next_row;
     			$row++;
     		}
+    		$objWorksheet->setCellValueByColumnAndRow(4,$row+1,number_format($jumlah_debet,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(5,$row+1,number_format($jumlah_kredit,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(6,$row+1,number_format($saldo,2,',','.'));
+
     		$row = $row + $next_row + $i;
 
     		$i++;
@@ -213,10 +234,88 @@ class Laporan extends MY_Controller {
         $output['data'] .= $objWriter->generateStyles();
         $output['data'] .= $objWriter->generateSheetData();
         $output['data'] .= $objWriter->generateHTMLFooter();
+        $output['teks_cetak'] = 'Print Buku Besar';
         
     
 
-        $this->load->view('akuntansi/laporan/buku_besar',$output);
+        $this->load->view('akuntansi/laporan/laporan',$output);
+
+    }
+
+    public function get_neraca_saldo()
+    {
+    // 	if ($tipe == 'sak'){
+    // 		$akun = array(1,4);
+    // 	}else if($tipe == 'lra'){
+    // 		$akun = array(6,7);
+    // 	}
+
+    	$akun = array(1,2,3,4,5,6,7,8,9);
+
+    	$data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
+
+    	ksort($data);
+
+    	$n_akun = count($data);
+
+        $path_template = realpath(FCPATH).'/assets/akuntansi/template_excel/template_neraca_saldo.xls';
+        $excel = new PHPExcel_Reader_Excel5();
+        $objPHPExcel = $excel->load($path_template);
+        $objWorksheet = $objPHPExcel->getActiveSheet();
+
+        $jumlah_debet = 0;
+	    $jumlah_kredit = 0;
+
+    	$row = 11;
+    	$i = 1;
+
+    	foreach ($data as $key => $entry) {
+
+	    	$saldo = $this->Akun_model->get_saldo_awal($key);
+	    	$debet = 0;
+	    	$kredit = 0;
+	    	$objPHPExcel->getActiveSheet()->insertNewRowBefore($row,1); 
+	    	$objWorksheet->setCellValueByColumnAndRow(0,$row,$i);
+	    	$objWorksheet->setCellValueByColumnAndRow(1,$row,$key);
+	    	$objWorksheet->setCellValueByColumnAndRow(2,$row,$this->Akun_model->get_nama_akun((string)$key));
+
+
+    		foreach ($entry as $transaksi) {
+    			if ($transaksi['tipe'] == 'debet'){
+    				$saldo += $transaksi['jumlah'];
+    				$debet += $transaksi['jumlah'];
+    			} else if ($transaksi['tipe'] == 'kredit'){
+					$saldo -= $transaksi['jumlah'];
+					$kredit += $transaksi['jumlah'];
+    			}
+    		}
+
+
+    		$jumlah_debet += $debet;
+    		$jumlah_kredit += $kredit;
+
+    		$objWorksheet->setCellValueByColumnAndRow(3,$row,number_format($debet,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(4,$row,number_format($kredit,2,',','.'));
+
+    		$row++;
+
+    		$i++;
+    		// $objWorksheet->setCellValueByColumnAndRow(2,$i+$row,$i+1);
+    	}
+
+    	$objWorksheet->setCellValueByColumnAndRow(3,$row+1,number_format($jumlah_debet,2,',','.'));
+    	$objWorksheet->setCellValueByColumnAndRow(4,$row+1,number_format($jumlah_kredit,2,',','.'));
+
+        $objWriter = new PHPExcel_Writer_HTML($objPHPExcel);  
+        $output['data'] = $objWriter->generateHTMLHeader();
+        $output['data'] .= $objWriter->generateStyles();
+        $output['data'] .= $objWriter->generateSheetData();
+        $output['data'] .= $objWriter->generateHTMLFooter();
+        $output['teks_cetak'] = 'Print Neraca Saldo';
+        
+    
+
+        $this->load->view('akuntansi/laporan/laporan',$output);
 
     }
 

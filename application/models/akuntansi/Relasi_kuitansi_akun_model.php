@@ -6,25 +6,43 @@ class Relasi_kuitansi_akun_model extends CI_Model {
     {
         parent::__construct();
         $this->load->database('default', TRUE);
+        $this->db_laporan = $this->load->database('laporan',TRUE);
     }
 	
-	public function update_relasi_kuitansi_akun($id_kuitansi_jadi,$entry)
+	public function update_relasi_kuitansi_akun($id_kuitansi_jadi,$entry,$type = null)
 	{
-		$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
-		$this->db->delete('akuntansi_relasi_kuitansi_akun');
+		if ($type == 'post') {
+			$this->db_laporan->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+			$this->db_laporan->delete('akuntansi_relasi_kuitansi_akun');
 
-		return $this->db->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);
+			return $this->db_laporan->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);	
+		}else{
+			$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+			$this->db->delete('akuntansi_relasi_kuitansi_akun');
+
+			return $this->db->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);	
+		}
+		
 	}
 
-	public function hapus_relasi_kuitansi_akun($id_kuitansi_jadi)
+	public function hapus_relasi_kuitansi_akun($id_kuitansi_jadi,$type = null)
 	{
-		$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
-		return $this->db->delete('akuntansi_relasi_kuitansi_akun');
+		if ($type == 'post') {
+			$this->db_laporan->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+			return $this->db->delete('akuntansi_relasi_kuitansi_akun');
+		} else {
+			$this->db_laporan->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+			return $this->db->delete('akuntansi_relasi_kuitansi_akun');
+		}
+		
 	}
 
-	public function insert_relasi_kuitansi_akun($entry)
+	public function insert_relasi_kuitansi_akun($entry,$type = null)
 	{
-		return $this->db->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);
+		if ($type == 'post')
+			return $this->db_laporan->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);
+		else
+			return $this->db->insert_batch('akuntansi_relasi_kuitansi_akun',$entry);
 	}
 
 	public function get_relasi_kuitansi_akun($id_kuitansi_jadi)
