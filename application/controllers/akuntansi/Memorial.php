@@ -226,7 +226,6 @@ class Memorial extends MY_Controller {
 
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
 		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
-		$this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('jenis','Jenis','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
@@ -247,6 +246,10 @@ class Memorial extends MY_Controller {
             $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'][0];
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'memorial';
+            $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            unset($entry['kegiatan']);
+            unset($entry['output']);
+            unset($entry['program']);
 
             $akun = $this->input->post();
 

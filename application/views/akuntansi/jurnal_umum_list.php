@@ -79,17 +79,6 @@
 					<td><?php echo $result->akun_debet; ?></td>
 					<td><?php echo $result->akun_kredit; ?></td>
 					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
-					<td>
-						<?php if($result->flag==1){ ?>
-							<?php if($result->status=='revisi'){ ?>
-							<button class="btn btn-xs btn-danger disabled"><span class="glyphicon glyphicon-repeat"></span> Revisi</button>
-							<?php }else{ ?>
-							<button class="btn btn-xs btn-default disabled">Proses verifikasi</button>
-							<?php } ?>
-						<?php }else if($result->flag==2){ ?>
-						<button class="btn btn-xs btn-success disabled">Disetujui</button>
-						<?php } ?>
-					</td>
 					<td>						
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
@@ -104,6 +93,7 @@
 								<a href="<?php echo site_url('akuntansi/jurnal_umum/detail_jurnal_umum/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==3){ ?>
+							<a href="<?php echo site_url('akuntansi/jurnal_umum/edit_jurnal_umum/'.$result->id_kuitansi_jadi); ?>"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-cog"></span> Edit</button></a>
 						<?php } ?>
 					</td>
 				</tr>

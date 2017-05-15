@@ -3,6 +3,34 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+<script type="text/javascript">
+$(document).ready(function(){
+  var host = location.protocol + '//' + location.host + '/rsa/index.php/';
+  $("#kegiatan").change(function(){
+    var kode_kegiatan = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_output/'+kode_kegiatan,
+      data:{},
+      success:function(data){
+        $("#output").html(data);
+        $("#program").html('<option value="">----</option>')
+      }
+    })
+  })
+
+  $("#output").change(function(){
+    var kode_kegiatan = $("#kegiatan").val();
+    var kode_output = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_program/'+kode_kegiatan+'/'+kode_output,
+      data:{},
+      success:function(data){
+        $("#program").html(data);
+      }
+    })
+  })
+})
+</script>
 
 <div class="row">
   <ol class="breadcrumb">
@@ -74,15 +102,6 @@
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-2 control-label" for="kode_kegiatan">Kode Kegiatan</label>  
-  <div class="col-md-4">
-  <input id="kode_kegiatan" name="kode_kegiatan" type="text" value="<?=$kode_kegiatan?>" placeholder="Kode Kegiatan" class="form-control input-md" required="">
-
-  </div>
-</div>
-
-<!-- Text input-->
-<div class="form-group">
   <label class="col-md-2 control-label" for="unit_kerja">Unit Kerja</label>  
   <div class="col-md-4">
   <!-- <input id="unit_kerja" name="unit_kerja" type="text" placeholder="Unit Kerja" class="form-control input-md" required=""> -->
@@ -91,6 +110,55 @@
         <?php foreach ($all_unit_kerja as $unit) {
           ?>
           <option value="<?=$unit['kode_unit']?>"><?=$unit['kode_unit'].' - '.$unit['nama_unit']?></option>
+          <?php
+        }
+        ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Kegiatan</label>  
+  <div class="col-md-6">
+      <select id="kegiatan" name="kegiatan" class="form-control" required="">
+        <option value="">Pilih Kegiatan</option>
+        <?php foreach ($kegiatan->result() as $result) {
+          ?>
+          <option value="<?=$result->kode_kegiatan;?>" <?php if(substr($kode_kegiatan,8,2)==$result->kode_kegiatan) echo 'selected'; ?>><?=$result->kode_kegiatan.' - '.$result->nama_kegiatan?></option>
+          <?php
+        }
+        ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Output</label>  
+  <div class="col-md-6">
+      <select id="output" name="output" class="form-control" required="">
+        <?php foreach ($output->result() as $result) {
+          ?>
+          <option value="<?=$result->kode_output;?>" <?php if(substr($kode_kegiatan,10,2)==$result->kode_output) echo 'selected'; ?>><?=$result->kode_output.' - '.$result->nama_output?></option>
+          <?php
+        }
+        ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Program</label>  
+  <div class="col-md-6">
+      <select id="program" name="program" class="form-control" required="">
+        <?php foreach ($program->result() as $result) {
+          ?>
+          <option value="<?=$result->kode_program;?>" <?php if(substr($kode_kegiatan,12,2)==$result->kode_program) echo 'selected'; ?>><?=$result->kode_program.' - '.$result->nama_program?></option>
           <?php
         }
         ?>
@@ -120,7 +188,7 @@
   </div>
 </div>
 
-<div class="form-group">
+<div class="form-group" align="center">
   <input type="checkbox" id="no-kas">  Kosongkan Kas
 </div>
 <hr>
@@ -453,8 +521,8 @@
   });
 
 
-  <?php if (isset($unit_kerja)): ?>
-      selectize3.setValue('<?=$unit_kerja?>');
+  <?php if (isset($kode_unit)): ?>
+      selectize3.setValue('<?=$kode_unit?>');
   <?php endif ?>
 
 

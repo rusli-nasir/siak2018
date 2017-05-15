@@ -16,6 +16,7 @@ class Jurnal_umum extends MY_Controller {
         $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
         $this->load->model('akuntansi/Posting_model', 'Posting_model');
+        $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
     }
 
     public function coba()
@@ -88,7 +89,6 @@ class Jurnal_umum extends MY_Controller {
 		$this->form_validation->set_rules('akun_debet_akrual[]','Akun debet (Akrual)','required');
 		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
 		$this->form_validation->set_rules('no_spm','No. SPM','required');
-		$this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('jenis','Jenis','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
@@ -127,6 +127,10 @@ class Jurnal_umum extends MY_Controller {
             $entry['status'] = 4;
             $entry['tipe'] = 'jurnal_umum';
             $entry['kode_user'] = $this->session->userdata('kode_user');
+            $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            unset($entry['kegiatan']);
+            unset($entry['output']);
+            unset($entry['program']);
 
             // print_r($entry);die();
 
@@ -201,6 +205,8 @@ class Jurnal_umum extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
             $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
             $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+            //kode kegiatan
+            $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
 			$temp_data['content'] = $this->load->view('akuntansi/jurnal_umum_tambah',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
@@ -215,7 +221,6 @@ class Jurnal_umum extends MY_Controller {
 		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
 		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
 		$this->form_validation->set_rules('no_spm','No. SPM','required');
-		$this->form_validation->set_rules('kode_kegiatan','Kode Kegiatan','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('jenis','Jenis','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
@@ -295,6 +300,38 @@ class Jurnal_umum extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
         	$this->data['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+            $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+
+            //kode kegiatan
+            $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
+            //kode output
+            $this->data['output'] = $this->Memorial_model->read_output(substr($this->data['kode_kegiatan'],8,2));
+            //kode program
+            $this->data['program'] = $this->Memorial_model->read_program(substr($this->data['kode_kegiatan'],8,2), substr($this->data['kode_kegiatan'],10,2));
+
+            $query_kas_kredit = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'kredit','jenis'=>'kas'))->result();
+            $query_kas_debet = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'debet','jenis'=>'kas'))->result();
+            $query_akrual_kredit = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'kredit','jenis'=>'akrual'))->result();
+            $query_akrual_debet = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'debet','jenis'=>'akrual'))->result();
+
+            $this->data['total_kas_kredit'] = 0;
+            $this->data['total_kas_debet'] = 0;
+            $this->data['total_akrual_kredit'] = 0;
+            $this->data['total_akrual_debet'] = 0;
+            foreach($query_kas_kredit as $result){
+                $this->data['total_kas_kredit'] += $result->jumlah;
+            }
+            foreach($query_kas_debet as $result){
+                $this->data['total_kas_debet'] += $result->jumlah;
+            }
+            foreach($query_akrual_kredit as $result){
+                $this->data['total_akrual_kredit'] += $result->jumlah;
+            }
+            foreach($query_akrual_debet as $result){
+                $this->data['total_akrual_debet'] += $result->jumlah;
+            }
+
 			$temp_data['content'] = $this->load->view('akuntansi/jurnal_umum_edit',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
