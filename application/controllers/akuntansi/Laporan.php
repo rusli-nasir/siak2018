@@ -343,12 +343,13 @@ class Laporan extends MY_Controller {
         $path_template = realpath(FCPATH).'/assets/akuntansi/template_excel/template_buku_besar.xls';
         $excel = new PHPExcel_Reader_Excel5();
         $objPHPExcel = $excel->load($path_template);
+        $objPHPExcel = $excel->load($path_template);
         $objWorksheet = $objPHPExcel->getActiveSheet();
 
         $row = 5;
         $height = 12;
         for ($i=0; $i < $n_akun-1; $i++) { 
-    		$this->copyRows($objWorksheet,$row,$row+$height,12,7);
+    		$this->copyRows($objWorksheet,$row,$row+$height,12,8);
     		$row = $row+$height;
     	}
 
@@ -396,25 +397,26 @@ class Laporan extends MY_Controller {
     			$iter++;
     			$objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
     			$objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
-    			$objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['tanggal']);
-    			$objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['uraian']);
-    			$objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['kode_user']);
+                $objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['tanggal']);
+    			$objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_bukti']);
+    			$objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['uraian']);
+    			$objWorksheet->setCellValueByColumnAndRow(4,$row,$transaksi['kode_user']);
     			if ($transaksi['tipe'] == 'debet'){
-    				$objWorksheet->setCellValueByColumnAndRow(4,$row,number_format($transaksi['jumlah'],2,',','.'));
+    				$objWorksheet->setCellValueByColumnAndRow(5,$row,number_format($transaksi['jumlah'],2,',','.'));
     				$saldo += $transaksi['jumlah'];
     				$jumlah_debet += $transaksi['jumlah'];
     			} else if ($transaksi['tipe'] == 'kredit'){
-					$objWorksheet->setCellValueByColumnAndRow(5,$row,number_format($transaksi['jumlah'],2,',','.'));
+					$objWorksheet->setCellValueByColumnAndRow(6,$row,number_format($transaksi['jumlah'],2,',','.'));
 					$saldo -= $transaksi['jumlah'];
 					$jumlah_kredit += $transaksi['jumlah'];
     			}
-    			$objWorksheet->setCellValueByColumnAndRow(6,$row,number_format($saldo,2,',','.'));
+    			$objWorksheet->setCellValueByColumnAndRow(7,$row,number_format($saldo,2,',','.'));
     			$next_row;
     			$row++;
     		}
-    		$objWorksheet->setCellValueByColumnAndRow(4,$row+1,number_format($jumlah_debet,2,',','.'));
-    		$objWorksheet->setCellValueByColumnAndRow(5,$row+1,number_format($jumlah_kredit,2,',','.'));
-    		$objWorksheet->setCellValueByColumnAndRow(6,$row+1,number_format($saldo,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(5,$row+1,number_format($jumlah_debet,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(6,$row+1,number_format($jumlah_kredit,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(7,$row+1,number_format($saldo,2,',','.'));
 
     		$row = $row + $next_row + $i;
 
