@@ -8,14 +8,34 @@ class Laporan extends MY_Controller {
         $this->data['menu9'] = true;
         $this->cek_session_in();
         $this->cek_session_in();
-        //$this->load->model('akuntansi/Laporan_model', 'Laporan_model');
+        $this->load->model('akuntansi/Laporan_model', 'Laporan_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
+        $this->load->model('akuntansi/Output_model', 'Output_model');
+        $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->data['db2'] = $this->load->database('rba',TRUE);
 
         $this->load->library('excel');
     }
 
-	public function buku_besar($id = 0){
+    public function buku_besar($id = 0){
+        $this->data['tab1'] = true;
+
+//      $this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
+//      $this->data['query_debet_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_debet_akrual');
+//      $this->data['query_kredit'] = $this->Laporan_model->read_buku_besar_group('akun_kredit');
+//      $this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
+        $this->db2 = $this->load->database('rba', true);
+        $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
+        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+        $this->data['query_akun_kas'] = $this->get_akun_kas();
+        $this->data['query_akun_akrual'] = $this->get_akun_akrual();
+
+        $temp_data['content'] = $this->load->view('akuntansi/buku_besar_list',$this->data,true);
+        $this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+	public function rekap_jurnal($id = 0){
 		$this->data['tab1'] = true;
 
 //		$this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
@@ -28,7 +48,7 @@ class Laporan extends MY_Controller {
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
 
-		$temp_data['content'] = $this->load->view('akuntansi/buku_besar_list',$this->data,true);
+		$temp_data['content'] = $this->load->view('akuntansi/rekap_jurnal_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
     
@@ -144,15 +164,141 @@ class Laporan extends MY_Controller {
 
 		// print_r($tabel_utama + $tabel_relasi);
 		// print_r(array_merge($tabel_utama,$tabel_relasi));
-		print_r($this->Laporan_model->get_data_buku_besar($akun));
+		// print_r($this->Laporan_model->get_data_buku_besar($akun));
+
+        print_r($this->Output_model->get_nama_output('121412040901010201521222'));
 
 		
 		// $this->Relasi_kuitansi_akun_model->get_relasi_kuitansi_akun()
 	}
 
-	public function get_($value='')
+	public function get_rekap_jurnal()
 	{
-		# code...
+        $basis = $this->input->post('basis');
+        $unit = $this->input->post('unit');
+        $sumber_dana = $this->input->post('sumber_dana');
+        $periode_awal = $this->input->post('periode_awal');
+        $periode_akhir = $this->input->post('periode_akhir');
+
+        if ($unit == 'all') {
+            $unit = null;
+        }
+        if ($sumber_dana == 'all') {
+            $sumber_dana = null;
+        } 
+
+        // print_r($this->input->post());die();
+		// $akun = array(1,2,3,4,5,6,7,8,9);
+        //public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
+        $data = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+
+        // print_r($data);die();
+
+        $n_akun = count($data);
+
+        $path_template = realpath(FCPATH).'/assets/akuntansi/template_excel/template_jurnal_umum.xls';
+        $excel = new PHPExcel_Reader_Excel5();
+        $objPHPExcel = $excel->load($path_template);
+        $objWorksheet = $objPHPExcel->getActiveSheet();
+
+        $row = $start_row = 9;
+
+        $objPHPExcel->getActiveSheet()->insertNewRowBefore($row,3*count($data));
+        foreach ($data as $entry) {
+            // echo count($entry['akun']);
+            $objPHPExcel->getActiveSheet()->insertNewRowBefore($row,count($entry['akun']));
+        }
+        // die();
+
+        $BStyle = array(
+          'borders' => array(
+            'outline' => array(
+              'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+            )
+          )
+        );
+
+        $teks_sumber_dana = "JURNAL UMUM ";
+        $teks_periode = "";
+        $teks_tahun_anggaran = "TAHUN ANGGARAN 201X";
+
+        if ($periode_awal != null and $periode_akhir != null){
+            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        }
+
+
+        if ($sumber_dana != null) {
+            $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
+        }
+
+        $objWorksheet->setCellValueByColumnAndRow(0,2,$teks_sumber_dana);
+        $objWorksheet->setCellValueByColumnAndRow(0,3,$teks_periode);
+        $objWorksheet->setCellValueByColumnAndRow(0,4,$teks_tahun_anggaran);
+
+
+        $iter = 1;
+
+
+        $jumlah_debet = 0;
+        $jumlah_kredit = 0;
+
+
+
+        foreach ($data as $entry) {
+            $transaksi = $entry['transaksi'];
+            $akun = $entry['akun'];
+            
+            $nama_unit = $this->Unit_kerja_model->get_nama_unit($transaksi['unit_kerja']);
+            $objWorksheet->setCellValueByColumnAndRow(6,$row,$nama_unit.' : ');
+            $row++;
+            $objWorksheet->mergeCellsByColumnAndRow(0,$row-1,0,$row);
+            $objWorksheet->setCellValueByColumnAndRow(0,$row-1,$iter);
+            $objWorksheet->mergeCellsByColumnAndRow(1,$row-1,5,$row);
+            $objWorksheet->setCellValueByColumnAndRow(1,$row-1,'keterangan');
+            $objWorksheet->getStyleByColumnAndRow(1,$row-1)->applyFromArray($BStyle);
+            $objWorksheet->setCellValueByColumnAndRow(6,$row,$transaksi['uraian']);
+
+            foreach ($akun as $in_akun) {
+                $row++;
+
+                $objWorksheet->setCellValueByColumnAndRow(1,$row,$this->Jurnal_rsa_model->reKonversiTanggal($transaksi['tanggal']));
+                $objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_spm']);
+                $objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['no_bukti']);
+                $objWorksheet->setCellValueByColumnAndRow(4,$row,$this->Output_model->get_nama_output($transaksi['kode_kegiatan']));
+                $objWorksheet->setCellValueByColumnAndRow(5,$row,$in_akun['akun']);
+                if ($in_akun['tipe'] == 'debet'){
+                    $objWorksheet->setCellValueByColumnAndRow(7,$row,$in_akun['jumlah']);
+                    $objWorksheet->setCellValueByColumnAndRow(8,$row,0);
+                    $jumlah_debet += $in_akun['jumlah'];
+                }elseif ($in_akun['tipe'] == 'kredit') {
+                    $objWorksheet->getStyleByColumnAndRow(5,$row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $objWorksheet->setCellValueByColumnAndRow(8,$row,$in_akun['jumlah']);
+                    $objWorksheet->setCellValueByColumnAndRow(7,$row,0);
+                    $jumlah_kredit += $in_akun['jumlah'];
+                }
+                $objWorksheet->setCellValueByColumnAndRow(6,$row, $this->Akun_model->get_nama_akun($in_akun['akun']));
+            }
+
+            $iter++;
+            $row+=2;
+
+        }
+
+        $row++;
+        $objWorksheet->setCellValueByColumnAndRow(7,$row,$jumlah_debet);
+        $objWorksheet->setCellValueByColumnAndRow(8,$row,$jumlah_kredit);
+
+        $objWriter = new PHPExcel_Writer_HTML($objPHPExcel);  
+        $output['data'] = $objWriter->generateHTMLHeader();
+        $output['data'] .= $objWriter->generateStyles();
+        $output['data'] .= $objWriter->generateSheetData();
+        $output['data'] .= $objWriter->generateHTMLFooter();
+        $output['teks_cetak'] = 'Print Rekap Jurnal';
+        
+    
+
+        $this->load->view('akuntansi/laporan/laporan',$output);
+
 	}
 
 	public function get_buku_besar()
@@ -163,9 +309,34 @@ class Laporan extends MY_Controller {
     // 		$akun = array(6,7);
     // 	}
 
-    	$akun = array(1,2,3,4,5,6,7,8,9);
+        // print_r($this->input->post());die();
 
-    	$data = $this->Laporan_model->get_data_buku_besar($akun);
+        // public function get_data_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
+
+        $akun = $this->input->post('akun')[0];
+        $basis = $this->input->post('basis');
+        $unit = $this->input->post('unit');
+        $sumber_dana = $this->input->post('sumber_dana');
+        $periode_awal = $this->input->post('periode_awal');
+        $periode_akhir = $this->input->post('periode_akhir');
+
+        if ($unit == 'all') {
+            $unit = null;
+        }
+        if ($sumber_dana == 'all') {
+            $sumber_dana = null;
+        }
+
+        $array_akun = array();
+
+        if ($akun == 'all')
+            $array_akun = array(1,2,3,4,5,6,7,8,9);
+        else {
+            $array_akun[] = $akun;
+        }
+
+
+    	$data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
 
     	$n_akun = count($data);
 
@@ -181,6 +352,24 @@ class Laporan extends MY_Controller {
     		$row = $row+$height;
     	}
 
+        $teks_sumber_dana = "BUKU BESAR ";
+        $teks_periode = "";
+        $teks_tahun_anggaran = "TAHUN ANGGARAN 201X";
+        $teks_unit = "UNIVERSITAS DIPONEGORO";
+
+        if ($periode_awal != null and $periode_akhir != null){
+            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        }
+
+
+        if ($sumber_dana != null) {
+            $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
+        }
+
+        $objWorksheet->setCellValueByColumnAndRow(0,2,$teks_sumber_dana);
+        $objWorksheet->setCellValueByColumnAndRow(0,3,$teks_periode);
+
+
     	$row = 13;
     	$kode_row = $row-6;
     	$nama_row = $row-5;
@@ -190,9 +379,13 @@ class Laporan extends MY_Controller {
 
 	    	$kode_row = $row-6;
 	    	$nama_row = $row-5;
+            $tahun_row = $row-7;
+            $unit_row = $row-8;
 
 	    	$objWorksheet->setCellValueByColumnAndRow(2,$nama_row,$this->Akun_model->get_nama_akun((string)$key));
-	    	$objWorksheet->setCellValueByColumnAndRow(2,$kode_row,$key);
+            $objWorksheet->setCellValueByColumnAndRow(2,$kode_row,$key);
+            $objWorksheet->setCellValueByColumnAndRow(2,$tahun_row,$teks_tahun_anggaran);
+	    	$objWorksheet->setCellValueByColumnAndRow(2,$unit_row,$teks_unit);
 
 	    	$saldo = $this->Akun_model->get_saldo_awal($key);
 	    	$jumlah_debet = 0;

@@ -38,13 +38,13 @@
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Buku Besar</li>
+		<li class="active">Rekap Jurnal</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Buku Besar</h1>
+		<h1 class="page-header">Rekap Jurnal</h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
@@ -66,7 +66,7 @@
 </div>
 <br />
 <div class="row">
-    <?php echo form_open('akuntansi/laporan/get_buku_besar',array("class"=>"form-horizontal")); ?>
+    <?php echo form_open('akuntansi/laporan/get_rekap_jurnal',array("class"=>"form-horizontal")); ?>
 	<!-- Text input-->
     <div class="form-group">
       <label class="col-md-2 control-label">Unit</label>  
@@ -109,35 +109,10 @@
           </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-md-2 control-label">Akun</label>  
-      <div class="col-md-6">
-          <div id="kas_list">
-              <select id="akun_kas_list" name="akun[]" class="form-control" required="">
-                <option value="all">Semua Akun</option>
-                <?php foreach ($query_akun_kas as $akun) {
-                  ?>
-                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                } ?>
-              </select>
-          </div>
-          <div id="kas_list" style="display:none">
-              <select id="akun_akrual_list" name="akun[]" class="form-control" required="">
-                <option value="all">Semua Akun</option>
-                <?php foreach ($query_akun_akrual as $akun) {
-                  ?>
-                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                } ?>
-              </select>
-          </div>
-      </div>
-    </div>
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
-        <button id="simpan" name="simpan" class="btn btn-success" type="submit">Buka Buku Besar</button>
+        <button id="simpan" name="simpan" class="btn btn-success" type="submit">Buka Rekap Jurnal</button>
       </div>
     </div>
     <?php echo form_close(); ?>
