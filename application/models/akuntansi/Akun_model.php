@@ -10,9 +10,9 @@ class Akun_model extends CI_Model {
 	
 	public function get_nama_akun($kode_akun){
 		if (isset($kode_akun)){
-			if ($kode_akun[0] == 5){
+			if (substr($kode_akun,0,1) == 5){
 				return $this->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
-			} else if ($kode_akun[0] == 7){
+			} else if (substr($kode_akun,0,1) == 7){
 				$kode_akun[0] = 5;
 				$nama = $this->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
 				$uraian_akun = explode(' ', $nama);
@@ -23,12 +23,12 @@ class Akun_model extends CI_Model {
 		        }
 	            $hasil_uraian = implode(' ', $uraian_akun);
 	            return $hasil_uraian;
-			} else if ($kode_akun[0] == 6 or $kode_akun[0] == 4){
+			} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
 				$kode_akun[0] = 4;
 				return $this->db->get_where('akuntansi_lra_6',array('akun_6' => $kode_akun))->row_array()['nama'];
-			} else if ($kode_akun[0] == 9){
+			} else if (substr($kode_akun,0,1) == 9){
 				return 'SAL';
-			} else if ($kode_akun[0] == 1){
+			} else if (substr($kode_akun,0,1) == 1){
 				return $this->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
 			} else {
 				return 'Nama tidak ditemukan';
