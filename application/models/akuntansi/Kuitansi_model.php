@@ -28,10 +28,21 @@ class Kuitansi_model extends CI_Model {
 	}
 
     function read_spm($limit = null, $start = null, $keyword = null){
-        if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE nomor LIKE '%$keyword%' LIMIT $start, $limit");
+        if($this->session->userdata('kode_unit')==null){
+            $filter_unit = '';
         }else{
-            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE nomor LIKE '%$keyword%'");
+            if($this->session->userdata('alias')=='WR2'){
+                $alias = 'W23';
+            }else{
+                $alias = $this->session->userdata('alias');
+            }
+            $filter_unit = "AND substr(nomor,7,3)='".$alias."'";
+        }
+
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE nomor LIKE '%$keyword%' $filter_unit LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE nomor LIKE '%$keyword%' $filter_unit");
         }
         return $query;
     }
@@ -44,10 +55,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe!='memorial' AND tipe!='jurnal_umum' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe!='memorial' AND tipe!='jurnal_umum' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
         }
         return $query;

@@ -26,10 +26,13 @@ class Login extends MY_Controller {
 			if ($query->num_rows()!=0){
 				$row = $query->row();
 
-				if($row->kode_unit!=null){
-					$set_username = $this->get_unit($row->kode_unit);
+				if($row->level==1){
+					$data_unit = $this->get_unit($row->kode_unit);
+					$set_username = $data_unit['nama'];
+					$alias = $data_unit['alias'];
 				}else{
 					$set_username = $row->username;
+					$alias = null;
 				}
 
 				$login_data = array(
@@ -37,6 +40,7 @@ class Login extends MY_Controller {
 					'username'	=>  $set_username,
 					'kode_unit'	=>  $row->kode_unit,
 					'kode_user'	=>  $row->kode_user,
+					'alias'	=>  $alias,
 					'level'	=>  $row->level
 				);
 				print_r($login_data);
@@ -54,7 +58,11 @@ class Login extends MY_Controller {
 			if($this->session->userdata('level')==1){
 				redirect(site_url('akuntansi/kuitansi'));
 			}else if($this->session->userdata('level')==2){
-				redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+				if($this->session->userdata('kode_unit')==null){
+					redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+				}else{
+					redirect(site_url('akuntansi/kuitansi/jadi'));
+				}
 			}else{
 				redirect(site_url('akuntansi/penerimaan/index'));
 			}
@@ -72,7 +80,10 @@ class Login extends MY_Controller {
 		$query = "SELECT * FROM unit WHERE kode_unit='$unit'";
 		$q = $this->db2->query($query)->result();
 		foreach($q as $result){
-			return $result->nama_unit;
+			$data['nama'] = $result->nama_unit;
+			$data['alias'] = $result->alias;
 		}
+
+		return $data;
 	}
 }
