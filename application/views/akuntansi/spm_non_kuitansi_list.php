@@ -71,9 +71,9 @@
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->nomor; ?></td>
 					<td><?php echo str_replace(',', '<br/>,', $result->detail_belanja); ?></td>
-					<td>-</td>
+					<td><?php echo $this->session->userdata('username'); ?></td>
 					<td><?php echo substr($result->detail_belanja, 18, 6); ?></td>
-					<td><?php echo '-'; ?></td>
+					<td><?php echo '?'; ?></td>
 					<td><?php echo number_format($result->jumlah_bayar); ?></td>
 					<td>						
 							<a href="<?php echo site_url('akuntansi/rsa_gup/spmls/id/'.$result->id_spmls);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>

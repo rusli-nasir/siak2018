@@ -32,6 +32,7 @@ class Jurnal_rsa extends MY_Controller {
             else {
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer_nk($id_kuitansi);
                 $kuitansi['status'] = 1;
+                $kuitansi['no_bukti'] = $this->input->post('no_bukti');
                 // print_r($kuitansi);die();
             }
             unset($entry['simpan']);

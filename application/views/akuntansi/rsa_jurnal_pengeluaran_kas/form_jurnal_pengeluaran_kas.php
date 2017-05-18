@@ -20,7 +20,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" value="<?=$no_bukti?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" disabled>
+  <input id="no_bukti" name="no_bukti" value="<?php echo substr($str_nomor_trx_spm, 6, 3).substr($str_nomor_trx_spm, 0, 5); ?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" readonly>
     
   </div>
 </div>
@@ -65,8 +65,8 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="unit_kerja">Unit Kerja</label>  
   <div class="col-md-4">
-  <input id="unit_kerja" name="unit_kerja" type="text" value="<?=$unit_kerja?>" placeholder="Unit Kerja" class="form-control input-md" required="" disabled>
-    
+  <input type="text" value="<?php echo $this->session->userdata('username'); ?>" placeholder="Unit Kerja" class="form-control input-md" required="" disabled>
+  <input name="unit_kerja" type="hidden" value="<?php echo $this->session->userdata('kode_unit'); ?>">
   </div>
 </div>
 
