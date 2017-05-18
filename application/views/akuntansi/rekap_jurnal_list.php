@@ -49,23 +49,8 @@
 	<div class="col-sm-3" align="right">
 	</div>
 </div><!--/.row-->
-<div class="row">
-	<div class="col-sm-4">
-		<form action="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>" method="post">
-			<div class="input-group">
-				<span class="input-group-btn">
-	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_jadi'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
-	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_jadi" value="<?php if($this->session->userdata('keyword_jadi')) echo $this->session->userdata('keyword_jadi'); ?>">
-	      		<span class="input-group-btn">
-	        		<button class="btn btn-default" type="submit">Cari</button>
-	      		</span>
-	    	</div>
-	    </form>
-	</div>
-</div>
 <br />
-<div class="row">
+<div class="container">
     <?php echo form_open('akuntansi/laporan/get_rekap_jurnal',array("class"=>"form-horizontal")); ?>
 	<!-- Text input-->
     <div class="form-group">

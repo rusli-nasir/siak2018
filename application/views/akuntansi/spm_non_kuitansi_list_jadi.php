@@ -97,7 +97,7 @@
 						<?php if($this->session->userdata('level')==1){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 						<?php }else if($this->session->userdata('level')==2){ ?>
-							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>""><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
 						<?php }else if($this->session->userdata('level')==3){ ?>
 							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
 						<?php } ?>
