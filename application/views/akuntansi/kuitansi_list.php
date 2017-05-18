@@ -89,7 +89,7 @@
 					<td><?php echo $result->no_bukti; ?></td>
 					<td><?php echo $result->str_nomor_trx_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
-					<td><?php echo $result->kode_usulan_belanja; ?></td>
+					<td><?php echo substr($result->kode_usulan_belanja,6,2); ?></td>
 					<td><?php echo get_unit($result->kode_unit); ?></td>
 					<td><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->kode_akun; ?></td>
