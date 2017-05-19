@@ -92,6 +92,7 @@
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==3){ ?>
 							<a href="<?php echo site_url('akuntansi/memorial/edit_memorial/'.$result->id_kuitansi_jadi); ?>"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-cog"></span> Edit</button></a>
+							<a href="<?php echo site_url('akuntansi/memorial/print_memorial/'.$result->id_kuitansi_jadi); ?>" target="_blank"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-cog"></span> Print</button></a>
 						<?php } ?>
 					</td>
 				</tr>
