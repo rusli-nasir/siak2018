@@ -258,6 +258,13 @@ class Kuitansi_model extends CI_Model {
         }
     }
 
+    function edit_kuitansi_jadi($params,$id_kuitansi_jadi = null)
+    {
+        $this->db->where('id_kuitansi_jadi', $id_kuitansi_jadi);
+        $query = $this->db->update('akuntansi_kuitansi_jadi',$params);
+        return $query;
+    }
+
     public function get_tabel_by_jenis($jenis)
     {
     	if ($jenis == 'GP') {
