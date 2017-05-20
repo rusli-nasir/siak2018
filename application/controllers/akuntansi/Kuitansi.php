@@ -12,7 +12,7 @@ class Kuitansi extends MY_Controller {
     }
 
     public function pilih_unit(){
-    	if($this->session->userdata('level')=='2' AND $this->session->userdata('kode_unit')==null){	
+    	if($this->session->userdata('level')=='2' AND $this->session->userdata('username')=='verifikator'){	
 	        //$this->db3 = $this->load->database('rsa', true);
 	    	$this->db2 = $this->load->database('rba', true);
 	    	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");

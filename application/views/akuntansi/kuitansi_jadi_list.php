@@ -106,7 +106,7 @@ tbody td, thead th {
 	    </form>
 	    <?php } ?>
 	</div>
-	<?php if($this->session->userdata('level')=='2' AND $this->session->userdata('kode_unit')==null){ ?>
+	<?php if($this->session->userdata('level')=='2' AND $this->session->userdata('username')=='verifikator'){ ?>
 	<div class="col-sm-4">	
 		<a href="<?php echo site_url('akuntansi/kuitansi/pilih_unit'); ?>"><button type="button" class="btn btn-primary">Pilih Unit</button></a>
 	</div>
