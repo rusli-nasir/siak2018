@@ -1,3 +1,38 @@
+<style type="text/css">
+table {
+        width: 100%;
+    }
+
+thead, tbody, tr, td, th { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 30px;
+
+    /*text-align: left;*/
+}
+
+tbody {
+    height: 320px;
+    overflow-y: auto;
+}
+
+thead {
+    /* fallback */
+}
+
+
+tbody td, thead th {
+    width: 8%;
+    float: left;
+}
+</style>
 <!-- javascript -->
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -75,10 +110,10 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>NO</th>
+					<th style="width:2% !important;">NO</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
-					<th>NO.SPM</th>
+					<th style="width:9% !important;">NO.SPM</th>
 					<th>JENIS</th>
 					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
@@ -98,10 +133,10 @@
                     }
                 ?>
 				<tr>
-					<td><?php echo $no; ?></td>
+					<td style="width:2% !important;"><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
-					<td><?php echo $result->no_spm; ?></td>
+					<td style="font-size:8pt;"><?php echo $result->no_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
 					<td><?php echo substr($result->kode_kegiatan,6,2); ?></td>
 					<td><?php echo get_unit($result->unit_kerja); ?></td>
