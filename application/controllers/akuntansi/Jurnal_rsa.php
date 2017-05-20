@@ -8,6 +8,7 @@ class Jurnal_rsa extends MY_Controller {
         // $this->cek_session_in();
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
+        $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
         $this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
         $this->load->model('akuntansi/Akun_kas_rsa_model', 'Akun_kas_rsa_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
@@ -80,6 +81,9 @@ class Jurnal_rsa extends MY_Controller {
             }
             // print_r($isian);die();
 			//$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
+            $isian['query_1'] = $this->Memorial_model->read_akun('akuntansi_aset_6');
+            $isian['query_2'] = $this->Memorial_model->read_akun('akuntansi_hutang_6');
+
 			$isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 	        $this->data['tab'] = 'beranda';
 	        $this->data['menu1'] = true;
@@ -193,6 +197,9 @@ class Jurnal_rsa extends MY_Controller {
             $isian = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
             // $isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
             // $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+
+            $isian['query_1'] = $this->Memorial_model->read_akun('akuntansi_aset_6');
+            $isian['query_2'] = $this->Memorial_model->read_akun('akuntansi_hutang_6');
 
             $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
 

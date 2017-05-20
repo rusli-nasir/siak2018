@@ -136,6 +136,12 @@
       <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
           <option value="">Pilih Akun</option>
+          <?php foreach($query_1->result() as $result){ ?>
+            <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
+          <?php } ?>
+          <?php foreach($query_2->result() as $result){ ?>
+            <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
+          <?php } ?>
           <option value="">
            <?php foreach ($akun_belanja as $akun) {
             $akun['kode_akun'][0] = 7;
