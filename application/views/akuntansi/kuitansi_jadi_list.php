@@ -1,5 +1,6 @@
 <style type="text/css">
 table {
+        width: 1800px !important;
     }
 
 thead, tbody, tr, td, th { display: block; }
@@ -28,6 +29,7 @@ thead {
 
 
 tbody td, thead th {
+    width: 110px;
     float: left;
 }
 </style>
@@ -124,6 +126,7 @@ tbody td, thead th {
 					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
 					<th>URAIAN</th>
+					<th style="width:500px !important" nowrap>NO. AKUN <br/><span style="color:blue;">KAS</span><br/>AKRUAL</th>
 					<th>DEBET</th>
 					<th>KREDIT</th>
 					<th>STATUS</th>
@@ -146,6 +149,7 @@ tbody td, thead th {
 					<td><?php echo substr($result->kode_kegiatan,6,2); ?></td>
 					<td><?php echo get_unit($result->unit_kerja); ?></td>
 					<td><?php echo $result->uraian; ?></td>
+					<td style="width:500px !important" nowrap><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
 					<td><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
 					<td>
