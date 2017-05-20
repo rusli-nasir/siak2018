@@ -63,8 +63,14 @@ tbody td, thead th {
 <div class="row">
 	<div class="col-sm-9">
 		<h1 class="page-header">Kuitansi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
-		<?php echo 'Total Kuitansi Belum di Jurnal: <span style="color:red">'.$kuitansi_non_jadi.'</span>'; ?><br/>
-		<?php echo 'Total Kuitansi Sudah di Jurnal: <span style="color:green">'.$kuitansi_jadi.'</span>'; ?>
+		<div class="row">
+			<div class="col-sm-4">
+				<?php echo 'Total Kuitansi Belum di Jurnal: <span style="color:red">'.$kuitansi_non_jadi.'</span>'; ?>
+			</div>
+			<div class="col-sm-4">
+				<?php echo 'Total Kuitansi Sudah di Jurnal: <span style="color:green">'.$kuitansi_jadi.'</span>'; ?>
+			</div>
+		</div>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>

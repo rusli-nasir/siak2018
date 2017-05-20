@@ -1,6 +1,5 @@
 <style type="text/css">
 table {
-        width: 100%;
     }
 
 thead, tbody, tr, td, th { display: block; }
@@ -29,7 +28,6 @@ thead {
 
 
 tbody td, thead th {
-    width: 8%;
     float: left;
 }
 </style>
@@ -63,9 +61,17 @@ tbody td, thead th {
 <div class="row">
 	<div class="col-sm-9">
 		<h1 class="page-header">Kuitansi Jadi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
-		<?php echo 'Total Kuitansi Disetujui: <span style="color:green">'.$kuitansi_ok.'</span>'; ?><br/>
-		<?php echo 'Total Kuitansi Direvisi: <span style="color:orange">'.$kuitansi_revisi.'</span>'; ?><br/>
-		<?php echo 'Total Kuitansi Belum di Verifikasi: <span style="color:#000">'.$kuitansi_pasif.'</span>'; ?>
+		<div class="row">
+			<div class="col-sm-4">
+				<?php echo 'Total Kuitansi Disetujui: <span style="color:green">'.$kuitansi_ok.'</span>'; ?>
+			</div>
+			<div class="col-sm-4">
+				<?php echo 'Total Kuitansi Direvisi: <span style="color:orange">'.$kuitansi_revisi.'</span>'; ?>
+			</div>
+			<div class="col-sm-4">
+				<?php echo 'Total Kuitansi Belum di Verifikasi: <span style="color:#000">'.$kuitansi_pasif.'</span>'; ?>
+			</div>
+		</div>		
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
@@ -113,12 +119,11 @@ tbody td, thead th {
 					<th style="width:2% !important;">NO</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
-					<th style="width:9% !important;">NO.SPM</th>
+					<th>NO.SPM</th>
 					<th>JENIS</th>
 					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
 					<th>URAIAN</th>
-					<th>NO. AKUN <br/><span style="color:blue;">KAS</span><br/>AKRUAL</th>
 					<th>DEBET</th>
 					<th>KREDIT</th>
 					<th>STATUS</th>
@@ -136,12 +141,11 @@ tbody td, thead th {
 					<td style="width:2% !important;"><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
-					<td style="font-size:8pt;"><?php echo $result->no_spm; ?></td>
+					<td><?php echo $result->no_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
 					<td><?php echo substr($result->kode_kegiatan,6,2); ?></td>
 					<td><?php echo get_unit($result->unit_kerja); ?></td>
 					<td><?php echo $result->uraian; ?></td>
-					<td><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
 					<td><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
 					<td>
