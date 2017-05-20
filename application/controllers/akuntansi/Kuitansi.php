@@ -89,6 +89,9 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit);
+
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -275,6 +278,10 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
+
+        $this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);

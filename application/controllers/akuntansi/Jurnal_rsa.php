@@ -147,7 +147,7 @@ class Jurnal_rsa extends MY_Controller {
         $updater['kode_user'] = $this->session->userdata('kode_user');
         $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$updater);
 
-        redirect('akuntansi/jurnal_rsa/detail_kuitansi/'.$id_kuitansi_jadi.'/lihat');
+        redirect('akuntansi/kuitansi/jadi/');
 
     }
 

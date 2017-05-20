@@ -16,11 +16,17 @@
 <legend><center>INPUT JURNAL PENGELUARAN KAS</center></legend>
 
 <!-- Text input-->
-
+<?php
+if($jenis=='NK'){
+  $no_bukti = substr($str_nomor_trx_spm, 6, 3).substr($str_nomor_trx_spm, 0, 5); 
+}else{
+  $no_bukti = $no_bukti;
+}
+?>
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" value="<?php echo substr($str_nomor_trx_spm, 6, 3).substr($str_nomor_trx_spm, 0, 5); ?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" readonly>
+  <input id="no_bukti" name="no_bukti" value="<?php echo $no_bukti; ?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" readonly>
     
   </div>
 </div>

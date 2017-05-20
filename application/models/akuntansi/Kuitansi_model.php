@@ -333,4 +333,9 @@ class Kuitansi_model extends CI_Model {
         }
     }
 
+    public function read_total($cond, $table){
+        $this->db->where($cond);
+        $query = $this->db->get($table);
+        return $query;
+    }
 }

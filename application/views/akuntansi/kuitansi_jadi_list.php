@@ -28,6 +28,9 @@
 <div class="row">
 	<div class="col-sm-9">
 		<h1 class="page-header">Kuitansi Jadi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
+		<?php echo 'Total Kuitansi Disetujui: <span style="color:green">'.$kuitansi_ok.'</span>'; ?><br/>
+		<?php echo 'Total Kuitansi Direvisi: <span style="color:orange">'.$kuitansi_revisi.'</span>'; ?><br/>
+		<?php echo 'Total Kuitansi Belum di Verifikasi: <span style="color:#000">'.$kuitansi_pasif.'</span>'; ?>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
