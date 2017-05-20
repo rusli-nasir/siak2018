@@ -63,8 +63,10 @@ class Login extends MY_Controller {
 				}else{
 					redirect(site_url('akuntansi/kuitansi/jadi'));
 				}
-			}else{
+			}else if($this->session->userdata('level')==3){
 				redirect(site_url('akuntansi/penerimaan/index'));
+			}else if($this->session->userdata('level')==4){
+				redirect(site_url('akuntansi/kuitansi/monitor'));
 			}
 		}
 	}
