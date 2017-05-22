@@ -31,6 +31,7 @@
 				<div class="col-sm-5">
 					<select class="form-control" name="kode_unit">
 						<option value="all">all - tampil pada semua unit</option>
+						<option value="none">none - tidak tampil pada semua unit</option>
 						<?php foreach($query_unit->result() as $result){ ?>
 							<option value="<?php echo $result->kode_unit; ?>" <?php if($query['kode_unit']==$result->kode_unit) echo 'selected'; ?>><?php echo $result->kode_unit.' - '.$result->nama_unit; ?></option>
 						<?php } ?>
@@ -40,13 +41,13 @@
 			<div class="form-group">
 				<label class="control-label col-sm-3">Kode Rekening</label>
 				<div class="col-sm-4">
-					<input type="text" name="kode_rekening" value="<?php echo $query['kode_rekening']; ?>" maxlength="50" class="form-control" placeholder="111101" required>
+					<input type="text" name="kode_rekening" value="<?php echo $query['akun_6']; ?>" maxlength="50" class="form-control" placeholder="111101" required>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="control-label col-sm-3">Uraian</label>
 				<div class="col-sm-9">
-					<input type="text" name="uraian" value="<?php echo $query['uraian']; ?>" maxlength="255" class="form-control" placeholder="Kas Bank Mandiri Operasional BLU No Rek. 1360020080005" required>
+					<input type="text" name="uraian" value="<?php echo $query['nama']; ?>" maxlength="255" class="form-control" placeholder="Kas Bank Mandiri Operasional BLU No Rek. 1360020080005" required>
 				</div>
 			</div>
 			<div class="form-group">

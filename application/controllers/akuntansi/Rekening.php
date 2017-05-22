@@ -35,9 +35,13 @@ class Rekening extends MY_Controller {
 		$uraian = $this->input->post('uraian');
 
 		$data = array(
+				'akun_1'=>'1',
+				'akun_2'=>'11',
+				'akun_3'=>'111',
+				'akun_4'=>'1111',
 				'kode_unit'=>$kode_unit,
-				'kode_rekening'=>$kode_rekening,
-				'uraian'=>$uraian
+				'akun_6'=>$kode_rekening,
+				'nama'=>$uraian
 			);
 
 		$insert = $this->Rekening_model->create($data);
@@ -52,7 +56,7 @@ class Rekening extends MY_Controller {
 		$this->data['tab1'] = true;
 
 		$this->data['id'] = $id;
-		$this->data['query'] = $this->Rekening_model->read(array('id'=>$id))->row_array();
+		$this->data['query'] = $this->Rekening_model->read(array('id_akuntansi_aset_6'=>$id))->row_array();
 		$this->data['query_unit'] = $this->Rekening_model->read_unit();
 
 		$temp_data['content'] = $this->load->view('akuntansi/rekening_edit',$this->data,true);
@@ -66,11 +70,11 @@ class Rekening extends MY_Controller {
 
 		$data = array(
 				'kode_unit'=>$kode_unit,
-				'kode_rekening'=>$kode_rekening,
-				'uraian'=>$uraian
+				'akun_6'=>$kode_rekening,
+				'nama'=>$uraian
 			);
 
-		$insert = $this->Rekening_model->update(array('id'=>$id), $data);
+		$insert = $this->Rekening_model->update(array('id_akuntansi_aset_6'=>$id), $data);
 		if($insert){
 			redirect(site_url('akuntansi/rekening/edit/'.$id.'/?balasan=1'));
 		}else{
@@ -79,7 +83,7 @@ class Rekening extends MY_Controller {
 	}
 
 	public function delete($id){
-		$delete = $this->Rekening_model->delete(array('id'=>$id));
+		$delete = $this->Rekening_model->delete(array('id_akuntansi_aset_6'=>$id));
 		if($delete){
 			redirect(site_url('akuntansi/rekening/index/?balasan=3'));
 		}else{

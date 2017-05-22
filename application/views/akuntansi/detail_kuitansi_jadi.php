@@ -206,7 +206,7 @@
           $selected = false;
           foreach ($akun_kas as $akun) {
           ?>
-          <option <?php if ($akun['kode_rekening'] == $akun_kredit_akrual): ?> selected <?php $selected=true; endif; ?> value="<?=$akun['kode_rekening']?>"><?=$akun['kode_rekening'].' - '.$akun['uraian']?></option>
+          <option <?php if ($akun['akun_6'] == $akun_kredit_akrual): ?> selected <?php $selected=true; endif; ?> value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
         ?>

@@ -29,6 +29,7 @@
 				<div class="col-sm-5">
 					<select class="form-control" name="kode_unit">
 						<option value="all">all - tampil pada semua unit</option>
+						<option value="none">none - tidak tampil pada semua unit</option>
 						<?php foreach($query_unit->result() as $result){ ?>
 							<option value="<?php echo $result->kode_unit; ?>"><?php echo $result->kode_unit.' - '.$result->nama_unit; ?></option>
 						<?php } ?>

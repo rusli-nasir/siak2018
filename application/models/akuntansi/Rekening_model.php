@@ -10,13 +10,13 @@ class Rekening_model extends CI_Model {
     }
 
     function create($data){
-        $query = $this->db->insert('akuntansi_kas_rekening', $data);
+        $query = $this->db->insert('akuntansi_aset_6', $data);
         return $query;
     }
 
     function update($cond, $data){
         $this->db->where($cond);
-        $query = $this->db->update('akuntansi_kas_rekening', $data);
+        $query = $this->db->update('akuntansi_aset_6', $data);
         return $query;
     }
 	
@@ -24,8 +24,8 @@ class Rekening_model extends CI_Model {
         if($cond!=null){         
             $this->db->where($cond);
         }
-        $this->db->order_by('id', 'DESC');
-        $query = $this->db->get('akuntansi_kas_rekening');
+        $this->db->order_by('id_akuntansi_aset_6', 'ASC');
+        $query = $this->db->get('akuntansi_aset_6');
 		return $query;
 	}
 
@@ -36,7 +36,7 @@ class Rekening_model extends CI_Model {
 
     function delete($cond){
         $this->db->where($cond);
-        $query = $this->db->delete('akuntansi_kas_rekening');
+        $query = $this->db->delete('akuntansi_aset_6');
         return $query;
     }
 }

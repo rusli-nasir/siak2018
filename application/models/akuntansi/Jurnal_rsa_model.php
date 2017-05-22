@@ -10,7 +10,7 @@ class Jurnal_rsa_model extends CI_Model {
     }
 
     public function get_rekening_by_unit($kode_unit){
-        $query = $this->db->query("SELECT * FROM akuntansi_kas_rekening WHERE (kode_unit='".$kode_unit."' OR kode_unit='all')");
+        $query = $this->db->query("SELECT * FROM akuntansi_aset_6 WHERE (kode_unit='".$kode_unit."' OR kode_unit='all')");
         return $query;
     }
 

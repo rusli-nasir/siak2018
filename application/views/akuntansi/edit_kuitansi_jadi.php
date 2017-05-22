@@ -185,7 +185,7 @@
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
-          <option value="<?=$akun->kode_rekening?>"><?=$akun->kode_rekening.' - '.$akun->uraian?></option>
+          <option <?php if($akun_kredit_akrual==$akun->akun_6) echo 'selected'; ?> value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
           <?php
         }
         ?>

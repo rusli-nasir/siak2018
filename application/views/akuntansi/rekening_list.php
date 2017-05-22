@@ -36,20 +36,22 @@
 			<tbody>
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
-					<td><?php echo $result->kode_rekening; ?></td>
-					<td><?php echo $result->uraian; ?></td>
+					<td><?php echo $result->akun_6; ?></td>
+					<td><?php echo $result->nama; ?></td>
 					<td>
 						<?php 
 						if($result->kode_unit=='all'){
 							echo 'all';
+						}else if($result->kode_unit=='none'){
+							echo 'none';
 						}else{
 							echo get_nama_unit($result->kode_unit); 
 						}
 						?>
 					</td>
 					<td>						
-						<a href="<?php echo site_url('akuntansi/rekening/edit/'.$result->id); ?>"><button type="button" class="btn btn-sm btn-default">Edit</button></a>
-						<a href="<?php echo site_url('akuntansi/rekening/delete/'.$result->id); ?>" onclick="return confirm('Hapus rekening <?php echo $result->kode_rekening.' - '.$result->uraian; ?>?')"><button type="button" class="btn btn-sm btn-danger">Delete</button></a>
+						<a href="<?php echo site_url('akuntansi/rekening/edit/'.$result->id_akuntansi_aset_6); ?>"><button type="button" class="btn btn-sm btn-default">Edit</button></a>
+						<a href="<?php echo site_url('akuntansi/rekening/delete/'.$result->id_akuntansi_aset_6); ?>" onclick="return confirm('Hapus rekening <?php echo $result->akun_6.' - '.$result->nama; ?>?')"><button type="button" class="btn btn-sm btn-danger">Delete</button></a>
 					</td>
 				</tr>
 				<?php } ?>
