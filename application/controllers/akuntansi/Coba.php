@@ -4,18 +4,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Coba extends MY_Controller {
 	public function __construct(){
 		parent::__construct();
-		$this->cek_session_in();
+		// $this->cek_session_in();
 
         $this->load->model(array('rsa_gup_model','setting_up_model','kuitansi_model'));
         $this->load->model("user_model");
         $this->load->model("unit_model");
         $this->load->model('menu_model');
+        $this->load->model('akuntansi/Akun_model', 'Akun_model');
 	}
 
 	public function index()
 	{
-		echo 'coba';
+		echo $this->Akun_model->get_nama_akun('111111');
 	}
+
+    public function nama_akun()
+    {
+        # code...
+    }
 
 	function spm_gup_kbuu($kd_unit=11,$cur_tahun=2017){
 		if(true){

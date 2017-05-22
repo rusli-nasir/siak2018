@@ -38,32 +38,21 @@
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Buku Besar</li>
+		<li class="active">Neraca Saldo</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Buku Besar</h1>
+		<h1 class="page-header">Neraca Saldo</h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
 </div><!--/.row-->
 <br />
 <div class="container">
-    <?php echo form_open('akuntansi/laporan/get_buku_besar',array("class"=>"form-horizontal","id" => "form_pop")); ?>
+    <?php echo form_open('akuntansi/laporan/get_neraca_saldo',array("class"=>"form-horizontal" )); ?>
 	<!-- Text input-->
-    <div class="form-group">
-      <label class="col-md-2 control-label">Unit</label>  
-      <div class="col-md-6">
-          <select id="unit_list" name="unit" class="form-control" required="">
-              <option value="all" selected=""> Semua</option>
-            <?php foreach($query_unit->result() as $unit): ?>
-              <option value="<?php echo $unit->kode_unit ?>"><?= $unit->alias." - ".$unit->nama_unit ?></option>
-            <?php endforeach; ?>
-          </select>
-      </div>
-    </div>
     <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
       <div class="col-md-6">
@@ -75,17 +64,6 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-md-2 control-label">Sumber Dana</label>  
-      <div class="col-md-6">
-          <select id="sumber_dana" name="sumber_dana" class="form-control" required="">
-            <option value="all">Semua</option>
-            <option value="tidak_terikat">Tidak Terikat</option>
-            <option value="terikat_temporer">Terikat Temporer</option>
-            <option value="terikat_permanen">Terikat Permanen</option>
-          </select>
-      </div>
-    </div>
-    <div class="form-group">
       <label class="col-md-2 control-label">Basis</label>  
       <div class="col-md-6">
           <select id="basis" name="basis" class="form-control" required="">
@@ -94,35 +72,10 @@
           </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-md-2 control-label">Akun</label>  
-      <div class="col-md-6">
-          <div id="kas_list">
-              <select id="akun_kas_list" name="akun[]" class="form-control" required="">
-                <option value="all">Semua Akun</option>
-                <?php foreach ($query_akun_kas as $akun) {
-                  ?>
-                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                } ?>
-              </select>
-          </div>
-          <div id="kas_list" style="display:none">
-              <select id="akun_akrual_list" name="akun[]" class="form-control" required="">
-                <option value="all">Semua Akun</option>
-                <?php foreach ($query_akun_akrual as $akun) {
-                  ?>
-                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                } ?>
-              </select>
-          </div>
-      </div>
-    </div>
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
-        <button id="simpan" name="simpan" class="btn btn-success" type="submit">Buka Buku Besar</button>
+        <button id="simpan" name="simpan" class="btn btn-success" type="submit">Buka Neraca</button>
       </div>
     </div>
     <?php echo form_close(); ?>
@@ -144,14 +97,6 @@
 		<?php //} ?>
 	</div>
 </div>
-
-<script type="text/javascript">
-  var myForm = document.getElementById('form_pop');
-    myForm.onsubmit = function() {
-        var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=800,height=600,left = 312,top = 234');
-        this.target = 'Popup_Window';
-    };
-</script>
 
 <?php
 function get_pengeluaran($id_kuitansi){

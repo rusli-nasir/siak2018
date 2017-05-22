@@ -203,7 +203,8 @@ class Kuitansi_model extends CI_Model {
 
     public function get_kuitansi_nk($id_spmls)
     {
-    	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+    	$this->load->model('akuntansi/Akun_model', 'Akun_model');
     	$hasil =  $this->db->get_where('kepeg_tr_spmls',array('id_spmls'=>$id_spmls))->row_array();
     	$hasil['no_bukti'] = '';
     	$hasil['kode_usulan_belanja'] =  $hasil['detail_belanja'];
@@ -213,10 +214,10 @@ class Kuitansi_model extends CI_Model {
     	$hasil['str_nomor_trx_spm'] = $hasil['nomor'];
     	$hasil['tgl_kuitansi'] = $hasil['tanggal'];
     	$hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
-    	$hasil['kode_akun'] = $hasil['akun_cair'];
     	$hasil['uraian'] = '';
-    	$hasil['akun_debet'] = $hasil['akun_cair'];
-    	$hasil['akun_debet_kas'] = $hasil['akun_debet'] . " - ". $this->db->get_where('akun_kas6',array('kd_kas_6'=>$hasil['akun_debet']))->row_array()['nm_kas_6'];
+    	$hasil['akun_debet'] = substr($hasil['detail_belanja'],18,6);
+        $hasil['kode_akun'] = $hasil['akun_debet'];
+    	$hasil['akun_debet_kas'] = $hasil['akun_debet'] . " - ". $this->Akun_model->get_nama_akun($hasil['akun_debet']);
     	return $hasil;
     }
 

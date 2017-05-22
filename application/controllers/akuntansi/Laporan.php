@@ -35,7 +35,24 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/content_template',$temp_data,false);
     }
 
-	public function rekap_jurnal($id = 0){
+    public function rekap_jurnal($id = 0){
+        $this->data['tab1'] = true;
+
+//      $this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
+//      $this->data['query_debet_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_debet_akrual');
+//      $this->data['query_kredit'] = $this->Laporan_model->read_buku_besar_group('akun_kredit');
+//      $this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
+        $this->db2 = $this->load->database('rba', true);
+        $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
+        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+        $this->data['query_akun_kas'] = $this->get_akun_kas();
+        $this->data['query_akun_akrual'] = $this->get_akun_akrual();
+
+        $temp_data['content'] = $this->load->view('akuntansi/rekap_jurnal_list',$this->data,true);
+        $this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+	public function neraca_saldo($id = 0){
 		$this->data['tab1'] = true;
 
 //		$this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
@@ -48,7 +65,7 @@ class Laporan extends MY_Controller {
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
 
-		$temp_data['content'] = $this->load->view('akuntansi/rekap_jurnal_list',$this->data,true);
+		$temp_data['content'] = $this->load->view('akuntansi/neraca_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
     
@@ -172,7 +189,7 @@ class Laporan extends MY_Controller {
 		// $this->Relasi_kuitansi_akun_model->get_relasi_kuitansi_akun()
 	}
 
-	public function get_rekap_jurnal()
+	public function get_rekap_jurnal($mode = null)
 	{
         $basis = $this->input->post('basis');
         $unit = $this->input->post('unit');
@@ -200,6 +217,7 @@ class Laporan extends MY_Controller {
         $excel = new PHPExcel_Reader_Excel5();
         $objPHPExcel = $excel->load($path_template);
         $objWorksheet = $objPHPExcel->getActiveSheet();
+        $objWorksheet->setTitle('Rekap Jurnal');
 
         $row = $start_row = 9;
 
@@ -302,12 +320,29 @@ class Laporan extends MY_Controller {
         $objWorksheet->setCellValueByColumnAndRow(7,$row,$jumlah_debet);
         $objWorksheet->setCellValueByColumnAndRow(8,$row,$jumlah_kredit);
 
+        if ($mode == 'excel'){
+            $objWorksheet->getPageSetup()->setFitToPage(true);
+            $objWorksheet->getPageSetup()->setFitToWidth(0);
+            $objWorksheet->getPageSetup()->setFitToHeight(1);
+            $objWorksheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(6,7);
+            header("Content-type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=rekap_jurnal.xls");
+            header('Cache-Control: max-age=0');
+            // $objWriter = new PHPExcel_Writer_HTML($objPHPExcel,'excel5');  
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            $objWriter->save('php://output');
+            exit;
+
+
+        }
+
         $objWriter = new PHPExcel_Writer_HTML($objPHPExcel);  
         $output['data'] = $objWriter->generateHTMLHeader();
         $output['data'] .= $objWriter->generateStyles();
         $output['data'] .= $objWriter->generateSheetData();
         $output['data'] .= $objWriter->generateHTMLFooter();
         $output['teks_cetak'] = 'Print Rekap Jurnal';
+        $output['sumber'] = 'get_rekap_jurnal';
         
     
 
@@ -315,7 +350,7 @@ class Laporan extends MY_Controller {
 
 	}
 
-	public function get_buku_besar()
+	public function get_buku_besar($mode = null)
     {
     // 	if ($tipe == 'sak'){
     // 		$akun = array(1,4);
@@ -356,9 +391,13 @@ class Laporan extends MY_Controller {
 
         $path_template = realpath(FCPATH).'/assets/akuntansi/template_excel/template_buku_besar.xls';
         $excel = new PHPExcel_Reader_Excel5();
+
         $objPHPExcel = $excel->load($path_template);
-        $objPHPExcel = $excel->load($path_template);
+        $objPHPExcel->setActiveSheetIndex(0); // index of sheet
         $objWorksheet = $objPHPExcel->getActiveSheet();
+        $objWorksheet->setTitle('Buku Besar');
+
+        // $objWorksheet = $objPHPExcel->getActiveSheet();
 
         $row = 5;
         $height = 12;
@@ -409,6 +448,16 @@ class Laporan extends MY_Controller {
 
     		foreach ($entry as $transaksi) {
     			$iter++;
+                if ($iter == 1) {
+                    $objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
+                    $objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
+                    $objWorksheet->setCellValueByColumnAndRow(1,$row,'01 Januari 2017');
+                    $objWorksheet->setCellValueByColumnAndRow(3,$row,'Saldo Awal');
+                    $objWorksheet->setCellValueByColumnAndRow(5,$row,$saldo);
+
+                    $row++;
+                    $iter++;
+                }
     			$objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
     			$objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
                 $objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['tanggal']);
@@ -438,12 +487,29 @@ class Laporan extends MY_Controller {
     		// $objWorksheet->setCellValueByColumnAndRow(2,$i+$row,$i+1);
     	}
 
+        if ($mode == 'excel'){
+            $objWorksheet->getPageSetup()->setFitToPage(true);
+            $objWorksheet->getPageSetup()->setFitToWidth(0);
+            $objWorksheet->getPageSetup()->setFitToHeight(1);
+            $objWorksheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(10,11);
+            header("Content-type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=buku_besar.xls");
+            header('Cache-Control: max-age=0');
+            // $objWriter = new PHPExcel_Writer_HTML($objPHPExcel,'excel5');  
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            $objWriter->save('php://output');
+            exit;
+
+
+        }
+
         $objWriter = new PHPExcel_Writer_HTML($objPHPExcel);  
         $output['data'] = $objWriter->generateHTMLHeader();
         $output['data'] .= $objWriter->generateStyles();
         $output['data'] .= $objWriter->generateSheetData();
         $output['data'] .= $objWriter->generateHTMLFooter();
         $output['teks_cetak'] = 'Print Buku Besar';
+        $output['sumber'] = 'get_buku_besar';
         
     
 
@@ -451,7 +517,7 @@ class Laporan extends MY_Controller {
 
     }
 
-    public function get_neraca_saldo()
+    public function get_neraca_saldo($mode = null)
     {
     // 	if ($tipe == 'sak'){
     // 		$akun = array(1,4);
@@ -459,9 +525,29 @@ class Laporan extends MY_Controller {
     // 		$akun = array(6,7);
     // 	}
 
-    	$akun = array(1,2,3,4,5,6,7,8,9);
+    	$array_akun = array(1,2,3,4,5,6,7,8,9);
 
-    	$data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
+        $basis = $this->input->post('basis');
+        $periode_awal = $this->input->post('periode_awal');
+        $periode_akhir = $this->input->post('periode_akhir');
+        $sumber_dana = $this->input->post('sumber_dana');
+
+    	// $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
+        $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,null,$sumber_dana,$periode_awal,$periode_akhir);
+
+        $teks_sumber_dana = "BUKU BESAR ";
+        $teks_periode = "";
+        $teks_tahun_anggaran = "201X";
+        $teks_unit = "UNIVERSITAS DIPONEGORO";
+
+        if ($periode_awal != null and $periode_akhir != null){
+            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        }
+
+
+        if ($sumber_dana != null) {
+            $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
+        }
 
     	ksort($data);
 
@@ -471,6 +557,11 @@ class Laporan extends MY_Controller {
         $excel = new PHPExcel_Reader_Excel5();
         $objPHPExcel = $excel->load($path_template);
         $objWorksheet = $objPHPExcel->getActiveSheet();
+        $objWorksheet->setTitle('neraca_saldo');
+
+        $objWorksheet->setCellValueByColumnAndRow(0,2,$teks_sumber_dana);
+        $objWorksheet->setCellValueByColumnAndRow(0,3,$teks_periode);
+        $objWorksheet->setCellValueByColumnAndRow(2,6,$teks_tahun_anggaran);
 
         $jumlah_debet = 0;
 	    $jumlah_kredit = 0;
@@ -534,12 +625,29 @@ class Laporan extends MY_Controller {
     	$objWorksheet->setCellValueByColumnAndRow(5,$row+1,number_format($jumlah_neraca_debet,2,',','.'));
     	$objWorksheet->setCellValueByColumnAndRow(6,$row+1,number_format($jumlah_neraca_kredit,2,',','.'));
 
+        if ($mode == 'excel'){
+            $objWorksheet->getPageSetup()->setFitToPage(true);
+            $objWorksheet->getPageSetup()->setFitToWidth(0);
+            $objWorksheet->getPageSetup()->setFitToHeight(1);
+            $objWorksheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(8,9);
+            header("Content-type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=neraca_saldo.xls");
+            header('Cache-Control: max-age=0');
+            // $objWriter = new PHPExcel_Writer_HTML($objPHPExcel,'excel5');  
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            $objWriter->save('php://output');
+            exit;
+
+
+        }
+
         $objWriter = new PHPExcel_Writer_HTML($objPHPExcel);  
         $output['data'] = $objWriter->generateHTMLHeader();
         $output['data'] .= $objWriter->generateStyles();
         $output['data'] .= $objWriter->generateSheetData();
         $output['data'] .= $objWriter->generateHTMLFooter();
         $output['teks_cetak'] = 'Print Neraca Saldo';
+        $output['sumber'] = 'get_neraca_saldo';
         
     
 

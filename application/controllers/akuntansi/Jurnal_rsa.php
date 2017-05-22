@@ -39,6 +39,8 @@ class Jurnal_rsa extends MY_Controller {
 
             $entry = array_merge($kuitansi,$entry);
 
+            // print_r($entry);die();
+
             $entry['jumlah_kredit'] = $entry['jumlah_debet'];
             $entry['flag'] = 1;
             $entry['tipe'] = 'pengeluaran';
@@ -72,7 +74,9 @@ class Jurnal_rsa extends MY_Controller {
             } else {
                 $isian = $this->Kuitansi_model->get_kuitansi_nk($id_kuitansi);
                 $isian['id_kuitansi'] = $id_kuitansi;
+                $isian['akun_debet_akrual'] = substr_replace($isian['kode_akun'], 7, 0,1);
                 $isian['jenis_pembatasan_dana'] = '';
+                $isian['jenis_isian'] = 'nk';
             }
             // print_r($isian);die();
 			//$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();

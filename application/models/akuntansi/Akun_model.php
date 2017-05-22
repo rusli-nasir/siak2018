@@ -29,7 +29,14 @@ class Akun_model extends CI_Model {
 			} else if (substr($kode_akun,0,1) == 9){
 				return 'SAL';
 			} else if (substr($kode_akun,0,1) == 1){
-				return $this->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
+				$hasil = $this->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
+				if ($hasil == null){
+					$hasil = $this->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
+				}
+				if ($hasil == null){
+					$hasil = $this->db->get_where('akuntansi_aset_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+				}
+				return $hasil;
 			} else {
 				return 'Nama tidak ditemukan';
 			}

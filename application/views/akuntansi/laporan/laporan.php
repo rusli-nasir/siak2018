@@ -120,6 +120,14 @@ ul
 -->
 </style>
 
+
+<style type="text/css">
+    table { page-break-inside:auto }
+    tr    { page-break-inside:avoid; page-break-after:auto }
+    thead { display:table-header-group }
+    tfoot { display:table-footer-group }
+</style>
+
 <div class="tab-pane" id="" ng-app="" ng-controller="validationCtrl">
 	<!-- page start-->
 	<div class="row mt">
@@ -136,7 +144,16 @@ ul
 					</div>
 				</div>
 				<hr/>
-				&nbsp;&nbsp;<button onclick="printContent('cetak')"><?php echo $teks_cetak ?></button>
+				&nbsp;&nbsp;
+				<?php echo form_open("akuntansi/laporan/$sumber/excel",array("class"=>"form-horizontal")); ?>
+					<button onclick="printContent('cetak')"><?php echo $teks_cetak ?></button>
+					<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+					<input type="hidden" name="periode_awal" value="<?php echo $this->input->post('periode_awal') ?>">
+					<input type="hidden" name="periode_akhir" value="<?php echo $this->input->post('periode_akhir') ?>">
+					<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+					<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+					<input type="submit" name="Download excel" value="Download Excel">
+				</form>
 			</div>
 		</div>
 	</div>

@@ -74,7 +74,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="uraian">Uraian</label>
   <div class="col-md-4">                     
-    <textarea class="form-control" id="uraian" name="uraian" disabled><?=$uraian?></textarea>
+    <textarea class="form-control" required="" id="uraian" name="uraian" <?php if (!isset($jenis_isian)): ?> disabled <?php endif ?>><?=$uraian?></textarea>
   </div>
 </div>
 
