@@ -28,7 +28,7 @@
 			echo '<div class="alert alert-warning">Saldo untuk akun tersebut sudah ada</div>';
 		}
 		?>
-		<form class="form-horizontal" action="<?php echo site_url('akuntansi/saldo/edit_proses/'.$id); ?>" method="post">
+		<form class="form-horizontal" action="<?php echo site_url('akuntansi/saldo/edit_proses/'.$id); ?>" method="post" onsubmit="return confirm('Simpan Data?')">
 			<div class="form-group">
 				<label class="control-label col-sm-3">Kode Akun</label>
 				<div class="col-sm-8">
@@ -73,7 +73,7 @@
 			<div class="form-group">
 				<label class="control-label col-sm-3"></label>
 				<div class="col-sm-9">
-					<button type="submit" class="btn btn-primary" onclick="return confirm('Simpan Data?')">Submit</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>
 			</div>
 		</form>
