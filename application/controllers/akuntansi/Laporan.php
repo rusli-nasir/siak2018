@@ -69,7 +69,8 @@ class Laporan extends MY_Controller {
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
     
-    public function get_akun_kas(){
+    public function get_akun_kas($get_json=null){
+        $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
         $query_1 = $this->Memorial_model->read_akun('akuntansi_aset_6');
         $query_2 = $this->Memorial_model->read_akun('akuntansi_hutang_6');
         $query_3 = $this->Memorial_model->read_akun('akuntansi_aset_bersih_6');
@@ -116,10 +117,16 @@ class Laporan extends MY_Controller {
         $data[$i]['akun_6'] = '911101';
         $data[$i]['nama'] = 'SAL';
 
-        return $data;
+        if($get_json){
+            $json_data['hasil'] = $data;
+
+            header('Content-Type: application/json');
+            echo json_encode($json_data);
+        } else return $data;
     }
 
-    public function get_akun_akrual(){
+    public function get_akun_akrual($get_json = null){
+        $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
         $query_1 = $this->Memorial_model->read_akun('akuntansi_aset_6');
         $query_2 = $this->Memorial_model->read_akun('akuntansi_hutang_6');
         $query_3 = $this->Memorial_model->read_akun('akuntansi_aset_bersih_6');
@@ -165,6 +172,13 @@ class Laporan extends MY_Controller {
             $data[$i]['nama'] = $result->nama;
             $i++;
         }
+        
+        if($get_json){
+            $json_data['hasil'] = $data;
+
+            header('Content-Type: application/json');
+            echo json_encode($json_data);
+        } else return $data;
 
         return $data;
     }

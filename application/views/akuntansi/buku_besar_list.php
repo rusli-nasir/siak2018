@@ -5,7 +5,7 @@
 <!-- javascript -->
 <script type="text/javascript">
 	$(document).ready(function(){
-		var host = location.protocol + '//' + location.host + '/sisrenbang/index.php/';
+		var host = location.protocol + '//' + location.host + '/rsa/index.php/';
 
 		$("#filter_tahun").change(function(){
 			$("#form_filter_tahun").submit();
@@ -20,18 +20,54 @@
         $('#akun_kas_list').selectize();
         $('#akun_akrual_list').selectize();
         $('#unit_list').selectize();
+        
+        $('#basis').on('change', function (e) {
+            var optionSelected = $('#basis').find(':selected').text();
+            console.log(optionSelected);
+            if(optionSelected == 'Kas'){
+                $.ajax({
+                    url:host+'akuntansi/laporan/get_akun_kas/get_json',
+                    data:{},
+                    success:function(data){
+                      $('#akun_list').empty();
+                      var sel = $('<select>').appendTo('#akun_list');
+                      sel.attr('name', 'akun[]');
+                      $.each(data['hasil'], function(index, val){
+                        sel.append($("<option>").attr('value',data['hasil'][index]['akun_6']).text(data['hasil'][index]['akun_6'] + ' - ' + data['hasil'][index]['nama']));
+                      });
+                      sel.selectize();
+                    }
+                  });
+            } else {
+                $.ajax({
+                    url:host+'akuntansi/laporan/get_akun_akrual/get_json',
+                    data:{},
+                    success:function(data){
+                      $('#akun_list').empty();
+                      var sel = $('<select>').appendTo('#akun_list');
+                      sel.attr('name', 'akun[]');
+                      $.each(data['hasil'], function(index, val){
+                        sel.append($("<option>").attr('value',data['hasil'][index]['akun_6']).text(data['hasil'][index]['akun_6'] + ' - ' + data['hasil'][index]['nama']));
+                      });
+                      sel.selectize();
+                    }
+                  });
+            }
+        });
+
+        $.ajax({
+            url:host+'akuntansi/laporan/get_akun_kas/get_json',
+            data:{},
+            success:function(data){
+              $('#akun_list').empty();
+              var sel = $('<select>').appendTo('#akun_list');
+              $.each(data['hasil'], function(index, val){
+                sel.append($("<option>").attr('value',data['hasil'][index]['akun_6']).text(data['hasil'][index]['akun_6'] + ' - ' + data['hasil'][index]['nama']));
+              });
+              sel.selectize();
+            }
+          });
 	});
-    
-    $('#basis').on('change', function (e) {
-        var optionSelected = $("option:selected", this);
-        if(optionSelected == 'kas'){
-            $('#kas_list').removeAttr('style');
-            $('#akrual_list').attr('style', 'display:none');
-        } else {
-            $('#akrual_list').removeAttr('style');
-            $('#kas_list').attr('style', 'display:none');
-        }
-    });
 </script>
 <!-- javascript -->
 
@@ -97,25 +133,8 @@
     <div class="form-group">
       <label class="col-md-2 control-label">Akun</label>  
       <div class="col-md-6">
-          <div id="kas_list">
-              <select id="akun_kas_list" name="akun[]" class="form-control" required="">
-                <option value="all">Semua Akun</option>
-                <?php foreach ($query_akun_kas as $akun) {
-                  ?>
-                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                } ?>
-              </select>
-          </div>
-          <div id="kas_list" style="display:none">
-              <select id="akun_akrual_list" name="akun[]" class="form-control" required="">
-                <option value="all">Semua Akun</option>
-                <?php foreach ($query_akun_akrual as $akun) {
-                  ?>
-                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                } ?>
-              </select>
+          <div id="akun_list">
+              
           </div>
       </div>
     </div>
