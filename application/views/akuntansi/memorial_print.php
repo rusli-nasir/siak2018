@@ -7,63 +7,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <script src="<?php echo base_url('assets/akuntansi/assets/datepicker/jquery-1.10.2.js'); ?>"></script>
 <script type="text/javascript">
-//$(document).ready(function(){
-//  var host = location.protocol + '//' + location.host + '/rsa/index.php/';
-//  //get akun
-//  var id_kuitansi_jadi = <?=$id_kuitansi_jadi?>;
-//  //kas kredit
-//  $.ajax({
-//    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/kas',
-//    data:{},
-//    success:function(data){
-//      $.each(data['hasil'], function(index, val){
-//        $('#kas_kredit').append(
-//            "<tr><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:justify;text-justify:inter-ideograph;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['akun']+"</p></td><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['jumlah']+"</p></td></tr>"
-//        );
-//      });
-//    }
-//  })
-//
-//  //kas debet
-//  $.ajax({
-//    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/debet/kas',
-//    data:{},
-//    success:function(data){
-//      $.each(data['hasil'], function(index, val){
-//        $('#kas_debet').append(
-//            "<tr><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:justify;text-justify:inter-ideograph;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['akun']+"</p></td><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['jumlah']+"</p></td></tr>"
-//        );
-//      });
-//    }
-//  })
-//
-//  //akrual kredit
-//  $.ajax({
-//    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/akrual',
-//    data:{},
-//    success:function(data){
-//      $.each(data['hasil'], function(index, val){
-//        $('#akrual_kredit').append(
-//            "<tr><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:justify;text-justify:inter-ideograph;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['akun']+"</p></td><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['jumlah']+"</p></td></tr>"
-//        );
-//
-//      });
-//    }
-//  })
-//
-//  //akrual debet
-//  $.ajax({
-//    url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/debet/akrual',
-//    data:{},
-//    success:function(data){
-//      $.each(data['hasil'], function(index, val){
-//        $('#akrual_debet').append(
-//            "<tr><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:justify;text-justify:inter-ideograph;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['akun']+"</p></td><td><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'>&nbsp;</span>"+data['hasil'][index]['jumlah']+"</p></td></tr>"
-//        );
-//      });
-//    }
-//  })
-//})
+$(document).ready(function(){
+    window.print();
+})
 </script>
 <meta http-equiv=Content-Type content="text/html; charset=shift_jis">
 <meta name=ProgId content=Word.Document>
