@@ -427,6 +427,12 @@ $(document).ready(function(){
 
 <!-- Button (Double) -->
 <div class="form-group" style="margin-top:12px;">
+  <div id="alert-jumlah" class="col-md-12" style="text-align:center;display:none">
+      <p style="color:red">Semua angka jumlah pada basis kas harus sama dengan angka jumlah pada basis akrual</p>
+  </div>
+  <div id="alert-selisih" class="col-md-12" style="text-align:center;display:none">
+      <p style="color:red">Selisih kredit dan debet harus nol</p>
+  </div>
   <div class="col-md-12" style="text-align:center;">
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
     <a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
@@ -640,6 +646,21 @@ $(document).ready(function(){
         $('#group-akrual').attr('class', 'col-md-6');
     }
   });
+    
+  function validateForm(){
+      if ((jml_kredit_kas != jml_kredit_akrual) || (jml_debet_kas != jml_debet_akrual) || (jml_total_kas != jml_total_akrual)){
+          $('#alert-jumlah').attr('style', 'text-align:center');
+          $('#alert-selisih').attr('style', 'text-align:center;display:none;');
+          return false;
+      } else if (jml_total_kas != 0){
+          $('#alert-selisih').attr('style', 'text-align:center');
+          $('#alert-jumlah').attr('style', 'text-align:center;display:none;');
+          return false;
+      } else {
+          $('#alert-jumlah').attr('style', 'text-align:center;display:none;');
+          $('#alert-selisih').attr('style', 'text-align:center;display:none;');
+      }
+  }
 
 
   <?php if (isset($kode_unit)): ?>

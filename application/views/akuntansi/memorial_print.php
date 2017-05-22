@@ -1111,13 +1111,13 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;
   height:17.5pt'>
   <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  text-align:right;line-height:normal;padding-top:5.4pt'><span lang=DE style='font-size:12.0pt;
   font-family:"Arial",sans-serif;mso-ansi-language:DE'>Jumlah Kredit<o:p></o:p></span></p>
   </td>
   <td width=216 valign=top style='width:2.25in;border:none;mso-border-top-alt:
   solid windowtext .5pt;padding:0in 0in 0in 0in;height:17.5pt'>
   <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  text-align:right;line-height:normal;padding-top:5.4pt'><span lang=DE style='font-size:12.0pt;
   font-family:"Arial",sans-serif;mso-ansi-language:DE'><o:p><?= number_format($total_kas_kredit, 0, ',', '.') ?></o:p></span></p>
   </td>
  </tr>
@@ -1125,13 +1125,13 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   <td width=654 colspan=2 valign=top style='width:490.5pt;padding:0in 5.4pt 0in 5.4pt;
   height:.25in'>
   <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  text-align:right;line-height:normal;padding-top:5.4pt'><span lang=DE style='font-size:12.0pt;
   font-family:"Arial",sans-serif;mso-ansi-language:DE'>Jumlah Debet<o:p></o:p></span></p>
   </td>
   <td width=216 valign=top style='width:2.25in;padding:0in 0in 0in 0in;
   height:.25in'>
   <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  text-align:right;line-height:normal;padding-top:5.4pt'><span lang=DE style='font-size:12.0pt;
   font-family:"Arial",sans-serif;mso-ansi-language:DE'><o:p><?= number_format($total_kas_debet, 0, ',', '.') ?></o:p></span></p>
   </td>
  </tr>
@@ -1139,13 +1139,13 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   <td width=654 colspan=2 valign=top style='width:490.5pt;padding:0in 5.4pt 0in 5.4pt;
   height:.2in'>
   <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  text-align:right;line-height:normal;padding-top:5.4pt'><span lang=DE style='font-size:12.0pt;
   font-family:"Arial",sans-serif;mso-ansi-language:DE'>Jumlah Total<o:p></o:p></span></p>
   </td>
   <td width=216 valign=top style='width:2.25in;padding:0in 0in 0in 0in;
   height:.2in'>
   <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  text-align:right;line-height:normal;padding-top:5.4pt'><span lang=DE style='font-size:12.0pt;
   font-family:"Arial",sans-serif;mso-ansi-language:DE'><o:p><?= number_format($total_kas_debet+$total_kas_kredit, 0, ',', '.') ?></o:p></span></p>
   </td>
  </tr>
