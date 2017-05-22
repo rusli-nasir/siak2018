@@ -165,13 +165,7 @@
     <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
-        <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
-          ?>
-          <option <?php if ($akun['kd_kas_6'] == $akun_kredit): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
-          <?php
-        }
-        ?>
+          <option value="911101">911101 - SAL</option>
       </select>
     </div>
     <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->
@@ -185,7 +179,7 @@
         <option value="">Pilih Akun</option>
         <?php foreach ($akun_kas as $akun) {
           ?>
-          <option <?php if ($akun['kd_kas_6'] == $akun_kredit_akrual): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option value="<?=$akun->kode_rekening?>"><?=$akun->kode_rekening.' - '.$akun->uraian?></option>
           <?php
         }
         ?>

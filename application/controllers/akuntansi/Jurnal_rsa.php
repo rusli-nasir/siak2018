@@ -204,6 +204,7 @@ class Jurnal_rsa extends MY_Controller {
 
             $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
             $isian['komentar'] = $query_riwayat['komentar'];
+            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
             $this->data['content'] = $this->load->view('akuntansi/edit_kuitansi_jadi',$isian,true);

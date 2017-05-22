@@ -85,17 +85,17 @@ class Rest_kuitansi extends MY_Controller {
 		        $riwayat['komentar'] ='';
 		        $riwayat['id_kuitansi_jadi'] = $id;
 
-		        $entry['flag'] = $riwayat['flag'];
-		        $entry['status'] = 4;
+		        $updater['flag'] = $riwayat['flag'];
+		        $updater['status'] = 4;
 		        $this->Riwayat_model->add_riwayat($riwayat);
-		        $this->Kuitansi_model->update_kuitansi_jadi($id,$entry);
+		        $this->Kuitansi_model->update_kuitansi_jadi($id,$updater);
 			}			
 	        $this->session->set_flashdata('success','Berhasil menyimpan !');
 		} else{
             $this->session->set_flashdata('warning','Gagal menyimpan !');
      	}
 
-		redirect('akuntansi/kuitansi');
+		redirect('akuntansi/kuitansi/jadi');
      	// echo 'selesai';
 
 	}
