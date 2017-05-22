@@ -105,9 +105,6 @@ class Laporan_model extends CI_Model {
 
             $this->db_laporan->like('akun',$akun,'after');  
 
-            if ($sumber_dana != null){
-                $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
-            }
 
             // if ($start_date != null and $end_date != null){
             //     $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
@@ -115,10 +112,6 @@ class Laporan_model extends CI_Model {
 
             if ($jenis != null){
                 $this->db_laporan->where('jenis',$jenis);
-            }
-
-            if ($unit != null) {
-                $this->db_laporan->where('unit_kerja',$unit);
             }
 
 
@@ -130,6 +123,15 @@ class Laporan_model extends CI_Model {
 
                 if ($start_date != null and $end_date != null){
                     $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
+                }
+
+                
+                if ($sumber_dana != null){
+                    $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
+                }
+
+                if ($unit != null) {
+                    $this->db_laporan->where('unit_kerja',$unit);
                 }
                 // echo "(tanggal BETWEEN '$start_date' AND '$end_date')" ;die();
 

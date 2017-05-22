@@ -167,7 +167,7 @@
 <script type="text/javascript">
   var myForm = document.getElementById('form_pop');
     myForm.onsubmit = function() {
-        var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=800,height=600,left = 312,top = 234');
+        var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=800,height=600,left = 312,top = 234');
         this.target = 'Popup_Window';
     };
 </script>
