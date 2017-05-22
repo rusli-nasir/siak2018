@@ -1012,9 +1012,10 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   style='font-size:12.0pt;font-family:"Arial",sans-serif'> Basis <span
   class=SpellE>Kas</span></span></p>
   </td>
-  <td width=438 valign=top style='width:328.5pt;border:none;border-bottom:solid windowtext 1.0pt;
-  mso-border-left-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-bottom-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <td width=438 colspan=2 valign=top style='width:328.5pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;mso-border-bottom-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
   <p class=MsoNormal align=center style='margin-bottom:0in;margin-bottom:.0001pt;
   text-align:center;line-height:normal'><span class=SpellE><span
   style='font-size:12.0pt;font-family:"Arial",sans-serif'>Jurnal</span></span><span
@@ -1032,8 +1033,9 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   style='font-size:12.0pt;font-family:"Arial",sans-serif;mso-ansi-language:
   DE'>Kredit</span></p>
   </td>
-  <td width=438 valign=top style='width:328.5pt;border:none;mso-border-top-alt:
-  solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <td width=438 colspan=2 valign=top style='width:328.5pt;border:none;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
   <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
   justify;text-justify:inter-ideograph;line-height:normal'><span lang=DE
   style='font-size:12.0pt;font-family:"Arial",sans-serif;mso-ansi-language:
@@ -1046,18 +1048,17 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
       <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='kas_kredit'>
           <?php
             foreach($kas_kredit as $item){
-                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['jumlah']."</p></td></tr>";
+                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
           ?>
       </table>
-  
   </td>
-  <td width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:
-  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <td width=438 colspan=2 valign=top style='width:328.5pt;border:none;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
       <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='akrual_kredit'>
           <?php
             foreach($akrual_kredit as $item){
-                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['jumlah']."</p></td></tr>";
+                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
           ?>
       </table>
@@ -1067,41 +1068,94 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   <td width=432 valign=top style='width:4.5in;border:none;border-right:solid windowtext 1.0pt;
   mso-border-right-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal'><span lang=DE
+  justify;text-justify:inter-ideograph;line-height:normal;padding-top:10.8pt'><span lang=DE
   style='font-size:12.0pt;font-family:"Arial",sans-serif;mso-ansi-language:
   DE'>Debet</span></p>
   </td>
-  <td width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:
-  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <td width=438 colspan=2 valign=top style='width:328.5pt;border:none;
+  mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal'><span lang=DE
+  justify;text-justify:inter-ideograph;line-height:normal;padding-top:10.8pt'><span lang=DE
   style='font-size:12.0pt;font-family:"Arial",sans-serif;mso-ansi-language:
   DE'>Debet</span></p>
   </td>
  </tr>
- <tr style='mso-yfti-irow:4;mso-yfti-lastrow:yes'>
-  <td width=432 valign=top style='width:4.5in;border:none;border-right:solid windowtext 1.0pt;
-  mso-border-right-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+ <tr style='mso-yfti-irow:4;height:.2in'>
+  <td width=432 valign=top style='width:4.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-bottom-alt:solid windowtext .5pt;mso-border-right-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:.2in'>
       <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='kas_debet'>
           <?php
             foreach($kas_debet as $item){
-                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['jumlah']."</p></td></tr>";
+                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
           ?>
       </table>
-  
   </td>
-  <td width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:
-  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <td width=438 colspan=2 valign=top style='width:328.5pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;mso-border-bottom-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:.2in'>
       <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='akrual_debet'>
           <?php
             foreach($akrual_debet as $item){
-                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['jumlah']."</p></td></tr>";
+                echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
           ?>
       </table>
   </td>
  </tr>
+ <tr style='mso-yfti-irow:5;height:17.5pt'>
+  <td width=654 colspan=2 valign=top style='width:490.5pt;border:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:17.5pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  font-family:"Arial",sans-serif;mso-ansi-language:DE'>Jumlah Kredit<o:p></o:p></span></p>
+  </td>
+  <td width=216 valign=top style='width:2.25in;border:none;mso-border-top-alt:
+  solid windowtext .5pt;padding:0in 0in 0in 0in;height:17.5pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  font-family:"Arial",sans-serif;mso-ansi-language:DE'><o:p><?= number_format($total_kas_kredit, 0, ',', '.') ?></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6;height:.25in'>
+  <td width=654 colspan=2 valign=top style='width:490.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:.25in'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  font-family:"Arial",sans-serif;mso-ansi-language:DE'>Jumlah Debet<o:p></o:p></span></p>
+  </td>
+  <td width=216 valign=top style='width:2.25in;padding:0in 0in 0in 0in;
+  height:.25in'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  font-family:"Arial",sans-serif;mso-ansi-language:DE'><o:p><?= number_format($total_kas_debet, 0, ',', '.') ?></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7;mso-yfti-lastrow:yes;height:.2in'>
+  <td width=654 colspan=2 valign=top style='width:490.5pt;padding:0in 5.4pt 0in 5.4pt;
+  height:.2in'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  font-family:"Arial",sans-serif;mso-ansi-language:DE'>Jumlah Total<o:p></o:p></span></p>
+  </td>
+  <td width=216 valign=top style='width:2.25in;padding:0in 0in 0in 0in;
+  height:.2in'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;
+  font-family:"Arial",sans-serif;mso-ansi-language:DE'><o:p><?= number_format($total_kas_debet+$total_kas_kredit, 0, ',', '.') ?></o:p></span></p>
+  </td>
+ </tr>
+ <![if !supportMisalignedColumns]>
+ <tr height=0>
+  <td width=432 style='border:none'></td>
+  <td width=222 style='border:none'></td>
+  <td width=216 style='border:none'></td>
+ </tr>
+ <![endif]>
 </table>
 
 <p class=MsoNormal style='text-align:justify;text-justify:inter-ideograph'><span
