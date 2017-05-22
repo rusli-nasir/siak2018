@@ -80,7 +80,7 @@ $(document).ready(function(){
   <select id="jenis" name="jenis" class="form-control" required="">
       <option value="">Pilih Jenis</option>
       <option value="GP" >GUP</option>
-      <option value="LS-Gaji">LS-Gaji</option>
+      <option value="LS-Gaji" selected>LS-Gaji</option>
       <option value="TUP">TUP</option>
     </select>
   </div>
@@ -159,7 +159,7 @@ $(document).ready(function(){
     <select id="jenis_pembatasan_dana" name="jenis_pembatasan_dana" class="form-control" required="">
       <option value="">Pilih Jenis</option>
       <option value="tidak_terikat" >Tidak Terikat</option>
-      <option value="terikat_temporer">Terikat Temporer</option>
+      <option value="terikat_temporer" selected>Terikat Temporer</option>
       <option value="terikat_permanen">Terikat Permanen</option>
     </select>
   </div>
