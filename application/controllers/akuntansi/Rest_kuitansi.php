@@ -44,6 +44,7 @@ class Rest_kuitansi extends MY_Controller {
 
 	        $entry['flag'] = $riwayat['flag'];
 	        $entry['status'] = 4;
+	        $entry['tanggal_posting'] = date('Y-m-d H:i:s');
 	        $this->Riwayat_model->add_riwayat($riwayat);
 	        $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
 	        $this->session->set_flashdata('success','Berhasil menyimpan !');
@@ -87,6 +88,7 @@ class Rest_kuitansi extends MY_Controller {
 
 		        $updater['flag'] = $riwayat['flag'];
 		        $updater['status'] = 4;
+		        $updater['tanggal_posting'] = date('Y-m-d H:i:s');
 		        $this->Riwayat_model->add_riwayat($riwayat);
 		        $this->Kuitansi_model->update_kuitansi_jadi($id,$updater);
 			}			

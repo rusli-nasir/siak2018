@@ -113,6 +113,10 @@ class Penerimaan extends MY_Controller {
             $entry['tipe'] = 'penerimaan';
             $entry['flag'] =3;
             $entry['status'] = 4;
+            
+            $entry['tanggal_posting'] = date('Y-m-d H:i:s');
+            $entry['tanggal_verifikasi'] = date('Y-m-d H:i:s');
+            $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
 
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);

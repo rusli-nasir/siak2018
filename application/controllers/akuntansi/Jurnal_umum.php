@@ -128,6 +128,10 @@ class Jurnal_umum extends MY_Controller {
             $entry['tipe'] = 'jurnal_umum';
             $entry['kode_user'] = $this->session->userdata('kode_user');
             $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            $entry['tanggal_posting'] = date('Y-m-d H:i:s');
+            $entry['tanggal_verifikasi'] = date('Y-m-d H:i:s');
+            $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
+
             unset($entry['kegiatan']);
             unset($entry['output']);
             unset($entry['program']);

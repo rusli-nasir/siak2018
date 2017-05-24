@@ -150,6 +150,7 @@ class Jurnal_rsa extends MY_Controller {
         $updater['status'] = $status;
         $updater['flag'] = $flag;
         $updater['kode_user'] = $this->session->userdata('kode_user');
+        $updater['tanggal_verifikasi'] = date('Y-m-d H:i:s');
         $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$updater);
 
         redirect('akuntansi/kuitansi/jadi/');
