@@ -124,7 +124,7 @@ tbody td, thead th {
 					<th>AKSI</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody style="font-size:8pt;">
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
 					<td><?php echo $no; ?></td>

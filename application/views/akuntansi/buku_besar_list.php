@@ -93,12 +93,17 @@
     <div class="form-group">
       <label class="col-md-2 control-label">Unit</label>  
       <div class="col-md-6">
+          <?php if($this->session->userdata('level')==1){ ?>
+          <input type="hidden" class="form-control" name="unit" value="<?php echo $this->session->userdata('kode_unit') ?>">
+          <input type="text" class="form-control" value="<?php echo $this->session->userdata('username') ?>" disabled>
+          <?php }else{ ?>
           <select id="unit_list" name="unit" class="form-control" required="">
               <option value="all" selected=""> Semua</option>
             <?php foreach($query_unit->result() as $unit): ?>
               <option value="<?php echo $unit->kode_unit ?>"><?= $unit->alias." - ".$unit->nama_unit ?></option>
             <?php endforeach; ?>
           </select>
+          <?php } ?>
       </div>
     </div>
     <div class="form-group">
