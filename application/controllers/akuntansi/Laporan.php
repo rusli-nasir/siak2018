@@ -14,6 +14,7 @@ class Laporan extends MY_Controller {
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->data['db2'] = $this->load->database('rba',TRUE);
+        setlocale(LC_NUMERIC, 'Indonesian');
 
         $this->load->library('excel');
     }
@@ -246,21 +247,29 @@ class Laporan extends MY_Controller {
           'borders' => array(
             'outline' => array(
               'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+            ),
+            'top' => array(
+              'style' => PHPExcel_Style_Border::BORDER_MEDIUM
             )
+
           )
         );
 
         $RowStyle = array(
           'borders' => array(
-            'outline' => array(
+            'bottom' => array(
               'style' => PHPExcel_Style_Border::BORDER_THIN
             )
           )
         );
 
+
+        $CenteredStyle = array( 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, );
+
         $teks_sumber_dana = "JURNAL UMUM ";
         $teks_periode = "";
-        $teks_tahun_anggaran = "TAHUN ANGGARAN 201X";
+        $teks_tahun = substr($periode_akhir,0,4);
+        $teks_tahun_anggaran = "TAHUN ANGGARAN $teks_tahun";
 
         if ($periode_awal != null and $periode_akhir != null){
             $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
@@ -290,22 +299,51 @@ class Laporan extends MY_Controller {
             
             $nama_unit = $this->Unit_kerja_model->get_nama_unit($transaksi['unit_kerja']);
             $row++;
-            $objWorksheet->mergeCellsByColumnAndRow(0,$row-1,0,$row);
-            $objWorksheet->setCellValueByColumnAndRow(0,$row-1,$iter);
-            $objWorksheet->mergeCellsByColumnAndRow(1,$row-1,5,$row);
-            $objWorksheet->setCellValueByColumnAndRow(1,$row-1,'keterangan');
-            $objWorksheet->getStyleByColumnAndRow(0,$row-1)->applyFromArray($BStyle);
-            $objWorksheet->getStyleByColumnAndRow(1,$row-1)->applyFromArray($BStyle);
-            $objWorksheet->setCellValueByColumnAndRow(0,$row-1,$iter);
-            $objWorksheet->mergeCellsByColumnAndRow(6,$row-1,8,$row);
-            $objWorksheet->setCellValueByColumnAndRow(6,$row-1,$nama_unit." : \n".$transaksi['uraian']);
-            $objWorksheet->getStyleByColumnAndRow(6,$row-1)->applyFromArray($BStyle);
+
+            $row_teks = $row - 1;
+
+            $objWorksheet->getStyle("A$row_teks:F$row_teks")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+            $objWorksheet->getStyle("A$row_teks:G$row_teks")->applyFromArray(
+                                                                                        array(
+                                                                                            'fill' => array(
+                                                                                                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                                                                                'color' => array('rgb' => 'DCF8C6')
+                                                                                            ),
+                                                                                            'borders' => array(
+                                                                                                'outline' => array(
+                                                                                                  'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+                                                                                                ),
+                                                                                                'top' => array(
+                                                                                                  'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                    );
+
+            $objWorksheet->mergeCellsByColumnAndRow(0,$row_teks,0,$row);
+            $objWorksheet->setCellValueByColumnAndRow(0,$row_teks,$iter);
+            $objWorksheet->mergeCellsByColumnAndRow(1,$row_teks,5,$row);
+            $objWorksheet->setCellValueByColumnAndRow(1,$row_teks,'keterangan');
+            // $objWorksheet->getStyleByColumnAndRow(0,$row_teks)->applyFromArray($BStyle);
+            // $objWorksheet->getStyleByColumnAndRow(1,$row_teks)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            // $objWorksheet->getStyle("A$row_teks:I$row_teks")->applyFromArray($BStyle);
+            
+            $objWorksheet->setCellValueByColumnAndRow(0,$row_teks,$iter);
+            $objWorksheet->mergeCellsByColumnAndRow(6,$row_teks,8,$row);
+            $objWorksheet->setCellValueByColumnAndRow(6,$row_teks,$nama_unit." : \n".$transaksi['uraian']);
+            // $objWorksheet->getStyleByColumnAndRow(6,$row_teks)->applyFromArray($BStyle);
+            // $objWorksheet->getStyle("G$row_teks:I$row_teks")->applyFromArray($BStyle);
+             // $objWorksheet->getStyle("A$row_teks:G$row_teks")->applyFromArray($BStyle);
+
+
+            
             // $objWorksheet->setCellValueByColumnAndRow(6,$row,$transaksi['uraian']);
 
             foreach ($akun as $in_akun) {
                 $row++;
 
-                // $objWorksheet->getStyle('A'.$row.':I'.$row)->applyFromArray($RowStyle);
+                $objWorksheet->getStyle('A'.$row.':I'.$row)->applyFromArray($RowStyle);
                 $objWorksheet->setCellValueByColumnAndRow(1,$row,$this->Jurnal_rsa_model->reKonversiTanggal($transaksi['tanggal']));
                 $objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_spm']);
                 $objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['no_bukti']);
@@ -315,16 +353,19 @@ class Laporan extends MY_Controller {
                 $objWorksheet->setCellValueByColumnAndRow(5,$row,$in_akun['akun']);
                 if ($in_akun['tipe'] == 'debet'){
                     $objWorksheet->setCellValueByColumnAndRow(7,$row,$in_akun['jumlah']);
-                    $objWorksheet->setCellValueByColumnAndRow(8,$row,0);
+                    // $objWorksheet->setCellValueByColumnAndRow(8,$row,0);
                     $jumlah_debet += $in_akun['jumlah'];
                 }elseif ($in_akun['tipe'] == 'kredit') {
                     $objWorksheet->getStyleByColumnAndRow(5,$row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
                     $objWorksheet->setCellValueByColumnAndRow(8,$row,$in_akun['jumlah']);
-                    $objWorksheet->setCellValueByColumnAndRow(7,$row,0);
+                    // $objWorksheet->setCellValueByColumnAndRow(7,$row,0);
                     $jumlah_kredit += $in_akun['jumlah'];
                 }
                 $objWorksheet->setCellValueByColumnAndRow(6,$row, $this->Akun_model->get_nama_akun($in_akun['akun']));
+
             }
+
+
 
             $iter++;
             $row+=1;
@@ -383,6 +424,7 @@ class Laporan extends MY_Controller {
         $periode_awal = $this->input->post('periode_awal');
         $periode_akhir = $this->input->post('periode_akhir');
 
+
         if ($unit == 'all') {
             $unit = null;
         }
@@ -398,8 +440,12 @@ class Laporan extends MY_Controller {
             $array_akun[] = $akun;
         }
 
+        // print_r($array_akun);die();
+
 
     	$data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+
+        // print_r($data);die();
 
     	$n_akun = count($data);
 
@@ -422,7 +468,10 @@ class Laporan extends MY_Controller {
 
         $teks_sumber_dana = "BUKU BESAR ";
         $teks_periode = "";
-        $teks_tahun_anggaran = "TAHUN ANGGARAN 201X";
+        
+        $teks_tahun = substr($periode_akhir,0,4);
+        $teks_tahun_anggaran = "TAHUN ANGGARAN $teks_tahun";
+
         $teks_unit = "UNIVERSITAS DIPONEGORO";
 
         if ($periode_awal != null and $periode_akhir != null){
@@ -467,7 +516,7 @@ class Laporan extends MY_Controller {
                     $objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
                     $objWorksheet->setCellValueByColumnAndRow(1,$row,'01 Januari 2017');
                     $objWorksheet->setCellValueByColumnAndRow(3,$row,'Saldo Awal');
-                    $objWorksheet->setCellValueByColumnAndRow(5,$row,$saldo);
+                    $objWorksheet->setCellValueByColumnAndRow(7,$row,$saldo);
 
                     $row++;
                     $iter++;
@@ -479,21 +528,21 @@ class Laporan extends MY_Controller {
     			$objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['uraian']);
     			$objWorksheet->setCellValueByColumnAndRow(4,$row,$transaksi['kode_user']);
     			if ($transaksi['tipe'] == 'debet'){
-    				$objWorksheet->setCellValueByColumnAndRow(5,$row,number_format($transaksi['jumlah'],2,',','.'));
+    				$objWorksheet->setCellValueByColumnAndRow(5,$row,$transaksi['jumlah']);
     				$saldo += $transaksi['jumlah'];
     				$jumlah_debet += $transaksi['jumlah'];
     			} else if ($transaksi['tipe'] == 'kredit'){
-					$objWorksheet->setCellValueByColumnAndRow(6,$row,number_format($transaksi['jumlah'],2,',','.'));
+					$objWorksheet->setCellValueByColumnAndRow(6,$row,$transaksi['jumlah']);
 					$saldo -= $transaksi['jumlah'];
 					$jumlah_kredit += $transaksi['jumlah'];
     			}
-    			$objWorksheet->setCellValueByColumnAndRow(7,$row,number_format($saldo,2,',','.'));
+    			$objWorksheet->setCellValueByColumnAndRow(7,$row,$saldo);
     			$next_row;
     			$row++;
     		}
-    		$objWorksheet->setCellValueByColumnAndRow(5,$row+1,number_format($jumlah_debet,2,',','.'));
-    		$objWorksheet->setCellValueByColumnAndRow(6,$row+1,number_format($jumlah_kredit,2,',','.'));
-    		$objWorksheet->setCellValueByColumnAndRow(7,$row+1,number_format($saldo,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(5,$row+1,$jumlah_debet);
+    		$objWorksheet->setCellValueByColumnAndRow(6,$row+1,$jumlah_kredit);
+    		$objWorksheet->setCellValueByColumnAndRow(7,$row+1,$saldo);
 
     		$row = $row + $next_row + $i;
 
@@ -551,7 +600,8 @@ class Laporan extends MY_Controller {
 
         $teks_sumber_dana = "BUKU BESAR ";
         $teks_periode = "";
-        $teks_tahun_anggaran = "201X";
+
+        $teks_tahun = substr($periode_akhir,0,4);
         $teks_unit = "UNIVERSITAS DIPONEGORO";
 
         if ($periode_awal != null and $periode_akhir != null){
@@ -610,22 +660,22 @@ class Laporan extends MY_Controller {
     		$jumlah_debet += $debet;
     		$jumlah_kredit += $kredit;
 
-    		$objWorksheet->setCellValueByColumnAndRow(3,$row,number_format($debet,2,',','.'));
-    		$objWorksheet->setCellValueByColumnAndRow(4,$row,number_format($kredit,2,',','.'));
+    		$objWorksheet->setCellValueByColumnAndRow(3,$row,$debet);
+    		$objWorksheet->setCellValueByColumnAndRow(4,$row,$kredit);
 
             $saldo_neraca = $debet - $kredit;
 
 
-            $objWorksheet->setCellValueByColumnAndRow(5,$row,number_format(0,2,',','.'));
-            $objWorksheet->setCellValueByColumnAndRow(6,$row,number_format(0,2,',','.'));
+            $objWorksheet->setCellValueByColumnAndRow(5,$row,0);
+            $objWorksheet->setCellValueByColumnAndRow(6,$row,0);
 
             if ($saldo_neraca > 0) {
                 $jumlah_neraca_debet += $saldo_neraca;
-                $objWorksheet->setCellValueByColumnAndRow(5,$row,number_format($saldo_neraca,2,',','.'));
+                $objWorksheet->setCellValueByColumnAndRow(5,$row,$saldo_neraca);
             } elseif ($saldo_neraca < 0) {
                 $saldo_neraca = abs($saldo_neraca);
                 $jumlah_neraca_kredit += $saldo_neraca;
-                $objWorksheet->setCellValueByColumnAndRow(6,$row,number_format($saldo_neraca,2,',','.'));
+                $objWorksheet->setCellValueByColumnAndRow(6,$row,$saldo_neraca);
             }
 
     		$row++;
@@ -634,10 +684,10 @@ class Laporan extends MY_Controller {
     		// $objWorksheet->setCellValueByColumnAndRow(2,$i+$row,$i+1);
     	}
 
-        $objWorksheet->setCellValueByColumnAndRow(3,$row+1,number_format($jumlah_debet,2,',','.'));
-        $objWorksheet->setCellValueByColumnAndRow(4,$row+1,number_format($jumlah_kredit,2,',','.'));
-    	$objWorksheet->setCellValueByColumnAndRow(5,$row+1,number_format($jumlah_neraca_debet,2,',','.'));
-    	$objWorksheet->setCellValueByColumnAndRow(6,$row+1,number_format($jumlah_neraca_kredit,2,',','.'));
+        $objWorksheet->setCellValueByColumnAndRow(3,$row+1,$jumlah_debet);
+        $objWorksheet->setCellValueByColumnAndRow(4,$row+1,$jumlah_kredit);
+    	$objWorksheet->setCellValueByColumnAndRow(5,$row+1,$jumlah_neraca_debet);
+    	$objWorksheet->setCellValueByColumnAndRow(6,$row+1,$jumlah_neraca_kredit);
 
         if ($mode == 'excel'){
             $objWorksheet->getPageSetup()->setFitToPage(true);

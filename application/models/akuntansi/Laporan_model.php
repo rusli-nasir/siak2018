@@ -20,7 +20,8 @@ class Laporan_model extends CI_Model {
 
         $this->db_laporan
             ->where("tipe != 'memorial' AND tipe != 'jurnal_umum'")
-            ->group_by($group);
+            // ->order_by('no_bukti')
+            ;
 
         if ($akun != null){
             $this->db_laporan->like($group,$akun,'after');
@@ -39,7 +40,11 @@ class Laporan_model extends CI_Model {
             }
 
 
+        // echo $this->db_laporan->get_compiled_select();
+
         $query = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
+
+
 
         // print_r($this->db->get_compiled_select());die();
         // $query = $this->db_laporan->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE $group LIKE '$akun%' AND tipe<>'memorial' AND tipe<>'jurnal_umum' GROUP BY $group")->result_array();
@@ -85,6 +90,7 @@ class Laporan_model extends CI_Model {
                         $entry['jenis'] = $jenis;
                         $entry['akun'] = $hasil[$kolom[$tipe][$jenis]];
                         $entry['jumlah'] = $hasil['jumlah_'.$tipe];
+                        $entry['pre_tanggal'] = $entry['tanggal'];
                         $entry['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($entry['tanggal']);
                         $data[] = $entry;
                     }
@@ -140,6 +146,7 @@ class Laporan_model extends CI_Model {
                 // print_r($this->db->get_compiled_select());die();
                 if ($entry != null) {
                     $entry = array_merge($entry,$hasil);
+                    $entry['pre_tanggal'] = $entry['tanggal'];
                     $entry['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($entry['tanggal']);
                     $data[] = $entry;
                 }
@@ -163,7 +170,11 @@ class Laporan_model extends CI_Model {
 
         foreach ($data as $key => $value) {
             usort($data[$key],function($a,$b){
-                return strcmp($a['tanggal'],$b['tanggal']);
+                $hasil = strcmp($a['pre_tanggal'],$b['pre_tanggal']);
+                if ($hasil == 0) {
+                    $hasil = strcmp($a['no_bukti'],$b['no_bukti']);
+                }
+                return $hasil;
             });
         }
 

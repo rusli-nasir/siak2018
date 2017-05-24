@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2017 at 06:46 AM
+-- Generation Time: May 24, 2017 at 04:16 AM
 -- Server version: 10.1.16-MariaDB
 -- PHP Version: 5.5.38
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `laporan_akuntansi`
+-- Database: `rsa`
 --
 
 -- --------------------------------------------------------
@@ -45,24 +45,12 @@ CREATE TABLE `akuntansi_kuitansi_jadi` (
   `jumlah_kredit` bigint(20) NOT NULL,
   `tipe` varchar(20) NOT NULL,
   `flag` int(2) NOT NULL,
-  `kode_user` varchar(255) NOT NULL
+  `kode_user` varchar(255) NOT NULL,
+  `tanggal_jurnal` datetime NOT NULL,
+  `tanggal_verifikasi` datetime NOT NULL,
+  `tanggal_posting` datetime NOT NULL,
+  `status` enum('proses','terima','revisi','posted','direvisi') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `akuntansi_relasi_kuitansi_akun`
---
-
-CREATE TABLE `akuntansi_relasi_kuitansi_akun` (
-  `id_relasi_kuitansi_akun` int(11) NOT NULL,
-  `no_bukti` varchar(20) NOT NULL,
-  `id_kuitansi_jadi` int(11) NOT NULL,
-  `tipe` varchar(40) NOT NULL,
-  `akun` varchar(40) NOT NULL,
-  `jumlah` bigint(20) NOT NULL,
-  `jenis` varchar(40) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Indexes for dumped tables
@@ -75,12 +63,6 @@ ALTER TABLE `akuntansi_kuitansi_jadi`
   ADD PRIMARY KEY (`id_kuitansi_jadi`);
 
 --
--- Indexes for table `akuntansi_relasi_kuitansi_akun`
---
-ALTER TABLE `akuntansi_relasi_kuitansi_akun`
-  ADD PRIMARY KEY (`id_relasi_kuitansi_akun`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -88,12 +70,7 @@ ALTER TABLE `akuntansi_relasi_kuitansi_akun`
 -- AUTO_INCREMENT for table `akuntansi_kuitansi_jadi`
 --
 ALTER TABLE `akuntansi_kuitansi_jadi`
-  MODIFY `id_kuitansi_jadi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
---
--- AUTO_INCREMENT for table `akuntansi_relasi_kuitansi_akun`
---
-ALTER TABLE `akuntansi_relasi_kuitansi_akun`
-  MODIFY `id_relasi_kuitansi_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id_kuitansi_jadi` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

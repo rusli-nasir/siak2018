@@ -51,7 +51,7 @@
 </div><!--/.row-->
 <br />
 <div class="container">
-    <?php echo form_open('akuntansi/laporan/get_neraca_saldo',array("class"=>"form-horizontal" )); ?>
+    <?php echo form_open('akuntansi/laporan/get_neraca_saldo',array("class"=>"form-horizontal", "id" => "form_pop")); ?>
 	<!-- Text input-->
     <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
@@ -97,6 +97,15 @@
 		<?php //} ?>
 	</div>
 </div>
+
+<script type="text/javascript">
+  var myForm = document.getElementById('form_pop');
+    myForm.onsubmit = function() {
+        var lebar = 0.9 * document.body.clientWidth;
+        var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width='+lebar+',height=700,left = 312,top = 234');
+        this.target = 'Popup_Window';
+    };
+</script>
 
 <?php
 function get_pengeluaran($id_kuitansi){

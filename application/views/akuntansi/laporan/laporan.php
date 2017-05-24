@@ -122,17 +122,17 @@ ul
 
 
 <style type="text/css">
-    table { page-break-inside:auto }
+    table { page-break-inside:auto;width:100%; }
     tr    { page-break-inside:avoid; page-break-after:auto }
     thead { display:table-header-group }
     tfoot { display:table-footer-group }
 </style>
 
-<div class="tab-pane" id="" ng-app="" ng-controller="validationCtrl">
+<div class="col-lg-12">
 	<!-- page start-->
 	<div class="row mt">
 
-		<div class="col-lg-8">
+		<div class="col-lg-12">
 			<div class="content-panel"> 
 				<div class="panel-body" id="cetak">
 
@@ -148,6 +148,7 @@ ul
 				<?php echo form_open("akuntansi/laporan/$sumber/excel",array("class"=>"form-horizontal")); ?>
 					<button onclick="printContent('cetak')"><?php echo $teks_cetak ?></button>
 					<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+					<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
 					<input type="hidden" name="periode_awal" value="<?php echo $this->input->post('periode_awal') ?>">
 					<input type="hidden" name="periode_akhir" value="<?php echo $this->input->post('periode_akhir') ?>">
 					<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">

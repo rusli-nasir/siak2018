@@ -61,6 +61,7 @@
             success:function(data){
               $('#akun_list').empty();
               var sel = $('<select>').appendTo('#akun_list');
+              sel.attr('name', 'akun[]');
               $.each(data['hasil'], function(index, val){
                 sel.append($("<option>").attr('value',data['hasil'][index]['akun_6']).text(data['hasil'][index]['akun_6'] + ' - ' + data['hasil'][index]['nama']));
               });
@@ -167,7 +168,8 @@
 <script type="text/javascript">
   var myForm = document.getElementById('form_pop');
     myForm.onsubmit = function() {
-        var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=800,height=600,left = 312,top = 234');
+        var lebar = 0.9 * document.body.clientWidth;
+        var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width='+lebar+',height=700,left = 312,top = 234');
         this.target = 'Popup_Window';
     };
 </script>
