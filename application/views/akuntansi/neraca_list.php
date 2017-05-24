@@ -53,6 +53,18 @@
 <div class="container">
     <?php echo form_open('akuntansi/laporan/get_neraca_saldo',array("class"=>"form-horizontal", "id" => "form_pop")); ?>
 	<!-- Text input-->
+	<div class="form-group">
+      <label class="col-md-2 control-label">Unit</label>  
+      <div class="col-md-6">
+          <select id="unit_list" name="unit" class="form-control" required="">
+              <option value="all" selected=""> Semua</option>
+            <?php foreach($query_unit->result() as $unit): ?>
+              <option value="<?php echo $unit->kode_unit ?>"><?= $unit->alias." - ".$unit->nama_unit ?></option>
+            <?php endforeach; ?>
+          </select>
+      </div>
+    </div>
+    
     <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
       <div class="col-md-6">

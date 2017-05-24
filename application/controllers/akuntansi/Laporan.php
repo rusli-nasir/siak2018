@@ -588,20 +588,26 @@ class Laporan extends MY_Controller {
     // 		$akun = array(6,7);
     // 	}
 
+
     	$array_akun = array(1,2,3,4,5,6,7,8,9);
 
         $basis = $this->input->post('basis');
         $periode_awal = $this->input->post('periode_awal');
         $periode_akhir = $this->input->post('periode_akhir');
         $sumber_dana = $this->input->post('sumber_dana');
+        $unit = $this->input->post('sumber_dana');
+
+        if ($unit == 'all') {
+            $unit = null;
+        }
 
     	// $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
-        $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,null,$sumber_dana,$periode_awal,$periode_akhir);
+        $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
 
         $teks_sumber_dana = "BUKU BESAR ";
         $teks_periode = "";
 
-        $teks_tahun = substr($periode_akhir,0,4);
+        $teks_tahun_anggaran = substr($periode_akhir,0,4);
         $teks_unit = "UNIVERSITAS DIPONEGORO";
 
         if ($periode_awal != null and $periode_akhir != null){
