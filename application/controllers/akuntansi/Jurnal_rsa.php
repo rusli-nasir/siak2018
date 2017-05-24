@@ -45,6 +45,7 @@ class Jurnal_rsa extends MY_Controller {
             $entry['jumlah_kredit'] = $entry['jumlah_debet'];
             $entry['flag'] = 1;
             $entry['tipe'] = 'pengeluaran';
+            $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
@@ -177,6 +178,8 @@ class Jurnal_rsa extends MY_Controller {
                 $riwayat['komentar'] ='';
 
                 $entry['status'] = 5;
+                $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
+                
                 $this->Riwayat_model->add_riwayat($riwayat);
 
             }
