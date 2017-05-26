@@ -209,8 +209,11 @@ class Laporan extends MY_Controller {
         $basis = $this->input->post('basis');
         $unit = $this->input->post('unit');
         $sumber_dana = $this->input->post('sumber_dana');
-        $periode_awal = $this->input->post('periode_awal');
-        $periode_akhir = $this->input->post('periode_akhir');
+        
+        $daterange = $this->input->post('daterange');
+        $date_t = explode(' - ', $daterange);
+        $periode_awal = strtodate($date_t[0]);
+        $periode_akhir = strtodate($date_t[1]);
 
         if ($unit == 'all') {
             $unit = null;
@@ -594,8 +597,12 @@ class Laporan extends MY_Controller {
     	$array_akun = array(1,2,3,4,5,6,7,8,9);
 
         $basis = $this->input->post('basis');
-        $periode_awal = $this->input->post('periode_awal');
-        $periode_akhir = $this->input->post('periode_akhir');
+        
+        $daterange = $this->input->post('daterange');
+        $date_t = explode(' - ', $daterange);
+        $periode_awal = strtodate($date_t[0]);
+        $periode_akhir = strtodate($date_t[1]);
+        
         $sumber_dana = $this->input->post('sumber_dana');
         $unit = $this->input->post('sumber_dana');
 

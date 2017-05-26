@@ -2,6 +2,9 @@
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+
+<script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
 <!-- javascript -->
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -73,11 +76,7 @@
     <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
       <div class="col-md-6">
-          <div class="input-group input-daterange">
-            <input type="text" name="periode_awal" data-date-format='yyyy-mm-dd' class="form-control">
-            <div class="input-group-addon">sampai</div>
-            <input type="text" name="periode_akhir"  data-date-format='yyyy-mm-dd' class="form-control">
-          </div>
+        <input class="form-control" type="text" name="daterange">
       </div>
     </div>
     <div class="form-group">
@@ -122,6 +121,56 @@
         var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width='+lebar+',height=700,left = 312,top = 234');
         this.target = 'Popup_Window';
     };
+    
+    $('input[name="daterange"]').daterangepicker(
+        {
+          locale: {
+              format: 'DD MMMM YYYY',
+               "separator": " - ",
+                "applyLabel": "Simpan",
+                "cancelLabel": "Batalkan",
+                "fromLabel": "Dari",
+                "toLabel": "Sampai",
+                "customRangeLabel": "Tentukan Periode",
+                "weekLabel": "W",
+                "daysOfWeek": [
+                    "Min",
+                    "Sen",
+                    "Sel",
+                    "Rab",
+                    "Kam",
+                    "Jum",
+                    "Sab"
+                ],
+                "monthNames": [
+                    "Januari",
+                    "Februari",
+                    "Maret",
+                    "April",
+                    "Mei",
+                    "Juni",
+                    "Juli",
+                    "Agustus",
+                    "September",
+                    "Oktober",
+                    "November",
+                    "Desember"
+                ],
+                "firstDay": 1
+          },
+          ranges: {
+            'Triwulan I': [moment().month(0).startOf('month'), moment().month(2).endOf('month')],
+            'Triwulan II': [moment().month(3).startOf('month'), moment().month(5).endOf('month')],
+            'Triwulan III': [moment().month(6).startOf('month'), moment().month(8).endOf('month')],
+            'Triwulan IV': [moment().month(9).startOf('month'), moment().month(11).endOf('month')],
+            'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+            'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          },
+          startDate: moment().subtract(29, 'days'),
+          endDate: moment(),
+          showDropdowns: true
+        }
+    );
 </script>
 
 <?php
