@@ -20,7 +20,7 @@ class Notifikasi_model extends CI_Model {
         }
         
         if($this->session->userdata('kode_unit')==null){
-            $filter_unit = '1';
+            $filter_unit = '';
         }else{
             if($this->session->userdata('alias')=='WR2'){
                 $alias = 'W23';
