@@ -2,6 +2,9 @@
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+
+<script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
 <!-- javascript -->
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -109,6 +112,7 @@
     <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
       <div class="col-md-6">
+          <input type="text" name="daterange">
           <div class="input-group input-daterange">
             <input type="text" name="periode_awal" data-date-format='yyyy-mm-dd' class="form-control">
             <div class="input-group-addon">sampai</div>
@@ -177,6 +181,7 @@
         var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width='+lebar+',height=700,left = 312,top = 234');
         this.target = 'Popup_Window';
     };
+  $('input[name="daterange"]').daterangepicker();
 </script>
 
 <?php

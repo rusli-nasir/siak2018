@@ -28,7 +28,7 @@ class Laporan extends MY_Controller {
 //      $this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
         $this->db2 = $this->load->database('rba', true);
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
-        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
 
@@ -45,7 +45,7 @@ class Laporan extends MY_Controller {
 //      $this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
         $this->db2 = $this->load->database('rba', true);
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
-        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
 
@@ -62,7 +62,7 @@ class Laporan extends MY_Controller {
 //		$this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
         $this->db2 = $this->load->database('rba', true);
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
-        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+        $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
 
