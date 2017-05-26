@@ -16,6 +16,9 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/moment-with-locales.js"></script>
 <script src="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.js'); ?>"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+    <script>
+    moment.locale("id");
+    </script>
 
 <link rel="icon" type="image/png" href="<?php echo base_url();?>/assets/akuntansi/assets/images/favicon.png">
     <style>
