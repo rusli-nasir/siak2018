@@ -1,4 +1,7 @@
 <!-- javascript -->
+<script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
+
 <style type="text/css">
 table
 {
@@ -43,7 +46,6 @@ th,td
 	});
 </script>
 <!-- javascript -->
-
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
@@ -51,6 +53,20 @@ th,td
 	</ol>
 </div><!--/.row-->
 <hr/>
+<div style="font-size:20pt">
+	<span class="glyphicon glyphicon-dashboard"></span> Monitoring
+</div>
+<form class="form-horizontal" action="#" method="post">
+	<div class="form-group">
+	    <label class="col-md-2 control-label"></label>  
+	    <div class="col-md-6">
+	    	<input class="form-control" type="text" name="daterange">
+	    </div>
+	    <div class="col-md-2">
+	    	<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Cari</button>
+	    </div>
+	</div>
+</form>
 <div class="row">
 	<div class="col-lg-12">
 		<table class="tes">
@@ -81,6 +97,58 @@ th,td
 		</table>
 	</div>
 </div>
+
+<script type="text/javascript">   
+  $('input[name="daterange"]').daterangepicker(
+        {
+          locale: {
+              format: 'DD MMMM YYYY',
+               "separator": " - ",
+                "applyLabel": "Simpan",
+                "cancelLabel": "Batalkan",
+                "fromLabel": "Dari",
+                "toLabel": "Sampai",
+                "customRangeLabel": "Tentukan Periode",
+                "weekLabel": "W",
+                "daysOfWeek": [
+                    "Min",
+                    "Sen",
+                    "Sel",
+                    "Rab",
+                    "Kam",
+                    "Jum",
+                    "Sab"
+                ],
+                "monthNames": [
+                    "Januari",
+                    "Februari",
+                    "Maret",
+                    "April",
+                    "Mei",
+                    "Juni",
+                    "Juli",
+                    "Agustus",
+                    "September",
+                    "Oktober",
+                    "November",
+                    "Desember"
+                ],
+                "firstDay": 1
+          },
+          ranges: {
+            'Triwulan I': [moment().month(0).startOf('month'), moment().month(2).endOf('month')],
+            'Triwulan II': [moment().month(3).startOf('month'), moment().month(5).endOf('month')],
+            'Triwulan III': [moment().month(6).startOf('month'), moment().month(8).endOf('month')],
+            'Triwulan IV': [moment().month(9).startOf('month'), moment().month(11).endOf('month')],
+            'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+            'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          },
+          startDate: moment().subtract(29, 'days'),
+          endDate: moment(),
+          showDropdowns: true
+        }
+    );
+</script>
 
 <?php
 function get_total_kuitansi($kode_unit){

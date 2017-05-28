@@ -1,6 +1,6 @@
 <style type="text/css">
 table {
-        width: 1650px !important;
+        width: 100% !important;
     }
 
 thead, tbody, tr, td, th { display: block; }
@@ -24,7 +24,8 @@ tbody {
 }
 
 thead {
-    /* fallback */
+	width:1650px;
+    overflow-x: auto;
 }
 
 
@@ -65,13 +66,19 @@ tbody td, thead th {
 		<h1 class="page-header">Kuitansi Jadi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
 		<div class="row">
 			<div class="col-sm-4">
-				<?php echo 'Total Kuitansi Disetujui: <span style="color:green">'.$kuitansi_ok.'</span>'; ?>
+				<div class="box-t">
+					<?php echo 'Total Kuitansi Disetujui: <br/><span style="color:green;font-size:16pt;">'.$kuitansi_ok.'</span>'; ?>
+				</div>			
 			</div>
 			<div class="col-sm-4">
-				<?php echo 'Total Kuitansi Direvisi: <span style="color:orange">'.$kuitansi_revisi.'</span>'; ?>
+				<div class="box-t">
+					<?php echo 'Total Kuitansi Direvisi: <br/><span style="color:orange;font-size:16pt;">'.$kuitansi_revisi.'</span>'; ?>
+				</div>				
 			</div>
 			<div class="col-sm-4">
-				<?php echo 'Total Kuitansi Belum di Verifikasi: <span style="color:#000">'.$kuitansi_pasif.'</span>'; ?>
+				<div class="box-t">
+					<?php echo 'Total Kuitansi Belum di Verifikasi: <br/><span style="color:#000;font-size:16pt;">'.$kuitansi_pasif.'</span>'; ?>
+				</div>
 			</div>
 		</div>		
 	</div>

@@ -15,6 +15,7 @@
 .sirup .lihat{color:#1c1c1c;}
 .sirup-title{margin-left:-15px;color:#000;margin-bottom:10px;}
 .error{color:red;}
+.box-t{background-color:#fff;padding:10px;border:1px solid #bdbdbd;font-size:12pt;}
 
 /*process step*/
 .stepwizard-step p {

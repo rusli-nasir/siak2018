@@ -94,6 +94,15 @@
 			<?php }else if($this->session->userdata('level')==2){ ?>
 				<li class="<?php if(isset($menu2)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Verifikasi</a></li>
                 <li class="<?php if(isset($menu3)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Posting</a></li>
+				<li class="dropdown">
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
+			        <span class="caret"></span></a>
+			        <ul class="dropdown-menu">
+			          	<li class="<?php if(isset($menu9)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/buku_besar'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Buku Besar</a></li>
+						<li class="<?php if(isset($menu10)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_jurnal'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap Jurnal</a></li>
+						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>
+			        </ul>
+			      </li>	
 			<?php }else if($this->session->userdata('level')==3){ ?>
 				<li class="<?php if(isset($menu4)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Penerimaan</a></li>
 				<li class="<?php if(isset($menu5)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/memorial/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Memorial</a></li>
@@ -116,6 +125,7 @@
 			        <span class="caret"></span></a>
 			        <ul class="dropdown-menu">
 			          	<li class="<?php if(isset($menu9)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/buku_besar'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Buku Besar</a></li>
+			          	<li class="<?php if(isset($menu10)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_jurnal'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap Jurnal</a></li>
 						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>
 			        </ul>
 			      </li>	
