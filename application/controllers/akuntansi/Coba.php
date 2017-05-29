@@ -18,9 +18,14 @@ class Coba extends MY_Controller {
 		echo $this->Akun_model->get_nama_akun('111111');
 	}
 
-    public function nama_akun()
+    public function tgl_spm()
     {
-        # code...
+        $data = $this->rsa_gup_model->get_data_spm("00003/FHU/SPM-GUP/FEB/2017");
+        echo $data->tgl_spm;
+        echo "<br/>";
+        $data = $this->rsa_gup_model->get_data_spm("00004/FHU/SPM-LS PGW/MAR/2017");
+        echo $data->tgl_spm;
+
     }
 
 	function spm_gup_kbuu($kd_unit=11,$cur_tahun=2017){

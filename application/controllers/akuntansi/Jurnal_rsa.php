@@ -79,6 +79,8 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['akun_debet_akrual'] = substr_replace($isian['kode_akun'], 7, 0,1);
                 $isian['jenis_pembatasan_dana'] = '';
                 $isian['jenis_isian'] = 'nk';
+                $isian['tanggal_bukti'] = $isian['tanggal'];
+                // print_r($isian);die();
             }
             // print_r($isian);die();
 			//$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();

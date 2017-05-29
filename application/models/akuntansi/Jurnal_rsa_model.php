@@ -7,6 +7,7 @@ class Jurnal_rsa_model extends CI_Model {
         parent::__construct();
         $this->load->database('default', TRUE);
         $this->db2 = $this->load->database('rba',TRUE);
+        $this->load->model('akuntansi/Spm_model', 'Spm_model');
     }
 
     public function get_rekening_by_unit($kode_unit){
@@ -19,7 +20,9 @@ class Jurnal_rsa_model extends CI_Model {
     	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
-    	$hasil['tanggal'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));
+        $hasil['tanggal_bukti'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));
+        $tgl = strtotime($this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm']));
+    	$hasil['tanggal'] = $this->reKonversiTanggal(date('Y-m-d', $tgl));
     	$hasil['akun_debet_kas'] = $hasil['kode_akun'] . " - ". $this->db->get_where('akun_belanja',array('kode_akun'=>$hasil['kode_akun']))->row_array()['nama_akun'];
 
     	$query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";

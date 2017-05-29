@@ -159,6 +159,8 @@ class Kuitansi_model extends CI_Model {
 	public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail)
     {
     	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Spm_model', 'Spm_model');
+
     	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
@@ -170,7 +172,8 @@ class Kuitansi_model extends CI_Model {
     	$hasil['jumlah_debet'] = $this->db->query($query)->row_array()['pengeluaran'];
 
 
-    	$hasil['tanggal'] = $hasil['tgl_kuitansi'];
+    	$hasil['tanggal'] = $this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm']);
+        $hasil['tanggal_bukti'] = $hasil['tgl_kuitansi'];
     	$hasil['no_spm'] = $hasil['str_nomor_trx_spm'];
     	$hasil['kode_kegiatan'] = $hasil['kode_usulan_belanja'];
     	$hasil['unit_kerja'] = $hasil['kode_unit'];
@@ -195,7 +198,8 @@ class Kuitansi_model extends CI_Model {
         $hasil['kode_unit'] = $hasil['unit_kerja'];
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['unit_kerja']))->row_array()['nama_unit'];
         $hasil['tgl_kuitansi'] = $hasil['tanggal'];
-    	$hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
+        $hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
+    	$hasil['tanggal_bukti'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal_bukti']);
     	$hasil['akun_debet_kas'] = $hasil['akun_debet'] . " - ". $this->db->get_where('akun_belanja',array('kode_akun'=>$hasil['akun_debet']))->row_array()['nama_akun'];
     	return $hasil;
 
@@ -231,6 +235,7 @@ class Kuitansi_model extends CI_Model {
 
 
     	$hasil['tanggal'] = $hasil['tgl_kuitansi'];
+        $hasil['tanggal_bukti'] = $hasil['tanggal'];
     	$hasil['no_spm'] = $hasil['str_nomor_trx_spm'];
     	$hasil['kode_kegiatan'] = $hasil['kode_usulan_belanja'];
     	$hasil['unit_kerja'] = '';

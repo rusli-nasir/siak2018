@@ -356,12 +356,12 @@ class Laporan extends MY_Controller {
                 $objWorksheet->setCellValueByColumnAndRow(5,$row,$in_akun['akun']);
                 if ($in_akun['tipe'] == 'debet'){
                     $objWorksheet->setCellValueByColumnAndRow(7,$row,$in_akun['jumlah']);
-                    // $objWorksheet->setCellValueByColumnAndRow(8,$row,0);
+                    $objWorksheet->setCellValueByColumnAndRow(8,$row,0);
                     $jumlah_debet += $in_akun['jumlah'];
                 }elseif ($in_akun['tipe'] == 'kredit') {
                     $objWorksheet->getStyleByColumnAndRow(5,$row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
                     $objWorksheet->setCellValueByColumnAndRow(8,$row,$in_akun['jumlah']);
-                    // $objWorksheet->setCellValueByColumnAndRow(7,$row,0);
+                    $objWorksheet->setCellValueByColumnAndRow(7,$row,0);
                     $jumlah_kredit += $in_akun['jumlah'];
                 }
                 $objWorksheet->setCellValueByColumnAndRow(6,$row, $this->Akun_model->get_nama_akun($in_akun['akun']));
@@ -534,10 +534,12 @@ class Laporan extends MY_Controller {
     			$objWorksheet->setCellValueByColumnAndRow(4,$row,$transaksi['kode_user']);
     			if ($transaksi['tipe'] == 'debet'){
     				$objWorksheet->setCellValueByColumnAndRow(5,$row,$transaksi['jumlah']);
+                    $objWorksheet->setCellValueByColumnAndRow(6,$row,0);
     				$saldo += $transaksi['jumlah'];
     				$jumlah_debet += $transaksi['jumlah'];
     			} else if ($transaksi['tipe'] == 'kredit'){
 					$objWorksheet->setCellValueByColumnAndRow(6,$row,$transaksi['jumlah']);
+                    $objWorksheet->setCellValueByColumnAndRow(5,$row,0);
 					$saldo -= $transaksi['jumlah'];
 					$jumlah_kredit += $transaksi['jumlah'];
     			}
@@ -613,7 +615,7 @@ class Laporan extends MY_Controller {
     	// $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
 
-        $teks_sumber_dana = "BUKU BESAR ";
+        $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";
 
         $teks_tahun_anggaran = substr($periode_akhir,0,4);

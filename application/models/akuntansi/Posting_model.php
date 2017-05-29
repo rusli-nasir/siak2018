@@ -47,6 +47,7 @@ class Posting_model extends CI_Model {
      	}
 
 	}
+
 	
 	
 }

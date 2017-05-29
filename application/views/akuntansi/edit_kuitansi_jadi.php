@@ -55,9 +55,17 @@
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-2 control-label" for="tanggal">Tanggal</label>  
+  <label class="col-md-2 control-label" for="tanggal">Tanggal SPM</label>  
   <div class="col-md-4">
   <input id="tanggal" name="tanggal" type="text" value="<?=$tanggal?>" placeholder="Tanggal" class="form-control input-md" required="" disabled>
+    
+  </div>
+</div>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="tanggal">Tanggal Bukti</label>  
+  <div class="col-md-4">
+  <input id="tanggal" name="tanggal" type="text" value="<?=$tanggal_bukti?>" placeholder="Tanggal" class="form-control input-md" required="" disabled>
     
   </div>
 </div>
