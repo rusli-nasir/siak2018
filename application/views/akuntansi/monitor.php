@@ -56,7 +56,7 @@ th,td
 <div style="font-size:20pt">
 	<span class="glyphicon glyphicon-dashboard"></span> Monitoring
 </div>
-<form class="form-horizontal" action="#" method="post">
+<form class="form-horizontal" action="<?php echo site_url('akuntansi/kuitansi/monitor'); ?>" method="post">
 	<div class="form-group">
 	    <label class="col-md-2 control-label"></label>  
 	    <div class="col-md-6">
@@ -69,6 +69,7 @@ th,td
 </form>
 <div class="row">
 	<div class="col-lg-12">
+		<center>Periode: <b><?php echo $periode; ?></b></center>
 		<table class="tes">
 			<thead>
 				<tr>
@@ -81,14 +82,14 @@ th,td
 				</tr>
 			</thead>
 			<tbody>		
-		<?php $no=1;foreach($query_unit->result() as $result){ ?>
+		<?php $no=0;foreach($query_unit->result() as $result){ ?>
 			<tr style="font-size:12pt;">
 				<td style="width:200px !important"><?php echo $result->nama_unit; ?></td>
-				<td style="width:100px !important"><?php echo get_total_kuitansi($result->kode_unit); ?></td>
-				<td style="width:100px !important"><?php echo get_total_data($result->kode_unit, 'non_verif'); ?></td>
-				<td style="width:100px !important"><span style="color:green"><?php echo get_total_data($result->kode_unit, 'setuju'); ?></span></td>
-				<td style="width:100px !important"><span style="color:orange"><?php echo get_total_data($result->kode_unit, 'revisi'); ?></span></td>
-				<td style="width:100px !important"><?php echo get_total_data($result->kode_unit, 'posting'); ?></td>
+				<td style="width:100px !important"><?php echo $total_kuitansi[$no]; ?></td>
+				<td style="width:100px !important"><?php echo $non_verif[$no]; ?></td>
+				<td style="width:100px !important"><span style="color:green"><?php echo $setuju[$no]; ?></span></td>
+				<td style="width:100px !important"><span style="color:orange"><?php echo $revisi[$no]; ?></span></td>
+				<td style="width:100px !important"><?php echo $posting[$no]; ?></td>
 			</tr>
 		<?php $no++;
 		
@@ -149,28 +150,3 @@ th,td
         }
     );
 </script>
-
-<?php
-function get_total_kuitansi($kode_unit){
-	$ci =& get_instance();
-
-	$query = "SELECT * FROM rsa_kuitansi WHERE kode_unit='$kode_unit' AND cair=1";
-	$q = $ci->db->query($query)->num_rows();
-	return $q;
-}
-function get_total_data($kode_unit, $jenis){
-	$ci =& get_instance();
-
-	if($jenis=='setuju'){
-		$query = "SELECT * FROM akuntansi_kuitansi_jadi WHERE unit_kerja='$kode_unit' AND status='proses' AND flag=2";
-	}else if($jenis=='revisi'){
-		$query = "SELECT * FROM akuntansi_kuitansi_jadi WHERE unit_kerja='$kode_unit' AND status='revisi' AND flag=1";
-	}else if($jenis=='posting'){
-		$query = "SELECT * FROM akuntansi_kuitansi_jadi WHERE unit_kerja='$kode_unit' AND status='posted'";
-	}else if($jenis=='non_verif'){
-		$query = "SELECT * FROM akuntansi_kuitansi_jadi WHERE unit_kerja='$kode_unit' AND status='proses' AND flag=1";
-	}
-	$q = $ci->db->query($query)->num_rows();
-	return $q;
-}
-?>

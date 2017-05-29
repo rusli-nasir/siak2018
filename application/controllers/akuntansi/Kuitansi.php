@@ -619,18 +619,73 @@ class Kuitansi extends MY_Controller {
 		$this->load->view('akuntansi/content_template',$temp_data,false);
     }
 
+    /*=================================== MONITORING =========================================*/
+    /*=================================== MONITORING =========================================*/
+    /*=================================== MONITORING =========================================*/
+
     public function monitor(){
     	$this->db2 = $this->load->database('rba', true);
     	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
-        $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
+
+    	if($this->input->post('daterange')!=null){
+	    	$daterange = $this->input->post('daterange');
+	        $date_t = explode(' - ', $daterange);
+	        $periode_awal = strtodate($date_t[0]);
+	        $periode_akhir = strtodate($date_t[1]);
+	        $this->data['periode'] = $daterange;
+	    }else{
+	    	$periode_awal = null;
+	        $periode_akhir = null;
+	        $this->data['periode'] = 'Semua Periode';
+	    }
+
+    	$i=0;
+    	foreach($this->data['query_unit']->result() as $result){
+    		$this->data['total_kuitansi'][$i] = $this->get_total_kuitansi($result->kode_unit, $periode_awal, $periode_akhir);
+    		$this->data['non_verif'][$i] = $this->get_total_data($result->kode_unit, 'non_verif', $periode_awal, $periode_akhir);
+    		$this->data['setuju'][$i] = $this->get_total_data($result->kode_unit, 'setuju', $periode_awal, $periode_akhir);
+    		$this->data['revisi'][$i] = $this->get_total_data($result->kode_unit, 'revisi', $periode_awal, $periode_akhir);
+    		$this->data['posting'][$i] = $this->get_total_data($result->kode_unit, 'posting', $periode_awal, $periode_akhir);
+    		$i++;
+    	}
+        /*$this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
         foreach($this->data['tmp']->result_array() as $token){
             $this->data['jumlah_verifikasi'][$token['unit_kerja']] = $token['jumlah'];
         }
         $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=2 AND (status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
         foreach($this->data['tmp']->result_array() as $token){
             $this->data['jumlah_posting'][$token['unit_kerja']] = $token['jumlah'];
-        }
+        }*/
     	$temp_data['content'] = $this->load->view('akuntansi/monitor',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
     }
+
+    function get_total_data($kode_unit, $jenis, $periode_awal, $periode_akhir){
+		if($jenis=='setuju'){
+			$cond = array('unit_kerja'=>$kode_unit, 'status'=>'proses', 'flag'=>2);
+		}else if($jenis=='revisi'){
+			$cond = array('unit_kerja'=>$kode_unit, 'status'=>'revisi', 'flag'=>1);
+		}else if($jenis=='posting'){
+			$cond = array('unit_kerja'=>$kode_unit, 'status'=>'posted');
+		}else if($jenis=='non_verif'){
+			$cond = array('unit_kerja'=>$kode_unit, 'status'=>'proses', 'flag'=>1);
+		}
+		$this->db->where($cond);
+		if($periode_awal!=null AND $periode_akhir!=null){
+    		$this->db->where("(tanggal BETWEEN '$periode_awal' AND '$periode_akhir')");
+    	}
+		$query = $this->db->get('akuntansi_kuitansi_jadi');
+		$q = $query->num_rows();
+		return $q;
+	}
+
+	function get_total_kuitansi($kode_unit, $periode_awal, $periode_akhir){
+		$this->db->where(array('kode_unit'=>$kode_unit, 'cair'=>1));
+		if($periode_awal!=null AND $periode_akhir!=null){
+    		$this->db->where("(tgl_kuitansi BETWEEN '$periode_awal' AND '$periode_akhir')");
+    	}
+		$query = $this->db->get('rsa_kuitansi');
+		$q = $query->num_rows();
+		return $q;
+	}
 }
