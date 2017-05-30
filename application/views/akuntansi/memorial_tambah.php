@@ -276,6 +276,44 @@ $(document).ready(function(){
 
 </fieldset>
 
+<fieldset>
+  <hr>
+  <div class="col-sm-12 control-label" style="text-align: center;"><h3><strong>Pajak</strong></h3></div>
+  <div class="col-sm-8 col-sm-offset-2">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:30%">Jenis Pajak</th>
+          <th style="width:25%">Presentase</th>
+          <th style="width:35%">Jumlah</th>
+          <th style="width:10%">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select class="form-control">
+              <option value="">Pilih Jenis</option>
+            </select>
+          </td>
+          <td>
+            <div class="input-group">
+              <input type="text" pattern="[0-9.]{1,3}" maxlength="5" placeholder="20" class="form-control" aria-describedby="basic-addon2">
+              <span class="input-group-addon" id="basic-addon2">%</span>
+            </div>
+          </td>
+          <td><input type="text" pattern="[0-9]{1,20}" maxlength="5" placeholder="450000" class="form-control"></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" align="right"><button type="button" id="tambah_pajak_btn" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-plus"></span> Tambah Pajak</button></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</fieldset>
+
 
 <!-- Button (Double) -->
 <div class="form-group" style="margin-top:12px;">
@@ -513,6 +551,16 @@ $(document).ready(function(){
           $('#alert-selisih').attr('style', 'text-align:center;display:none;');
       }
   }
+
+  $("#tambah_pajak_btn").click(function(){
+    $.ajax({
+      url:,
+      data:,
+      success:function(data){
+        
+      }
+    })
+  })
 
 
   <?php if (isset($unit_kerja)): ?>
