@@ -17,6 +17,7 @@ class Memorial extends MY_Controller {
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
         $this->load->model('akuntansi/Posting_model', 'Posting_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
+        $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
     }
 
     public function coba($value='')
@@ -221,6 +222,7 @@ class Memorial extends MY_Controller {
 
             //kode kegiatan
             $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
+            $this->data['akun_pajak'] = $this->Pajak_model->get_pajak();
 
 			$temp_data['content'] = $this->load->view('akuntansi/memorial_tambah',$this->data,true);
 			$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -594,19 +596,24 @@ class Memorial extends MY_Controller {
     }
 
     public function add_pajak(){
-        echo '<tr>
+        $akun_pajak = $this->Pajak_model->get_pajak();
+        echo ' <tr>
           <td>
-            <select class="form-control">
-              <option value="">Pilih Jenis</option>
-            </select>
+            <select class="form-control" name="jenis_pajak[]" required>
+              <option value="">Pilih Jenis</option>';
+              foreach($akun_pajak->result() as $result){ 
+              echo '<option value='.$result->jenis_pajak.'">'.$result->jenis_pajak.'</option>';
+              }
+        echo '</select>
           </td>
           <td>
             <div class="input-group">
-              <input type="text" pattern="[0-9.]{1,3}" maxlength="5" placeholder="20" class="form-control" aria-describedby="basic-addon2">
+              <input type="text" name="persen_pajak[]" pattern="[0-9.]{1,3}" maxlength="5" placeholder="20" class="form-control" aria-describedby="basic-addon2" required>
               <span class="input-group-addon" id="basic-addon2">%</span>
             </div>
           </td>
-          <td><input type="text" pattern="[0-9]{1,20}" maxlength="5" placeholder="450000" class="form-control"></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9]{1,20}" maxlength="5" placeholder="450000" class="form-control" required></td>
+          <td><button type="button" class="del_pajak btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>';
     }
 }

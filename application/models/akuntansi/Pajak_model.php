@@ -86,5 +86,8 @@ class Pajak_model extends CI_Model {
     }
 
 
-	
+	public function get_pajak(){
+        $query = $this->db->get('akuntansi_pajak');
+        return $query;
+    }
 }
