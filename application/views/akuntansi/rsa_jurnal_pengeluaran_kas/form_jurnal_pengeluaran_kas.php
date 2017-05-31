@@ -219,6 +219,32 @@ if($jenis=='NK'){
 
 
 </fieldset>
+<?php if ($pajak != null): ?>
+  <hr/>
+  <div>
+    <label class="col-md-8 col-md-offset-2"> Informasi Pajak : </label>
+    <br/>
+    <div class="col-md-8 col-md-offset-2">
+      <table class="table">
+        <thead>
+          <td width="50%">Keterangan</td>
+          <td width="20%">Persentase Pajak</td>
+          <td width="30%">Jumlah</td>
+        </thead>
+        <tbody>
+          <?php foreach ($pajak as $entry_pajak): ?>
+            <tr>
+              <td><?php echo $entry_pajak['nama_akun'] ?></td>
+              <td><?php echo $entry_pajak['persen_pajak'] ?> % </td>
+              <td><?php echo "Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.') ?> </td>
+            </tr>
+          <?php endforeach ?>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+  <hr/>
+<?php endif ?>
 
 
 <!-- Button (Double) -->

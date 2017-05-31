@@ -10,6 +10,7 @@ class Jurnal_rsa extends MY_Controller {
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
         $this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
+        $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
         $this->load->model('akuntansi/Akun_kas_rsa_model', 'Akun_kas_rsa_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
         $this->load->model('Rsa_unit_model');
@@ -52,8 +53,11 @@ class Jurnal_rsa extends MY_Controller {
             $updater =  array();
             $updater['flag_proses_akuntansi'] = 1;
 
-            if ($jenis != 'NK')
+            if ($jenis != 'NK') {
                 $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($kuitansi['jenis']),$updater);
+                $array_pajak = $this->Pajak_model->get_transfer_pajak($q1);
+                $this->Pajak_model->insert_pajak($q1,$array_pajak);
+            }
             else
                 $q2 = $this->Kuitansi_model->update_kuitansi_nk($id_kuitansi,$updater);
 
@@ -73,6 +77,8 @@ class Jurnal_rsa extends MY_Controller {
                 $akun_debet_akrual = $isian['kode_akun'];
                 $akun_debet_akrual[0] = 7;
                 $isian['akun_debet_akrual'] = $akun_debet_akrual;
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+                // print_r($isian['pajak']);die();
             } else {
                 $isian = $this->Kuitansi_model->get_kuitansi_nk($id_kuitansi);
                 $isian['id_kuitansi'] = $id_kuitansi;

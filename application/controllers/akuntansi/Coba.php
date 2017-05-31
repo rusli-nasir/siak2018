@@ -11,11 +11,17 @@ class Coba extends MY_Controller {
         $this->load->model("unit_model");
         $this->load->model('menu_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
+        $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
 	}
 
-	public function index()
+    public function index()
+    {
+        echo $this->Akun_model->get_nama_akun('111111');
+    }
+
+	public function pajak()
 	{
-		echo $this->Akun_model->get_nama_akun('111111');
+		print_r($this->Pajak_model->get_transfer_pajak(12));
 	}
 
     public function tgl_spm()
