@@ -19,7 +19,7 @@ class Laporan_model extends CI_Model {
     function read_buku_besar_akun_group($group = null,$akun = null,$unit = null,$sumber_dana=null,$start_date=null,$end_date=null){
 
         $this->db_laporan
-            ->where("tipe != 'memorial' AND tipe != 'jurnal_umum'")
+            ->where("tipe != 'memorial' AND tipe != 'jurnal_umum' AND tipe != 'pajak'")
             // ->order_by('no_bukti')
             ;
 

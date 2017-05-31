@@ -219,7 +219,8 @@ if($jenis=='NK'){
 
 
 </fieldset>
-<?php if ($pajak != null): ?>
+<?php
+  if ($pajak != null): ?>
   <hr/>
   <div>
     <label class="col-md-8 col-md-offset-2"> Informasi Pajak : </label>

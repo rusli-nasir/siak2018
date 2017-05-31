@@ -86,6 +86,7 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['jenis_pembatasan_dana'] = '';
                 $isian['jenis_isian'] = 'nk';
                 $isian['tanggal_bukti'] = $isian['tanggal'];
+                $isian['pajak'] = null;
                 // print_r($isian);die();
             }
             // print_r($isian);die();
