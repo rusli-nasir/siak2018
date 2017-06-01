@@ -23,7 +23,7 @@
 
 <?php echo validation_errors(); ?>
 <!-- Form Name -->
-<legend><center>INPUT JURNAL PENGELUARAN KAS</center></legend>
+<legend><center>DETAIL JURNAL PENGELUARAN KAS</center></legend>
 
 <!-- Text input-->
 
@@ -227,6 +227,34 @@
     </div>
   </div>
   <hr/>
+
+  <?php
+  if ($pajak != null): ?>
+  <div>
+    <label class="col-md-10 col-md-offset-2"> Informasi Pajak : </label>
+    <br/>
+    <div class="col-md-10 col-md-offset-2">
+      <table class="table">
+        <thead>
+          <td width="50%">Keterangan</td>
+          <td width="20%">Persentase Pajak</td>
+          <td width="30%">Jumlah</td>
+        </thead>
+        <tbody>
+          <?php foreach ($pajak as $entry_pajak): ?>
+            <tr>
+              <td><?php echo $entry_pajak['nama_akun'] ?></td>
+              <td><?php echo $entry_pajak['persen_pajak'] ?> % </td>
+              <td><?php echo "Rp. ".number_format($entry_pajak['jumlah'],2,',','.') ?> </td>
+            </tr>
+          <?php endforeach ?>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+  <hr/>
+  <br/>
+<?php endif ?>
 
   <?php if ($mode == 'evaluasi'): ?>
     <!-- Text input-->

@@ -116,6 +116,7 @@ class Jurnal_rsa extends MY_Controller {
 
         $isian = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
+        $isian['pajak'] = $this->Pajak_model->get_detail_pajak_jadi($id_kuitansi_jadi);
 
         $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
         $isian['mode'] = $mode;
@@ -160,7 +161,12 @@ class Jurnal_rsa extends MY_Controller {
         $updater['flag'] = $flag;
         $updater['kode_user'] = $this->session->userdata('kode_user');
         $updater['tanggal_verifikasi'] = date('Y-m-d H:i:s');
+
         $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$updater);
+
+        if ($kuitansi['id_pajak'] !== 0) {
+            $this->Kuitansi_model->update_kuitansi_jadi($kuitansi['id_pajak'],$updater);    
+        }
 
         redirect('akuntansi/kuitansi/jadi/');
 

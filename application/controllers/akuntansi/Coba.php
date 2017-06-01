@@ -21,7 +21,7 @@ class Coba extends MY_Controller {
 
 	public function pajak()
 	{
-		print_r($this->Pajak_model->get_transfer_pajak(12));
+		print_r($this->Pajak_model->get_detail_pajak_jadi(30));
 	}
 
     public function tgl_spm()

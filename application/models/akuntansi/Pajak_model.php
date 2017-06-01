@@ -66,22 +66,29 @@ class Pajak_model extends CI_Model {
     		$kuitansi['akun_kredit'] = 0;
     		$kuitansi['akun_kredit_akrual'] = 0;
     		$kuitansi['jumlah_kredit'] = 0;
+            $kuitansi['uraian'] = "Pemungutan dan Penyetoran Pajak " . $kuitansi['uraian'];
+
 
     		$id_kuitansi_awal = $kuitansi['id_kuitansi_jadi'];
 
-    		$updater['has_pajak'] = 1;
-
-    		$this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_awal);
 
     		unset($kuitansi['id_kuitansi_jadi']);
 
-    		$id_kuitansi = $this->db->insert('akuntansi_kuitansi_jadi',$kuitansi);
+    		$this->db->insert('akuntansi_kuitansi_jadi',$kuitansi);
+            $id_kuitansi = $this->db->insert_id();
     		foreach ($array_pajak as $entry_pajak) {
     			$entry_pajak['id_kuitansi_jadi'] = $id_kuitansi;
     			$entry_pajak['no_bukti'] = $kuitansi['no_bukti'];
     			// print_r($entry_pajak)
     			$this->db->insert('akuntansi_relasi_kuitansi_akun',$entry_pajak);
     		}
+
+            $updater['id_pajak'] = $id_kuitansi;
+
+            $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_awal);
+
+            return $id_kuitansi;
+
     	}
     }
 
@@ -89,5 +96,21 @@ class Pajak_model extends CI_Model {
 	public function get_pajak(){
         $query = $this->db->get('akuntansi_pajak');
         return $query;
+    }
+
+    public function get_detail_pajak_jadi($id_kuitansi_jadi)
+    {
+        $id_pajak = $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi' => $id_kuitansi_jadi))->row_array()['id_pajak'];
+
+        $this->db->where('id_kuitansi_jadi',$id_pajak);
+        $this->db->from('akuntansi_relasi_kuitansi_akun');
+        $this->db->join('akuntansi_pajak','akuntansi_pajak.jenis_pajak = akuntansi_relasi_kuitansi_akun.jenis_pajak');
+
+        return $this->db->get()->result_array();
+    }
+
+    public function get_akun_by_jenis($jenis_pajak)
+    {
+        return $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $jenis_pajak))->row_array();
     }
 }
