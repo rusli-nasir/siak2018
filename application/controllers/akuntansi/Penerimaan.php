@@ -191,6 +191,10 @@ class Penerimaan extends MY_Controller {
 
             $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
 
+            $q2 = $q2 and $this->Posting_model->hapus_posting_full($id_kuitansi_jadi);
+
+            $q2 = $q2 and $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+
             if ($q2)
                 $this->session->set_flashdata('success','Berhasil menyimpan !');
             else
