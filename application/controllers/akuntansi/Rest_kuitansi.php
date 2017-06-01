@@ -60,9 +60,12 @@ class Rest_kuitansi extends MY_Controller {
 	public function posting_kuitansi_batch(){
 		$this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
 		$this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
+		$this->load->model('akuntansi/Posting_model', 'Posting_model');
 
 		$ids = $this->input->post('id_kuitansi_jadi');
 		// $ids=[9,17,18];
+
+		$tanggal_posting = date('Y-m-d H:i:s');
 
 		$data = array();
 		foreach ($ids as $id) {
@@ -70,7 +73,13 @@ class Rest_kuitansi extends MY_Controller {
 		}
 
 		foreach ($data as $entry) {
+			$entry['tanggal_posting'] = $tanggal_posting;
 			$hasil[] = $this->Kuitansi_model->add_kuitansi_jadi($entry,'post');
+
+			if ($entry['id_pajak'] !== 0) {
+				$this->Posting_model->posting_kuitansi_full($entry['id_pajak']);
+				$hasil[] = $entry['id_pajak'];
+			}
 		}
 		// $hasil = $this->rest->post('input_batch', $data, 'json');
 		
@@ -88,7 +97,7 @@ class Rest_kuitansi extends MY_Controller {
 
 		        $updater['flag'] = $riwayat['flag'];
 		        $updater['status'] = 4;
-		        $updater['tanggal_posting'] = date('Y-m-d H:i:s');
+		        $updater['tanggal_posting'] = $tanggal_posting;
 		        $this->Riwayat_model->add_riwayat($riwayat);
 		        $this->Kuitansi_model->update_kuitansi_jadi($id,$updater);
 			}			

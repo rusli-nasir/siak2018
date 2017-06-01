@@ -141,12 +141,28 @@ class Memorial extends MY_Controller {
             $entry['tanggal_verifikasi'] = date('Y-m-d H:i:s');
             $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
 
+            unset($entry['jumlah']);
+            unset($entry['jenis_pajak']);
+            unset($entry['persen_pajak']);
             
             unset($entry['kegiatan']);
             unset($entry['output']);
             unset($entry['program']);
 
             $akun = $this->input->post();
+
+            $entry_pajak = array();
+            $array_pajak = array();
+            for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+                $entry_pajak['jumlah'] = $akun['jumlah'][$i];
+                $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
+                $entry_pajak['jenis'] = 'pajak';
+                $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+
+                $array_pajak[] = $entry_pajak;
+            }
+
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
@@ -198,9 +214,22 @@ class Memorial extends MY_Controller {
                 $entry_relasi[] = $relasi;
             }
 
+
             $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
 
+            //  input pajak
+
+            if ($array_pajak != null) {
+                $updater = array();
+                $q4 = $this->Pajak_model->insert_pajak($id_kuitansi_jadi,$array_pajak);
+                $updater['id_pajak'] = $q4;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+
+                $q6 = $this->Posting_model->posting_kuitansi_full($q4);
+            }
+
             $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+
 
             $riwayat = array();
             $riwayat['id_kuitansi_jadi'] = $q1;
@@ -270,9 +299,14 @@ class Memorial extends MY_Controller {
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
             $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+
             unset($entry['kegiatan']);
             unset($entry['output']);
             unset($entry['program']);
+
+            unset($entry['jumlah']);
+            unset($entry['jenis_pajak']);
+            unset($entry['persen_pajak']);
 
             $akun = $this->input->post();
 
@@ -326,7 +360,8 @@ class Memorial extends MY_Controller {
 
             $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
 
-            //$q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+            $this->Posting_model->hapus_posting_full($id_kuitansi_jadi);
+            $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
 
             $riwayat = array();
             $riwayat['id_kuitansi_jadi'] = $q1;
@@ -603,7 +638,7 @@ class Memorial extends MY_Controller {
             <select class="form-control" name="jenis_pajak[]" required>
               <option value="">Pilih Jenis</option>';
               foreach($akun_pajak->result() as $result){ 
-              echo '<option value='.$result->jenis_pajak.'">'.$result->jenis_pajak.'</option>';
+              echo '<option value='.$result->jenis_pajak.'>'.$result->jenis_pajak.'</option>';
               }
         echo '</select>
           </td>
