@@ -218,6 +218,8 @@ class Laporan_model extends CI_Model {
             $this->db_laporan->where('unit_kerja',$unit);
         }
 
+        $this->db_laporan->where("tipe <> 'pajak'");
+
         $this->db_laporan->order_by('tanggal')->order_by('no_bukti');
 
         $query = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
