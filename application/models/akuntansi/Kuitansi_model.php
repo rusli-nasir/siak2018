@@ -55,10 +55,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe!='memorial' AND tipe!='jurnal_umum' AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe!='memorial' AND tipe!='jurnal_umum' AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
         }
         return $query;
