@@ -447,6 +447,7 @@ class Memorial extends MY_Controller {
         
         $i=0;
         foreach($result as $result){
+            $data[$i]['kd_akun'] = $result->akun;
             $data[$i]['akun'] = $this->Akun_model->get_nama_akun($result->akun);
             $data[$i]['jumlah'] = $result->jumlah;
             $i++;
