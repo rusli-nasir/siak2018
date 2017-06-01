@@ -13,6 +13,7 @@ class Laporan extends MY_Controller {
         $this->load->model('akuntansi/Output_model', 'Output_model');
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
         $this->data['db2'] = $this->load->database('rba',TRUE);
         setlocale(LC_NUMERIC, 'Indonesian');
 
@@ -124,6 +125,15 @@ class Laporan extends MY_Controller {
             header('Content-Type: application/json');
             echo json_encode($json_data);
         } else return $data;
+    }
+
+    public function get_pajak(){
+        $akun_pajak = $this->Pajak_model->get_pajak();
+        echo '<select name="akun[]" class="form-control">';
+        foreach($akun_pajak->result() as $result){
+            echo '<option value="'.$result->kode_akun.'">'.$result->kode_akun.' - '.$result->nama_akun.'</option>';
+        }
+        echo '</select>';
     }
 
     public function get_akun_akrual($get_json = null){

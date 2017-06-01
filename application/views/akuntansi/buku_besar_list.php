@@ -24,7 +24,7 @@
         $('#akun_akrual_list').selectize();
         $('#unit_list').selectize();
         
-        $('#basis').on('change', function (e) {
+        $('#basis').on('change', function (e) {         
             var optionSelected = $('#basis').find(':selected').text();
             console.log(optionSelected);
             if(optionSelected == 'Kas'){
@@ -41,8 +41,16 @@
                       sel.selectize();
                     }
                   });
-            } else {
+            } else if(optionSelected == 'Pajak'){
                 $.ajax({
+                  url:'get_pajak',
+                  data:{},
+                  success:function(data){
+                    $("#akun_list").html(data);
+                  }
+                })
+            }else{
+              $.ajax({
                     url:host+'akuntansi/laporan/get_akun_akrual/get_json',
                     data:{},
                     success:function(data){
@@ -138,6 +146,7 @@
           <select id="basis" name="basis" class="form-control" required="">
             <option value="kas">Kas</option>
             <option value="akrual">Akrual</option>
+            <option value="pajak">Pajak</option>
           </select>
       </div>
     </div>
@@ -145,6 +154,9 @@
       <label class="col-md-2 control-label">Akun</label>  
       <div class="col-md-6">
           <div id="akun_list">
+              
+          </div>
+          <div id="akun_list_pajak">
               
           </div>
       </div>
