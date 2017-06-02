@@ -8,24 +8,33 @@ class Pejabat extends MY_Controller {
         $this->load->library('grocery_CRUD');
     }
 
-	public function manage($tabel){
+	public function manage(){
 		$crud = new grocery_CRUD();
-		$level = substr($tabel, -1,1);
 
-        $crud
-        	->set_table($tabel)
-        	->unique_fields(array("akun_$level"))
-        		;
+		$crud->set_table('akuntansi_pejabat');
+   		// $crud->set_primary_key("id_pejabat",'akuntansi_pejabat');
 
-        if ($level > 1){
-	        for ($i=1;$i<$level;$i++){
-	        	if ($i != 5){
-	        		$temp_tabel = substr_replace($tabel,$i,-1);
-	        		$crud->set_primary_key("akun_$i",$temp_tabel);
-	        		$crud->set_relation("akun_$i",$temp_tabel,"{akun_$i} - {nama}");
-	        	}
-	        }
-        }
+		$crud->set_field_upload('scan_ttd','assets/akuntansi/ttd');
+
+		$crud->field_type('jabatan','dropdown',
+
+												array('kabag' => 'kabag','kasubbag' => 'kasubbag','operator' => 'operator','verifikator' => 'verifikator'));
+		// $level = substr($tabel, -1,1);
+
+  //       $crud
+  //       	->set_table($tabel)
+  //       	->unique_fields(array("akun_$level"))
+  //       		;
+
+  //       if ($level > 1){
+	 //        for ($i=1;$i<$level;$i++){
+	 //        	if ($i != 5){
+	 //        		$temp_tabel = substr_replace($tabel,$i,-1);
+	 //        		$crud->set_primary_key("akun_$i",$temp_tabel);
+	 //        		$crud->set_relation("akun_$i",$temp_tabel,"{akun_$i} - {nama}");
+	 //        	}
+	 //        }
+  //       }
 
         $output = $crud->render(); 
         $this->load->view('akuntansi/crud/manage',$output,false);
