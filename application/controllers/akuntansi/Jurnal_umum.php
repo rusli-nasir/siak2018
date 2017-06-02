@@ -17,6 +17,7 @@ class Jurnal_umum extends MY_Controller {
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
         $this->load->model('akuntansi/Posting_model', 'Posting_model');
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
+        $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
     }
 
     public function coba()
@@ -79,6 +80,44 @@ class Jurnal_umum extends MY_Controller {
 		$temp_data['content'] = $this->load->view('akuntansi/memorial_tambah',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
+    
+    public function get_output($kode_kegiatan){
+        $query = $this->Memorial_model->read_output($kode_kegiatan);
+        echo '<option value="">Pilih Output</option>';
+        foreach($query->result() as $result){
+            echo '<option value="'.$result->kode_output.'">'.$result->kode_output.' - '.$result->nama_output.'</option>';
+        }
+    }
+
+    public function get_program($kode_kegiatan, $kode_output){
+        $query = $this->Memorial_model->read_program($kode_kegiatan, $kode_output);
+        echo '<option value="">Pilih Program</option>';
+        foreach($query->result() as $result){
+            echo '<option value="'.$result->kode_program.'">'.$result->kode_program.' - '.$result->nama_program.'</option>';
+        }
+    }
+    
+    public function add_pajak(){
+        $akun_pajak = $this->Pajak_model->get_pajak();
+        echo ' <tr>
+          <td>
+            <select class="form-control" name="jenis_pajak[]" required>
+              <option value="">Pilih Jenis</option>';
+              foreach($akun_pajak->result() as $result){ 
+              echo '<option value='.$result->jenis_pajak.'">'.$result->jenis_pajak.'</option>';
+              }
+        echo '</select>
+          </td>
+          <td>
+            <div class="input-group">
+              <input type="text" name="persen_pajak[]" pattern="[0-9.]{1,3}" maxlength="5" placeholder="20" class="form-control" aria-describedby="basic-addon2" required>
+              <span class="input-group-addon" id="basic-addon2">%</span>
+            </div>
+          </td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9]{1,20}" maxlength="5" placeholder="450000" class="form-control" required></td>
+          <td><button type="button" class="del_pajak btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></button></td>
+        </tr>';
+    }
 
 	public function input_jurnal_umum()
 	{
@@ -99,8 +138,7 @@ class Jurnal_umum extends MY_Controller {
 		// $this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
         $this->form_validation->set_rules('jumlah_akun_kredit_akrual[]','Jumlah Akun Kredit','required');
 		$this->form_validation->set_rules('jumlah_akun_debet_akrual[]','Jumlah Akun debet','required');
-
-
+        
 		if($this->form_validation->run())     
         {   
             $entry = $this->input->post();
@@ -131,6 +169,10 @@ class Jurnal_umum extends MY_Controller {
             $entry['tanggal_posting'] = date('Y-m-d H:i:s');
             $entry['tanggal_verifikasi'] = date('Y-m-d H:i:s');
             $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
+            
+            unset($entry['jumlah']);
+            unset($entry['jenis_pajak']);
+            unset($entry['persen_pajak']);
 
             unset($entry['kegiatan']);
             unset($entry['output']);
@@ -139,6 +181,18 @@ class Jurnal_umum extends MY_Controller {
             // print_r($entry);die();
 
             $akun = $this->input->post();
+            
+            $entry_pajak = array();
+            $array_pajak = array();
+            for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+                $entry_pajak['jumlah'] = $akun['jumlah'][$i];
+                $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
+                $entry_pajak['jenis'] = 'pajak';
+                $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+
+                $array_pajak[] = $entry_pajak;
+            }
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
@@ -192,6 +246,17 @@ class Jurnal_umum extends MY_Controller {
 
             
             $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
+            
+            //  input pajak
+
+            if ($array_pajak != null) {
+                $updater = array();
+                $q4 = $this->Pajak_model->insert_pajak($id_kuitansi_jadi,$array_pajak);
+                $updater['id_pajak'] = $q4;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+
+                $q6 = $this->Posting_model->posting_kuitansi_full($q4);
+            }
 
             $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
 
@@ -209,6 +274,8 @@ class Jurnal_umum extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
             $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
             $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+            $this->data['akun_pajak'] = $this->Pajak_model->get_pajak();
+
             //kode kegiatan
             $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
 			$temp_data['content'] = $this->load->view('akuntansi/jurnal_umum_tambah',$this->data,true);
