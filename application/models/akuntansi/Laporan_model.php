@@ -80,6 +80,11 @@ class Laporan_model extends CI_Model {
             );
 
         $data = array();
+
+        if ($jenis == 'pajak') {
+            // pajak dilihat dari relasi akun, jenis pajak akan konflik dengan array kolom
+            return $data;
+        }
         foreach ($array_tipe as $tipe) {
             foreach ($array_jenis as $jenis) {
                 foreach ($array_akun as $akun) {
@@ -151,6 +156,18 @@ class Laporan_model extends CI_Model {
                     $data[] = $entry;
                 }
             }
+
+            if ($jenis == 'pajak') {
+                $data2 = array();
+                foreach ($data as $entry) {
+                    // karena pajak dihitung sebagai pemasukan dan pengeluaran jadi diisi debet kredit
+                    $entry['tipe'] = 'debet';
+                    $data2[] = $entry;
+                    $entry['tipe'] = 'kredit';
+                    $data2[] = $entry;
+                }
+                $data = $data2;
+            }
             
         }
         return ($data);
@@ -158,8 +175,12 @@ class Laporan_model extends CI_Model {
 
     public function get_data_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
     {
-        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date);
+        $tabel_utama = array();
+        $tabel_relasi = array();
+
         $tabel_utama = $this->Laporan_model->get_akun_tabel_utama($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date);
+
+        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date);      
 
         $hasil = array_merge($tabel_utama,$tabel_relasi);
 

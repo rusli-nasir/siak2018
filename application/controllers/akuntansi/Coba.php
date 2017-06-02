@@ -12,6 +12,7 @@ class Coba extends MY_Controller {
         $this->load->model('menu_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
         $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
+        $this->load->model('akuntansi/Laporan_model', 'Laporan_model');
 	}
 
     public function index()
@@ -21,7 +22,8 @@ class Coba extends MY_Controller {
 
 	public function pajak()
 	{
-		print_r($this->Pajak_model->get_detail_pajak_jadi(30));
+        $akun = array('411124','411122');
+		print_r($this->Laporan_model->get_data_buku_besar($akun,'pajak'));
 	}
 
     public function tgl_spm()
