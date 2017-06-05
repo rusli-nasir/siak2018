@@ -263,3 +263,46 @@ if ( ! function_exists('get_nama_sumber_dana'))
     function decodeText($txt){
         return html_entity_decode($txt,ENT_QUOTES);
     }
+
+    function datetostr($date){
+        $list = 
+            array(
+                'JANUARI',
+                'FEBRUARI',
+                'MARET',
+                'APRIL',
+                'MEI',
+                'JUNI',
+                'JULI',
+                'AGUSTUS',
+                'SEPTEMBER',
+                'OKTOBER',
+                'NOVEMBER',
+                'DESEMBER'
+                 );
+        $tokens = explode('-', $date);
+        $tokens[1] = ucfirst(strtolower($list[intval($tokens[1])-1]));
+        return $tokens[2].' '.$tokens[1].' '.$tokens[0];
+    }
+    
+    function strtodate($str){
+        if(!$str) return null;
+        $list = 
+            array(
+                'JANUARI'=>'01',
+                'FEBRUARI'=>'02',
+                'MARET'=>'03',
+                'APRIL'=>'04',
+                'MEI'=>'05',
+                'JUNI'=>'06',
+                'JULI'=>'07',
+                'AGUSTUS'=>'08',
+                'SEPTEMBER'=>'09',
+                'OKTOBER'=>'10',
+                'NOVEMBER'=>'11',
+                'DESEMBER'=>'12'
+                 );
+        $tokens = explode(' ', $str);
+        $tokens[1] = $list[strtoupper($tokens[1])];
+        return $tokens[2].'-'.$tokens[1].'-'.$tokens[0];
+    }
