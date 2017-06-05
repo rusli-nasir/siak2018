@@ -10,7 +10,6 @@ function printContent(el){
 	document.body.innerHTML = restorepage;
 }
 </script>
-
 <style>
 <!--
  /* Font Definitions */
@@ -146,13 +145,24 @@ ul
 				<hr/>
 				&nbsp;&nbsp;
 				<?php echo form_open("akuntansi/laporan/$sumber/excel",array("class"=>"form-horizontal")); ?>
-					<button onclick="printContent('cetak')"><?php echo $teks_cetak ?></button>
 					<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
 					<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
 					<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 					<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
 					<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
 					<input type="submit" name="Download excel" value="Download Excel">
+				</form>
+				<?php 
+				$arr_sumber = explode('_', $sumber);
+				$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
+				?>
+				<?php echo form_open("akuntansi/laporan/$link_cetak",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
+					<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+					<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+					<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+					<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+					<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+					<input type="submit" name="Cetak PDF" value="Cetak PDF">
 				</form>
 			</div>
 		</div>

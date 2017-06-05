@@ -615,6 +615,97 @@ class Laporan extends MY_Controller {
 
     }
 
+    public function cetak_buku_besar(){
+        $akun = $this->input->post('akun')[0];
+        $basis = $this->input->post('basis');
+        $unit = $this->input->post('unit');
+        $sumber_dana = $this->input->post('sumber_dana');
+        
+        $daterange = $this->input->post('daterange');
+        $date_t = explode(' - ', $daterange);
+        $periode_awal = strtodate($date_t[0]);
+        $periode_akhir = strtodate($date_t[1]) or null;
+
+        if ($unit == 'all') {
+            $unit = null;
+        }
+        if ($sumber_dana == 'all') {
+            $sumber_dana = null;
+        }
+
+        $array_akun = array();
+
+        if ($akun == 'all')
+            $array_akun = array(1,2,3,4,5,6,7,8,9);
+        else {
+            $array_akun[] = $akun;
+        }
+
+        $teks_sumber_dana = "BUKU BESAR ";
+        $teks_periode = "";
+        
+        $teks_tahun = substr($periode_akhir,0,4);
+        $data['teks_tahun_anggaran'] = "TAHUN ANGGARAN $teks_tahun";
+
+        $data['teks_unit'] = "UNIVERSITAS DIPONEGORO";
+
+        if ($periode_awal != null and $periode_akhir != null){
+            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        }
+
+
+        if ($sumber_dana != null) {
+            $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
+        }
+
+        $data['periode_text'] = $teks_periode;
+
+        $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+        $this->load->view('akuntansi/laporan/cetak_buku_besar',$data);
+    }
+
+    public function cetak_rekap_jurnal(){
+        $basis = $this->input->post('basis');
+        $unit = $this->input->post('unit');
+        $sumber_dana = $this->input->post('sumber_dana');
+        
+        $daterange = $this->input->post('daterange');
+        $date_t = explode(' - ', $daterange);
+        $periode_awal = strtodate($date_t[0]);
+        $periode_akhir = strtodate($date_t[1]);
+
+        if ($unit == 'all') {
+            $unit = null;
+        }
+        if ($sumber_dana == 'all') {
+            $sumber_dana = null;
+        } 
+
+        $teks_sumber_dana = "JURNAL UMUM ";
+        $teks_periode = "";
+        $teks_tahun = substr($periode_akhir,0,4);
+        $teks_tahun_anggaran = "TAHUN ANGGARAN $teks_tahun";
+
+        if ($periode_awal != null and $periode_akhir != null){
+            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        }
+
+
+        if ($sumber_dana != null) {
+            $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
+        }
+
+        $data['teks_periode'] = $teks_periode;
+        $data['teks_tahun_anggaran'] = $teks_tahun_anggaran;
+
+        // print_r($this->input->post());die();
+        // $akun = array(1,2,3,4,5,6,7,8,9);
+        //public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
+        $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+
+        $this->load->view('akuntansi/laporan/cetak_rekap_jurnal',$data);
+    }
+
     public function get_neraca_saldo($mode = null)
     {
     // 	if ($tipe == 'sak'){
