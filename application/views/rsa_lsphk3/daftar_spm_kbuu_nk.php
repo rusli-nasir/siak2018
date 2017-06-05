@@ -73,7 +73,7 @@ $i = isset($spm_usul[0])?$spm_usul[0]:'';
             <div id="page-inner">
                 <div class="row">
                     <div class="col-lg-12">
-                     <h2>DAFTAR SPM LS PIHAK KE 3 KBUU</h2>    
+                     <h2>DAFTAR SPM LS PIHAK KE 3 NON KONTRAK KBUU</h2>    
                     </div>
                 </div>
                 <hr />
@@ -104,35 +104,61 @@ $i = isset($spm_usul[0])?$spm_usul[0]:'';
                             <thead>
                                 <tr >
                                         <th class="col-md-1" >Kode</th>
-                                        <th class="col-md-3" >Unit</th>
-                                        <th class="col-md-4" >Nomor SPM</th>
-										<th class="col-md-2" >Posisi</th>
-                                        <th class="col-md-2" >TAHUN</th>
+                                        <th class="col-md-5" >UNIT</th>
+                                        <th class="col-md-2" >POSISI </th>
+                                        <th class="col-md-2" >NOMOR</th>
+										<th class="col-md-2" >TOTAL HARGA</th>
                                         <th class="col-md-2" style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tb-isi" >
                                 <?php foreach($spm_usul as $i => $u){ ?>
-                                  
+                                    <?php if(($u->kode_unit == '41')||($u->kode_unit == '42')||($u->kode_unit == '43')||($u->kode_unit == '44')): ?>
+                                            <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
+                                                <td class=""><b><?=$u->kode_unit?></b></td>
+                                                <td class="text-danger"><b><?php echo get_h_unit($u->kode_unit); ?></b></td>
+                                                <td class="">&nbsp;</td>
+                                                <td style="">&nbsp;</td>
+                                                <td align="center">&nbsp;</td>
+                                            </tr>
+                                        <?php foreach($spm_subunit_usul as $ii => $uu){ 
+										//var_dump($spm_subunit_usul);die;
+										?>
+                                        <?php if(substr($uu->kode_subunit,0,2) == $u->kode_unit): ?>
+										
+                                        <tr rel="<?=$uu->kode_subunit?>" class="tr-unit" height="25px">
+                                            <td class="" style="padding-left: 30px"><b><?php echo $uu->kode_subunit; ?></b></td>
+                                            <td class="text-danger" style="padding-left: 30px"><b><?php echo get_h_subunit($uu->kode_subunit); ?></b></td>
+                                            <td class=""><?=$uu->posisi?></td>
+                                            <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($uu->tgl_proses)?'':strftime("%d %B %Y", strtotime($uu->tgl_proses)); ?></td>
+                                            <td align="center">
+                                                <?php if(($uu->posisi=='SPM-FINAL-VERIFIKATOR') || ($uu->posisi=='SPM-FINAL-KBUU')): ?>
+                                                <button class="btn btn-warning tb-lihat" rel="<?=$uu->id_kuitansi?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <?php else: ?>
+                                               <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php endif; ?>
+                                        <?php } ?>
+                                    <?php else: ?>
                                     <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                         <td class=""><b><?=$u->kode_unit?></b></td>
-                                        <td class="text-danger"><b><?=$u->nama_unit?></b></td>
-                                        <td class=""><?=$u->str_nomor_trx;?></td>
-                                        <td style=""><?=$u->posisi;?></td>
-                                        <td align="center"><?=$u->tahun;?></td>
-										<td align="center">
-										<?php
-										if(($u->posisi=='SPM-FINAL-VERIFIKATOR') || ($u->posisi=='SPM-FINAL-KBUU')){?>
-										<button class="btn btn-warning tb-lihat" rel="<?=$u->id_kuitansi?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-										<?php }else{ ?>
-										<button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-											
-										<?php }?>
-										</td>
+                                        <td class="text-danger"><b><?php echo get_unit_name($u->kode_unit); ?></b></td>
+                                        <td class=""><?=$u->posisi?></td>
+                                        <td style=""><?=$u->str_nomor_trx?></td>
+										<td align="center"><?=number_format($u->volume*$u->harga_satuan, 0, ",", ".");?></td>
+                                        <td align="center">
+                                            <?php if(($u->posisi=='SPM-FINAL-VERIFIKATOR') || ($u->posisi=='SPM-FINAL-KBUU')): ?>
+                                           <button class="btn btn-warning tb-lihat" rel="<?=$u->id_kuitansi?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                           
+                                            <?php else: ?>
+                                            <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
-                                       
-								<?php } ?>
-                                       
+                                    <?php endif; ?>
+                                <?php } ?>
                             </tbody>
                             <tfoot>
                                 <tr>

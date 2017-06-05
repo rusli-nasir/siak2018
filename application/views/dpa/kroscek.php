@@ -1,18 +1,23 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-        $('.kode_usulan_belanja').each(function(){
-                    var rel = $(this).attr('rel') ;
-                    // setTimeout(function() {
-                        $.ajax({
-                          type:"POST",
-                          url :"<?php echo site_url("dpa/get_nama_sub_subunit"); ?>/" + rel,
-                          success:function(data1){
-                                $('.nama_' + rel).text(data1);
-                          }
-                        });
-                    // },100);
-        });
+        $('#sumber_dana').val('<?=$sd?>');
+
+
+        $('#jml_err').text($('.badge-danger').length) ;
+
+        // $('.kode_usulan_belanja').each(function(){
+        //             var rel = $(this).attr('rel') ;
+        //             // setTimeout(function() {
+        //                 $.ajax({
+        //                   type:"POST",
+        //                   url :"<?php echo site_url("dpa/get_nama_sub_subunit"); ?>/" + rel,
+        //                   success:function(data1){
+        //                         $('.nama_' + rel).text(data1);
+        //                   }
+        //                 });
+        //             // },100);
+        // });
 
 
     $("#dl_xls").click(function(){
@@ -29,7 +34,12 @@ $(document).ready(function(){
 
     });
 
+
     $(document).on("click","#show",function(){
+        window.location = "<?=site_url('dpa/kroscek')?>/" + $('#sumber_dana').val(); ;
+    });
+
+    $(document).on("click","#btncheck",function(){
         if($("#form_tor").validationEngine("validate")){
             // $('#tb-empty').hide(function(){
             //         $('#tb-isi').show(function(){
@@ -40,6 +50,9 @@ $(document).ready(function(){
                 var total_rba = 0 ;
                 var total_rsa = 0 ;
                 var total_selisih = 0 ;
+
+
+                var jml_err = 0 ;
                 
                 $('.kode_usulan_belanja').each(function(){
                     var rel = $(this).attr('rel') ;
@@ -52,13 +65,13 @@ $(document).ready(function(){
                     //             $('.nama_' + rel).text(data1);
                                 $.ajax({
                                   type:"POST",
-                                  url :"<?php echo site_url("dpa/get_rba"); ?>/" + rel + '/' + $("#sumber_dana").val() + "/" + $("#tahun").val(),
+                                  url :"<?php echo site_url("dpa/get_rba"); ?>/" + rel + '/' + $("#sumber_dana").val() , // + "/" + $("#tahun").val(),
                                   success:function(data2){
                                         $('.rba_' + rel).text(angka_to_string(data2));
                                         total_rba = parseInt(total_rba) + parseInt(data2) ;
                                         $.ajax({
                                           type:"POST",
-                                          url :"<?php echo site_url("dpa/get_rsa"); ?>/" + rel + '/' + $("#sumber_dana").val() + "/" + $("#tahun").val(),
+                                          url :"<?php echo site_url("dpa/get_rsa"); ?>/" + rel + '/' + $("#sumber_dana").val() , // + "/" + $("#tahun").val(),
                                           success:function(data3){
                                                 $('.rsa_' + rel).text(angka_to_string(data3));
                                                 total_rsa = parseInt(total_rsa) + parseInt(data3) ;
@@ -68,6 +81,7 @@ $(document).ready(function(){
                                                 if((parseInt(rba) - parseInt(rsa)) < 0 ){
                                                     $('.tr_' + rel ).addClass('danger');
                                                     $('.r_' + rel ).html('<span class="badge badge-danger">ERR</span>');
+                                                    jml_err++ ;
                                                 }
                                                 $('.selisih_' + rel).text(selisih);
                                                 total_selisih = parseInt(total_selisih) + parseInt(parseInt(rba) - parseInt(rsa)) ;
@@ -75,6 +89,9 @@ $(document).ready(function(){
                                                 $('#total_rba').text(angka_to_string(total_rba));
                                                 $('#total_rsa').text(angka_to_string(total_rsa));
                                                 $('#total_selisih').text(angka_to_string(total_selisih));
+
+
+                                                $('#jml_err').text(jml_err);
                                           }
                                         });
                                   }
@@ -173,14 +190,20 @@ function refresh_row(){
                 <div class="row">  
                     <div class="col-lg-12">
 
+<div class="row"> 
+<div class="col-lg-12"> 
 <form class="form-horizontal alert alert-warning col-sm-8" method="post" id="form_tor" action="<?php echo site_url('tor/daftar_tor');?>">
+     <!--
      <div class="form-group"  >
             <label for="input1" class="col-md-4 control-label">Tahun</label>
+            
             <div class="col-md-8">
                         <?=form_dropdown('tahun',$this->option->get_option_tahun(date('Y'),date('Y')+7),$cur_tahun,array('class'=>'validate[required] form-control','id'=>'tahun'))?>
                                     
             </div>
+            
         </div>
+        -->
                 <div class="form-group"  >
             <label for="input1" class="col-md-4 control-label">Sumber Dana</label>
             <div class="col-md-8">
@@ -234,16 +257,34 @@ function refresh_row(){
       </div>
 
             </form>
+            </div>
+
+            </div>
+
+<div class="row">  
+<div class="col-lg-12">
+            <div class="alert alert-warning" style="border:1px solid #634c1e">
+                <!--<button class="btn btn-success" id="btncheck"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Check</button>--> Jumlah Error : <span id="jml_err">0</span>                
+            </div>
+
+</div>
+</div>
+
                     
             <div id="temp" style="display:none"></div>
                         <div id="o-table">
+
+
+    <div class="row">  
+    <div class="col-lg-12">                  
+
                         <table class="table table-striped" id="tbl-kroscek" >
     <thead>
     <tr >
         <th class="col-md-3" >UNIT</th>
         <th class="col-md-2" >KODE</th>
         <th class="col-md-2" >RBA</th>
-        <th class="col-md-2" >RSA</th>
+        <th class="col-md-2" ><a href="#" data-toggle="tooltip" title="ID PROSES > 0">RSA(*)</a></th>
         <th class="col-md-2" >SISA</th>
         <th class="col-md-1" >STATUS</th>
     </tr>
@@ -251,25 +292,36 @@ function refresh_row(){
         <tbody id="row_space">
 
 <?php if(!empty($akun_kroscek)): ?>
+
+<?php $tot_biaya = 0 ; ?>
+<?php $tot_anggaran = 0 ; ?>
+<?php $tot_serapan = 0 ; ?>
+
 <?php foreach($akun_kroscek as $row){ ?>
-<tr id="" class="tr_<?=$row?>" height="25px">
-    <td class="nama_<?=$row?>">&nbsp;</td>
-    <td class="kode_usulan_belanja" rel="<?=$row?>" style='mso-number-format:"\@";'><?=$row?></td>
-    <td class="rba_<?=$row?>" style='text-align: right;mso-number-format:"\@";'>&nbsp;</td>
-    <td class="rsa_<?=$row?>" style='text-align: right;mso-number-format:"\@";'>&nbsp;</td>
-    <td class="selisih_<?=$row?>" style='text-align: right;mso-number-format:"\@";'>&nbsp;</td>
-    <td class="r_<?=$row?>" style="text-align:right">&nbsp;</td>
-</tr>
-<?php };?>
-<tr >
-    <td colspan="6">&nbsp;</td>
+<tr id="" class="tr_<?=$row['kode_usulan_belanja']?>" height="25px">
+    <td class="nama_<?=$row['kode_usulan_belanja']?>"><?=$row['unit']?></td>
+    <td class="kode_usulan_belanja" rel="<?=$row['kode_usulan_belanja']?>" style='mso-number-format:"\@";'><?=$row['kode_usulan_belanja']?></td>
+    <td class="rba_<?=$row['kode_usulan_belanja']?>" style='text-align: right;mso-number-format:"\@";'><?php echo number_format($row['anggaran'],0,',','.'); ?></td>
+    <td class="rsa_<?=$row['kode_usulan_belanja']?>" style='text-align: right;mso-number-format:"\@";'><?php echo number_format($row['serapan'],0,',','.'); ?></td>
+    <td class="selisih_<?=$row['kode_usulan_belanja']?>" style='text-align: right;mso-number-format:"\@";'>
+        <?=number_format($row['anggaran'] - $row['serapan'], 0, ",", ".")?>
+    </td>
+    <td class="r_<?=$row['kode_usulan_belanja']?>" style="text-align:right">
+        <?php echo $row['anggaran'] < $row['serapan'] ? '<span class="badge badge-danger">ERR</span>' : '' ;?>
+    </td>
 </tr>
 
+
+<?php $tot_anggaran = $tot_anggaran + $row['anggaran'] ; ?>
+<?php $tot_serapan = $tot_serapan + $row['serapan'] ; ?>
+
+
+<?php };?>
 <tr id="" height="25px" class="alert alert-danger" style="font-weight: bold">
     <td colspan="2" style="text-align: center">Total </td>
-    <td style='text-align: right;mso-number-format:"\@";'>: <span id="total_rba">&nbsp;</span><?php // number_format($total_g, 0, ",", "."); ?></td>
-    <td style='text-align: right;mso-number-format:"\@";'><span id="total_rsa">&nbsp;</span></td>
-    <td style='text-align: right;mso-number-format:"\@";'><span id="total_selisih">&nbsp;</span></td>
+    <td style='text-align: right;mso-number-format:"\@";'>: <span id="total_rba"><?=number_format($tot_anggaran, 0, ",", ".")?></span><?php // number_format($total_g, 0, ",", "."); ?></td>
+    <td style='text-align: right;mso-number-format:"\@";'><span id="total_rsa"><?=number_format($tot_serapan, 0, ",", ".")?></span></td>
+    <td style='text-align: right;mso-number-format:"\@";'><span id="total_selisih"><?=number_format($tot_anggaran - $tot_serapan, 0, ",", ".")?></span></td>
     <td style="">&nbsp;</td>
 </tr>
 
@@ -280,13 +332,17 @@ function refresh_row(){
 <?php endif; ?>
 
 </tbody>
-    
+<!--     
         <tfoot>
             <tr>
                 <td colspan="6">&nbsp;</td>
             </tr>
-        </tfoot>
+        </tfoot> -->
 </table>
+
+</div>
+
+</div>
 
 <div class="alert alert-warning" style="text-align:center" >
     <button type="button" class="btn btn-success" id="dl_xls"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Unduh .xls</button>

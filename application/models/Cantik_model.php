@@ -14,67 +14,80 @@ class Cantik_model extends CI_Model {
     $this->_maxPage = 25;
 		$this->rek_tunj = 2;
 		$this->rek_gaji = 1;
-    // pre status
-    if(!isset($_SESSION['tkk']['status'])){
-      $_SESSION['tkk']['status'] = array(1,3,6,12);
-    }
   }
 
-  /*public function daftar_pegawai_kontrak(){
-    $vSQL = "";
-    $vLimit = " LIMIT 0,".$this->_maxPage;
-    if(isset($_SESSION['tkk'])){
-      if(isset($_SESSION['tkk']['status']) && count($_SESSION['tkk']['status'])>0){
-        foreach ($_SESSION['tkk']['status'] as $k => $v) {
-          $vStatus[]= " status = ".$v;
-        }
-        $vSQL .= " AND (".implode(" OR ",$vStatus).")";
-      }
-      if(isset($_SESSION['tkk']['unit_id']) && count($_SESSION['tkk']['unit_id'])>0){
-        foreach ($_SESSION['tkk']['unit_id'] as $k => $v) {
-          $vStatus[]= " unit_id LIKE '".$v."'";
-        }
-        $vSQL .= " AND (".implode(" OR ",$vStatus).")";
-      }
-      // untuk limit pages
-      if(isset($_SESSION['tkk']['page'])){
-        $vLimit = " LIMIT ".((intval($_SESSION['tkk']['page'])-1)*$this->_maxPage).",".$this->_maxPage;
-      }
-    }
-    $sql = "SELECT a.`id`, `nama`, `nip`, `jabatan_id`, b.`jabatan`, `status`, `jnspeg`, `npwp` FROM kepeg_tb_pegawai a LEFT JOIN kepeg_tb_jabatan b ON a.jabatan_id = b.id WHERE status_kepeg LIKE '4'".$vSQL." ORDER BY jnspeg, nama".$vLimit;
-    $q = $this->db->query($sql);
-    if($q->num_rows()<=0){
-      return 0;
-    }else{
-      // return $sql;
-      return $q->result();
-    }
+  public function doone2($onestr,$answer) {
+      $tsingle = array("","satu ","dua ","tiga ","empat ","lima ","enam ","tujuh ","delapan ","sembilan ");
+         return strtoupper($tsingle[$onestr] );
   }
 
-  public function jumlah_pegawai_kontrak(){
-    $vSQL = "";
-    if(isset($_SESSION['tkk'])){
-      if(isset($_SESSION['tkk']['status']) && count($_SESSION['tkk']['status'])>0){
-        foreach ($_SESSION['tkk']['status'] as $k => $v) {
-          $vStatus[]= " status = ".$v;
-        }
-        $vSQL .= " AND (".implode(" OR ",$vStatus).")";
+  public function doone($onestr,$answer) {
+      $tsingle = array("","se","dua ","tiga ","empat ","lima ", "enam ","tujuh ","delapan ","sembilan ");
+         return strtoupper($tsingle[$onestr] );
+  }
+
+  public function dotwo($twostr,$answer) {
+      $tdouble = array("","puluh ","dua puluh ","tiga puluh ","empat puluh ","lima puluh ", "enam puluh ","tujuh puluh ","delapan puluh ","sembilan puluh ");
+      $teen = array("sepuluh ","sebelas ","dua belas ","tiga belas ","empat belas ","lima belas ", "enam belas ","tujuh belas ","delapan belas ","sembilan belas ");
+      if ( substr($twostr,1,1) == '0') {
+          $ret = $this->cantik_model->doone2(substr($twostr,0,1),$answer);
+      } else if (substr($twostr,1,1) == '1') {
+          $ret = $teen[substr($twostr,0,1)];
+      } else {
+          $ret = $tdouble[substr($twostr,1,1)] . $this->cantik_model->doone2(substr($twostr,0,1),$answer);
       }
-      if(isset($_SESSION['tkk']['unit_id']) && count($_SESSION['tkk']['unit_id'])>0){
-        foreach ($_SESSION['tkk']['unit_id'] as $k => $v) {
-          $vStatus[]= " unit_id LIKE '".$v."'";
-        }
-        $vSQL .= " AND (".implode(" OR ",$vStatus).")";
+      return strtoupper($ret);
+  }
+
+  public function convertAngka($num) {
+      $tdiv = array("","","ratus ","ribu ", "ratus ", "juta ", "ratus ","miliar ");
+      $divs = array( 0,0,0,0,0,0,0);
+      $pos = 0; // index into tdiv;
+      // make num a string, and reverse it, because we run through it backwards
+      // bikin num ke string dan dibalik, karena kita baca dari arah balik
+      $num=strval(strrev(number_format($num,2,'.','')));
+      $answer = ""; // mulai dari sini
+      while (strlen($num)) {
+          if ( strlen($num) == 1 || ($pos >2 && $pos % 2 == 1))  {
+              $answer = $this->cantik_model->doone(substr($num,0,1),$answer) . $answer;
+              $num= substr($num,1);
+          } else {
+              $answer = $this->cantik_model->dotwo(substr($num,0,2),$answer) . $answer;
+              $num= substr($num,2);
+              if ($pos < 2)
+                  $pos++;
+          }
+          if (substr($num,0,1) == '.') {
+              if (! strlen($answer))
+                  $answer = "";
+              $answer = "" . $answer . "";
+              $num= substr($num,1);
+              // kasih tanda "nol" jika tidak ada
+              if (strlen($num) == 1 && $num == '0') {
+                  $answer = "" . $answer;
+                  $num= substr($num,1);
+              }
+          }
+          // add separator
+          if ($pos >= 2 && strlen($num)) {
+              if (substr($num,0,1) != 0  || (strlen($num) >1 && substr($num,1,1) != 0
+                  && $pos %2 == 1)  ) {
+                  // check for missed millions and thousands when doing hundreds
+                  // cek kalau ada yg lepas pada juta, ribu dan ratus
+                  if ( $pos == 4 || $pos == 6 ) {
+                      if ($divs[$pos -1] == 0)
+                          $answer = $tdiv[$pos -1 ] . $answer;
+                  }
+                  // standard
+                  $divs[$pos] = 1;
+                  $answer = $tdiv[$pos++] . $answer;
+              } else {
+                  $pos++;
+              }
+          }
       }
-    }
-    $sql = "SELECT `id` FROM kepeg_tb_pegawai WHERE status_kepeg LIKE '4'".$vSQL;
-    $q = $this->db->query($sql);
-    if($q->num_rows()<=0){
-      return 0;
-    }else{
-      return $q->num_rows();
-    }
-  }*/
+      return strtoupper($answer);
+  }
 
   public function getStatus($status){
 		$stt = array(
@@ -108,6 +121,50 @@ class Cantik_model extends CI_Model {
       return $q->row()->norekening;
     }
   }
+
+  public function get_nama_jabatan_by_id($id){
+  	$sql = "SELECT jabatan FROM kepeg_tb_jabatan WHERE id = ".intval($id);
+  	$q = $this->db->query($sql);
+  	if($q->num_rows()>0){
+  		return $q->row()->jabatan;
+  	}
+  	return "-";
+  }
+
+  public function getPendidikan($pend){
+		$sma = array(1,2,3,14,15,16,17);
+		$d3 = array(4,5,6);
+		$s1 = array(7,8,9,10,11,12,13);
+		if(in_array($pend,$sma)){
+			return "SMA";
+		}
+		if(in_array($pend,$d3)){
+			return "DIII";
+		}
+		if(in_array($pend,$s1)){
+			return "S1";
+		}
+		return "ES TELLER";
+	}
+
+	public function ambilGajiSetup($peg,$kat,$pend){
+		$sql = "SELECT jumlah FROM kepeg_tr_gaji_setup WHERE jns_pegawai LIKE '".$peg."' AND kategori LIKE '".$kat."' AND jenis LIKE '".$pend."'";
+		$q = $this->db->query($sql);
+		if($q->num_rows()>0){
+			return $q->row()->jumlah;
+		}
+		return 0;
+	}
+
+	public function gajiKontrak($pend){
+		$pend = $this->cantik_model->getPendidikan($pend);
+		return $this->cantik_model->ambilGajiSetup('KONTRAK','GAPOK',$pend);
+	}
+
+	function uangMakanKontrak($hari,$pend){
+		$pend = $this->cantik_model->getPendidikan($pend);
+		return $hari * $this->cantik_model->ambilGajiSetup('KONTRAK','UM',$pend);
+	}
 
   public function isExist($id,$table,$field){
 		if(strlen(trim($id))>0 && strpos($id,'%')===false && strpos($id,'\\')===false){
@@ -152,12 +209,12 @@ class Cantik_model extends CI_Model {
 		}
 		return $html;
 	}
-	
+
 	public function getUnitList($unit){
 		$sql = "SELECT * FROM kepeg_unit";
 		$data = $this->db->query($sql)->result();
 		$html = "";
-		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42'){
+		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42' || substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='91'){
 			foreach ($data as $key => $value) {
 				$s="";
 				if(is_array($unit) && count($unit)>0 && in_array($value->id,$unit)){ $s = " checked"; }
@@ -175,7 +232,7 @@ class Cantik_model extends CI_Model {
 		}
 		return $html;
 	}
-	
+
 	public function getUnitChecked(){
 		$sql = "SELECT * FROM kepeg_unit";
 		$data = $this->db->query($sql)->result();
@@ -188,7 +245,7 @@ class Cantik_model extends CI_Model {
 		}
 		return $arr;
 	}
-	
+
 	public function getUnitCheckedAll(){
 		$sql = "SELECT * FROM kepeg_unit";
 		$data = $this->db->query($sql)->result();
@@ -204,7 +261,7 @@ class Cantik_model extends CI_Model {
 		$data = $this->db->query($sql)->row();
 		return $data->unit;
 	}
-	
+
 	public function getUnitShort($unit){
 		$sql = "SELECT unit_short FROM kepeg_unit WHERE id =".intval($unit);
 		$data = $this->db->query($sql)->row();
@@ -250,7 +307,7 @@ class Cantik_model extends CI_Model {
     }
     return 0;
   }
-	
+
 	public function getStatusKepegFullOption($status){
 		$data = array(array('id'=>1,'nama'=>'Pegawai Negeri Sipil (PNS)'), array('id'=>2,'nama'=>'Pegawai Tetap Non PNS (BLU)'), array('id'=>3,'nama'=>'Calon Pegawai Negeri Sipil (CPNS)'), array('id'=>4,'nama'=>'Tenaga Kontrak'));
 		$html = "";
@@ -272,7 +329,7 @@ class Cantik_model extends CI_Model {
 		}
 		return $html;
 	}
-	
+
 	public function getStatusKepegFullCheckbox($status){
 		$data = array(array('id'=>1,'nama'=>'Pegawai Negeri Sipil (PNS)'), array('id'=>2,'nama'=>'Pegawai Tetap Non PNS (BLU)'), array('id'=>3,'nama'=>'Calon Pegawai Negeri Sipil (CPNS)'), array('id'=>4,'nama'=>'Tenaga Kontrak'));
 		$html = "";
@@ -283,7 +340,7 @@ class Cantik_model extends CI_Model {
 		}
 		return $html;
 	}
-	
+
 	public function msgSukses($m){
 		return "<div class=\"alert alert-success alert-dismissible text-center\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\"><i class=\"glyphicon glyphicon-remove\"></i></button><i class=\"glyphicon glyphicon-lamp\"></i>&nbsp;&nbsp;".$m."</div>";
 	}
@@ -310,7 +367,7 @@ class Cantik_model extends CI_Model {
 		}
 		return 0;
 	}
-	
+
 	function getIKWRSND($gol,$bobot){
 		$sql = "SELECT bruto FROM kepeg_tb_ikw_rsnd WHERE grade_id = ".intval($bobot)." AND golongan_id = ".intval($gol);
 		$jum = $this->db->query($sql);
@@ -340,7 +397,7 @@ class Cantik_model extends CI_Model {
 		}
 		return array('netto'=>0,'bruto'=>0);
 	}
-	
+
 	public function getSemester($sms){
 		switch (intval($sms)) {
 			case 1:
@@ -427,20 +484,61 @@ class Cantik_model extends CI_Model {
 		$d = DateTime::createFromFormat($format, $date);
 		return $d && $d->format($format) == $date;
 	}
-	
+
 	public function number($i){
 		return number_format($i,0,',','.').",-";
 	}
-	
+
 	public function pajak($i){
 		return ($i*100)."%";
 	}
-	
+
 	public function getGolongan($id){
 		$sql = "SELECT * FROM kepeg_tb_golongan WHERE id =".$id;
 		return $this->db->query($sql)->row()->gol;
 	}
-	
+
+	// untuk Gaji TKK
+	public function get_data_tkk(){
+		if(isset($_SESSION['tkk'])){
+			$vSQL = "";
+			if(isset($_SESSION['tkk']['status_kepeg']) && is_array($_SESSION['tkk']['status_kepeg']) && count($_SESSION['tkk']['status_kepeg'])>1){
+				$vSQL.= " AND ( b.`status_kepeg` = ".implode(" OR b.status_kepeg = ", $_SESSION['tkk']['status_kepeg']).")";
+			}elseif(isset($_SESSION['tkk']['status_kepeg']) && is_array($_SESSION['tkk']['status_kepeg']) && count($_SESSION['tkk']['status_kepeg'])==1){
+				$vSQL.= " AND b.`status_kepeg` = ".$_SESSION['tkk']['status_kepeg'][0];
+			}
+			if(isset($_SESSION['tkk']['unit_id']) && is_array($_SESSION['tkk']['unit_id']) && count($_SESSION['tkk']['unit_id'])>1){
+				$vSQL.= " AND ( b.`unit_id` = ".implode(" OR b.unit_id = ", $_SESSION['tkk']['unit_id']).")";
+			}elseif(isset($_SESSION['tkk']['unit_id']) && is_array($_SESSION['tkk']['unit_id']) && count($_SESSION['tkk']['unit_id'])==1){
+				$vSQL.= " AND b.`unit_id` = ".$_SESSION['tkk']['unit_id'][0];
+			}
+			if(isset($_SESSION['tkk']['status']) && is_array($_SESSION['tkk']['status']) && count($_SESSION['tkk']['status'])>1){
+				$vSQL.= " AND ( b.`status` = ".implode(" OR b.status = ", $_SESSION['tkk']['status']).")";
+			}elseif(isset($_SESSION['tkk']['status']) && is_array($_SESSION['tkk']['status']) && count($_SESSION['tkk']['status'])==1){
+				$vSQL.= " AND b.`status` = ".$_SESSION['tkk']['status'][0];
+			}
+			if(isset($_SESSION['tkk']['tahun'])){
+				$vSQL.= " AND a.tahun = ".$_SESSION['tkk']['tahun'];
+			}
+			if(isset($_SESSION['tkk']['bulan'])){
+				$vSQL.= " AND a.bulan = ".$_SESSION['tkk']['bulan'];
+			}
+			// otomatis terpanggil
+			// $sql = "SELECT a.*, b.nama, b.npwp, b.status, d.unit_short FROM kepeg_tr_dgaji a LEFT JOIN kepeg_tb_pegawai b ON a.nip = b.nip LEFT JOIN kepeg_unit d ON b.unit_id = d.id WHERE b.jnspeg = ".$_SESSION['tkk']['jnspeg'].$vSQL." ORDER BY b.unit_id, b.golongan_id DESC";
+			$sql = "SELECT a.id, a.pegid, a.jabid, d.unit_short, a.status, a.nominalg, a.nip, b.nama, c.kelompok_bank, c.nmpemilik, c.norekening 
+							FROM kepeg_tr_dgaji a 
+							LEFT JOIN kepeg_tb_pegawai b ON a.nip = b.nip 
+							LEFT JOIN kepeg_tb_rekening c ON b.id = c.pegawai_id 
+							LEFT JOIN kepeg_unit d ON b.unit_id = d.id 
+							WHERE b.jnspeg = ".$_SESSION['tkk']['jnspeg'].$vSQL." ORDER BY b.unit_id, b.id";
+			// echo $sql; exit;
+			if($this->db->query($sql)->num_rows()){
+				return $this->db->query($sql)->result();
+			}
+			return array();
+		}
+	}
+
 	public function get_data_ipp(){
 		if(isset($_SESSION['ipp'])){
 			$vSQL = "";
@@ -474,7 +572,7 @@ class Cantik_model extends CI_Model {
 			return array();
 		}
 	}
-	
+
 	/*get khusus list IPP*/
 	public function get_unit_ipp(){
 		$str = array();
@@ -485,7 +583,7 @@ class Cantik_model extends CI_Model {
 		}
 		return implode(", ",$str);
 	}
-	
+
 	public function get_status_ipp(){
 		$str = array();
 		if(isset($_SESSION['ipp']['status_kepeg']) && is_array($_SESSION['ipp']['status_kepeg']) && count($_SESSION['ipp']['status_kepeg'])>0){
@@ -495,7 +593,7 @@ class Cantik_model extends CI_Model {
 		}
 		return implode(", ",$str);
 	}
-	
+
 	public function get_status_kerja_ipp(){
 		$str = array();
 		if(isset($_SESSION['ipp']['status']) && is_array($_SESSION['ipp']['status']) && count($_SESSION['ipp']['status'])>0){
@@ -505,7 +603,38 @@ class Cantik_model extends CI_Model {
 		}
 		return implode(", ",$str);
 	}
-	
+
+	/*get khusus list TKK*/
+	public function get_unit_tkk(){
+		$str = array();
+		if(isset($_SESSION['tkk']['unit_id']) && is_array($_SESSION['tkk']['unit_id']) && count($_SESSION['tkk']['unit_id'])>0){
+			foreach($_SESSION['tkk']['unit_id'] as $k => $v){
+				$str[] = $this->getUnitShort($v);
+			}
+		}
+		return implode(", ",$str);
+	}
+
+	public function get_status_tkk(){
+		$str = array();
+		if(isset($_SESSION['tkk']['status_kepeg']) && is_array($_SESSION['tkk']['status_kepeg']) && count($_SESSION['tkk']['status_kepeg'])>0){
+			foreach($_SESSION['tkk']['status_kepeg'] as $k => $v){
+				$str[] = $this->getStatusKepeg($v);
+			}
+		}
+		return implode(", ",$str);
+	}
+
+	public function get_status_kerja_tkk(){
+		$str = array();
+		if(isset($_SESSION['tkk']['status']) && is_array($_SESSION['tkk']['status']) && count($_SESSION['tkk']['status'])>0){
+			foreach($_SESSION['tkk']['status'] as $k => $v){
+				$str[] = $this->getStatus($v);
+			}
+		}
+		return implode(", ",$str);
+	}
+
 	/*get list untuk IKW*/
 	public function get_unit_ikw(){
 		$str = array();
@@ -516,7 +645,7 @@ class Cantik_model extends CI_Model {
 		}
 		return implode(", ",$str);
 	}
-	
+
 	public function get_status_ikw(){
 		$str = array();
 		if(isset($_SESSION['ikw']['status_kepeg']) && is_array($_SESSION['ikw']['status_kepeg']) && count($_SESSION['ikw']['status_kepeg'])>0){
@@ -526,7 +655,7 @@ class Cantik_model extends CI_Model {
 		}
 		return implode(", ",$str);
 	}
-	
+
 	public function get_status_kerja_ikw(){
 		$str = array();
 		if(isset($_SESSION['ikw']['status']) && is_array($_SESSION['ikw']['status']) && count($_SESSION['ikw']['status'])>0){
@@ -536,7 +665,7 @@ class Cantik_model extends CI_Model {
 		}
 		return implode(", ",$str);
 	}
-	
+
 	public function get_unit_rba($kd){
 		if($kd!='99'){
 			/*if(strlen($kd)<=2){
@@ -555,7 +684,7 @@ class Cantik_model extends CI_Model {
 			return array(0=>'Kantor Pusat');
 		}
 	}
-	
+
 	public function get_data_ikw(){
 		if(isset($_SESSION['ikw'])){
 			$vSQL = "";
@@ -581,7 +710,7 @@ class Cantik_model extends CI_Model {
 				$vSQL.= " AND a.bulan = ".$_SESSION['ikw']['bulan'];
 			}
 			// otomatis terpanggil
-			$sql = "SELECT a.*, b.nama, b.npwp, b.status, b.golongan_id, c.*, d.unit, e.jabatan FROM kepeg_tr_ikw a LEFT JOIN kepeg_tb_pegawai b ON a.nip = b.nip LEFT JOIN kepeg_tb_rekening c ON b.id = c.pegawai_id LEFT JOIN kepeg_unit d ON b.unit_id = d.id LEFT JOIN kepeg_tb_jabatan e ON e.id = b.jabatan_id WHERE c.jenisrek = ".$this->rek_tunj." AND b.jnspeg = ".$_SESSION['ikw']['jnspeg'].$vSQL." ORDER BY b.unit_id, b.golongan_id DESC";
+			$sql = "SELECT a.*, b.nama, b.npwp, b.status, b.golongan_id, c.*, d.unit, e.jabatan FROM kepeg_tr_ikw a JOIN kepeg_tb_pegawai b ON a.nip = b.nip JOIN kepeg_tb_rekening c ON b.id = c.pegawai_id JOIN kepeg_unit d ON b.unit_id = d.id JOIN kepeg_tb_jabatan e ON e.id = b.jabatan_id WHERE c.jenisrek = ".$this->rek_tunj." AND b.jnspeg = ".$_SESSION['ikw']['jnspeg'].$vSQL." ORDER BY b.unit_id, b.golongan_id DESC, b.nip";
 			// echo $sql; exit;
 			if($this->db->query($sql)->num_rows()){
 				return $this->db->query($sql)->result();
@@ -589,7 +718,7 @@ class Cantik_model extends CI_Model {
 			return array();
 		}
 	}
-	
+
 	public function getNominalTutam($id,$kel){
 		$sql = "SELECT brutto FROM kepeg_tb_nominaltutam WHERE id = ".$id." AND golongan_id = ".$kel;
 		$hsl = $this->db->query($sql);
@@ -598,14 +727,14 @@ class Cantik_model extends CI_Model {
 		}
 		return 0;
 	}
-	
+
 	public function get_data_pegawai_tutam(){
 		$vSQL = "";
-		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)!='42'){
+		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)!='42' && substr($_SESSION['rsa_kode_unit_subunit'],0,2)!='91'){
 			$unit = $this->cantik_model->get_unit_rba($_SESSION['rsa_kode_unit_subunit']);
 			$vSQL = " AND a.unit_id LIKE '".$unit[0]."'";
 		}
-		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42'){
+		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42' || substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='91'){
 			$vSQL = " AND ( b.tgs_tambahan_id!='43' AND b.tgs_tambahan_id!='44' AND b.tgs_tambahan_id!='45' )";
 		}
 		$sql =	"SELECT a.nama, a.nip, a.golongan_id, a.unit_id, a.status, d.kelompok, b.tgs_tambahan_id, c.tugas_tambahan, b.det_tgs_tambahan, e.nmbank, e.norekening
@@ -620,21 +749,22 @@ class Cantik_model extends CI_Model {
 		$dt = $this->db->query($sql)->result();
 		return $dt;
 	}
-	
+
 	public function get_data_tutam(){
 		$vSQL = "";
-		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)!='42'){
+		if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)!='42' && substr($_SESSION['rsa_kode_unit_subunit'],0,2)!='91'){
 			$unit = $this->cantik_model->get_unit_rba($_SESSION['rsa_kode_unit_subunit']);
 			$vSQL = " AND a.unit_id LIKE '".$unit[0]."'";
 		}
 		// otomatis terpanggil
-		$sql = "SELECT a.*, b.npwp FROM kepeg_tr_tutam a LEFT JOIN kepeg_tb_pegawai b ON a.nip = b.nip WHERE a.tahun LIKE '".$_SESSION['tutam']['tahun']."' AND a.bulan LIKE '".$_SESSION['tutam']['bulan']."'".$vSQL." ORDER BY a.unit_id, a.golongan_id DESC";
+		// $sql = "SELECT a.*, b.npwp FROM kepeg_tr_tutam a LEFT JOIN kepeg_tb_pegawai b ON a.nip = b.nip WHERE a.tahun LIKE '".$_SESSION['tutam']['tahun']."' AND a.bulan LIKE '".$_SESSION['tutam']['bulan']."'".$vSQL." ORDER BY a.unit_id, a.golongan_id DESC";
+		$sql = "SELECT a.*, b.npwp FROM kepeg_tr_tutam a LEFT JOIN kepeg_tb_pegawai b ON a.nip = b.nip WHERE a.tahun LIKE '".$_SESSION['tutam']['tahun']."' AND a.bulan LIKE '".$_SESSION['tutam']['bulan']."'".$vSQL." ORDER BY a.nip";
 		if($this->db->query($sql)->num_rows()){
 			return $this->db->query($sql)->result();
 		}
 		return array();
 	}
-	
+
 	public function get_dosen_rsnd(){
 		$sql = "SELECT * FROM kepeg_tb_pegawai WHERE jnspeg = 1 AND unit_id = 4 AND ( status = 1 OR status = 3 OR status = 6 OR status = 12) AND ( status_kepeg = 1 OR status_kepeg = 3 )";
 		$q = $this->db->query($sql);
@@ -648,7 +778,7 @@ class Cantik_model extends CI_Model {
 		}
 		return "";
 	}
-	
+
 	public function get_jabatan_rsnd(){
 		$sql = "SELECT * FROM kepeg_tb_tutam_rsnd";
 		$q = $this->db->query($sql);
@@ -662,7 +792,7 @@ class Cantik_model extends CI_Model {
 		}
 		return array();
 	}
-	
+
 	public function get_nominal_tutam_rsnd($jab, $gol){
 		$sql = "SELECT nominal FROM kepeg_tb_nominal_tutam_rsnd WHERE id_jabatan = ".intval($jab)." AND id_golongan = ".intval($gol);
 		$q = $this->db->query($sql);
@@ -671,7 +801,7 @@ class Cantik_model extends CI_Model {
 		}
 		return 0;
 	}
-	
+
 	public function get_data_tutam_rsnd(){
 		$vSQL = "";
 		// otomatis terpanggil
@@ -681,7 +811,7 @@ class Cantik_model extends CI_Model {
 		}
 		return array();
 	}
-	
+
 	public function manual_override(){
 		$sql = "SELECT * FROM kepeg_tb_konfig";
 		$q = $this->db->query($sql);
@@ -690,7 +820,7 @@ class Cantik_model extends CI_Model {
 		}
 		return 0;
 	}
-	
+
 	public function get_status_override(){
 		$o = $this->manual_override();
 		if($o->manual_override == 1){
@@ -698,7 +828,7 @@ class Cantik_model extends CI_Model {
 		}
 		return false;
 	}
-	
+
 	public function get_status_upload(){
 		$o = $this->manual_override();
 		if($o->file_upload == 1){
@@ -706,7 +836,7 @@ class Cantik_model extends CI_Model {
 		}
 		return false;
 	}
-	
+
 	public function get_keterangan_override(){
 		$o = $this->manual_override();
 		if(strlen(trim($o->keterangan_override))>0){
@@ -773,7 +903,7 @@ class Cantik_model extends CI_Model {
   }
 
   public function update_rsa_detail_belanja($akun='', $kode='32'){
-  	$sql = "UPDATE rsa_detail_belanja_ SET proses = '".$kode."' WHERE kode_usulan_belanja LIKE '".substr($akun,0,24)."' AND kode_akun_tambah LIKE '".substr($akun,-3)."'";
+  	$sql = "UPDATE rsa_detail_belanja_ SET proses = '".$kode."', tanggal_transaksi = NOW() WHERE kode_usulan_belanja LIKE '".substr($akun,0,24)."' AND kode_akun_tambah LIKE '".substr($akun,-3)."'";
   	$this->db->query($sql);
   }
 
@@ -841,7 +971,7 @@ class Cantik_model extends CI_Model {
     $this->cantik_model->addLSPegLog($id_sppls, 'kepeg_tr_sppls', $dt['jenisSPPLSPeg'], 'SPP dibuat.');
     return $id_sppls;
 	}
-	
+
 	// untuk melihat status yang ada pada SPP dan SPM
 	public function get_status_form($proses=0, $jenis='spp'){
 		$ac = array('', '', '', '', '');
@@ -916,6 +1046,15 @@ class Cantik_model extends CI_Model {
 		}
 	}
 
-	
+	public function get_rekening_by_id($pegawai_id, $jenisrek){
+		$sql = "SELECT nmbank, nmpemilik, norekening FROM kepeg_tb_rekening WHERE pegawai_id = ".$pegawai_id." AND jenisrek = ".$jenisrek;
+		$q = $this->db->query($sql);
+		if($q->num_rows()>0){
+			return $q->row();
+		}
+		return null;
+	}
+
+
 }
 ?>

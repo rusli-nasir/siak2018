@@ -334,6 +334,7 @@ Class Kuitansi_lsphk3 extends CI_Controller {
 					'kode_usulan_belanja' => $kode_usulan_belanja,
 					'kode_akun5digit' => substr($kode_usulan_belanja,18,5),
 					'kode_akun' => substr($kode_usulan_belanja,18,6),
+					'kode_akun_tambah' => $kode_akun_tambah,
 					'jenis' => $this->input->post('jenis'),
 					'no_bukti' => $no_bukti,
 					'uraian' => $this->input->post('uraian'),
@@ -356,8 +357,10 @@ Class Kuitansi_lsphk3 extends CI_Controller {
 					'alamat' => $this->input->post('alamat'),
 					'norekpihak3' => $this->input->post('norekpihak3'),
 					'npwp' => $this->input->post('npwp'),
+					'nmbankphk3' => $this->input->post('nmbankphk3'),
+					'nmrekening' => $this->input->post('nmrekening'),
 				);
-                // print_r($data); exit;
+                 //print_r($data); exit;
 				$id_kuitansi = $this->kuitansi_lsphk3_model->insert_data_kuitansi($data);
 				// echo $id_kuitansi; exit;
 				// kalo lebih dari 1 :

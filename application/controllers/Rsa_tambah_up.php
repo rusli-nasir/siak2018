@@ -1087,7 +1087,7 @@
         //                            var_dump($data);die;
 
                                     if($this->rsa_tambah_up_model->proses_tambah_up($kd_unit,$data)&& $this->rsa_tambah_up_model->proses_data_spp($data_spp)){
-                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM PUP anda berhasil disubmit.</div>');
                                         echo "sukses";
                                     }else{
                                         echo "gagal";
@@ -1210,7 +1210,7 @@
         //                            var_dump($data);die;
 
                                     if($this->rsa_tambah_up_model->proses_tambah_up($kd_unit,$data) && $this->rsa_tambah_up_model->proses_trx_spp_spm($data_spp_spm) && $this->rsa_tambah_up_model->proses_data_spm($data_spm)){
-                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM PUP anda berhasil disubmit.</div>');
                                         echo "sukses";
                                     }else{
                                         echo "gagal";
@@ -1269,7 +1269,7 @@
                         if($ok){
 //                            echo 'jos'; die;
                             if($this->rsa_tambah_up_model->proses_tambah_up($kd_unit,$data)){
-                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM PUP anda berhasil disubmit.</div>');
                                 echo "sukses";
                             }else{
                                 echo "gagal";
@@ -1362,13 +1362,13 @@
                                         'tgl_proses' => date("Y-m-d H:i:s")
                                     );
                                     if($this->rsa_tambah_up_model->proses_verifikator_tambah_up($data_verifikator)){
-                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM PUP anda berhasil disubmit.</div>');
                                         echo "sukses";
                                     }else{
                                         echo "gagal";
                                     }
                                 }else{
-                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM PUP anda berhasil disubmit.</div>');
                                     echo "sukses";
                                 }
                             }else{
@@ -1427,6 +1427,7 @@
                                     'kd_akun_kas' => '112111',
                                     'kd_unit' => $kd_unit,
                                     'deskripsi' => 'PUP UNIT ' . $kd_unit,//$this->input->post('deskripsi'),
+                                    'jenis' => 'PU',
                                     'no_spm' => $this->input->post('nomor_trx'),
                                     'kredit' => '0',
                                     'debet' => $debet,
@@ -1467,7 +1468,7 @@
     //                            var_dump($data_spm_cair);die;
 
                                 if($this->rsa_tambah_up_model->final_tambah_up($kd_unit,$data) && $this->kas_undip_model->isi_trx($data_kas) && $this->rsa_tambah_up_model->spm_cair($data_spm_cair)){
-                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM PUP anda berhasil disubmit.</div>');
                                     echo "sukses";
                                 }else{
                                     echo "gagal";
@@ -1741,6 +1742,24 @@
                     }
                 }
                 
+
+
+                function get_notif_approve(){
+
+                    if($this->check_session->user_session()){
+
+                        $level = $this->check_session->get_level() ;
+
+                        $kode_unit_subunit = $this->check_session->get_unit();
+
+                        $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+
+                        $notif = $this->rsa_tambah_up_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
+
+                        echo $notif ;
+                    }
+
+                }
                 
 		
 	}

@@ -90,7 +90,7 @@ $(document).on("click",".tb-lihat",function(){
                 <div class="row">  
                     <div class="col-lg-12">
                         
-    <form class="form-horizontal alert alert-warning col-sm-8" method="post" id="form_tor" action="<?php echo site_url('rsa_up/daftar_unit');?>">
+    <form class="form-horizontal alert alert-warning col-sm-8" method="post" id="form_tor" action="<?php echo site_url('rsa_lsphk3/daftar_unit_kbuu');?>">
 	 <div class="form-group"  >
 			<label for="input1" class="col-md-4 control-label">Tahun</label>
 			<div class="col-md-8">
@@ -116,8 +116,8 @@ $(document).on("click",".tb-lihat",function(){
                                 <tr >
                                         <th class="col-md-1" >Kode</th>
                                         <th class="col-md-5" >Unit</th>
-                                        <th class="col-md-2" >Jumlah</th>
-                                        <th class="col-md-2" >Tahun</th>
+                                        <th class="col-md-2" >Jumlah SPM</th>
+                                        <th class="col-md-2" ></th>
                                         <th class="col-md-2" style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
@@ -126,7 +126,7 @@ $(document).on("click",".tb-lihat",function(){
                                     <?php if(($u->kode_unit == '41')||($u->kode_unit == '42')||($u->kode_unit == '43')||($u->kode_unit == '44')): ?>
                                             <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                                 <td class=""><b><?=$u->kode_unit?></b></td>
-                                                <td class="text-danger"><b><?=$u->nama_unit?></b></td>
+                                                <td class="text-danger"><b><?php echo get_h_unit($u->kode_unit); ?></b></td>
                                                 <td class="">&nbsp;</td>
                                                 <td style="">&nbsp;</td>
                                                 <td align="center">&nbsp;</td>
@@ -134,8 +134,8 @@ $(document).on("click",".tb-lihat",function(){
                                         <?php foreach($subunit_usul as $ii => $uu){ ?>
                                         <?php if(substr($uu->kode_subunit,0,2) == $u->kode_unit): ?>
                                         <tr rel="<?=$uu->kode_subunit?>" class="tr-unit" height="25px">
-                                            <td class="" style="padding-left: 30px"><b><?=$uu->kode_subunit?></b></td>
-                                            <td class="text-danger" style="padding-left: 30px"><b><?=$uu->nama_subunit?></b></td>
+                                            <td class="" style="padding-left: 30px"><b><?php echo $uu->kode_subunit; ?></b></td>
+                                            <td class="text-danger" style="padding-left: 30px"><b><?php echo get_h_subunit($uu->kode_subunit); ?></b></td>
                                             <td class=""><?=$uu->jumlah?></td>
                                             <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($uu->tgl_proses)?'':strftime("%d %B %Y", strtotime($uu->tgl_proses)); ?></td>
                                             <td align="center">
@@ -151,9 +151,9 @@ $(document).on("click",".tb-lihat",function(){
                                     <?php else: ?>
                                     <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                         <td class=""><b><?=$u->kode_unit?></b></td>
-                                        <td class="text-danger"><b><?=$u->nama_unit?></b></td>
+                                        <td class="text-danger"><b><?php echo get_unit_name($u->kode_unit); ?></b></td>
                                         <td class=""><?=$u->jumlah?></td>
-                                        <td style=""><?=$u->tahun?></td>
+                                        <td style=""></td>
                                         <td align="center">
                                             <?php if($u->jumlah>=1): ?>
                                             <button class="btn btn-warning tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>

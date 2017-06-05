@@ -108,6 +108,7 @@ $i = isset($spm_usul[0])?$spm_usul[0]:'';
                                         <th class="col-md-4" >Nomor SPM</th>
 										<th class="col-md-2" >Posisi</th>
                                         <th class="col-md-2" >TAHUN</th>
+										<th class="col-md-2" >TOTAL HARGA</th>
                                         <th class="col-md-2" style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
@@ -116,10 +117,11 @@ $i = isset($spm_usul[0])?$spm_usul[0]:'';
                                   
                                     <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                         <td class=""><b><?=$u->kode_unit?></b></td>
-                                        <td class="text-danger"><b><?php echo get_h_subunit($u->kode_unit); ?></b></td>
+                                        <td class="text-danger"><b><?php echo get_unit_name($u->kode_unit); ?></b></td>
                                         <td class=""><?=$u->str_nomor_trx;?></td>
                                         <td style=""><?=$u->posisi;?></td>
                                         <td align="center"><?=$u->tahun;?></td>
+										<td align="center"><?=number_format($u->volume*$u->harga_satuan, 0, ",", ".");?></td>
 										<td align="center"><button class="btn btn-warning tb-lihat" rel="<?=$u->id_kuitansi?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button></td>
                                     </tr>
                                        

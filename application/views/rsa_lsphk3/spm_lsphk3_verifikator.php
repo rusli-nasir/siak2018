@@ -91,7 +91,7 @@ $(document).ready(function(){
                 url :"<?=site_url('rsa_lsphk3/proses_spm_lsphk3')?>",
                 data:data,
                 success:function(data){
-//                        console.log(data)
+                        console.log(data)
 //                        $('#no_bukti').html(data);
 //                        $('#myModalKuitansi').modal('show');
                         if(data=='sukses'){
@@ -105,7 +105,7 @@ $(document).ready(function(){
     
     $(document).on("click",'#tolak_spm_kpa',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPM-DITOLAK-VERIFIKATOR' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val() + '&kd_unit=' + '<?=$kd_unit?>' + '&tahun=' + '<?=$cur_tahun?>';
+            var data = 'proses=' + 'SPM-DITOLAK-VERIFIKATOR' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val() + '&kd_unit=' + '<?=$kd_unit?>' + '&tahun=' + '<?=$cur_tahun?>'+ '&kuitansi_id=' + $('#kuitansi_id').html();
             $.ajax({
                 type:"POST",
                 url :"<?=site_url('rsa_lsphk3/proses_spm_lsphk3')?>",
@@ -860,7 +860,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?php echo isset($detail_lsphk3['nom'])?number_format($detail_lsphk3['nom'], 0, ",", "."):''; ?></span>,-<br>
                                                 &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?></span></b>)</li>
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=isset($detail_pic_spm->untuk_bayar)?$detail_pic_spm->untuk_bayar:''?></span></li>
-                                                <li>Nama Pihak Ketiga : <span id="penerima"><?=$u->nama_rekanan?></span></li>
+                                                <li>Nama Pihak Ketiga : <span id="penerima"><?=isset($detail_pic_spm->penerima)?$detail_pic_spm->penerima:''?></span></li>
                                                 <li>Alamat : <span id="alamat"><?=$u->alamat_rekanan?></span></li>
                                                 <li>Nama Bank : <span id="nmbank"><?=$u->bank_rekanan?></span></li>
                                                 <li>No. Rekening Bank : <span id="rekening"><?=$u->rekening_rekanan?></span></li>
@@ -1061,7 +1061,15 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
                                 <td  style="line-height: 16px;border-left: none;border-top:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-                                    Kuasa Pengguna Anggaran<br>
+                                    <?php 
+									if($unit_id==91){
+									?>
+									Pejabat Penandatangan SPM
+									<?php }else{
+										?>
+									
+										Kuasa Pengguna Anggaran
+									<?php }?><br>
                                                                         <br>
                                                                         <br>
                                                                         <br>
@@ -1407,7 +1415,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
 <img id="status_spp" style="display: none" src="<?php echo base_url(); ?>/assets/img/verified.png" width="150">
 
 <!-- Modal -->
-<div class="modal" id="myModalTolakSPP" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="myModalTolakSPMPPK" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1423,7 +1431,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
         </p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="tolak_spp_">Submit</button>
+        <button type="button" class="btn btn-primary" id="tolak_spm_kpa">Submit</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div><!-- /.modal-content -->
@@ -1455,7 +1463,6 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 
 <!-- Modal -->
 <div class="modal" id="myModalKonfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

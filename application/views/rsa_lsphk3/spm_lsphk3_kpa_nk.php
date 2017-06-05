@@ -357,10 +357,12 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
                                                 <li>Nama Pihak ke 3 : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
                                                 <li>Alamat : <span id="alamat_spp"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
-                                                </span></li>
+                                                
+												<li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
+												 <li>Nama rekening : <span id="nmrekening"><?=isset($detail_pic->nmrekening)?$detail_pic->nmrekening:''?></span></li>
                                                 <li>No. Rekening Bank : <span id="rekening_spp"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
                                                 <li>No. NPWP : <span id="npwp_penerima"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li>
-												<li>Sumber Dana : <span id="sumber_dana"><?=$sumber_dana?></span></li>
+												
 												<span id="kuitansi_id" style="visibility: hidden"><?=$detail_pic->idkuitansi?></span>
                                         </ol>
                                     </td>
@@ -923,7 +925,9 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
                                                 <li>Nama Pihak ke 3 : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
                                                 <li>Alamat : <span id="alamat_spp"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
-                                                </span></li>
+                                               
+												<li>Nama Bank : <span id="rekening_spp"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
+												 <li>Nama rekening : <span id="nmrekening"><?=isset($detail_pic->nmrekening)?$detail_pic->nmrekening:''?></span></li>
                                                 <li>No. Rekening Bank : <span id="rekening_spp"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
                                                 <li>No. NPWP : <span id="npwp_penerima"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li>
 												<li>Sumber Dana : <span id="sumber_dana"><?=$sumber_dana?></span></li>
@@ -1122,7 +1126,15 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
                                 <td  style="line-height: 16px;border-left: none;border-top:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-                                    Kuasa Pengguna Anggaran<br>
+                                   <?php 
+									if($unit_id==91){
+									?>
+									Pejabat Penandatangan SPM
+									<?php }else{
+										?>
+									
+										Kuasa Pengguna Anggaran
+									<?php }?><br>
                                                                         <br>
                                                                         <br>
                                                                         <br>
@@ -1154,8 +1166,8 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                         NIP. <span id="nipverifikator"><?php echo isset($detail_verifikator->nomor_induk)? $detail_verifikator->nomor_induk : '' ;?></span><br>
                                     </td>
                                     <td colspan="2" style="vertical-align: top;line-height: 16px;padding-left: 10px;">
-                                        <?php if(isset($detail_spm_up['nom'])){ ?>
-                                            <?php if($detail_spm_up['nom'] >= 100000000){ ?>
+                                        <?php if(isset($detail_spm_lsphk3['nom'])){ ?>
+                                            <?php if($detail_spm_lsphk3['nom'] >= 100000000){ ?>
                                             Setuju dibayar : <br>
                                             Kuasa Bendahara Umum Undip harap membayar<br>
                                             kepada nama yang tersebut sesuai SPM dari KPA<br>

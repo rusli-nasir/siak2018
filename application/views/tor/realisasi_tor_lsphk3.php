@@ -32,6 +32,7 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
 
 	$('.jadikan_spp').on('click',function(e){
 		var el = '';
@@ -46,12 +47,29 @@ $(document).ready(function(){
 	});
 
     autosize($('textarea'));
+	
+	$(document).on("click","#cetak",function(){
 
-    $("#cetak").click(function(){
+    // $("#cetak").click(function(){
+		
+		// console.log('tes');
+		
         var mode = 'iframe'; //popup
         var close = mode == "popup";
         var options = { mode : mode, popClose : close};
         $("#div-cetak").printArea( options );
+    });
+	
+	$(document).on("click","#cetak-2",function(){
+
+    // $("#cetak").click(function(){
+		
+		// console.log('tes');
+		
+        var mode = 'iframe'; //popup
+        var close = mode == "popup";
+        var options = { mode : mode, popClose : close};
+        $("#div-cetak-2").printArea( options );
     });
     
     $('[class^="ck_"]').each(function(){
@@ -1524,7 +1542,7 @@ $(document).ready(function(){
 //            console.log(JSON.stringify(pj_p_persen_all));
 //            console.log(JSON.stringify(pj_p_nilai_all));
 
-                var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + uraian + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + kode_akun_tambah_ + '&penerima_uang=' + penerima_uang + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi #nippppk').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi #nippumk').text()+  '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all)+ '&nmphk3=' + $('#myModalKuitansi #nmphk3').text()+ '&alamat=' + $('#myModalKuitansi #alamat').text()+ '&norekpihak3=' + $('#myModalKuitansi #norekpihak3').text()+ '&npwp=' + $('#myModalKuitansi #npwp').text() ; // '&penerima_uang_nip=' + penerima_uang_nip +
+                var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + uraian + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + kode_akun_tambah_ + '&penerima_uang=' + penerima_uang + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi #nippppk').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi #nippumk').text()+  '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all)+ '&nmphk3=' + $('#myModalKuitansi #nmphk3').text()+ '&alamat=' + $('#myModalKuitansi #alamat').text()+ '&norekpihak3=' + $('#myModalKuitansi #norekpihak3').text()+ '&npwp=' + $('#myModalKuitansi #npwp').text()+ '&nmbankphk3=' + $('#myModalKuitansi #nmbankphk3').text()+ '&nmrekening=' + $('#myModalKuitansi #nmrekening').text(); // '&penerima_uang_nip=' + penerima_uang_nip +
                 $.ajax({
                     type:"POST",
                     url :"<?=site_url("kuitansi_lsphk3/submit_kuitansi2")?>",
@@ -2062,6 +2080,7 @@ $cur_tahun=$tgl['year']+1;
 			<tr>
 				<td colspan="11">
                                     <h4 style="text-align: center"><b>DATA POKOK UNTUK SPP LS PIHAK 3 NON KONTRAK</b></h4>
+								
 				</td>
 			</tr>
                         <tr>
@@ -2107,6 +2126,14 @@ $cur_tahun=$tgl['year']+1;
                 <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="alamat">- edit here -</span></td>
 			</tr>
 			<tr class="tr_up">
+				<td colspan="3">Nama Bank</td>
+                <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="nmbankphk3">- edit here -</span></td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Nama Rekening</td>
+                <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="nmrekening">- edit here -</span></td>
+			</tr>
+			<tr class="tr_up">
 				<td colspan="3">No.Rekening Bank</td>
                                 <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="norekpihak3">- edit here -</span></td>
 			</tr>
@@ -2119,11 +2146,26 @@ $cur_tahun=$tgl['year']+1;
                                 <td colspan="8"><span id="nm_subkomponen_kuitansi">-</span></td>
 			</tr>
 			<tr class="tr_up">
-				<td colspan="3">PPK</td>
+				<td colspan="3">PPPK</td>
                                 <td colspan="8"><span class="edit_here" id="nmpppk" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nm_lengkap']; ?>- edit here -</span><br>
                                     NIP. <span class="edit_here" id="nippppk" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nip'] ; ?>- edit here -</span></td>
 			</tr>
-           
+			<tr class="tr_up">
+				<td colspan="3">Penerima Uang</td>
+                <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="penerima_uang">- edit here -</span></td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">NIP Penerima Uang</td>
+                <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="penerima_uang_nip">- edit here -</span></td>
+			</tr>
+           <tr class="tr_up">
+				<td colspan="3">Penerima Barang</td>
+                <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="penerima_barang">- edit here -</span></td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">NIP Penerima Barang</td>
+                <td colspan="8"><span class="edit_here" contenteditable="true" placeheld="yes" id="penerima_barang_nip">- edit here -</span></td>
+			</tr>
                </tr>
 			  <tr>
 				<td colspan="3">BENDAHARA PENGELUARAN</td>
@@ -3019,7 +3061,7 @@ $cur_tahun=$tgl['year']+1;
               <h4 class="modal-title" id="myModalLabel">Kuitansi : <span id="kode_badge">-</span></h4>
           </div>
           <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
-              <div id="div-cetak">
+              <div id="div-cetak-2">
               <table class="table_print" id="kuitansi" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
                 <tr>
                             <td class="col-md-1">&nbsp;</td>
@@ -3227,7 +3269,7 @@ $cur_tahun=$tgl['year']+1;
 
           <div class="modal-footer">
             <button type="button" class="btn btn-success" id="btn-submit-kuitansi2" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
-            <button type="button" class="btn btn-info" id="cetak" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+            <button type="button" class="btn btn-info" id="cetak-2" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
             <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
           </div>
         </div>
@@ -3304,7 +3346,32 @@ $cur_tahun=$tgl['year']+1;
           </div>
           <div class="modal-body">
             <div class="form-group">
-            <label for="exampleInputEmail1">Pilih PPK :</label>
+            <label for="exampleInputEmail1">Pilih PPPK :</label>
+			<?php if($kode_unit==91){?>
+				<?php if(!empty($allpppk)): ?>
+            <?php foreach($allpppk as $p): ?>
+            <div class="row">
+                
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
+                    </span>
+                      <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
+                      <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
+                      <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                  </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
+               
+            </div>
+             
+            <?php endforeach;?>
+            <?php else: ?>
+            <div class="alert alert-warning">
+                Anda belum mengusulkan pejabat PPPK kepusat.
+            </div>
+            <?php endif; ?>
+			<?php }else{?>
             <?php if(!empty($pppk)): ?>
             <?php foreach($pppk as $p): ?>
             <div class="row">
@@ -3328,6 +3395,7 @@ $cur_tahun=$tgl['year']+1;
                 Anda belum mengusulkan pejabat PPPK kepusat.
             </div>
             <?php endif; ?>
+			<?php } ?>
             </div>
           </div>
            
@@ -3349,8 +3417,9 @@ $cur_tahun=$tgl['year']+1;
           <div class="modal-body">
             <div class="form-group">
             <label for="exampleInputEmail1">Pilih PPK :</label>
-            <?php if(!empty($pppk)): ?>
-            <?php foreach($pppk as $p): ?>
+			<?php if($kode_unit==91){?>
+				<?php if(!empty($allppk)): ?>
+            <?php foreach($allppk as $p): ?>
             <div class="row">
                 
                 <div class="col-md-12">
@@ -3372,6 +3441,31 @@ $cur_tahun=$tgl['year']+1;
                 Anda belum mengusulkan pejabat PPK kepusat.
             </div>
             <?php endif; ?>
+			<?php }else{?>
+            <?php if(!empty($ppk)): ?>
+            <?php foreach($ppk as $p): ?>
+            <div class="row">
+                
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
+                    </span>
+                      <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
+                      <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
+                      <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                  </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
+               
+            </div>
+             
+            <?php endforeach;?>
+            <?php else: ?>
+            <div class="alert alert-warning">
+                Anda belum mengusulkan pejabat PPK kepusat.
+            </div>
+            <?php endif; ?>
+			<?php } ?>
             </div>
           </div>
            

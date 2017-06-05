@@ -38,7 +38,7 @@ function search_rsa_lsphk3($kata_kunci=''){
         
       function get_tgl_spp($kode_unit_subunit,$tahun){
             $q = $this->db->query("SELECT MAX(tgl_proses) AS tgl_proses FROM trx_nomor_lsphk3 WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP'  AND tahun = '{$tahun}'");
-    //           var_dump($q->num_rows());die;
+              //echo ("SELECT MAX(tgl_proses) AS tgl_proses FROM trx_nomor_lsphk3 WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP'  AND tahun = '{$tahun}'");die;
                 if($q->num_rows() > 0){
                    return $q->row()->tgl_proses ;
                 }else{
@@ -396,17 +396,17 @@ function search_rsa_lsphk3($kata_kunci=''){
        foreach($data['array_id'] as $id){
             $str = "SELECT SUM(rsa.rsa_detail_belanja_.volume*rsa.rsa_detail_belanja_.harga_satuan) AS pengeluaran "
                 . "FROM rsa.rsa_kuitansi_lsphk3 "
-                . "JOIN rsa.rsa_kuitansi_detail "
-                . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
+                . "JOIN rsa.rsa_kuitansi_detail_lsphk3 "
+                . "ON rsa.rsa_kuitansi_detail_lsphk3.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
                 . "JOIN rsa.rsa_detail_belanja_ "
-                . "ON rsa.rsa_detail_belanja_.kode_usulan_belanja = rsa.rsa_kuitansi_detail.kode_usulan_belanja "
-                . "AND rsa.rsa_detail_belanja_.kode_akun_tambah = rsa.rsa_kuitansi_detail.kode_akun_tambah "
+                . "ON rsa.rsa_detail_belanja_.kode_usulan_belanja = rsa.rsa_kuitansi_detail_lsphk3.kode_usulan_belanja "
+                . "AND rsa.rsa_detail_belanja_.kode_akun_tambah = rsa.rsa_kuitansi_detail_lsphk3.kode_akun_tambah "
                 . "WHERE rsa.rsa_kuitansi_lsphk3.kode_unit = '{$data['kode_unit_subunit']}' "
                 . "AND rsa.rsa_kuitansi_lsphk3.id_kuitansi = '{$id}' "
                 . "AND rsa.rsa_kuitansi_lsphk3.tahun = '{$data['tahun']}' "
                 . "GROUP BY rsa.rsa_kuitansi_lsphk3.kode_unit";
 
-//            var_dump($str);die;
+          //  var_dump($str);die;
 
             $q = $this->db->query($str);
     //            var_dump($q->num_rows());die;
@@ -586,7 +586,7 @@ function search_rsa_lsphk3($kata_kunci=''){
 
 				$query = "SELECT LEFT(a.kode_unit_subunit,2) AS kode_unit, COUNT(a.posisi) AS jumlah, a.posisi, a.tahun FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3NK'".$str_kode_subunit." GROUP BY a.kode_unit_subunit";
                         
-                    // echo $query; die;
+                    //echo $query; die;
 
                 $q = $this->db->query($query);
 
@@ -652,7 +652,7 @@ function search_rsa_lsphk3($kata_kunci=''){
 		
 		function get_spm_verifikator($kode_unit, $id_user_verifikator, $tahun){
 
-            $query = "SELECT a.kode_unit_subunit AS kode_unit, a.posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3' AND a.kode_unit_subunit LIKE '".$kode_unit."'";
+            $query = "SELECT a.kode_unit_subunit AS kode_unit, a.posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi,d.harga_satuan,d.volume FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 LEFT JOIN rsa_kuitansi_detail_lsphk3 d ON a.id_kuitansi=d.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3' AND a.kode_unit_subunit LIKE '".$kode_unit."'";
             // echo $query; exit;
 
                 $q = $this->db->query($query);
@@ -667,9 +667,8 @@ function search_rsa_lsphk3($kata_kunci=''){
 		//NK
 		function get_spm_verifikator_nk($kode_unit,$id_user_verifikator,$tahun){
             //var_dump($id_user_verifikator);die;
-             $query = "SELECT a.kode_unit_subunit AS kode_unit, a.posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3NK' AND a.kode_unit_subunit LIKE '".$kode_unit."'";
-                        
-                     // echo $query; die;
+             $query = "SELECT a.kode_unit_subunit AS kode_unit, a.posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi,d.harga_satuan,d.volume FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 LEFT JOIN rsa_kuitansi_detail_lsphk3 d ON a.id_kuitansi=d.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3NK' AND a.kode_unit_subunit LIKE '".$kode_unit."' GROUP BY c.str_nomor_trx";     
+                      //echo $query; die;
 
                 $q = $this->db->query($query);
 
@@ -691,14 +690,7 @@ function search_rsa_lsphk3($kata_kunci=''){
         }
 		 function get_lsphk3_unit_usul_kbuu($tahun){
             
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,COUNT(rsa.trx_lsphk3.posisi)AS jumlah,rsa.trx_lsphk3.posisi, rsa.trx_lsphk3.tahun "
-                    . "FROM rba.unit LEFT JOIN rsa.trx_lsphk3 ON rba.unit.kode_unit = rsa.trx_lsphk3.kode_unit_subunit "
-					. "LEFT JOIN rsa.rsa_kuitansi_lsphk3 ON rsa.trx_lsphk3.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
-                    . "WHERE ( rsa.trx_lsphk3.aktif = '1' OR rsa.trx_lsphk3.aktif IS NULL ) "
-                    . "AND ( rsa.trx_lsphk3.tahun = '{$tahun}' OR rsa.trx_lsphk3.tahun IS NULL ) "
-					 . "AND rsa.rsa_kuitansi_lsphk3.jenis='L3'  "
-                    . "GROUP BY rba.unit.kode_unit "
-                    . "ORDER BY rba.unit.kode_unit ASC";
+            $query = "SELECT LEFT(a.kode_unit_subunit,2) AS kode_unit, COUNT(a.posisi) AS jumlah, a.posisi, a.tahun FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3' GROUP BY a.kode_unit_subunit";
                         
 //                        echo $query; die;
 
@@ -714,14 +706,7 @@ function search_rsa_lsphk3($kata_kunci=''){
 		//non kontrak_id 
 		function get_lsphk3_unit_usul_kbuu_nk($tahun){
             
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,COUNT(rsa.trx_lsphk3.posisi)AS jumlah,rsa.trx_lsphk3.posisi, rsa.trx_lsphk3.tahun "
-                    . "FROM rba.unit LEFT JOIN rsa.trx_lsphk3 ON rba.unit.kode_unit = rsa.trx_lsphk3.kode_unit_subunit "
-					. "LEFT JOIN rsa.rsa_kuitansi_lsphk3 ON rsa.trx_lsphk3.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
-                    . "WHERE ( rsa.trx_lsphk3.aktif = '1' OR rsa.trx_lsphk3.aktif IS NULL ) "
-                    . "AND ( rsa.trx_lsphk3.tahun = '{$tahun}' OR rsa.trx_lsphk3.tahun IS NULL ) "
-					 . "AND rsa.rsa_kuitansi_lsphk3.jenis='L3NK'  "
-                    . "GROUP BY rba.unit.kode_unit "
-                    . "ORDER BY rba.unit.kode_unit ASC";
+            $query = "SELECT LEFT(a.kode_unit_subunit,2) AS kode_unit, COUNT(a.posisi) AS jumlah, a.posisi, a.tahun FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3NK' GROUP BY a.kode_unit_subunit";
                         
 //                        echo $query; die;
 
@@ -738,14 +723,7 @@ function search_rsa_lsphk3($kata_kunci=''){
         
         function get_lsphk3_subunit_usul_kbuu($tahun){
             
-            $query = "SELECT rba.subunit.nama_subunit,rba.subunit.kode_subunit,COUNT(rsa.trx_lsphk3.posisi)AS jumlah,rsa.trx_lsphk3.posisi, rsa.trx_lsphk3.tahun "
-                    . "FROM rba.subunit LEFT JOIN rsa.trx_lsphk3 ON rba.subunit.kode_subunit = rsa.trx_lsphk3.kode_unit_subunit "
-					. "LEFT JOIN rsa.rsa_kuitansi_lsphk3 ON rsa.trx_lsphk3.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
-                    . "WHERE ( rsa.trx_lsphk3.aktif = '1' OR rsa.trx_lsphk3.aktif IS NULL ) "
-                    . "AND ( rsa.trx_lsphk3.tahun = '{$tahun}' OR rsa.trx_lsphk3.tahun IS NULL ) "
-					 . "AND rsa.rsa_kuitansi_lsphk3.jenis='L3'  "
-                    . "GROUP BY rba.subunit.kode_subunit "
-                    . "ORDER BY rba.subunit.kode_subunit ASC";
+            $query = "SELECT kode_unit_subunit AS kode_subunit, COUNT(a.posisi) AS jumlah, a.posisi, a.tahun FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3' GROUP BY a.kode_unit_subunit";
                         
 //                        echo $query; die;
 
@@ -760,15 +738,7 @@ function search_rsa_lsphk3($kata_kunci=''){
         }
 		//NON KONTRAK
 		  function get_lsphk3_subunit_usul_kbuu_nk($tahun){
-            
-            $query = "SELECT rba.subunit.nama_subunit,rba.subunit.kode_subunit,COUNT(rsa.trx_lsphk3.posisi)AS jumlah,rsa.trx_lsphk3.posisi, rsa.trx_lsphk3.tahun "
-                    . "FROM rba.subunit LEFT JOIN rsa.trx_lsphk3 ON rba.subunit.kode_subunit = rsa.trx_lsphk3.kode_unit_subunit "
-					. "LEFT JOIN rsa.rsa_kuitansi_lsphk3 ON rsa.trx_lsphk3.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
-                    . "WHERE ( rsa.trx_lsphk3.aktif = '1' OR rsa.trx_lsphk3.aktif IS NULL ) "
-                    . "AND ( rsa.trx_lsphk3.tahun = '{$tahun}' OR rsa.trx_lsphk3.tahun IS NULL ) "
-					 . "AND rsa.rsa_kuitansi_lsphk3.jenis='L3NK'  "
-                    . "GROUP BY rba.subunit.kode_subunit "
-                    . "ORDER BY rba.subunit.kode_subunit ASC";
+            $query = "SELECT kode_unit_subunit AS kode_subunit, COUNT(a.posisi) AS jumlah, a.posisi, a.tahun FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3NK' GROUP BY a.kode_unit_subunit";
                         
 //                        echo $query; die;
 
@@ -784,18 +754,34 @@ function search_rsa_lsphk3($kata_kunci=''){
 		
 	function get_spm_kbuu($kode_unit,$tahun){
             //var_dump($id_user_verifikator);die;
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,rsa.trx_lsphk3.posisi,rsa.trx_lsphk3.posisi, rsa.trx_lsphk3.tahun,rsa.trx_nomor_lsphk3.str_nomor_trx,rsa.trx_lsphk3.id_kuitansi "
-                    . "FROM rba.unit"
-                    . " JOIN rsa_verifikator_unit ON rba.unit.kode_unit = rsa_verifikator_unit.kode_unit_subunit "
-                    . "LEFT JOIN rsa.trx_lsphk3 ON rba.unit.kode_unit = rsa.trx_lsphk3.kode_unit_subunit "
-					. "LEFT JOIN rsa.trx_nomor_lsphk3 ON rsa.trx_lsphk3.id_trx_nomor_lsphk3 = rsa.trx_nomor_lsphk3.id_trx_nomor_lsphk3 "
-					. "LEFT JOIN rsa.rsa_kuitansi_lsphk3 ON rsa.trx_lsphk3.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
-                    . "WHERE ( rsa.trx_lsphk3.aktif = '1' OR rsa.trx_lsphk3.aktif IS NULL ) "
-					 . "AND rsa.trx_lsphk3.kode_unit_subunit = '{$kode_unit}' "
-                    . "AND rsa.trx_lsphk3.tahun = '{$tahun}' "
-					. "AND rsa.rsa_kuitansi_lsphk3.jenis = 'L3' "
-                    //. "GROUP BY rba.unit.kode_unit "
-                    . "ORDER BY rba.unit.kode_unit ASC";
+            $query = "SELECT a.kode_unit_subunit AS kode_unit, a.posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi,d.harga_satuan,d.volume FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 LEFT JOIN rsa_kuitansi_detail_lsphk3 d ON a.id_kuitansi=d.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3' AND a.kode_unit_subunit LIKE '".$kode_unit."'";
+                        
+                    // echo $query; die;
+
+                $q = $this->db->query($query);
+
+		$result = $q->result();
+                
+//                var_dump($result);die;
+
+		return $result ;
+            
+        }
+		function get_subunit_spm_kbuu($kode_unit,$tahun){
+            //var_dump($id_user_verifikator);die;
+            $query = "SELECT a.kode_unit_subunit AS kode_subunit, a.posisi AS posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3' AND a.kode_unit_subunit LIKE '".$kode_unit."'";
+            $q = $this->db->query($query);
+
+		$result = $q->result();
+                
+//                var_dump($result);die;
+
+		return $result ;
+            
+        }
+		function get_spm_kbuu_nk($kode_unit,$tahun){
+            //var_dump($id_user_verifikator);die;
+            $query = "SELECT a.kode_unit_subunit AS kode_unit, a.posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi,d.harga_satuan,d.volume FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 LEFT JOIN rsa_kuitansi_detail_lsphk3 d ON a.id_kuitansi=d.id_kuitansi WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3NK' AND a.kode_unit_subunit LIKE '".$kode_unit."'";
                         
                      // echo $query; die;
 
@@ -808,24 +794,10 @@ function search_rsa_lsphk3($kata_kunci=''){
 		return $result ;
             
         }
-		function get_spm_kbuu_nk($kode_unit,$tahun){
+		function get_subunit_spm_kbuu_nk($kode_unit,$tahun){
             //var_dump($id_user_verifikator);die;
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,rsa.trx_lsphk3.posisi,rsa.trx_lsphk3.posisi, rsa.trx_lsphk3.tahun,rsa.trx_nomor_lsphk3.str_nomor_trx,rsa.trx_lsphk3.id_kuitansi "
-                    . "FROM rba.unit"
-                    . " JOIN rsa_verifikator_unit ON rba.unit.kode_unit = rsa_verifikator_unit.kode_unit_subunit "
-                    . "LEFT JOIN rsa.trx_lsphk3 ON rba.unit.kode_unit = rsa.trx_lsphk3.kode_unit_subunit "
-					. "LEFT JOIN rsa.trx_nomor_lsphk3 ON rsa.trx_lsphk3.id_trx_nomor_lsphk3 = rsa.trx_nomor_lsphk3.id_trx_nomor_lsphk3 "
-						. "LEFT JOIN rsa.rsa_kuitansi_lsphk3 ON rsa.trx_lsphk3.id_kuitansi = rsa.rsa_kuitansi_lsphk3.id_kuitansi "
-                    . "WHERE ( rsa.trx_lsphk3.aktif = '1' OR rsa.trx_lsphk3.aktif IS NULL ) "
-					 . "AND rsa.trx_lsphk3.kode_unit_subunit = '{$kode_unit}' "
-                    . "AND rsa.trx_lsphk3.tahun = '{$tahun}' "
-					. "AND rsa.rsa_kuitansi_lsphk3.jenis = 'L3NK' "
-                    //. "GROUP BY rba.unit.kode_unit "
-                    . "ORDER BY rba.unit.kode_unit ASC";
-                        
-                     // echo $query; die;
-
-                $q = $this->db->query($query);
+            $query = "SELECT a.kode_unit_subunit AS kode_subunit, a.posisi AS posisi, a.tahun, c.str_nomor_trx, a.id_kuitansi FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi LEFT JOIN trx_nomor_lsphk3 c ON a.id_trx_nomor_lsphk3 = c.id_trx_nomor_lsphk3 WHERE (a.aktif = '1' OR a.aktif IS NULL) AND (a.tahun LIKE '{$tahun}' OR a.tahun IS NULL) AND b.jenis LIKE 'L3NK' AND a.kode_unit_subunit LIKE '".$kode_unit."'";
+            $q = $this->db->query($query);
 
 		$result = $q->result();
                 

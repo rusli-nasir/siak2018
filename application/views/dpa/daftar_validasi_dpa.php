@@ -16,6 +16,15 @@ $(document).ready(function(){
                 $("#div_sub_subunit").hide();
                 $("#div_subunit").hide();
 	});
+
+    $('#sumber_dana').val('<?=$sumber_dana?>');
+
+
+    $('#tb-empty').hide(function(){
+                $('#tb-isi').show(function(){
+                    get_unit_dpa();
+                });
+            });
         
 });
 
@@ -260,7 +269,7 @@ $(document).on("change","#unit",function(){
                                         <th class="col-md-3" >Unit</th>
                                         <th class="col-md-2" >&nbsp;</th>
                                         <th class="col-md-2" >RKAT</th>
-                                        <th class="col-md-2" >DPA</th>
+                                        <th class="col-md-2" >RSA</th>
                                         <th class="col-md-2" style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
@@ -273,7 +282,7 @@ $(document).on("change","#unit",function(){
                                         <td style="text-align: right" class="rsa">&nbsp;</td>
                                         <td style="text-align: right" class="dpa">&nbsp;</td>
                                         <td align="center">
-                                            <buttton type="button" class="btn btn-warning tb-lihat" rel="<?=$u->kode_unit?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</buttton>
+                                            <buttton type="button" class="btn btn-danger tb-lihat btn-sm" rel="<?=$u->kode_unit?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</buttton>
                                         </td>
                                     </tr>
                                     

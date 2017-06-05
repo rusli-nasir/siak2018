@@ -93,16 +93,26 @@ $(document).ready(function(){
   <label class="col-md-2 control-label" for="unit_kerja">Unit Kerja</label>  
   <div class="col-md-4">
   <!-- <input id="unit_kerja" name="unit_kerja" type="text" placeholder="Unit Kerja" class="form-control input-md" required=""> -->
-      <select id="unit_kerja" name="unit_kerja" class="form-control" required="">
-        <option value="">Pilih Unit</option>
-        <?php foreach ($all_unit_kerja as $unit) {
+      <?php if($this->session->userdata('level')==1 or $this->session->userdata('level')==2){ ?>
+          <?php foreach($all_unit_kerja as $unit){
+            if($unit['kode_unit']==$this->session->userdata('kode_unit')){
+              $nama_unit = $unit['nama_unit'];
+            }
+          }
           ?>
-          <option value="<?=$unit['kode_unit']?>"><?=$unit['kode_unit'].' - '.$unit['nama_unit']?></option>
-          <?php
-        }
-        ?>
-      </select>
-    
+          <input type="hidden" class="form-control" name="unit_kerja" value="<?php echo $this->session->userdata('kode_unit') ?>">
+          <input type="text" class="form-control" value="<?php echo $nama_unit; ?>" readonly>
+          <?php }else{ ?>
+          <select id="unit_kerja" name="unit_kerja" class="form-control" required="">
+            <option value="">Pilih Unit</option>
+            <?php foreach ($all_unit_kerja as $unit) {
+              ?>
+              <option value="<?=$unit['kode_unit']?>"><?=$unit['kode_unit'].' - '.$unit['nama_unit']?></option>
+              <?php
+            }
+            ?>
+          </select>
+          <?php } ?>    
   </div>
 </div>
 

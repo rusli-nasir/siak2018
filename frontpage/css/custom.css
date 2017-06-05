@@ -269,6 +269,10 @@ background-color: #333333;
     background-color: #ffbd29;
 }
 
+.badge-ln {
+    background-color: #ff6229;
+}
+
 .square-up {
     background-color: #fbd7d7;
 }
@@ -454,4 +458,49 @@ tr.tr_up > td{
 }
 .progress-round .circle.active .title {
   color: #0c95be;
+}
+
+
+#myCarousel{
+  padding-top: 10px;
+  padding-bottom: 100px;
+
+}
+#myCarouselSPM {
+    padding-top: 10px;
+    padding-bottom: 100px;
+}
+#myCarouselLampiran {
+    padding-top: 10px;
+    padding-bottom: 100px;
+}
+.carousel-indicators {
+    bottom: 8px;
+}
+.carousel-indicators li {
+  width: 50px;
+  height: 50px;
+  border-radius: 0px; 
+  background-color: #CCC;
+  text-indent: 0px;
+  padding-top: 8px;
+  border: 3px #FFF solid;
+}
+.carousel-indicators .active {
+    width: 50px;
+    height: 50px;
+    border: 3px #CCC solid;
+}
+
+.bootbox .modal-dialog .modal-content .modal-footer button {
+    float:right;
+    margin-left: 10px;
+}
+.bg-notif{
+    position: absolute;
+    top: 0px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    padding-top: 8.5px;
 }

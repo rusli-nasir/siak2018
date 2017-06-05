@@ -9,7 +9,7 @@
                     </li>
                     
                     <li>
-                        <a href="<?php echo base_url(); ?>index.php/dpa/index" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
+                        <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa/SELAIN-APBN" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
                     </li>
 
                     <?php elseif($this->check_session->get_level() == 2): // KPA?>
@@ -17,7 +17,9 @@
                     <li>
                         <a href="<?php echo base_url(); ?>index.php/dashboard" ><i class="fa fa-desktop "></i>Dashboard <!-- <span class="badge">Included</span> --></a>
                     </li>
-                    
+                    <li>
+                        <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_rsa_kpa/SELAIN-APBN" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
+                    </li>
 
 
 
@@ -27,7 +29,7 @@
                         <a href="<?php echo base_url(); ?>index.php/dashboard" ><i class="fa fa-desktop "></i>Dashboard <!-- <span class="badge">Included</span> --></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>index.php/dpa/index" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
+                        <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_dpa/SELAIN-APBN" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
                     </li>
                     
                     <?php elseif($this->check_session->get_level() == 4): // PUMK?>
@@ -36,7 +38,7 @@
                         <a href="<?php echo base_url(); ?>index.php/dashboard" ><i class="fa fa-desktop "></i>Dashboard <!-- <span class="badge">Included</span> --></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>index.php/dpa/index" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
+                        <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa/SELAIN-APBN" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
                     </li>
 
                     <?php elseif($this->check_session->get_level() == 5): // BUU?>
@@ -51,9 +53,9 @@
                     <li>
                         <a href="<?php echo base_url(); ?>index.php/dashboard" ><i class="fa fa-desktop "></i>Dashboard <!-- <span class="badge">Included</span> --></a>
                     </li>
-<!--                    <li>
-                        <a href="<?php echo base_url(); ?>index.php/dpa/index" ><i class="fa fa-cubes"></i>Kelola DPA  <span class="badge">Included</span> </a>
-                    </li>-->
+                    <li>
+                        <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_dpa_kbuu/SELAIN-APBN" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
+                    </li>
 					 <li>
                         <a href="<?php echo base_url(); ?>index.php/setting/tahun" ><i class="fa fa-circle "></i>Setting Tahun </a>
                     </li>
@@ -67,7 +69,7 @@
                         <a href="<?php echo base_url(); ?>index.php/dashboard" ><i class="fa fa-desktop "></i>Dashboard <!-- <span class="badge">Included</span> --></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>index.php/dpa/index" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
+                        <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa/SELAIN-APBN" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
                     </li>
                     
 <!--                    <li>
@@ -89,7 +91,7 @@
                         <a href="<?php echo base_url(); ?>index.php/dashboard" ><i class="fa fa-desktop "></i>Dashboard <!-- <span class="badge">Included</span> --></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>index.php/dpa/index" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
+                        <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_rsa_ppk/SELAIN-APBN" ><i class="fa fa-cubes"></i>Kelola DPA <!-- <span class="badge">Included</span> --></a>
                     </li>
 
                     <?php endif; ?>

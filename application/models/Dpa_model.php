@@ -36,7 +36,9 @@ class Dpa_model extends CI_Model {
         
         // function get_dpa_unit_usul_verifikator($sumber_dana,$id_user_verifikator,$tahun){
         function get_dpa_unit_usul_verifikator($id_user_verifikator){
+            
             $rba = $this->load->database('rba', TRUE);
+
             $query1 = "SELECT unit.nama_unit,unit.kode_unit "
                     . "FROM detail_belanja_ "
                     . "JOIN rba.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba.unit.kode_unit "
@@ -412,7 +414,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                         . "FROM rsa_detail_belanja_ "
 //                        . "JOIN rba.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba.unit.kode_unit "
                         . "WHERE LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' AND rsa_detail_belanja_.impor = '{$impor}' "
-                        . "AND LEFT(rsa_detail_belanja_.proses,1) = '3' "
+                        . "AND LEFT(rsa_detail_belanja_.proses,1) = '6' "
                         . "GROUP BY LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) ";
 
                 $q = $this->db->query($query);
@@ -454,58 +456,141 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 // echo $query2 ; die;
 //                $q = $this->db->query($query);
                         
-                $q = $rba->query($query2);
+        $q = $rba->query($query2);
 
 		$result = $q->result();
 
-		return $result ;
+        $r = array();
 
-        }
-        
-        function get_dpa_program_usul_to_validate_ppk($unit,$sumber_dana,$tahun){
-//                $rba = $this->load->database('rba', TRUE);
-                $lenunit = strlen($unit);
-                $query = "SELECT LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) AS k_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(rsa_detail_belanja_.volume*rsa_detail_belanja_.harga_satuan) AS jumlah_tot,COUNT(rsa_detail_belanja_.proses) as jml_proses "
-                        . "FROM rsa_detail_belanja_ "
-                        . "JOIN rba.program ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
-                        . "WHERE SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' AND LEFT(rsa_detail_belanja_.proses,1) = '1' "
-                        . "GROUP BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) "
-                        . "ORDER BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) ASC";
-						
-						
-						// echo $query; die;
+        foreach($result as $res){
+            $r1 = array() ;
 
-                $q= $this->db->query($query);
+            $r1['k_unit'] = $res->k_unit ;
+            $r1['kode_rka'] = $res->kode_rka ;
+            $r1['nama_program'] = $res->nama_program ;
+            $r1['nama_komponen'] = $res->nama_komponen ;
+            $r1['nama_subkomponen'] = $res->nama_subkomponen ;
+            $r1['jumlah_tot'] = $res->jumlah_tot ;
+            $r1['jumlah_rsa'] = $this->get_rsa_by_rka(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun) ;
 
-		$result = $q->result();
-
-		return $result ;
-
-
-
+            $r[] = (object)$r1 ;
         }
 
-        function get_dpa_program_usul_to_validate($unit,$sumber_dana,$tahun){
-//                $rba = $this->load->database('rba', TRUE);
-
-                $query = "SELECT LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) AS k_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(rsa_detail_belanja_.volume*rsa_detail_belanja_.harga_satuan) AS jumlah_tot,COUNT(rsa_detail_belanja_.proses) as jml_proses "
-                        . "FROM rsa_detail_belanja_ "
-                        . "JOIN rba.program ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
-                        . "WHERE LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' AND LEFT(rsa_detail_belanja_.proses,1) = '2' "
-                        . "GROUP BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) "
-                        . "ORDER BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) ASC";
-
-                $q= $this->db->query($query);
-
-		$result = $q->result();
-
-		return $result ;
 
 
+        // echo '<pre>' ;
+        // var_dump((object)$r) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+		// return $result ;
+        return (object)$r ;
+
+        }
+
+        function get_notif_dpa($unit,$tahun,$proses){
+            $lenunit = strlen($unit) ;
+
+            $query = "SELECT COUNT(det1.proses) AS jml FROM rsa_detail_belanja_  AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$proses}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit})  ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) " ;
+
+
+            // echo $query; die;
+
+
+            $q= $this->db->query($query);
+
+            if($q->num_rows() > 0){
+                return $q->row()->jml ;
+            }else{
+                return 0 ;
+            }
+
+        }
+
+        function get_notif_dpa_siap($unit,$tahun,$jenis){
+
+            $lenunit = strlen($unit) ;
+
+            $jml_dpa = 0 ;
+
+            $query1 = "SELECT COUNT(det1.proses) AS jml FROM rsa_detail_belanja_  AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '3'  AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit})  ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) " ;
+
+            $query = "SELECT COUNT(det1.proses) AS jml FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '3' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) ) AND (det1.kode_usulan_belanja,det1.kode_akun_tambah) NOT IN ( SELECT rsa_kuitansi_detail.kode_usulan_belanja,rsa_kuitansi_detail.kode_akun_tambah FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi_detail.id_kuitansi = rsa_kuitansi.id_kuitansi  WHERE SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa_kuitansi_detail.tahun = '{$tahun}' AND rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' )" ;
+
+
+            // echo $query; die;
+
+
+            $q= $this->db->query($query);
+
+            if($q->num_rows() > 0){
+                $jml_dpa = $q->row()->jml ;
+            }
+
+            return $jml_dpa ; 
+
+        }
+
+
+        function get_notif_dpa_kuitansi($unit,$tahun,$jenis){
+
+            $lenunit = strlen($unit) ;
+
+            $jml_dpa = 0 ;
+
+            $jenis_txt = 'GP' ;
+
+            if($jenis == '1'){
+                $jenis_txt = 'GP' ;
+
+            }elseif($jenis == '3'){
+                $jenis_txt = 'TP' ;
+
+            }
+
+
+            $query = "SELECT COUNT(rsa_kuitansi.aktif) AS jml FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi WHERE rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' AND SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa_kuitansi.tahun = '{$tahun}' AND rsa_kuitansi.jenis = '{$jenis_txt}' GROUP BY SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) " ;
+
+            // echo $query ; die;
+
+            $q= $this->db->query($query);
+
+            if($q->num_rows() > 0){
+                $jml_dpa = $q->row()->jml ;
+            }
+
+            return $jml_dpa ; 
+
+        }
+
+        function get_notif_dpa_kuitansi_by_rka($unit,$kode,$sumber_dana,$tahun,$jenis){
+
+            $lenunit = strlen($unit) ;
+
+            $jml_dpa = 0 ;
+
+            $jenis_txt = 'GP' ;
+
+            if($jenis == '1'){
+                $jenis_txt = 'GP' ;
+
+            }elseif($jenis == '3'){
+                $jenis_txt = 'TP' ;
+
+            }
+
+
+            $query = "SELECT COUNT(rsa_kuitansi.aktif) AS jml FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi WHERE rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' AND SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,7,10) = '{$kode}' AND SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa_kuitansi_detail.sumber_dana = '{$sumber_dana}' AND rsa_kuitansi.tahun = '{$tahun}' AND rsa_kuitansi.jenis = '{$jenis_txt}' GROUP BY SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) " ;
+
+            // echo $query ; die;
+
+            $q= $this->db->query($query);
+
+            if($q->num_rows() > 0){
+                $jml_dpa = $q->row()->jml ;
+            }
+
+            return $jml_dpa ; 
 
         }
 
@@ -523,11 +608,258 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
                 $q= $this->db->query($query);
 
-		$result = $q->result();
+        $result = $q->result();
 
-		return $result ;
+        return $result ;
 
         }
+        
+        function get_dpa_program_usul_to_validate_ppk($unit,$sumber_dana,$tahun){
+//                $rba = $this->load->database('rba', TRUE);
+
+                $rba = $this->load->database('rba', TRUE);
+                
+                $lenkd = strlen($unit);
+
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba.detail_belanja_ AS det1 "
+                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
+                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
+                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                        . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
+                        . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
+                        . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
+						
+						// echo $query; die;
+
+                $q= $this->db->query($query2);
+
+		$result = $q->result();
+
+        // echo '<pre>' ;
+        // var_dump($result) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        $r = array();
+
+        foreach($result as $res){
+            $r1 = array() ;
+
+            $r1['k_unit'] = $res->k_unit ;
+            $r1['kode_rka'] = $res->kode_rka ;
+            $r1['nama_program'] = $res->nama_program ;
+            $r1['nama_komponen'] = $res->nama_komponen ;
+            $r1['nama_subkomponen'] = $res->nama_subkomponen ;
+            $r1['jumlah_tot'] = $res->jumlah_tot ;
+            $r1['jumlah_rsa'] = $this->get_rsa_by_rka(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun) ;
+            $r1['jml_proses'] = $this->get_jml_proses(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun,'1') ;
+
+            $r[] = (object)$r1 ;
+        }
+
+
+
+        // echo '<pre>' ;
+        // var_dump((object)$r) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        // return $result ;
+        return (object)$r ;
+
+
+
+        }
+
+        function get_dpa_program_usul_to_validate_kpa($unit,$sumber_dana,$tahun){
+//                $rba = $this->load->database('rba', TRUE);
+
+                $rba = $this->load->database('rba', TRUE);
+                
+                $lenkd = strlen($unit);
+
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba.detail_belanja_ AS det1 "
+                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
+                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
+                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                        . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
+                        . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
+                        . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
+                        
+                        // echo $query; die;
+
+                $q= $this->db->query($query2);
+
+        $result = $q->result();
+
+        // echo '<pre>' ;
+        // var_dump($result) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        $r = array();
+
+        foreach($result as $res){
+            $r1 = array() ;
+
+            $r1['k_unit'] = $res->k_unit ;
+            $r1['kode_rka'] = $res->kode_rka ;
+            $r1['nama_program'] = $res->nama_program ;
+            $r1['nama_komponen'] = $res->nama_komponen ;
+            $r1['nama_subkomponen'] = $res->nama_subkomponen ;
+            $r1['jumlah_tot'] = $res->jumlah_tot ;
+            $r1['jumlah_rsa'] = $this->get_rsa_by_rka(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun) ;
+            $r1['jml_proses'] = $this->get_jml_proses(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun,'1') ;
+
+            $r[] = (object)$r1 ;
+        }
+
+
+
+        // echo '<pre>' ;
+        // var_dump((object)$r) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        // return $result ;
+        return (object)$r ;
+
+
+
+        }
+
+        function get_dpa_program_usul_to_validate($unit,$sumber_dana,$tahun){
+//                $rba = $this->load->database('rba', TRUE);
+
+                $rba = $this->load->database('rba', TRUE);
+                
+                $lenkd = strlen($unit);
+
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba.detail_belanja_ AS det1 "
+                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
+                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
+                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                        . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
+                        . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
+                        . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
+
+                $q= $this->db->query($query2);
+
+		$result = $q->result();
+
+        // echo '<pre>' ;
+        // var_dump($result) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        $r = array();
+
+        foreach($result as $res){
+            $r1 = array() ;
+
+            $r1['k_unit'] = $res->k_unit ;
+            $r1['kode_rka'] = $res->kode_rka ;
+            $r1['nama_program'] = $res->nama_program ;
+            $r1['nama_komponen'] = $res->nama_komponen ;
+            $r1['nama_subkomponen'] = $res->nama_subkomponen ;
+            $r1['jumlah_tot'] = $res->jumlah_tot ;
+            $r1['jumlah_rsa'] = $this->get_rsa_by_rka(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun) ;
+            $r1['jml_proses'] = $this->get_jml_proses(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun,'2') ;
+
+            $r[] = (object)$r1 ;
+        }
+
+
+
+        // echo '<pre>' ;
+        // var_dump((object)$r) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        // return $result ;
+        return (object)$r ;
+
+
+
+        }
+
+        function get_dpa_program_usul_to_validate_siap($unit,$sumber_dana,$tahun,$jenis){
+//                $rba = $this->load->database('rba', TRUE);
+
+                $rba = $this->load->database('rba', TRUE);
+                
+                $lenkd = strlen($unit);
+
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba.detail_belanja_ AS det1 "
+                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
+                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
+                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                        . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
+                        . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
+                        . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
+                        
+                        // echo $query; die;
+
+                $q= $this->db->query($query2);
+
+        $result = $q->result();
+
+        // echo '<pre>' ;
+        // var_dump($result) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        $r = array();
+
+        foreach($result as $res){
+            $r1 = array() ;
+
+            $r1['k_unit'] = $res->k_unit ;
+            $r1['kode_rka'] = $res->kode_rka ;
+            $r1['nama_program'] = $res->nama_program ;
+            $r1['nama_komponen'] = $res->nama_komponen ;
+            $r1['nama_subkomponen'] = $res->nama_subkomponen ;
+            $r1['jumlah_tot'] = $res->jumlah_tot ;
+            $r1['jumlah_rsa'] = $this->get_rsa_by_rka(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun) ;
+            if(($jenis == '1') || ($jenis == '3')){ // GUP , TUP
+                $dpa_siap = $this->get_jml_proses_by_jenis(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun,'3',$jenis) ;  
+                // $dpa_kuitansi =   $this->get_notif_dpa_kuitansi_by_rka(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun,$jenis) ; 
+                $r1['jml_proses'] =   $dpa_siap  ;
+            }else{
+                $r1['jml_proses'] = $this->get_jml_proses_by_jenis(substr($unit,0,$lenkd),$res->kode_rka,$sumber_dana,$tahun,'3',$jenis) ;
+            }
+            
+
+            $r[] = (object)$r1 ;
+        }
+
+
+
+        // echo '<pre>' ;
+        // var_dump((object)$r) ; 
+        // echo '</pre>' ; 
+        // die ;
+
+        // return $result ;
+        return (object)$r ;
+
+
+
+        }
+
+        
 
         function get_dpa_tujuan_usul($unit,$sumber_dana,$tahun){
                 $rba = $this->load->database('rba', TRUE);
@@ -751,17 +1083,17 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
         function get_pagu_rkat($kode_unit_subunit,$tahun,$jenis){
 			$rba = $this->load->database('rba', TRUE);
 			$rba->where('kode_unit_subunit',$kode_unit_subunit);
-                        $rba->where('tahun',$tahun);
-                        $q = $rba->get('platform');
-                        if($jenis == 'SELAIN-APBN'){
-                            return $q->row()->jumlah ;
-                        }elseif($jenis == 'APBN-BPPTNBH'){
-                            return $q->row()->rm ;
-                        }elseif($jenis == 'APBN-LAINNYA'){
-                            return $q->row()->apbn_lainnya ;
-                        }else{
-                            return 0;
-                        }
+            $rba->where('tahun',$tahun);
+            $q = $rba->get('platform');
+            if($jenis == 'SELAIN-APBN'){
+                return $q->row()->jumlah ;
+            }elseif($jenis == 'APBN-BPPTNBH'){
+                return $q->row()->rm ;
+            }elseif($jenis == 'APBN-LAINNYA'){
+                return $q->row()->apbn_lainnya ;
+            }else{
+                return 0;
+            }
 		}
 
 
@@ -769,19 +1101,131 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             // $rba = $this->load->database('rba', TRUE);
 
-            $str1 = "(SELECT rba.detail_belanja_.kode_usulan_belanja FROM rba.detail_belanja_ WHERE rba.detail_belanja_.sumber_dana = 'SELAIN-APBN' GROUP BY rba.detail_belanja_.kode_usulan_belanja) UNION DISTINCT (SELECT rsa.rsa_detail_belanja_.kode_usulan_belanja FROM rsa.rsa_detail_belanja_ WHERE rsa.rsa_detail_belanja_.sumber_dana = 'SELAIN-APBN' AND GROUP BY rsa.rsa_detail_belanja_.kode_usulan_belanja) ORDER BY kode_usulan_belanja ASC" ;
+            // $str1 = "(SELECT rba.detail_belanja_.kode_usulan_belanja FROM rba.detail_belanja_ WHERE rba.detail_belanja_.sumber_dana = 'SELAIN-APBN' GROUP BY rba.detail_belanja_.kode_usulan_belanja) UNION DISTINCT (SELECT rsa.rsa_detail_belanja_.kode_usulan_belanja FROM rsa.rsa_detail_belanja_ WHERE rsa.rsa_detail_belanja_.sumber_dana = 'SELAIN-APBN' AND GROUP BY rsa.rsa_detail_belanja_.kode_usulan_belanja) ORDER BY kode_usulan_belanja ASC" ;
 
-            $str = "SELECT rba_demo.detail_belanja_.kode_usulan_belanja FROM rba_demo.detail_belanja_ WHERE rba_demo.detail_belanja_.sumber_dana = 'SELAIN-APBN' GROUP BY rba_demo.detail_belanja_.kode_usulan_belanja ORDER BY rba_demo.detail_belanja_.kode_usulan_belanja ASC" ;
+            $rba = $this->load->database('rba', TRUE);
 
-            $query = $this->db->query($str);
+            $query = "SELECT rba.unit.kode_unit FROM rba.unit GROUP BY rba.unit.kode_unit ORDER BY rba.unit.kode_unit" ; 
 
-            $r1 = $query->result_array() ;
+            $q = $rba->query($query);
 
-            $str = "SELECT rsa.rsa_detail_belanja_.kode_usulan_belanja FROM rsa.rsa_detail_belanja_ WHERE rsa.rsa_detail_belanja_.sumber_dana = 'SELAIN-APBN' GROUP BY rsa.rsa_detail_belanja_.kode_usulan_belanja ORDER BY rsa.rsa_detail_belanja_.kode_usulan_belanja ASC" ;
+            $r0 = array();
 
-            $query = $this->db->query($str);
+            $units = array();
 
-            $r2 = $query->result_array() ;
+            if(!empty($q->num_rows())){
+
+
+
+                // $i = 1;
+
+                // var_dump($q->result_array()); die;
+
+                $t = 0 ; 
+
+                $units = $q->result_array() ;
+
+                foreach($units AS $u){
+
+                    $unit = $u['kode_unit'] ;
+
+                    $lenunit = strlen($unit);
+
+
+                    $str = "SELECT rba.detail_belanja_.kode_usulan_belanja FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.sumber_dana = '{$sumber_dana}' AND rba.detail_belanja_.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) )  GROUP BY rba.detail_belanja_.kode_usulan_belanja ORDER BY rba.detail_belanja_.kode_usulan_belanja ASC" ;
+
+                    $query = $rba->query($str);
+
+                    $r0[] = $query->result_array() ;
+
+                }
+
+
+            }
+
+
+            $r1 = array();
+
+            if(!empty($r0)){
+                foreach($r0 AS $rr){
+
+                    foreach($rr AS $rr0){
+                        $r1[] = $rr0['kode_usulan_belanja'] ;
+                    }
+
+                }
+
+            }
+            // echo '<pre>' ;
+            // var_dump($r1); 
+            // echo '</pre>' ; die;
+
+
+
+            // $rba = $this->load->database('rba', TRUE);
+
+            // $query = "SELECT rba.unit.kode_unit FROM rba.unit GROUP BY rba.unit.kode_unit ORDER BY rba.unit.kode_unit" ; 
+
+            // $q = $rba->query($query);
+
+            $r0 = array();
+
+            if(!empty($units)){
+
+
+
+                // $i = 1;
+
+                // var_dump($q->result_array()); die;
+
+                $t = 0 ; 
+
+                // $units = $q->result_array() ;
+
+                $rsa = $this->load->database('default', TRUE);
+
+                foreach($units AS $u){
+
+                    $unit = $u['kode_unit'] ;
+
+                    $lenunit = strlen($unit);
+
+                    $str = "SELECT rsa.rsa_detail_belanja_.kode_usulan_belanja FROM rsa.rsa_detail_belanja_ WHERE SUBSTR(rsa.rsa_detail_belanja_.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa.rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa.rsa_detail_belanja_.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) )  GROUP BY rsa.rsa_detail_belanja_.kode_usulan_belanja ORDER BY rsa.rsa_detail_belanja_.kode_usulan_belanja ASC" ;
+
+                    $query = $rsa->query($str);
+
+                    $r0[] = $query->result_array() ;
+
+                }
+
+
+            }
+
+
+            $r2 = array();
+
+            if(!empty($r0)){
+                foreach($r0 AS $rr){
+
+                    foreach($rr AS $rr0){
+                        $r2[] = $rr0['kode_usulan_belanja'] ;
+                    }
+
+                }
+
+            }
+
+            // echo '<pre>' ;
+            // var_dump($r2); 
+            // echo '</pre>' ; die;
+
+            
+
+            
+
+            // $query = $this->db->query($str);
+
+            // $r2 = $query->result_array() ;
 
             // echo '<pre>' ;
 
@@ -813,17 +1257,17 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             // echo '</pre>' ;
 
-            $r4 = array();
+            // $r4 = array();
 
-            foreach($r3 as $rr){
-                $r4[] = $rr['kode_usulan_belanja'] ;
-            }
+            // foreach($r3 as $rr){
+            //     $r4[] = $rr['kode_usulan_belanja'] ;
+            // }
 
             // echo '<br/>' ;
 
             // echo count($r4) ;
 
-            $r5 = array_unique($r4);
+            $r5 = array_unique($r3);
 
             // echo '<br/>' ;
 
@@ -839,7 +1283,30 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             asort($r5);
 
-            return  $r5;
+            $r6 = array();
+
+            foreach($r5 as $rr5){
+
+                $kode_sub_subunit = substr($rr5,0,6);
+
+                $ret = array(); 
+
+                $ret['unit'] = $this->get_nama_sub_subunit($kode_sub_subunit) ;
+                $ret['kode_usulan_belanja'] = $rr5 ; 
+                $ret['anggaran'] = $this->get_rba($rr5,$sumber_dana,$tahun) ;
+                $ret['serapan'] = $this->get_rsa($rr5,$sumber_dana,$tahun) ;
+
+                $r6[] = $ret ;
+
+            }
+
+
+            // var_dump($r6) ; die;
+
+            
+
+
+            return  $r6;
 
         }
 
@@ -856,9 +1323,11 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         function get_rba($kode,$sumber_dana,$tahun){
 
-            $str1 = "SELECT SUM(rba_demo.detail_belanja_.volume * rba_demo.detail_belanja_.harga_satuan) AS jumlah FROM rba_demo.detail_belanja_ WHERE rba_demo.detail_belanja_.kode_usulan_belanja = '{$kode}' GROUP BY rba_demo.detail_belanja_.kode_usulan_belanja" ;
+            // $str1 = "SELECT SUM(rba_demo.detail_belanja_.volume * rba_demo.detail_belanja_.harga_satuan) AS jumlah FROM rba_demo.detail_belanja_ WHERE rba_demo.detail_belanja_.kode_usulan_belanja = '{$kode}' GROUP BY rba_demo.detail_belanja_.kode_usulan_belanja" ;
 
-            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rba.detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE det2.kode_usulan_belanja = '{$kode}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY det1.kode_usulan_belanja" ;
+            $unit = substr($kode,0,2);
+
+            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rba.detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,2) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY det1.kode_usulan_belanja" ;
 
             // echo $str ; die;
 
@@ -876,13 +1345,77 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         function get_rsa($kode,$sumber_dana,$tahun){
 
-            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rsa.rsa_detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.proses > 0 AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' GROUP BY det1.kode_usulan_belanja" ;
+            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rsa.rsa_detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.proses > 0 AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE det2.kode_usulan_belanja = '{$kode}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY det1.kode_usulan_belanja" ;
 
             $query = $this->db->query($str);
 
             if ($query->num_rows()>0){
 
                 return $query->row()->jumlah ;
+            }
+            else{
+                return '0';
+            }
+
+        }
+
+        function get_rsa_by_rka($unit,$kode,$sumber_dana,$tahun){
+
+            $lenunit = strlen($unit) ;
+
+            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND SUBSTR(det1.proses,1,1) = '6' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10)" ;
+
+            // echo $str ;  die;
+
+            $query = $this->db->query($str);
+
+            if ($query->num_rows()>0){
+
+                return $query->row()->jumlah ;
+            }
+            else{
+                return '0';
+            }
+
+        }
+
+        function get_jml_proses($unit,$kode,$sumber_dana,$tahun,$id_proses){
+
+            $lenunit = strlen($unit) ;
+
+            $str = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,$lenunit) " ;
+
+
+            // echo $str ; die ;
+
+            $query = $this->db->query($str);
+
+            if ($query->num_rows()>0){
+
+                return $query->row()->jml_proses ;
+            }
+            else{
+                return '0';
+            }
+
+        }
+
+        function get_jml_proses_by_jenis($unit,$kode,$sumber_dana,$tahun,$id_proses,$jenis){
+
+            $lenunit = strlen($unit) ;
+
+            $str1 = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,$lenunit) " ;
+
+            $str = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) ) AND (det1.kode_usulan_belanja,det1.kode_akun_tambah) NOT IN ( SELECT rsa_kuitansi_detail.kode_usulan_belanja,rsa_kuitansi_detail.kode_akun_tambah FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi_detail.id_kuitansi = rsa_kuitansi.id_kuitansi  WHERE SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,7,10) = '{$kode}' AND rsa_kuitansi_detail.sumber_dana = '{$sumber_dana}' AND rsa_kuitansi_detail.tahun = '{$tahun}' AND rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' )" ;
+
+
+            // echo $str ; die ;
+
+            $query = $this->db->query($str);
+
+            if ($query->num_rows()>0){
+
+                return $query->row()->jml_proses ;
             }
             else{
                 return '0';

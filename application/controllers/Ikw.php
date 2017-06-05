@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Ikw extends CI_Controller {
-	
+
 	private $cur_tahun = '' ;
 	private $rek_tunj_pns = 2;
 	private $rek_nonpns = 2;
@@ -25,17 +25,17 @@ class Ikw extends CI_Controller {
 			$this->load->library('revisi_session');
 			$this->load->model('cantik_model');
 			$this->load->model('setting_model');
-			
+
 			// otomatis set status
 			if(!isset($_SESSION['ikw']['status'])){
 				$_SESSION['ikw']['status'] = array(1,3,6,12);
 			}
-			
+
 			// otomatis set tahun
 			if(!isset($_SESSION['ikw']['tahun'])){
 				$_SESSION['ikw']['tahun'] = $this->cur_tahun;
 			}
-			
+
 			// otomatis set seluruh unit
 			if(!isset($_SESSION['ikw']['unit_id'])){
 				if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42'){
@@ -44,7 +44,7 @@ class Ikw extends CI_Controller {
 					$_SESSION['ikw']['unit_id'] = $this->cantik_model->get_unit_rba($this->check_session->get_unit());
 				}
 			}
-			
+
 		}
   }
 
@@ -67,7 +67,7 @@ class Ikw extends CI_Controller {
     $data['message']	= validation_errors();
     $this->load->view('main_template',$data);
 	}
-	
+
 	public function showDialogProsesIKW(){
 		if(!isset($_SESSION['ikw'])){
 			echo $this->cantik_model->msgGagal('Pilih kriteria proses IKW sebelum melakukan proses'); exit;
@@ -109,7 +109,7 @@ class Ikw extends CI_Controller {
 		echo $html;
 		exit;
 	}
-	
+
 	public function ikw_proses(){
 		if(isset($_POST)){
 			if(isset($_POST['act']) && $_POST['act']=='ikw_proses'){
@@ -162,12 +162,12 @@ class Ikw extends CI_Controller {
 				}
         $sql = "SELECT a.`nip`, a.`unit_id`, a.`status_kepeg`, a.`jnspeg`, a.`golongan_id`, b.`kelompok`, a.`npwp`, c.bobot, a.status FROM `kepeg_tb_pegawai` a LEFT JOIN `kepeg_tb_golongan` b ON a.`golongan_id` = b.`id` LEFT JOIN kepeg_tb_jabatan c ON a.jabatan_id = c.id WHERE a.`jnspeg` = ".intval($_SESSION['ikw']['jnspeg']).$vSQL;
 				// echo $sql; exit;
-				$row = $this->db->query($sql)->num_rows(); 
+				$row = $this->db->query($sql)->num_rows();
         if($row > 0){
 					$sql_e_ = array();
           $r = $this->db->query($sql)->result();
 					foreach ($r as $k => $v) {
-            $sql_e = "SELECT `id_trans` FROM kepeg_tr_ikw WHERE `nip` LIKE '".$v->nip."' AND `tahun` LIKE '".intval($_SESSION['ikw']['tahun'])."' AND `bulan` LIKE '".intval($_SESSION['ikw']['bulan'])."'"; 
+            $sql_e = "SELECT `id_trans` FROM kepeg_tr_ikw WHERE `nip` LIKE '".$v->nip."' AND `tahun` LIKE '".intval($_SESSION['ikw']['tahun'])."' AND `bulan` LIKE '".intval($_SESSION['ikw']['bulan'])."'";
             // echo $sql_e."<br/>";
 				    $row = $this->db->query($sql_e)->num_rows();
             if($row==0){
@@ -207,12 +207,13 @@ class Ikw extends CI_Controller {
               $_byr_stlh_pajak = $ikw - $_jml_pajak;
 							$_netto = $_byr_stlh_pajak;
 							$sql_e_[] = "('".$_SESSION['ikw']['tahun']."', '".$_SESSION['ikw']['bulan']."', '".$v->nip."', '".$v->unit_id."', '".$v->status_kepeg."', '".$v->jnspeg."', '".$ikw."', '".$ikw."', '".$_pajak."', '".$_jml_pajak."', '".$_byr_stlh_pajak."', '".$_netto."')";
-							//echo "('".$_SESSION['ikw']['tahun']."', '".$_SESSION['ikw']['bulan']."', '".$v->nip."', '".$v->unit_id."', '".$v->status_kepeg."', '".$v->jnspeg."', '".$ikw."', '".$ikw."', '".$_pajak."', '".$_jml_pajak."', '".$_byr_stlh_pajak."', '".$_netto."')<br />";
+							// echo "('".$_SESSION['ikw']['tahun']."', '".$_SESSION['ikw']['bulan']."', '".$v->nip."', '".$v->unit_id."', '".$v->status_kepeg."', '".$v->jnspeg."', '".$ikw."', '".$ikw."', '".$_pajak."', '".$_jml_pajak."', '".$_byr_stlh_pajak."', '".$_netto."')<br />";
             }
           }
 					//exit;
 					if(count($sql_e_)>0){
-						$sql_e = "INSERT INTO `kepeg_tr_ikw`(tahun, bulan, nip, unitid, statuspeg, jenispeg, ikw, bruto, pajak, jml_pajak, byr_stlh_pajak, netto) VALUES ".implode(", ",$sql_e_).""; 
+						$sql_e = "INSERT INTO `kepeg_tr_ikw`(tahun, bulan, nip, unitid, statuspeg, jenispeg, ikw, bruto, pajak, jml_pajak, byr_stlh_pajak, netto) VALUES ".implode(", ",$sql_e_)."";
+						// echo $sql_e."<br />";
 						// echo $sql_e; exit;
 						$this->db->query($sql_e);
 					}
@@ -274,7 +275,7 @@ class Ikw extends CI_Controller {
 				}
 				echo $this->cantik_model->msgGagal('Tidak ada data yang dapat diubah.'); exit;
 			}
-			
+
 			if(isset($_POST['act']) && $_POST['act']=='ikw_simpan_pot_ikw'){
 				//print_r($_POST); exit;
 				if(isset($_POST['id'])){
@@ -299,11 +300,11 @@ class Ikw extends CI_Controller {
 				}
 				echo $this->cantik_model->msgGagal('Tidak ada data yang dapat diubah.'); exit;
 			}
-			
-			
+
+
 		} // end post
 	} // end function
-	
+
 	public function daftar()
 	{
 		$subdata['status_kepeg'] = array();
@@ -325,7 +326,7 @@ class Ikw extends CI_Controller {
 		$data['message']	= validation_errors();
 		$this->load->view('main_template',$data);
 	}
-	
+
 	public function daftar_cetak()
 	{
 		$subdata['status_kepeg'] = array();
@@ -346,7 +347,7 @@ class Ikw extends CI_Controller {
 		$this->load->view('cetak_template_excel',$data);
 		//$this->load->view('cetak_template',$data);
 	}
-	
+
 	public function daftar2_cetak()
 	{
 		$subdata['status_kepeg'] = array();
@@ -367,7 +368,7 @@ class Ikw extends CI_Controller {
 		$this->load->view('cetak_template_excel',$data);
 		//$this->load->view('cetak_template',$data);
 	}
-	
+
 	public function daftar_pot()
 	{
 		$subdata['status_kepeg'] = array();

@@ -138,19 +138,16 @@ $(document).on("click",".tb-lihat",function(){
                                             <td class=""><?=$uu->jumlah?></td>
                                             <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($uu->tgl_proses)?'':strftime("%d %B %Y", strtotime($uu->tgl_proses)); ?></td>
                                             <td align="center">
-                                                <?php if(($uu->posisi=='SPM-DRAFT-KPA')||($uu->posisi=='SPM-FINAL-VERIFIKATOR')||($uu->posisi=='SPM-FINAL-KBUU')||($uu->posisi=='SPM-FINAL-BUU')): ?>
+                                               
                                                 <button class="btn btn-warning tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-                                                <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
-                                                <?php else: ?>
-                                                <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-                                                <?php endif; ?>
+                                                
                                             </td>
                                         </tr>
                                         <?php } ?>
                                     <?php else: ?>
                                     <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                         <td class=""><b><?=$u->kode_unit?></b></td>
-                                        <td class="text-danger"><b><?=$u->nama_unit?></b></td>
+                                        <td class="text-danger"><b><?php echo get_unit_name($u->kode_unit); ?></b></td>
                                         <td class=""><?=$u->jumlah?></td>
                                         <td style=""><?=$u->tahun?></td>
                                         <td align="center">

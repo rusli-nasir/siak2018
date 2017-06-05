@@ -22,6 +22,16 @@ $(document).ready(function(){
     var id_cetak_2 = 'div-cetak-2' ;
     
     var id_cetak_3 = 'div-cetak-lampiran-spj' ;
+
+    var id_cetak_4 = 'div-cetak-lampiran-rekappajak' ;
+
+    var id_xls_1 = 'table_spp' ;
+
+    var id_xls_2 = 'table_spm' ;
+
+    var id_xls_3 = 'table_spj' ;
+
+    var id_xls_4 = 'table_rekappajak' ;
     
     var keluaran = [];
 //    var pj_p_nilai_all = [];
@@ -91,6 +101,70 @@ $(document).ready(function(){
 //                    console.log($("#" + id_cetak).html());
                     $("#div-cetak-kuitansi").printArea( options );
                 });
+    $("#cetak-rekappajak").click(function(){
+                    var mode = 'iframe'; //popup
+                    var close = mode == "popup";
+                    var options = { mode : mode, popClose : close};
+//                    console.log($("#" + id_cetak).html());
+                    $("#" + id_cetak_4).printArea( options );
+                });
+
+    $("#xls_spp").click(function(){
+        var uri = $("#" + id_xls_1).excelexportjs({
+                                    containerid: id_xls_1
+                                    , datatype: "table"
+                                    , returnUri: true
+                                });
+
+
+        var blob = b64toBlob(uri, "application/vnd.ms-excel;charset=charset=utf-8");
+        
+        saveAs(blob, 'download_rsa_excel.xls');
+
+    });
+
+    $("#xls_spm").click(function(){
+        var uri = $("#" + id_xls_2).excelexportjs({
+                                    containerid: id_xls_2
+                                    , datatype: "table"
+                                    , returnUri: true
+                                });
+
+
+        var blob = b64toBlob(uri, "application/vnd.ms-excel;charset=charset=utf-8");
+        
+        saveAs(blob, 'download_rsa_excel.xls');
+
+    });
+
+
+    $("#xls_lamp").click(function(){
+        var uri = $("#" + id_xls_3).excelexportjs({
+                                    containerid: id_xls_3
+                                    , datatype: "table"
+                                    , returnUri: true
+                                });
+
+
+        var blob = b64toBlob(uri, "application/vnd.ms-excel;charset=charset=utf-8");
+        
+        saveAs(blob, 'download_rsa_excel.xls');
+
+    });
+
+    $("#xls_rekappajak").click(function(){
+        var uri = $("#" + id_xls_3).excelexportjs({
+                                    containerid: id_xls_4
+                                    , datatype: "table"
+                                    , returnUri: true
+                                });
+
+
+        var blob = b64toBlob(uri, "application/vnd.ms-excel;charset=charset=utf-8");
+        
+        saveAs(blob, 'download_rsa_excel.xls');
+
+    });
     
     var pos = $('.ttd').position();
 
@@ -219,127 +293,138 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
     });
     
        $(document).on("click",'#btn-lihat',function(){
-        var rel = $(this).attr('rel');
-        $.ajax({
-            type:"POST",
-            url :"<?=site_url("kuitansi/get_data_kuitansi")?>",
-            data:'id=' + rel,
-            success:function(data){
+                        var rel = $(this).attr('rel');
+                        $.ajax({
+                            type:"POST",
+                            url :"<?=site_url("kuitansi/get_data_kuitansi")?>",
+                            data:'id=' + rel,
+                            success:function(data){
 //                                    console.log(data);
-                    var obj = jQuery.parseJSON(data);
-                    var kuitansi = obj.kuitansi ;
-                    var kuitansi_detail = obj.kuitansi_detail ;
-                    var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
-                    $('#kode_badge').text('GP');
-                    $('#kuitansi_tahun').text(kuitansi.tahun);
-                    $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
-                    $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
-                    $('#uraian').text(kuitansi.uraian);
-                    $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
-                    $('#penerima_uang').text(kuitansi.penerima_uang);
-                    $('#penerima_uang_nip').text(kuitansi.penerima_uang_nip);
-                    var a = moment(kuitansi.tgl_kuitansi);
+                                    var obj = jQuery.parseJSON(data);
+                                    var kuitansi = obj.kuitansi ;
+                                    var kuitansi_detail = obj.kuitansi_detail ;
+                                    var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
+                                    $('#kode_badge').text('GP');
+                                    $('#kuitansi_tahun').text(kuitansi.tahun);
+                                    $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
+                                    $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
+                                    $('#uraian').text(decodeURIComponent(kuitansi.uraian));
+                                    $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
+                                    $('#penerima_uang').text(decodeURIComponent(kuitansi.penerima_uang));
+                                    // var s = kuitansi.penerima_uang_nip ;
+                                    // console.log(s.trim());
+                                    // if((s.trim() != '-')&&(s.trim() != '.')){
+                                        // console.log('t');
+                                        $('#penerima_uang_nip').text(kuitansi.penerima_uang_nip);
+                                    // }
+                                    // else{
+                                        // console.log('f');
+                                        // $('#snip').hide();
+                                    // }
+                                    var a = moment(kuitansi.tgl_kuitansi);
 //                                    var b = moment(a).add('hours', 1);
 //                                    var c = b.format("YYYY-MM-DD HH-mm-ss");
-                    $('#tgl_kuitansi').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
-                    $('#nmpppk').text(kuitansi.nmpppk);
-                    $('#nippppk').text(kuitansi.nippppk);
-                    $('#nmbendahara_kuitansi').text(kuitansi.nmbendahara);
-                    $('#nipbendahara_kuitansi').text(kuitansi.nipbendahara);
-                    if(kuitansi.nmpumk != ''){
-                        $('#td_tglpumk').show();
-                        $('#td_nmpumk').show();
-                    }else{
-                        $('#td_tglpumk').hide();
-                        $('#td_nmpumk').hide();
-                    }
-                    $('#nmpumk').text(kuitansi.nmpumk);
-                    $('#nippumk').text(kuitansi.nippumk);
-                    $('#penerima_barang').text(kuitansi.penerima_barang);
-                    $('#penerima_barang_nip').text(kuitansi.penerima_barang_nip);
+                                    $('#tgl_kuitansi').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
+                                    $('#nmpppk').text(kuitansi.nmpppk);
+                                    $('#nippppk').text(kuitansi.nippppk);
+                                    $('#nmbendahara_kuitansi').text(kuitansi.nmbendahara);
+                                    $('#nipbendahara_kuitansi').text(kuitansi.nipbendahara);
+                                    if(kuitansi.nmpumk != ''){
+                                        $('#td_tglpumk').show();
+                                        $('#td_nmpumk').show();
+                                    }else{
+                                        $('#td_tglpumk').hide();
+                                        $('#td_nmpumk').hide();
+                                    }
+                                    $('#nmpumk').text(kuitansi.nmpumk);
+                                    $('#nippumk').text(kuitansi.nippumk);
+                                    $('#penerima_barang').text(kuitansi.penerima_barang);
+                                    $('#penerima_barang_nip').text(kuitansi.penerima_barang_nip);
+                                    
+                                    $('#tr_isi').remove();
+                                    $('.tr_new').remove();
+                                    $('<tr id="tr_isi"><td colspan="11">&nbsp;</td></tr>').insertAfter($('#before_tr_isi'));
+                                    
+                                    var str_isi = '';
+                                    $.each(kuitansi_detail,function(i,v){ 
 
-                    $('#tr_isi').remove();
-                    $('.tr_new').remove();
-                    $('<tr id="tr_isi"><td colspan="11">&nbsp;</td></tr>').insertAfter($('#before_tr_isi'));
+                                        str_isi = str_isi + '<tr class="tr_new">';
+                                        str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:center">' + (v.volume * 1) + '</td>' ;
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
+                                        var str_pajak = '' ;
+                                        var str_pajak_nom = '' ;
+                                        $.each(kuitansi_detail_pajak,function(ii,vv){
+                                            if(vv.id_kuitansi_detail == v.id_kuitansi_detail){
+                                                var jenis_pajak_ = vv.jenis_pajak ;
+                                                var jenis_pajak = jenis_pajak_.split("_").join(" ");
+                                                var dpp = vv.dpp == '0' ? '' : '(dpp)';
+                                                // console.log(vv.persen_pajak);
+                                                var str_99 = (vv.persen_pajak == '99')||(vv.persen_pajak == '98')||(vv.persen_pajak == '97')||(vv.persen_pajak == '96')||(vv.persen_pajak == '95')||(vv.persen_pajak == '94')||(vv.persen_pajak == '89')? '' : vv.persen_pajak + '% ' ;
+                                                str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
+                                                
+                                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
+                                            }
+                                        });
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
+                                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
+                                        str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
+                                        
+                                        str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                                        
+                                            str_isi = str_isi + '</tr>' ;
 
-                    var str_isi = '';
-                    $.each(kuitansi_detail,function(i,v){ 
-                        str_isi = str_isi + '<tr class="tr_new">';
-                        str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
-                        str_isi = str_isi + '<td style="text-align:center">' + v.volume + '</td>' ;
-                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
-                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
-                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string(v.bruto) + '</td>' ;
-                        var str_pajak = '' ;
-                        var str_pajak_nom = '' ;
-                        $.each(kuitansi_detail_pajak,function(ii,vv){
-                            if(vv.id_kuitansi_detail == v.id_kuitansi_detail){
-                                var jenis_pajak_ = vv.jenis_pajak ;
-                                var jenis_pajak = jenis_pajak_.split("_").join(" ");
-                                var dpp = vv.dpp == '0' ? '' : '(dpp)';
-                                var str_99 = (vv.persen_pajak == '99')? '' : vv.persen_pajak + '% ' ;
-                                str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
+                                            });
 
-                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
-                            }
-                        });
-                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
-                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
-                        str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
-
-                        str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
-                        str_isi = str_isi + '<td style="text-align:right" class="sub_tot_netto_'+ i +'">0</td>' ; 
-
-                            str_isi = str_isi + '</tr>' ;
-
-                            });
-
-
-
-                            $('#tr_isi').replaceWith(str_isi);
-
-                            var sum_tot_bruto = 0 ;
-                            $('[class^="sub_tot_bruto_"').each(function(){
-                                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
-                            });
-                            $('.sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
-
-                            var sub_tot_pajak = 0 ;
-                            $('[class^="sub_tot_pajak_"]').each(function(){
-                                sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
-                            });
-                            $('.sum_tot_pajak').html(angka_to_string(sub_tot_pajak));
-
-                            $('[class^="sub_tot_pajak_"]').each(function(){
-                                var prel = $(this).attr('rel');
-                                var sub_tot_pajak__  = 0 ;
+                                            
+                                            
+                                            $('#tr_isi').replaceWith(str_isi);
+                                            
+                                            var sum_tot_bruto = 0 ;
+                                            $('[class^="sub_tot_bruto_"').each(function(){
+                                                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
+                                            });
+                                            $('.sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
+                                            
+                                            var sub_tot_pajak = 0 ;
+                                            $('[class^="sub_tot_pajak_"]').each(function(){
+                                                sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
+                                            });
+                                            $('.sum_tot_pajak').html(angka_to_string(sub_tot_pajak));
+                                            
+                                            $('[class^="sub_tot_netto_"]').each(function(){
+                                                var prel = $(this).attr('rel');
+                                                var sub_tot_pajak__  = 0 ;
 //                                                console.log(prel + ' ' + sub_tot_pajak__);
-                                $('[class^="sub_tot_pajak_' + prel + '"]').each(function(){
-                                    sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
-                                });
-                                var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_' + prel ).text())) ;
-                                $('.sub_tot_netto_' + prel).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
-                            });
+                                                $('.sub_tot_pajak_' + prel).each(function(){
+                                                    sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
+                                                });
+                                                var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_' + prel ).text())) ;
+                                                $(this).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                                            });
 
-                            var sum_tot_netto = 0 ;
-                            $('[class^="sub_tot_netto_"').each(function(){
-                                sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
-                            });
+                                            var sum_tot_netto = 0 ;
+                                            $('[class^="sub_tot_netto_"').each(function(){
+                                                sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
+                                            });
 
-                            $('.sum_tot_netto').html(angka_to_string(sum_tot_netto));
+                                            $('.sum_tot_netto').html(angka_to_string(sum_tot_netto));
 
-                            $('.text_tot').html(terbilang(sum_tot_bruto));
+                                            $('.text_tot').html(terbilang(sum_tot_bruto));
+                                            
+                                            $('#nbukti').val(kuitansi.no_bukti);
+                                            $('#myModalKuitansi').modal('show');
+    //                                        i++ ;
+                                        }
 
-                            $('#nbukti').val(kuitansi.no_bukti);
-                            $('#myModalKuitansi').modal('show');
-//                                        i++ ;
-                        }
-
-//                        location.reload();
-        });
-
-
-    });
+            //                        location.reload();
+                        });
+            
+                        
+                    });
 
 });
 
@@ -577,6 +662,7 @@ function terbilang(bilangan) {
         <li role="presentation"><a href="#spm" aria-controls="profile" role="tab" data-toggle="tab">SPM</a></li>
         <li role="presentation"><a href="#lampiran" aria-controls="profile" role="tab" data-toggle="tab">LAMPIRAN</a></li>
         <li role="presentation"><a href="#kuitansi" aria-controls="profile" role="tab" data-toggle="tab">KUITANSI</a></li>
+        <li role="presentation"><a href="#rekappajak" aria-controls="profile" role="tab" data-toggle="tab">REKAP PAJAK</a></li>
   </ul>
 
   <!-- Tab panes -->
@@ -585,17 +671,23 @@ function terbilang(bilangan) {
           
           <div style="background-color: #EEE; padding: 10px;">
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+<ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active">1</li>
+        <li data-target="#myCarousel" data-slide-to="1">2</li>
+      </ol>
 <div class="carousel-inner" role="listbox">
 <div class="item active" id="a">
 <div id="div-cetak">
 		<table id="table_spp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 900px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
-			<tbody>
+            <tbody>
                             <tr >
                                 <td colspan="5" style="text-align: right;font-size: 30px;padding: 10px;"><b>F1</b></td>
                             </tr>
                             
                             <tr >
-                                <td colspan="5" style="text-align: center;padding-top: 5px;padding-bottom: 5px;"><img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60"></td>
+                                <td colspan="5" style="text-align: center;padding-top: 5px;padding-bottom: 5px;height: 72px;" align="center">
+                                        <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                                </td>
                             </tr>
                             <tr style="">
                                     <td colspan="5" style="text-align: center;font-size: 20px;border-bottom: none;"><b>UNIVERSITAS DIPONEGORO</b></td>
@@ -609,9 +701,9 @@ function terbilang(bilangan) {
                                     <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : GUP</b></td>
                                 </tr>
                                 <tr style="border-top: none;">
-                                    <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
+                                    <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal  : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
                                     <td style="text-align: center;border-left: none;border-right: none;border-top:none;" colspan="2" >&nbsp;</td>
-                                    <td style="border-left: none;border-top:none;"><b>Nomor : <span id="nomor_trx"><?=$nomor_spp?></span><!--00001/<?=$alias?>/SPP-UP/JAN/<?=$cur_tahun?>--></b></td>
+                                                                                                                          <td style="border-left: none;border-top:none;"><b>Nomor : <span id="nomor_trx"><?=$nomor_spp?></span><!--00001/<?=$alias?>/SPP-UP/JAN/<?=$cur_tahun?>--></b></td>
                                 </tr>
                                 <tr >
                                     <td colspan="5"><b>Satuan Unit Kerja Pengguna Anggaran (SUKPA) : <?=$unit_kerja?></b></td>
@@ -619,7 +711,7 @@ function terbilang(bilangan) {
                                 <tr >
                                     <td colspan="5" ><b>Unit Kerja : <?=$unit_kerja?> &nbsp;&nbsp; Kode Unit Kerja : <?=$unit_id?></b></td>
                                 </tr>
-				<tr style="border-bottom: none;">
+                <tr style="border-bottom: none;">
                                     
                                     <td colspan="4" style="border-right: none;border-bottom: none;">&nbsp;</td>
                                     <td style="line-height: 16px;border-left: none;border-bottom: none;">Kepada Yth.<br>
@@ -627,17 +719,17 @@ function terbilang(bilangan) {
                                                     SUKPA <?=$unit_kerja?><br>
                                                     di Semarang
                                     </td>
-				</tr>
+                </tr>
                                 <tr >
                                         <td colspan="5" style="border-bottom: none;border-top: none;">&nbsp;</td>
                                 </tr>
                                 <tr >
                                         <td colspan="5" style="border-bottom: none;border-top: none;">Dengan Berpedoman pada Dokumen RKAT yang telah disetujui oleh MWA, bersama ini kami mengajukan Surat Permintaan Pembayaran sebagai berikut:</td>
                                 </tr>
-				<tr>
+                <tr>
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
-                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar_spp"><?php echo isset($detail_gup['nom'])?number_format($detail_gup['nom'], 0, ",", "."):''; ?></span>,-<br>
+                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar_spp" style='mso-number-format:"\@";'><?php echo isset($detail_gup['nom'])?number_format($detail_gup['nom'], 0, ",", "."):''; ?></span>,-<br>
                                                 &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo isset($detail_gup['terbilang'])?ucwords($detail_gup['terbilang']):''; ?></span></b>)</li>
                                                 <li>Untuk keperluan : <span id="untuk_bayar_spp"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
                                                 <li>Nama bendahara pengeluaran : <span id="penerima_spp"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
@@ -651,14 +743,14 @@ function terbilang(bilangan) {
                                                                
                                                                 
                                 <tr>
-                                        <td colspan="5" style="border-top: none;border-bottom:none;">
-                                        Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :<br>							
+                                        <td colspan="5" style="border-top: none;">
+                                        Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :<br>                         
                                         </td>
-				
+                
                                 
                                 </tr>
-							<tr >
-                                                            <td colspan="3" style="vertical-align: top;border-bottom: none;border-top:none;padding-left: 0;">
+                            <tr >
+                                                            <td colspan="3" style="vertical-align: top;border-top:none;padding-left: 0;">
                                                                 <table style="font-family:arial;font-size:12px;line-height: 21px;border-collapse: collapse;width: 100%;border: 1px solid #000;background-color: #FFF;border-left: none;border-right:none;" cellspacing="0" border="1" cellpadding="0">
                                                                     <tr>
                                                                         <td style="text-align: center" colspan="3"><b>PENGELUARAN</b></td>
@@ -687,7 +779,7 @@ function terbilang(bilangan) {
                                                                             <td  style="text-align: center;border-right: solid 1px #000;">
                                                                                     <?=$data->kode_akun5digit?>
                                                                             </td>
-                                                                            <td style="text-align: right;">
+                                                                            <td style='text-align: right;mso-number-format:"\@";'>
                                                                                     <?php $jml_pengeluaran = $jml_pengeluaran + $data->pengeluaran ; ?>
                                                                                     Rp. <?=number_format($data->pengeluaran, 0, ",", ".")?>
                                                                             </td>
@@ -710,7 +802,7 @@ function terbilang(bilangan) {
                                                                         <td colspan="2" style="border-right: solid 1px #000">
                                                                             Jumlah Pengeluaran
                                                                         </td>
-                                                                        <td  style="text-align: right;">
+                                                                        <td  style='text-align: right;mso-number-format:"\@";'>
                                                                                 Rp. <?=number_format($jml_pengeluaran, 0, ",", ".")?>
                                                                         </td>
                                                                     </tr>
@@ -718,7 +810,7 @@ function terbilang(bilangan) {
                                                                         <td colspan="2" style="border-right: solid 1px #000">
                                                                             Dikurangi : Jumlah potongan untuk pihak lain
                                                                         </td>
-                                                                        <td  style="text-align: right;">
+                                                                        <td  style='text-align: right;mso-number-format:"\@";'>
                                                                             <?php $tot_pajak__ = 0 ; 
                                                                             if(!empty($data_spp_pajak)){
                                                                                 foreach($data_spp_pajak as $data){
@@ -731,12 +823,12 @@ function terbilang(bilangan) {
                                                                     <td colspan="2" style="border-right: solid 1px #000">
                                                                         <strong>Jumlah dana yang dikeluarkan</strong>
                                                                     </td>
-                                                                    <td  style="text-align: right;">
+                                                                    <td  style='text-align: right;mso-number-format:"\@";'>
                                                                             Rp. <?=number_format(($jml_pengeluaran - $tot_pajak__), 0, ",", ".")?>
                                                                     </td>
                                                                 </table>
                                                             </td>
-                                                            <td colspan="2" style="vertical-align: top;border-bottom: none;border-top:none;padding-right: 0;">
+                                                            <td colspan="2" style="vertical-align: top;border-top:none;padding-right: 0;">
                                                                 <table style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 100%;border: 1px solid #000;background-color: #FFF;border-left: none;border-right:none;" cellspacing="0" border="1" cellpadding="0">
                                                                     <tr>
                                                                         <td style="text-align: center" colspan="2"><b>PERHITUNGAN TERKAIT PIHAK LAIN</b></td>
@@ -784,7 +876,7 @@ function terbilang(bilangan) {
                                                                                     }
                                                                                     ?>
                                                                             </td>
-                                                                            <td  style="text-align: right;">
+                                                                            <td  style='text-align: right;mso-number-format:"\@";'>
                                                                                     <?php $tot_pajak_ = $tot_pajak_ + $data->rupiah ?>
                                                                                     Rp. <?=number_format($data->rupiah, 0, ",", ".")?>
                                                                             </td>
@@ -804,47 +896,47 @@ function terbilang(bilangan) {
                                                                         <td style="border-right: solid 1px #000;">
                                                                                 <b>Jumlah Potongan</b>
                                                                         </td>
-                                                                        <td  style="text-align: right;">
+                                                                        <td  style='text-align: right;mso-number-format:"\@";'>
                                                                                 Rp. <?=number_format($tot_pajak_, 0, ",", ".")?>
                                                                         </td>
                                                                     </tr>
                                                                 </table>
                                                             </td>
-							</tr>
+                            </tr>
                                 <tr >
-                                        <td colspan="5" style="border-bottom: none;border-top: none;">&nbsp;</td>
+                                        <td colspan="5" style="border-bottom: none;">&nbsp;</td>
                                 </tr>
-				<tr style="border-bottom: none;">
+                <tr style="border-bottom: none;">
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top:none;">
-						SPP Sebagaimana dimaksud diatas, disusun sesuai dengan dokumen lampiran yang persyaratkan dan disampaikan secara bersamaan serta merupakan bagian yang tidak terpisahkan dari surat ini.<br><br>														
-					</td>
-				<tr>
-				<tr style="border-top: none;"> 
-				
+                        SPP Sebagaimana dimaksud diatas, disusun sesuai dengan dokumen lampiran yang persyaratkan dan disampaikan secara bersamaan serta merupakan bagian yang tidak terpisahkan dari surat ini.<br><br>                                                        
+                    </td>
+                <tr>
+                <tr style="border-top: none;"> 
+                
                                     <td colspan="4" style="border-right: none;border-top:none;">&nbsp;</td>
-								<td  style="line-height: 16px;border-left: none;border-top:none;" class="ttd">
-									Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
-									Bendahara Pengeluaran SUKPA<br>
+                                <td  style="line-height: 16px;border-left: none;border-top:none;" class="ttd">
+                                    Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
+                                    Bendahara Pengeluaran SUKPA<br>
                                                                         <br>
                                                                         <br>
                                                                         <br>
                                                                         <br>
                                                                         <span id="nmbendahara"><?=isset($detail_pic->nmbendahara)?$detail_pic->nmbendahara:''?></span><br>
                                                                         NIP. <span id="nipbendahara"><?=isset($detail_pic->nipbendahara)?$detail_pic->nipbendahara:''?></span><br>
-								</td>
-				</tr>
-				<tr>
-					<td colspan="5"  style="line-height: 16px;">
-						<strong>Keterangan:</strong>
-						<ul>
-							<li>Semua bukti pengeluaran untuk pekerjaan dengan perjanjian yang disahkan Pejabat Pembuat Komitmen telah diuji dan dinyatakan memenuhi persyaratan untuk dilakukan pembayaran atas beban RKAT Undip, selanjutnya bukti-bukti pengeluaran dimaksud disimpan dan ditatausahakan oleh Pejabat Penatausahaan Keuangan SUKPA</li>
-							<li>Semua bukti-bukti pengeluaran untuk pekerjaan yang disahkan Pejabat Pelaksana dan Pengendali Kegiatan (PPPK) telah diuji dan dinyatakan memenuhi persyaratan untuk dilakukan pembayaran atas beban RKAT Undip, selanjutnya bukti-bukti pengeluaran dimaksud disimpan dan ditatausahakan oleh Pejabat Penatausahaan SUKPA.</li>
-							<li>Kebenaran perhitungan dan isi tertuang dalam SPP ini menjadi tanggung jawab Bendahara Pengeluaran sepanjang sesuai dengan bukti-bukti pengeluaran yang telah ditandatangani oleh PPPK atau PPK</li>
-						</ul>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+                                </td>
+                </tr>
+                <tr>
+                    <td colspan="5"  style="line-height: 16px;">
+                        <strong>Keterangan:</strong>
+                        <ul>
+                            <li>Semua bukti pengeluaran untuk pekerjaan dengan perjanjian yang disahkan Pejabat Pembuat Komitmen telah diuji dan dinyatakan memenuhi persyaratan untuk dilakukan pembayaran atas beban RKAT Undip, selanjutnya bukti-bukti pengeluaran dimaksud disimpan dan ditatausahakan oleh Pejabat Penatausahaan Keuangan SUKPA</li>
+                            <li>Semua bukti-bukti pengeluaran untuk pekerjaan yang disahkan Pejabat Pelaksana dan Pengendali Kegiatan (PPPK) telah diuji dan dinyatakan memenuhi persyaratan untuk dilakukan pembayaran atas beban RKAT Undip, selanjutnya bukti-bukti pengeluaran dimaksud disimpan dan ditatausahakan oleh Pejabat Penatausahaan SUKPA.</li>
+                            <li>Kebenaran perhitungan dan isi tertuang dalam SPP ini menjadi tanggung jawab Bendahara Pengeluaran sepanjang sesuai dengan bukti-bukti pengeluaran yang telah ditandatangani oleh PPPK atau PPK</li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 </div>
 </div>
 <div class="item" id="b">
@@ -855,8 +947,12 @@ function terbilang(bilangan) {
                                 <td colspan="7" style="text-align: right;font-size: 30px;padding: 10px;"><b>F1A</b></td>
                             </tr>
                             <tr >
-                            <td colspan="7" style="text-align: center;border-bottom: none;">
+                            <td colspan="7" style="text-align: center;border-bottom: none;height: 72px;">
                                 <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                            </td>
+                            </tr>
+                            <tr >
+                            <td colspan="7" style="text-align: center;border-bottom: none;">
                                 <h4><b>UNIVERSITAS DIPONEGORO</b></h4>
                                 <h5><b>RINCIAN SURAT PERMINTAAN PEMBAYARAN GUP</b></h5>
                             </td>
@@ -868,7 +964,7 @@ function terbilang(bilangan) {
                             </td>
                             <td style="border: none;">&nbsp;</td>
                             <td colspan="3" style="border-left: none;border-top: none;border-bottom: none;">
-                                <b>TANGGAL : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> </b>
+                                <b>TANGGAL : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?></b>
                             </td>
                         </tr>
                         <tr>
@@ -957,13 +1053,13 @@ function terbilang(bilangan) {
                                     <?php foreach($data_akun_rkat as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
-                                            <td class="text-right" style="padding-right: 10px;"><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
+                                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
                                             <?php $pagu_rkat =  $da->pagu_rkat ;?>
                                             <?php endif;?>
                                         <?php endif;?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                <td class="text-right" style="padding-right: 10px;"><?=number_format('0', 0, ",", ".")?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format('0', 0, ",", ".")?></td>
                                 <?php $pagu_rkat =  0 ;?>
                                 <?php endif;?>
                                 <?php $empty_pengeluaran_lalu = false ; ?>
@@ -971,7 +1067,7 @@ function terbilang(bilangan) {
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
-                                            <td class="text-right" style="padding-right: 10px;"><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
+                                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
                                             <?php $empty_pengeluaran_lalu = true ; ?>
                                             <?php endif;?>
@@ -979,15 +1075,15 @@ function terbilang(bilangan) {
                                     <?php endforeach; ?>
                                 <?php endif;?>
                                 <?php if(!$empty_pengeluaran_lalu): ?> 
-                                <td class="text-right" style="padding-right: 10px;"><?=number_format('0', 0, ",", ".")?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format('0', 0, ",", ".")?></td>
                                 <?php $jml_spm_lalu =  0 ;?>
                                 <?php endif;?>
-                                <td class="text-right" style="padding-right: 10px;">
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'>
                                     <?php $jml_pengeluaran = $jml_pengeluaran + $data->pengeluaran ; ?>
                                     <?=number_format($data->pengeluaran, 0, ",", ".")?>
                                 </td>
-                                <td class="text-right" style="padding-right: 10px;"><?php echo number_format(($jml_spm_lalu + $data->pengeluaran), 0, ",", "."); ?></td>
-                                <td class="text-right" style="padding-right: 10px;"><?php echo number_format(($pagu_rkat - ($jml_spm_lalu + $data->pengeluaran)), 0, ",", "."); ?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?php echo number_format(($jml_spm_lalu + $data->pengeluaran), 0, ",", "."); ?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?php echo number_format(($pagu_rkat - ($jml_spm_lalu + $data->pengeluaran)), 0, ",", "."); ?></td>
                             </tr>
                         <?php endforeach;?>
                         <?php else: ?>
@@ -1005,10 +1101,10 @@ function terbilang(bilangan) {
                             <td class="text-center">&nbsp;</td>
                         </tr>-->
                         <tr>
-                            <td class="text-center" colspan="4">Total Nilai ( Rp )</td>
-                            <td class="text-right" style="padding-right: 10px;"><?=number_format($jml_pengeluaran, 0, ",", ".")?></td>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-center">&nbsp;</td>
+                            <td class="text-center" colspan="4"><b>Total Nilai ( Rp )</b></td>
+                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($jml_pengeluaran, 0, ",", ".")?></b></td>
+                            <td class="text-center" style="background-color:#ccc">&nbsp;</td>
+                            <td class="text-center" style="background-color:#ccc">&nbsp;</td>
                         </tr>
                         <tr>
                             <td class="" style="border-right:none;" colspan="2">
@@ -1044,7 +1140,7 @@ function terbilang(bilangan) {
                         <?php if($sub_kegiatan != $data->nama_subkomponen): ?>
                         <tr>
                             <td class="text-center" ><?=$i?></td>
-                            <td style="padding-left: 10px;"><b><?=$data->nama_subkomponen?></b></td>
+                            <td style="padding-left: 10px;" rel="<?=$data->kode_usulan_rkat?>" class="nm_subkomponen"><b><?=$data->nama_subkomponen?></b></td>
                             <td class="text-center">&nbsp;</td>
                             <td class="text-center">&nbsp;</td>
                             <td class="text-center" colspan="3" style="border-bottom: none;border-top: none;">&nbsp;</td>
@@ -1095,7 +1191,7 @@ function terbilang(bilangan) {
                         <tr>
                             <td colspan="4" style="border-right:none;border-top: none;border-bottom: none;">&nbsp;</td>
                             <td colspan="3" style="border-left:none;border-top: none;border-bottom: none;">
-                                Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
+                                Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
                                 Bendahara Pengeluaran SUKPA<br>
                                 <br>
                                 <br>
@@ -1157,17 +1253,23 @@ function terbilang(bilangan) {
           
           <div style="background-color: #EEE; padding: 10px;">
 <div id="myCarouselSPM" class="carousel slide" data-ride="carousel" data-interval="false">
+<ol class="carousel-indicators">
+        <li data-target="#myCarouselSPM" data-slide-to="0" class="active">1</li>
+        <li data-target="#myCarouselSPM" data-slide-to="1">2</li>
+      </ol>
 <div class="carousel-inner" role="listbox">
 <div class="item active" id="e">
 <div id="div-cetak-2">
-		<table id="table_spp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 900px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
+		<table id="table_spm" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 900px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
             <tbody>
                             <tr >
                                 <td colspan="5" style="text-align: right;font-size: 30px;padding: 10px;"><b>F2</b></td>
                             </tr>
                             
                             <tr >
-                                <td colspan="5" style="text-align: center;padding-top: 5px;padding-bottom: 5px;"><img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60"></td>
+                                <td colspan="5" style="text-align: center;padding-top: 5px;padding-bottom: 5px;height: 72px;" align="center">
+                                        <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                                </td>
                             </tr>
                             <tr style="">
                                     <td colspan="5" style="text-align: center;font-size: 20px;border-bottom: none;"><b>UNIVERSITAS DIPONEGORO</b></td>
@@ -1208,7 +1310,7 @@ function terbilang(bilangan) {
                 <tr>
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
-                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?php echo isset($detail_gup_spm['nom'])?number_format($detail_gup_spm['nom'], 0, ",", "."):''; ?></span>,-<br>
+                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar" style='mso-number-format:"\@";'><?php echo isset($detail_gup_spm['nom'])?number_format($detail_gup_spm['nom'], 0, ",", "."):''; ?></span>,-<br>
                                                 &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_gup_spm['terbilang'])?ucwords($detail_gup_spm['terbilang']):''; ?></span></b>)</li>
                                                 <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
                                                 <li>Nama bendahara pengeluaran : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
@@ -1222,15 +1324,18 @@ function terbilang(bilangan) {
                                                                
                                                                 
                                 <tr>
-                                        <td colspan="5" style="border-top: none;border-bottom:none;">
+                                        <td colspan="5" style="border-top: none;">
                                         Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :<br>                         
                                         </td>
                 
                                 
                                 </tr>
+                        
+                                            
+                                    </tr>
 
                             <tr >
-                                                            <td colspan="3" style="vertical-align: top;border-bottom: none;border-top:none;padding-left: 0;">
+                                                            <td colspan="3" style="vertical-align: top;border-top:none;padding-left: 0;">
                                                                 <table style="font-family:arial;font-size:12px;line-height: 21px;border-collapse: collapse;width: 100%;border: 1px solid #000;background-color: #FFF;border-left: none;border-right:none;" cellspacing="0" border="1" cellpadding="0">
                                                                     <tr>
                                                                         <td style="text-align: center" colspan="3"><b>PENGELUARAN</b></td>
@@ -1259,7 +1364,7 @@ function terbilang(bilangan) {
                                                                             <td  style="text-align: center;border-right: solid 1px #000;">
                                                                                     <?=$data->kode_akun5digit?>
                                                                             </td>
-                                                                            <td style="text-align: right;">
+                                                                            <td style='text-align: right;mso-number-format:"\@";'>
                                                                                     <?php $jml_pengeluaran = $jml_pengeluaran + $data->pengeluaran ; ?>
                                                                                     Rp. <?=number_format($data->pengeluaran, 0, ",", ".")?>
                                                                             </td>
@@ -1282,7 +1387,7 @@ function terbilang(bilangan) {
                                                                         <td colspan="2" style="border-right: solid 1px #000">
                                                                             Jumlah Pengeluaran
                                                                         </td>
-                                                                        <td  style="text-align: right;">
+                                                                        <td  style='text-align: right;mso-number-format:"\@";'>
                                                                                 Rp. <?=number_format($jml_pengeluaran, 0, ",", ".")?>
                                                                         </td>
                                                                     </tr>
@@ -1290,7 +1395,7 @@ function terbilang(bilangan) {
                                                                         <td colspan="2" style="border-right: solid 1px #000">
                                                                             Dikurangi : Jumlah potongan untuk pihak lain
                                                                         </td>
-                                                                        <td  style="text-align: right;">
+                                                                        <td  style='text-align: right;mso-number-format:"\@";'>
                                                                             <?php $tot_pajak__ = 0 ; 
                                                                             if(!empty($data_spp_pajak)){
                                                                                 foreach($data_spp_pajak as $data){
@@ -1303,12 +1408,12 @@ function terbilang(bilangan) {
                                                                     <td colspan="2" style="border-right: solid 1px #000">
                                                                         <strong>Jumlah dana yang dikeluarkan</strong>
                                                                     </td>
-                                                                    <td  style="text-align: right;">
+                                                                    <td  style='text-align: right;mso-number-format:"\@";'>
                                                                             Rp. <?=number_format(($jml_pengeluaran - $tot_pajak__), 0, ",", ".")?>
                                                                     </td>
                                                                 </table>
                                                             </td>
-                                                            <td colspan="2" style="vertical-align: top;border-bottom: none;border-top:none;padding-right: 0;">
+                                                            <td colspan="2" style="vertical-align: top;border-top:none;padding-right: 0;">
                                                                 <table style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 100%;border: 1px solid #000;background-color: #FFF;border-left: none;border-right:none;" cellspacing="0" border="1" cellpadding="0">
                                                                     <tr>
                                                                         <td style="text-align: center" colspan="2"><b>PERHITUNGAN TERKAIT PIHAK LAIN</b></td>
@@ -1356,7 +1461,7 @@ function terbilang(bilangan) {
                                                                                     }
                                                                                     ?>
                                                                             </td>
-                                                                            <td  style="text-align: right;">
+                                                                            <td  style='text-align: right;mso-number-format:"\@";'>
                                                                                     <?php $tot_pajak_ = $tot_pajak_ + $data->rupiah ?>
                                                                                     Rp. <?=number_format($data->rupiah, 0, ",", ".")?>
                                                                             </td>
@@ -1376,7 +1481,7 @@ function terbilang(bilangan) {
                                                                         <td style="border-right: solid 1px #000;">
                                                                                 <b>Jumlah Potongan</b>
                                                                         </td>
-                                                                        <td  style="text-align: right;">
+                                                                        <td  style='text-align: right;mso-number-format:"\@";'>
                                                                                 Rp. <?=number_format($tot_pajak_, 0, ",", ".")?>
                                                                         </td>
                                                                     </tr>
@@ -1408,7 +1513,15 @@ function terbilang(bilangan) {
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
                                 <td  style="line-height: 16px;border-left: none;border-top:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-                                    Kuasa Pengguna Anggaran<br>
+                                     <?php 
+                                    if($unit_id==91){
+                                    ?>
+                                    Pejabat Penandatangan SPM
+                                    <?php }else{
+                                        ?>
+                                    
+                                        Kuasa Pengguna Anggaran
+                                    <?php }?><br>
                                                                         <br>
                                                                         <br>
                                                                         <br>
@@ -1466,8 +1579,8 @@ function terbilang(bilangan) {
                                         <br>
                                         <br>
                                         <br>
-                                        <span id="nmkbuu"><?php echo isset($detail_kuasa_buu->nm_lengkap)?$detail_kuasa_buu->nm_lengkap:''; ?></span><br>
-                                        NIP. <span id="nipkbuu"><?php echo isset($detail_kuasa_buu->nomor_induk)?$detail_kuasa_buu->nomor_induk:'';?></span><br>
+                                        <span id="nmkbuu"><?=$detail_kuasa_buu->nm_lengkap?></span><br>
+                                        NIP. <span id="nipkbuu"><?=$detail_kuasa_buu->nomor_induk?></span><br>
                                     </td>
                                 </tr>
             </tbody>
@@ -1476,14 +1589,18 @@ function terbilang(bilangan) {
 </div>
 <div class="item" id="f">
 <div id="div-cetak-f1a-2">
-                <table id="table_f1a" class="table_lamp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 900px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
+                <table id="table_f2a" class="table_lamp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 900px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
                     <tbody>
                             <tr >
                                 <td colspan="7" style="text-align: right;font-size: 30px;padding: 10px;"><b>F2A</b></td>
                             </tr>
                             <tr >
-                            <td colspan="7" style="text-align: center;border-bottom: none;">
+                            <td colspan="7" style="text-align: center;border-bottom: none;height: 72px;">
                                 <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                            </td>
+                            </tr>
+                            <tr >
+                            <td colspan="7" style="text-align: center;border-bottom: none;">
                                 <h4><b>UNIVERSITAS DIPONEGORO</b></h4>
                                 <h5><b>RINCIAN SURAT PERINTAH MEMBAYAR GUP</b></h5>
                             </td>
@@ -1495,7 +1612,7 @@ function terbilang(bilangan) {
                             </td>
                             <td style="border: none;">&nbsp;</td>
                             <td colspan="3" style="border-left: none;border-top: none;border-bottom: none;">
-                                <b>TANGGAL : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm==''?'':strftime("%d %B %Y", strtotime($tgl_spm)); ?></b>
+                                <b>TANGGAL : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?></b>
                             </td>
                         </tr>
                         <tr>
@@ -1584,13 +1701,13 @@ function terbilang(bilangan) {
                                     <?php foreach($data_akun_rkat as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
-                                            <td class="text-right" style="padding-right: 10px;"><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
+                                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
                                             <?php $pagu_rkat =  $da->pagu_rkat ;?>
                                             <?php endif;?>
                                         <?php endif;?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                <td class="text-right" style="padding-right: 10px;"><?=number_format('0', 0, ",", ".")?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format('0', 0, ",", ".")?></td>
                                 <?php $pagu_rkat =  0 ;?>
                                 <?php endif;?>
                                 <?php $empty_pengeluaran_lalu = false ; ?>
@@ -1598,7 +1715,7 @@ function terbilang(bilangan) {
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
-                                            <td class="text-right" style="padding-right: 10px;"><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
+                                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
                                             <?php $empty_pengeluaran_lalu = true ; ?>
                                             <?php endif;?>
@@ -1606,15 +1723,15 @@ function terbilang(bilangan) {
                                     <?php endforeach; ?>
                                 <?php endif;?>
                                 <?php if(!$empty_pengeluaran_lalu): ?> 
-                                <td class="text-right" style="padding-right: 10px;"><?=number_format('0', 0, ",", ".")?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format('0', 0, ",", ".")?></td>
                                 <?php $jml_spm_lalu =  0 ;?>
                                 <?php endif;?>
-                                <td class="text-right" style="padding-right: 10px;">
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'>
                                     <?php $jml_pengeluaran = $jml_pengeluaran + $data->pengeluaran ; ?>
                                     <?=number_format($data->pengeluaran, 0, ",", ".")?>
                                 </td>
-                                <td class="text-right" style="padding-right: 10px;"><?php echo number_format(($jml_spm_lalu + $data->pengeluaran), 0, ",", "."); ?></td>
-                                <td class="text-right" style="padding-right: 10px;"><?php echo number_format(($pagu_rkat - ($jml_spm_lalu + $data->pengeluaran)), 0, ",", "."); ?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?php echo number_format(($jml_spm_lalu + $data->pengeluaran), 0, ",", "."); ?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?php echo number_format(($pagu_rkat - ($jml_spm_lalu + $data->pengeluaran)), 0, ",", "."); ?></td>
                             </tr>
                         <?php endforeach;?>
                         <?php else: ?>
@@ -1632,14 +1749,14 @@ function terbilang(bilangan) {
                             <td class="text-center">&nbsp;</td>
                         </tr>-->
                         <tr>
-                            <td class="text-center" colspan="4">Total Nilai ( Rp )</td>
-                            <td class="text-right" style="padding-right: 10px;"><?=number_format($jml_pengeluaran, 0, ",", ".")?></td>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-center">&nbsp;</td>
+                            <td class="text-center" colspan="4"><b>Total Nilai ( Rp )</b></td>
+                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($jml_pengeluaran, 0, ",", ".")?></b></td>
+                            <td class="text-center" style="background-color:#ccc">&nbsp;</td>
+                            <td class="text-center" style="background-color:#ccc">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td class="text-center" style="border-right:none;" colspan="2">
-                                <ol start="9" style="margin: 10px;">
+                            <td class="" style="border-right:none;" colspan="2">
+                                <ol start="9" style="">
                                     <li>Laporan keluaran kegiatan non fisik</li>
                                 </ol>
                             </td>
@@ -1671,7 +1788,7 @@ function terbilang(bilangan) {
                         <?php if($sub_kegiatan != $data->nama_subkomponen): ?>
                         <tr>
                             <td class="text-center" ><?=$i?></td>
-                            <td style="padding-left: 10px;"><b><?=$data->nama_subkomponen?></b></td>
+                            <td style="padding-left: 10px;" rel="<?=$data->kode_usulan_rkat?>" class="nm_subkomponen"><b><?=$data->nama_subkomponen?></b></td>
                             <td class="text-center">&nbsp;</td>
                             <td class="text-center">&nbsp;</td>
                             <td class="text-center" colspan="3" style="border-bottom: none;border-top: none;">&nbsp;</td>
@@ -1722,14 +1839,14 @@ function terbilang(bilangan) {
                         <tr>
                             <td colspan="4" style="border-right:none;border-top: none;border-bottom: none;">&nbsp;</td>
                             <td colspan="3" style="border-left:none;border-top: none;border-bottom: none;">
-                                Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm==''?'':strftime("%d %B %Y", strtotime($tgl_spm)); ?><br>
-                                Bendahara Pengeluaran SUKPA<br>
+                                <!--Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> --><br>
+                                <!--Bendahara Pengeluaran SUKPA--><br>
                                 <br>
                                 <br>
                                 <br>
                                 <br>
-                                <span ><?=isset($detail_pic->nmbendahara)?$detail_pic->nmbendahara:''?></span><br>
-                                NIP. <span ><?=isset($detail_pic->nipbendahara)?$detail_pic->nipbendahara:''?></span><br>
+                                <!--<span ><?=isset($detail_pic->nmbendahara)?$detail_pic->nmbendahara:''?></span>--><br>
+                                <!--NIP. <span ><?=isset($detail_pic->nipbendahara)?$detail_pic->nipbendahara:''?></span>--><br>
                             </td>
                         </tr>
                         <tr>
@@ -1783,14 +1900,22 @@ function terbilang(bilangan) {
       <div role="tabpanel" class="tab-pane" id="lampiran">
           <div style="background-color: #EEE; padding: 10px;">
             <div id="myCarouselLampiran" class="carousel slide" data-ride="carousel" data-interval="false">
+            <ol class="carousel-indicators">
+        <li data-target="#myCarouselLampiran" data-slide-to="0" class="active">1</li>
+        <li data-target="#myCarouselLampiran" data-slide-to="1">2</li>
+      </ol>
                 <div class="carousel-inner" role="listbox">
 <div class="item active" id="c">
 <div id="div-cetak-lampiran-spj">
             <table id="table_spj" class="table_lamp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 900px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
                     <tbody>
                             <tr >
+                            <td colspan="6" style="text-align: center;height: 72px;">
+                                <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                            </td>
+                            </tr>
+                            <tr >
                                 <td colspan="6" class="text-center" style="text-align: center;border: none;">
-                                    <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
                                     <h4><b>UNIVERSITAS DIPONEGORO</b></h4>
                                     <h5><b>SURAT PERTANGGUNGJAWABAN UANG PERSEDIAAN BENDAHARA PENGELUARAN</b></h5>
                                 </td>
@@ -1849,7 +1974,7 @@ function terbilang(bilangan) {
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
-                                            <td class="text-right" style="padding-right: 10px;"><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
+                                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
                                             <?php $empty_pengeluaran_lalu = true ; ?>
                                             <?php endif;?>
@@ -1857,14 +1982,14 @@ function terbilang(bilangan) {
                                     <?php endforeach; ?>
                                 <?php endif;?>
                                 <?php if(!$empty_pengeluaran_lalu): ?> 
-                                <td class="text-right" style="padding-right: 10px;"><?=number_format('0', 0, ",", ".")?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format('0', 0, ",", ".")?></td>
                                 <?php $jml_spm_lalu =  0 ;?>
                                 <?php endif;?>
-                                <td class="text-right" style="padding-right: 10px;">
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'>
                                     <?php $jml_pengeluaran = $jml_pengeluaran + $data->pengeluaran ; ?>
                                     <?=number_format($data->pengeluaran, 0, ",", ".")?>
                                 </td>
-                                <td class="text-right" style="padding-right: 10px;"><?php echo number_format(($jml_spm_lalu + $data->pengeluaran), 0, ",", "."); ?></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?php echo number_format(($jml_spm_lalu + $data->pengeluaran), 0, ",", "."); ?></td>
                             </tr>
                         <?php endforeach;?>
                         <?php else: ?>
@@ -1882,12 +2007,9 @@ function terbilang(bilangan) {
                             <td class="text-center">&nbsp;</td>
                         </tr>-->
                         <tr>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-right" style="padding-right: 10px;"><?=number_format($jml_pengeluaran, 0, ",", ".")?></td>
-                            <td class="text-center">&nbsp;</td>
+                            <td class="text-center" colspan="4"><b>Total Nilai ( Rp )</b></td>
+                            <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($jml_pengeluaran, 0, ",", ".")?></b></td>
+                            <td class="text-center" style="background-color:#ccc">&nbsp;</td>
                         </tr>
                         <tr>
                             <td class="text-center" colspan="6" style="border-bottom: none;border-right: none;border-left: none;">&nbsp;</td>
@@ -1914,7 +2036,7 @@ function terbilang(bilangan) {
                                         }
                                         ?>
                                 </td>
-                                <td style="border:none;" class="text-right">
+                                <td style='border:none;mso-number-format:"\@";' class="text-right">
                                         <?php $tot_pajak_ = $tot_pajak_ + $data->rupiah ?>
                                         Rp. <?=number_format($data->rupiah, 0, ",", ".")?>
                                 </td>
@@ -1935,7 +2057,7 @@ function terbilang(bilangan) {
                         </tr>
                         <tr>
                             <td colspan="2" style="border : none;"><b>Total Potongan :</b></td>
-                            <td style="border : none;" class="text-right">
+                            <td style='border : none;mso-number-format:"\@";' class="text-right">
                                     Rp. <?=number_format($tot_pajak_, 0, ",", ".")?>
                             </td>
                             <td colspan="3" style="border: none">&nbsp;</td>
@@ -1956,7 +2078,7 @@ function terbilang(bilangan) {
                                 NIP. <span ><?=isset($detail_ppk->nomor_induk)?$detail_ppk->nomor_induk:''?></span><br>
                             </td>
                             <td colspan="2" style="border: none;">
-                                Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
+                                Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
                                 Bendahara Pengeluaran SUKPA<br>
                                 <br>
                                 <br>
@@ -1978,10 +2100,10 @@ function terbilang(bilangan) {
         <div id="div-cetak-lampiran-rekapakun">
     
                  
-            <table id="table_rekapakun" class="table_lamp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 1200px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
+            <table id="table_rekapakun" class="table_lamp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 1300px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
                     <tbody>
                             <tr >
-                                <td colspan="13" class="text-center" style="text-align: center;border: none;">
+                                <td colspan="14" class="text-center" style="text-align: center;border: none;">
                                     <h4><b>UNIVERSITAS DIPONEGORO</b></h4>
                                     <h5>REKAPITULASI PERTANGGUNGJAWABAN PENGELUARAN</h5>
                                     <h5><b>SETIAP SUB KEGIATAN PER RINCIAN AKUN</b></h5>
@@ -1989,13 +2111,20 @@ function terbilang(bilangan) {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="13" style="border: none;">&nbsp;</td>
+                                <td colspan="14" style="border: none;">&nbsp;</td>
                             </tr>
                             <?php $jk = 1; ?>
                             <?php if(!empty($data_akun_pengeluaran)): ?>
-                            <?php foreach($data_akun_pengeluaran as $data):?>       
+                            
+                            <?php $tot_bruto_ = 0 ;?>
+                            <?php $tot_pajak_ = 0 ;?>
+
+                            <?php foreach($data_akun_pengeluaran as $data):?>  
+                            <tr>
+                                <td colspan="14" style="border-bottom: none;">&nbsp;</td>
+                            </tr>     
                             <tr >
-                                <td colspan="13" class="text-center" style="text-align: center;border: none;">
+                                <td colspan="14" class="text-center" style="text-align: center;border: none;">
                                     <b style="text-transform: uppercase;">KEGIATAN : <?=$data->nama_komponen?> </b><br>
                                     <b style="text-transform: uppercase;">SUB KEGIATAN : <?=$data->nama_subkomponen?> </b><br>
                                     <b style="text-transform: uppercase;">KODE AKUN  : <?=$data->kode_akun5digit?> <span style="display: inline-block;width: 100px;">&nbsp;</span> URAIAN AKUN : <?=$data->nama_akun5digit?></b><br>
@@ -2003,69 +2132,86 @@ function terbilang(bilangan) {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="13" style="border-top: none;">&nbsp;</td>
+                                <td colspan="14" style="border-top: none;">&nbsp;</td>
                             </tr>
                             <tr>
                                 <td class="text-center" style="width: 50px;">NO</td>
                                 <td class="text-center" style="width: 100px;">TANGGAL</td>
+                                <td class="text-center" style="width: 100px;">KD UNIT</td>
                                 <td class="text-center" style="width: 150px;">RINCIAN AKUN</td>
-                                <td class="text-center">KODE RINCIAN<br>AKUN</td>
+                                <td class="text-center" style="width: 100px;">KODE RINCIAN<br>AKUN</td>
                                 <td class="text-center" style="width: 150px;">KODE-URAIAN RINCIAN<br>AKUN</td>
-                                <td class="text-center">NO BUKTI</td>
+                                <td class="text-center" style="width: 100px;">NO BUKTI</td>
                                 <td class="text-center">PENGELUARAN<br>( Rp )</td>
                                 <td class="text-center">KUANTITAS<br>KELUARAN</td>
                                 <td class="text-center">SATUAN<br>KELUARAN</td>
                                 <td class="text-center" style="width: 150px;">KETERANGAN KELUARAN</td>
-                                <td class="text-center" style="width: 100px;">JENIS POT<br>PAJAK</td>
+                                <td class="text-center" style="width: 125px;">JENIS POT<br>PAJAK</td>
                                 <td class="text-center" style="width: 100px;">NILAI POT</td>
                                 <td class="text-center" style="width: 100px;">NETTO</td>
                             </tr>
                             <?php $kl = 1 ;?>
                             <?php $tot_bruto = 0 ;?>
+                            <?php $tot_pajak = 0 ;?>
                             <?php foreach($rincian_akun_pengeluaran as $rincian): ?>
                             <?php if(($rincian->rka == $data->rka)&&($rincian->kode_akun5digit == $data->kode_akun5digit)):?>
                             <tr>
                                 <td class="text-center" style="vertical-align: top"><?=$kl?></td>
                                 <td class="text-center" style="vertical-align: top"><?php echo strftime("%d-%m-%Y", strtotime($rincian->tgl_kuitansi)) ;?></td>
+                                <td class="text-center" style="vertical-align: top"><?=$rincian->kdunit?></td>
                                 <td class="text-left" style="vertical-align: top;padding-left: 10px;"><?=$rincian->nama_akun?></td>
                                 <td class="text-center" style="vertical-align: top"><?=$rincian->kode_akun?></td>
                                 <td class="text-left" style="vertical-align: top;padding-left: 10px;"><?=$rincian->kode_akun_tambah?> - <?=$rincian->deskripsi?></td>
                                 <td class="text-center" style="vertical-align: top"><?=$rincian->no_bukti?></td>
-                                <td class="text-right" style="vertical-align: top;padding-right: 10px;"><?=number_format(($rincian->volume*$rincian->harga_satuan), 0, ",", ".")?></td>
-                                <td class="text-center" style="vertical-align: top"><?=$rincian->volume?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format(($rincian->volume*$rincian->harga_satuan), 0, ",", ".")?></td>
+                                <td class="text-center" style="vertical-align: top"><?=$rincian->volume + 0?></td>
                                 <td class="text-center" style="vertical-align: top;"><?=$rincian->satuan?></td>
                                 <td class="text-left" style="vertical-align: top;padding-left: 10px;"><?=$rincian->uraian?></td>
                                 <td class="text-left" style="vertical-align: top;padding-left: 10px;"><?=$rincian->pajak_nom?></td>
-                                <td class="text-right" style="vertical-align: top;padding-right: 10px;"><?=number_format($rincian->total_pajak, 0, ",", ".")?></td>
-                                <td class="text-right" style="vertical-align: top;padding-right: 10px;"><?=number_format(($rincian->bruto-$rincian->total_pajak), 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($rincian->total_pajak, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format(($rincian->bruto-$rincian->total_pajak), 0, ",", ".")?></td>
                                 <?php $tot_bruto = $tot_bruto + $rincian->bruto ;?>
+                                <?php $tot_pajak = $tot_pajak + $rincian->total_pajak ;?>
                             </tr>
                             <?php $kl++ ; ?>
                             <?php endif;?>
                             <?php endforeach;?>
                             <tr>
-                                <td colspan="6" style="border-bottom: none; padding-left: 10px;"><b>Total Pengeluaran</b></td>
-                                <td class="text-right" style="padding-right: 10px;"><?=number_format($tot_bruto, 0, ",", ".")?></td>
+                                <td colspan="7" style="border-bottom: none; padding-left: 10px;"><b>Total Pengeluaran</b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto, 0, ",", ".")?></b></td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto - $tot_pajak, 0, ",", ".")?></b></td>
+                            </tr>
+                            <?php $tot_bruto_ = $tot_bruto_ + $tot_bruto ;?>
+                            <?php $tot_pajak_ = $tot_pajak_ + $tot_pajak ;?>
+                            
+                            <?php endforeach;?>
+                            <tr>
+                                <td colspan="7" style="border-bottom: none; padding-left: 10px;"><b>Grand Total</b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto_, 0, ",", ".")?></b></td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto_ - $tot_pajak_, 0, ",", ".")?></b></td>
                             </tr>
                             <tr>
-                                <td colspan="13" style="border-bottom: none;">&nbsp;</td>
+                                <td colspan="14" style="border-bottom: none;">&nbsp;</td>
                             </tr>
-                            <?php endforeach;?>
                             <?php else: ?>
                             <tr>
-                                <td class="text-center" colspan="13">- data kosong -</td>
+                                <td class="text-center" colspan="14">- data kosong -</td>
                             </tr>
                             <?php endif; ?>
                             <tr>
-                                <td colspan="9" style="border-bottom: none;border-top: none;border-right:none;">&nbsp;</td>
+                                <td colspan="10" style="border-bottom: none;border-top: none;border-right:none;">&nbsp;</td>
                                 <td colspan="4" style="border-bottom: none;border-top: none;border-left:none;">
-                                    Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
+                                    Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
                                     Bendahara Pengeluaran SUKPA<br>
                                     <br>
                                     <br>
@@ -2076,7 +2222,7 @@ function terbilang(bilangan) {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="13" style="border-top: none;">&nbsp;</td>
+                                <td colspan="14" style="border-top: none;">&nbsp;</td>
                             </tr>
                     </tbody>
             </table>
@@ -2202,6 +2348,255 @@ function terbilang(bilangan) {
               </div>
           
       </div>
+
+<div role="tabpanel" class="tab-pane" id="rekappajak">
+          
+          <div style="background-color: #EEE; padding: 10px;">
+
+           <!-- -->                 
+        <div class="free dragscroll" style="overflow-x: scroll;width: 900px;margin: 0 auto;cursor: pointer;">
+        <div id="div-cetak-lampiran-rekappajak">
+                <table id="table_rekappajak" class="table_lamppajak" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 1300px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
+                    <tbody>
+                            <tr >
+                                <td colspan="15" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                    <!--<h4><b>UNIVERSITAS DIPONEGORO</b></h4>-->
+                                    <h5><b>Lampiran Pajak</b></h5>
+                                    <h5><b>Nomor SPP : <?=$nomor_spp?></b></h5>
+                                    <!--<b style="text-transform: uppercase;">SUKPA : <?=$unit_kerja?> <span style="display: inline-block;width: 100px;">&nbsp;</span> UNIT KERJA : <?=$unit_kerja?></b><br>-->
+                                </td>
+                            </tr>
+                            <tr >
+                                <td colspan="2" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                    <!--<h4><b>UNIVERSITAS DIPONEGORO</b></h4>-->
+                                    <b>Nama Wajib Pajak</b>
+                                    <!--<b style="text-transform: uppercase;">SUKPA : <?=$unit_kerja?> <span style="display: inline-block;width: 100px;">&nbsp;</span> UNIT KERJA : <?=$unit_kerja?></b><br>-->
+                                </td>
+                                <td colspan="13" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                    : Bendahara Pengeluaran Undip
+                                </td>
+                            </tr>
+                            <tr >
+                                <td colspan="2" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                    <!--<h4><b>UNIVERSITAS DIPONEGORO</b></h4>-->
+                                    <b>NPWP</b>
+                                    <!--<b style="text-transform: uppercase;">SUKPA : <?=$unit_kerja?> <span style="display: inline-block;width: 100px;">&nbsp;</span> UNIT KERJA : <?=$unit_kerja?></b><br>-->
+                                </td>
+                                <td colspan="13" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                    : 00.018.856.5-517.000
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border: none;">&nbsp;</td>
+                            </tr>
+                            <?php $jk = 1; ?>
+                            <?php if(!empty($data_rekap_pajak)): ?>
+
+                            <?php $tot_bruto_ = 0 ;?>
+
+                            <?php $tot_pajak_ppn_ = 0 ;?>
+                            <?php $tot_pajak_21_ = 0 ;?>
+                            <?php $tot_pajak_22_ = 0 ;?>
+                            <?php $tot_pajak_23_ = 0 ;?>
+                            <?php $tot_pajak_4_2_ = 0 ;?>
+                            <?php $tot_pajak_26_ = 0 ;?>
+                            <?php $tot_pajak_lainnya_ = 0 ;?>
+
+                            <?php $tot_sub_pajak_ = 0 ;?>
+                            <?php $tot_pajak_ = 0 ;?> 
+
+                            <?php foreach($data_rekap_pajak as $data_pajak => $akun ):?>  
+
+                            <tr>
+                                <td colspan="15" style="border-bottom: none;">&nbsp;</td>
+                            </tr>
+ 
+                            <tr>
+                                <td class="text-center" style="width: 50px;"  rowspan="3"><b>NO</b></td>
+                                <td class="text-center" style="width: 100px;" rowspan="3"><b>AKUN</b></td>
+                                <td class="text-center" style="width: 100px;" rowspan="3"><b>KUITANSI</b></td>
+                                <td class="text-center" style="width: 150px;" rowspan="3"><b>PENERIMA</b></td>
+                                <td class="text-center" style="width: 150px;" rowspan="3"><b>URAIAN</b></td>
+                                <td class="text-center" rowspan="2"><b>Jml Kotor</b></td>
+                                <td class="text-center" rowspan="2"><b>PPN</b></td>
+                                <td class="text-center" colspan="5"><b>PPh</b></td>
+                                <td class="text-center" rowspan="2"><b>Lainnya</b></td>
+                                <td class="text-center" rowspan="2"><b>Jml Pajak</b></td>
+                                <td class="text-center" rowspan="2"><b>Jml Bersih</b></td>
+                            </tr>    
+                            <tr>    
+                                <td class="text-center"><b>21</b></td>
+                                <td class="text-center"><b>22</b></td>
+                                <td class="text-center"><b>23</b></td>
+                                <td class="text-center"><b>4 ayat (2)</b></td>
+                                <td class="text-center"><b>26</b></td>
+                            </tr>    
+                            <tr>     
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                                <td class="text-center"><b>Rp</b></td>
+                            </tr>
+
+
+                            <?php // echo $akun ; ?>
+
+                            <?php $kl = 1 ;?>
+                            <?php $tot_bruto = 0 ;?>
+
+                            <?php $tot_pajak_ppn = 0 ;?>
+                            <?php $tot_pajak_21 = 0 ;?>
+                            <?php $tot_pajak_22 = 0 ;?>
+                            <?php $tot_pajak_23 = 0 ;?>
+                            <?php $tot_pajak_4_2 = 0 ;?>
+                            <?php $tot_pajak_26 = 0 ;?>
+                            <?php $tot_pajak_lainnya = 0 ;?>
+
+                            <?php $tot_sub_pajak = 0 ;?>
+                            <?php $tot_pajak = 0 ;?> 
+
+                            <?php foreach($akun as $i => $data):?> 
+
+                               
+                           
+                            <tr>
+                                <td class="text-center" style="vertical-align: top"><?=$kl?></td>
+                                <td class="text-center" style="vertical-align: top"><?=$data->kode_akun?></td>
+                                <td class="text-center" style="vertical-align: top"><?=$data->no_bukti?></td>
+                                <td class="text-left" style="vertical-align: top;padding-left: 10px;"><?=$data->penerima_uang?></td>
+                                <td class="text-left" style="vertical-align: top;padding-left: 10px;"><?=$data->uraian?></td>
+                                <!--
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->jml_bruto, 0, ",", ".")?></td>
+                                -->
+
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data_rekap_bruto[$data_pajak][$i]->jml_bruto, 0, ",", ".")?><?php var_dump(); ?></td>
+
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPN, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh21, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh22, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh23, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh4_2, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh26, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->Lainnya, 0, ",", ".")?></td>
+                                <?php $tot_sub_pajak =  $data->PPN +  $data->PPh21 +  $data->PPh22 +  $data->PPh23  + $data->PPh4_2 +  $data->PPh26 + $data->Lainnya;?> 
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($tot_sub_pajak, 0, ",", ".")?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data_rekap_bruto[$data_pajak][$i]->jml_bruto - $tot_sub_pajak, 0, ",", ".")?></td>
+
+                                <?php $tot_bruto = $tot_bruto + $data_rekap_bruto[$data_pajak][$i]->jml_bruto ;?>
+                                <?php $tot_pajak_ppn = $tot_pajak_ppn + $data->PPN ;?>
+                                <?php $tot_pajak_21 = $tot_pajak_21 + $data->PPh21 ;?>
+                                <?php $tot_pajak_22 = $tot_pajak_22 + $data->PPh22 ;?>
+                                <?php $tot_pajak_23 = $tot_pajak_23 + $data->PPh23 ;?>
+                                <?php $tot_pajak_4_2 = $tot_pajak_4_2 + $data->PPh4_2 ;?>
+                                <?php $tot_pajak_26 = $tot_pajak_26 + $data->PPh26 ;?>
+                                <?php $tot_pajak_lainnya = $tot_pajak_lainnya + $data->Lainnya ;?>
+                                <?php $tot_pajak = $tot_pajak + $tot_sub_pajak ;?>
+
+                            </tr>
+                            <?php $kl++ ; ?>
+
+                            <?php endforeach;?>
+
+                            <tr>
+                                <td colspan="5" style="border-bottom: none; padding-left: 10px;"><b>Sub Jumlah Akun - <?=$data_pajak?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_ppn, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_21, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_22, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_23, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_4_2, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_26, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_lainnya, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak, 0, ",", ".")?></b></td>
+                                
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto - $tot_pajak, 0, ",", ".")?></b></td>
+                                
+                                
+                            </tr>
+                            
+
+                            <?php $tot_bruto_ = $tot_bruto_ + $tot_bruto ;?>
+                            <?php $tot_pajak_ppn_ = $tot_pajak_ppn_ + $tot_pajak_ppn ;?>
+                            <?php $tot_pajak_21_ = $tot_pajak_21_ + $tot_pajak_21 ;?>
+                            <?php $tot_pajak_22_ = $tot_pajak_22_ + $tot_pajak_22 ;?>
+                            <?php $tot_pajak_23_ = $tot_pajak_23_ + $tot_pajak_23 ;?>
+                            <?php $tot_pajak_4_2_ = $tot_pajak_4_2_ + $tot_pajak_4_2 ;?>
+                            <?php $tot_pajak_26_ = $tot_pajak_26_ + $tot_pajak_26 ;?>
+                            <?php $tot_pajak_lainnya_ = $tot_pajak_lainnya_ + $tot_pajak_lainnya ;?>
+                            <?php $tot_pajak_ = $tot_pajak_ + $tot_pajak ;?>
+
+                            
+
+
+                            <?php endforeach;?>
+                            <tr>
+                                <td colspan="5" style="border-bottom: none; padding-left: 10px;"><b>Jumlah</b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_ppn_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_21_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_22_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_23_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_4_2_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_26_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_lainnya_, 0, ",", ".")?></b></td>
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_, 0, ",", ".")?></b></td>
+                                
+                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_bruto_ - $tot_pajak_, 0, ",", ".")?></b></td>
+                                
+                                
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-bottom: none;">&nbsp;</td>
+                            </tr>
+                            <?php else: ?>
+                            <tr>
+                                <td class="text-center" colspan="15">- data kosong -</td>
+                            </tr>
+                            <?php endif; ?>
+                            <tr>
+                                <td colspan="11" style="border-bottom: none;border-top: none;border-right:none;">&nbsp;</td>
+                                <td colspan="4" style="border-bottom: none;border-top: none;border-left:none;">
+                                    Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
+                                    Bendahara Pengeluaran SUKPA<br>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <span ><?=isset($detail_pic->nmbendahara)?$detail_pic->nmbendahara:''?></span><br>
+                                    NIP. <span ><?=isset($detail_pic->nipbendahara)?$detail_pic->nipbendahara:''?></span><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-top: none;">&nbsp;</td>
+                            </tr>
+                    </tbody>
+            </table>
+            </div>
+            </div>
+            <!-- -->
+                            </div>
+
+          
+          <br />
+          
+          <div class="alert alert-warning" style="text-align:center">
+                
+              <button type="button" class="btn btn-info" id="cetak-rekappajak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+                    <button type="button" class="btn btn-default" id="xls_rekappajak" rel=""><span class="fa fa-file-excel-o" aria-hidden="true"></span> Unduh .xls</button>
+                
+
+                    
+
+              </div>
+          
+      </div>
+
           
       </div>
   </div>

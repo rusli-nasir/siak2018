@@ -2,7 +2,7 @@
 <?php
 ini_set('display_errors', '1');
 class Koneksi {
-    protected $dns 	= "mysql:host=localhost;dbname=rsa";     protected $db_user 	= "rba";
+    protected $dns 	= "mysql:host=10.37.19.43;dbname=rsa";     protected $db_user 	= "rba";
     protected $db_pass 	= "rbaund1p";
     protected $konek 	= "";
 

@@ -33,6 +33,7 @@ $(document).ready(function(){
 
   //get akun
   var id_kuitansi_jadi = <?=$id_kuitansi_jadi?>;
+  var id_pajak = <?=$id_pajak?>;
   //kas kredit
   $.ajax({
     url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/kas',
@@ -90,6 +91,27 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
+      });
+    }
+  })
+
+  //pajak
+  $.ajax({
+    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_kuitansi_jadi+'/pajak/'+id_pajak,
+    data:{},
+    success:function(data){
+      $.each(data['hasil'], function(index, val){
+        var d = data['hasil'][index];
+        $.ajax({
+          url:host+'akuntansi/jurnal_umum/add_pajak/'+d['akun'],
+          data:{},
+          success:function(data){
+            $("#field_pajak").append(data);
+            $("#field_pajak tr:last-child .persen_pajak").val(d['persen_pajak']);
+            $("#field_pajak tr:last-child .jumlah").val(d['jumlah']);
+            if($("#field_pajak tr:first-child .del_pajak")) $("#field_pajak tr:first-child .del_pajak").remove();
+          }
+        });
       });
     }
   })
@@ -155,6 +177,20 @@ $(document).ready(function(){
       });
     }
   })
+
+  $("#tambah_pajak_btn").click(function(){
+    $.ajax({
+      url:host+'akuntansi/memorial/add_pajak',
+      data:{},
+      success:function(data){
+        $("#field_pajak").append(data);
+      }
+    })
+  });
+
+  $(document).on('click', '.del_pajak', function(){
+      $(this).parents('tr').remove();
+  });
 })
 </script>
 
@@ -421,6 +457,29 @@ $(document).ready(function(){
 
 </fieldset>
 
+<fieldset>
+  <hr>
+  <div class="col-sm-12 control-label" style="text-align: center;"><h3><strong>Pajak</strong></h3></div>
+  <div class="col-sm-8 col-sm-offset-2">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:30%">Jenis Pajak</th>
+          <th style="width:25%">Presentase</th>
+          <th style="width:35%">Jumlah</th>
+          <th style="width:10%">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="field_pajak">
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" align="right"><button type="button" id="tambah_pajak_btn" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-plus"></span> Tambah Pajak</button></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</fieldset>
 
 <!-- Button (Double) -->
 <div class="form-group" style="margin-top:12px;">

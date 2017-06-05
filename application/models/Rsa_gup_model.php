@@ -725,13 +725,13 @@ class Rsa_gup_model extends CI_Model {
         }
         
         function insert_keluaran($data){
-            return $this->db->insert_batch("trx_gup_keluaran",$data);
+            return $this->db->insert_batch("trx_keluaran",$data);
         }
         
         
         function get_keluaran($nomor_trx){
             $this->db->where("str_nomor_trx_spp",$nomor_trx);
-            $query = $this->db->get('trx_gup_keluaran');
+            $query = $this->db->get('trx_keluaran');
             return $query->result();
         }
         
@@ -799,11 +799,12 @@ class Rsa_gup_model extends CI_Model {
             foreach($rel_kuitansi as $rel){
 //                $this->db->where('id_kuitansi', $rel);
 //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                $nw = date('Y-m-d H:i:s');
                     $query = "UPDATE rsa_detail_belanja_ "
                         . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
                         . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
                         . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                        . "SET rsa_detail_belanja_.proses = '61' "
+                        . "SET rsa_detail_belanja_.proses = '61', rsa_detail_belanja_.tanggal_transaksi = '{$nw}' "
                         . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
 //                echo $query ; die;
                 $this->db->query($query);
@@ -874,6 +875,59 @@ class Rsa_gup_model extends CI_Model {
                 }else{
                     return '';
                 }
+        }
+
+        function get_unit_under_verifikator($id_user_verifikator){
+            $query = "SELECT kode_unit_subunit FROM rsa_verifikator_unit WHERE id_user_verifikator = '{$id_user_verifikator}' " ;
+
+            $q = $this->db->query($query);
+
+            return $q->result() ;
+
+        }
+
+
+        function get_notif_approve($kode_unit_subunit,$level,$id_user_verifikator){
+
+                    $query = '' ;
+
+                    if($level == '14'){ // PPK SUKPA
+                           $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPP-DRAFT' AND kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1' " ; 
+
+                        }else if($level == '2'){ // KPA
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPM-DRAFT-PPK' AND kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1' " ; 
+
+                        }else if($level == '3'){ // VERIFIKATOR
+
+                            $unit = $this->get_unit_under_verifikator($id_user_verifikator);
+                            $str_unit = '' ;
+                            foreach($unit as $u){
+                                $str_unit = $str_unit . "'". $u->kode_unit_subunit . "'," ; 
+                            }
+
+                            $str_unit = substr($str_unit, 0, -1);
+
+                            // echo $str_unit ; die ;
+
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPM-DRAFT-KPA' AND kode_unit_subunit IN ({$str_unit}) AND aktif = '1' " ; 
+
+                           // echo $query ; die ;
+
+                        }else if($level == '11'){ // KBUU
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPM-FINAL-VERIFIKATOR' AND aktif = '1' GROUP BY  posisi " ;
+
+                        }
+
+                        // echo $query ; die ;
+
+                    $q = $this->db->query($query);
+
+                    if($q->num_rows() > 0){
+                       return $q->row()->jml;
+                    }else{
+                        return '0';
+                    }
+
         }
 
 	

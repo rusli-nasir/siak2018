@@ -142,7 +142,7 @@ $(document).ready(function(){
     
     $(document).on("click",'#tolak_spm_kpa',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPM-DITOLAK-KBUU' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val() + '&kd_unit=' + '<?=$kd_unit?>' + '&tahun=' + '<?=$cur_tahun?>';
+            var data = 'proses=' + 'SPM-DITOLAK-KBUU' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val() + '&kd_unit=' + '<?=$kd_unit?>' + '&tahun=' + '<?=$cur_tahun?>'+ '&kuitansi_id=' + $('#kuitansi_id').html();
             $.ajax({
                 type:"POST",
                 url :"<?=site_url('rsa_lsphk3/proses_spm_lsphk3')?>",
@@ -411,7 +411,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar_spp"><?php echo isset($detail_lsphk3['nom'])?number_format($detail_lsphk3['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?></span></b>)</li>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?></span>rupiah</b>)</li>
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar_spp"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
                                                 <li>Nama Pihak Ketiga : <span id="penerima_spp"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
                                                 <li>Alamat : <span id="alamat_spp"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
@@ -928,7 +928,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                         <td colspan="5" style="border-bottom: none;border-top: none;">&nbsp;</td>
                                 </tr>
                                 <tr >
-                                        <td colspan="5" style="border-bottom: none;border-top: none;">Dengan Berpedoman pada Dokumen SPP yang disampaikan bendahara pengeluaran dan telah diteliti keabsahan dan kebenarannya oleh PPK-SUKPA. bersama ini kami memerintahkan kepada Kuasa BUU untuk membayar sebagai berikut :
+                                        <td colspan="5" style="border-bottom: none;border-top: none;">Dengan Berpedoman pada Dokumen SPP yang disampaikan bendahara pengeluaran dan telah diteliti keabsahan dan kebenarannya oleh PPK. bersama ini kami memerintahkan kepada Kuasa BUU untuk membayar sebagai berikut :
                                 </tr>
                 <tr>
 				<?php 
@@ -939,11 +939,11 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?php echo isset($detail_lsphk3['nom'])?number_format($detail_lsphk3['nom'], 0, ",", "."):''; ?></span>,-<br>
                                                 &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?></span></b>)</li>
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=isset($detail_pic_spm->untuk_bayar)?$detail_pic_spm->untuk_bayar:''?></span></li>
-                                                <li>Nama Pihak Ketiga : <span id="penerima"><?=$u->nama_rekanan?></span></li>
-                                                <li>Alamat : <span id="alamat"><?=$u->alamat_rekanan?></span></li>
-                                                <li>Nama Bank : <span id="nmbank"><?=$u->bank_rekanan?></span></li>
-                                                <li>No. Rekening Bank : <span id="rekening"><?=$u->rekening_rekanan?></span></li>
-                                                <li>No. NPWP : <span id="npwp"><?=$u->npwp?></span></li>
+                                                <li>Nama Pihak Ketiga : <span id="penerima"><?=isset($detail_pic_spm->penerima)?$detail_pic_spm->penerima:''?></span></li>
+                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic_spm->alamat_penerima)?$detail_pic_spm->alamat_penerima:''?></span></li>
+                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic_spm->nama_bank_penerima)?$detail_pic_spm->nama_bank_penerima:''?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic_spm->no_rek_penerima)?$detail_pic_spm->no_rek_penerima:''?></span></li>
+                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic_spm->npwp_penerima)?$detail_pic_spm->npwp_penerima:''?></span></li>
 												<span id="kuitansi_id" style="display:none;"><?=$u->kuitansi_id?></span>
                                         </ol>
                                     </td>
@@ -1140,7 +1140,15 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
                                 <td  style="line-height: 16px;border-left: none;border-top:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-                                    Kuasa Pengguna Anggaran<br>
+                                    <?php 
+									if($unit_id==91){
+									?>
+									Pejabat Penandatangan SPM
+									<?php }else{
+										?>
+									
+										Kuasa Pengguna Anggaran
+									<?php }?><br>
                                                                         <br>
                                                                         <br>
                                                                         <br>

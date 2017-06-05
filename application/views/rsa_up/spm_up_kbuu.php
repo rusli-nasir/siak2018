@@ -776,7 +776,15 @@ function string_to_angka(str){
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
 								<td  style="line-height: 16px;border-left: none;border-top:none;">
 									Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-									Kuasa Pengguna Anggaran<br>
+									 <?php 
+									if($unit_id==91){
+									?>
+									Pejabat Penandatangan SPM
+									<?php }else{
+										?>
+									
+										Kuasa Pengguna Anggaran
+									<?php }?><br>
                                                                         <br>
                                                                         <br>
                                                                         <br>

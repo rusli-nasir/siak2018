@@ -296,14 +296,45 @@ Class Dpa extends CI_Controller {
 		/* check session	*/
 		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
                         $unit = $this->check_session->get_unit() ;
+                        // echo $unit ; die;
 			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
 //			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
                         if(!empty($sumber_dana)){
                             $subdata['rsa_usul'] 	= $this->dpa_model->get_dpa_program_usul($unit,$sumber_dana,$this->cur_tahun);
                         }
+            $subdata['sumber_dana']     = $sumber_dana ;
+			$subdata['opt_sumber_dana'] = $this->option->sumber_dana();
+			$data['main_content'] 		= $this->load->view("dpa/daftar_dpa",$subdata,TRUE);
+			/*	Load main template	*/
+//			echo '<pre>';var_dump($subdata['rsa_usul']);echo '</pre>';die;
+			$this->load->view('main_template',$data);
+		}else{
+			redirect('welcome','refresh');	// redirect ke halaman home
+		}		
+    }
+
+    function realisasi_dpa($sumber_dana = "", $jenis = "")
+    {
+
+    	   //  echo $jenis ; die; 
+        
+        $data['cur_tahun'] = $this->cur_tahun ;
+        
+//        var_dump($this->check_session->get_unit());die;
+		
+		/* check session	*/
+		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
+                        $unit = $this->check_session->get_unit() ;
+			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
+//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
+                        if(!empty($sumber_dana)){
+                            // $subdata['rsa_usul'] 	= $this->dpa_model->get_rsa_program_usul($unit,$sumber_dana,$this->cur_tahun);
+                            $subdata['rsa_usul'] 	= $this->dpa_model->get_dpa_program_usul_to_validate_siap($unit,$sumber_dana,$this->cur_tahun,$jenis);
+                        }
                         $subdata['sumber_dana']         = $sumber_dana ;
 			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-			$data['main_content'] 		= $this->load->view("dpa/daftar_dpa",$subdata,TRUE);
+                        $subdata['jenis']               = $jenis;
+			$data['main_content'] 		= $this->load->view("dpa/realisasi_dpa",$subdata,TRUE);
 			/*	Load main template	*/
 //			echo '<pre>';var_dump($subdata['rsa_usul']);echo '</pre>';die;
 			$this->load->view('main_template',$data);
@@ -348,12 +379,24 @@ Class Dpa extends CI_Controller {
                         if(empty($tahun)){
                             $tahun = $this->cur_tahun ;
                         }
+                        if(empty($sumber_dana)){
+                            $sumber_dana = 'SELAIN-APBN' ;
+                        }
+
                         $subdata['cur_tahun']               = $tahun;
-                        $this->load->model('user_model');
-                        $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
-                        $subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul_verifikator($user->id);
+
+                        // if($this->check_session->get_level()==3){
+		                        $this->load->model('user_model');
+		                        $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+		                        $subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul_verifikator($user->id);
+		                // }else{
+		                // 	$subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul();
+		                // }
+
                             
 //			$subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul('SELAIN-APBN',$tahun);
+
+            $subdata['sumber_dana']  =   $sumber_dana ;     
 			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
 			$data['main_content'] 		= $this->load->view("dpa/daftar_validasi_dpa",$subdata,TRUE);
 			/*	Load main template	*/
@@ -362,6 +405,117 @@ Class Dpa extends CI_Controller {
 		}else{
 			redirect('welcome','refresh');	// redirect ke halaman home
 		}		
+    }
+
+    function daftar_validasi_dpa_kbuu($sumber_dana = "",$tahun="")
+    {
+        
+        $data['cur_tahun'] = $this->cur_tahun ;
+		
+		/* check session	*/
+		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11))){
+
+			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
+                        if(empty($tahun)){
+                            $tahun = $this->cur_tahun ;
+                        }
+                        if(empty($sumber_dana)){
+                            $sumber_dana = 'SELAIN-APBN' ;
+                        }
+
+                        $subdata['cur_tahun']               = $tahun;
+
+		                $subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul();
+
+
+                            
+//			$subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul('SELAIN-APBN',$tahun);
+
+            $subdata['sumber_dana']  =   $sumber_dana ;     
+			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
+			$data['main_content'] 		= $this->load->view("dpa/daftar_validasi_dpa_kbuu",$subdata,TRUE);
+			/*	Load main template	*/
+//			echo '<pre>';var_dump($subdata['unit_usul_impor']);echo '</pre>';die;
+			$this->load->view('main_template',$data);
+		}else{
+			redirect('welcome','refresh');	// redirect ke halaman home
+		}		
+    }
+
+    function get_notif_dpa(){
+
+    	if($this->check_session->user_session()){
+
+    		if($this->check_session->get_level()==14){
+	    		$unit = $this->check_session->get_unit();
+	            $tahun = $this->cur_tahun;
+	    		echo $this->dpa_model->get_notif_dpa($unit,$tahun,'1'); 
+    		}elseif($this->check_session->get_level()==3){
+
+    			$this->load->model('user_model');
+                $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+                $unit_usul 		= $this->dpa_model->get_dpa_unit_usul_verifikator($user->id);
+
+                $jml = 0 ;
+
+                $tahun = $this->cur_tahun;
+
+                foreach($unit_usul as $u){
+                	$jml = $jml + $this->dpa_model->get_notif_dpa($u->kode_unit,$tahun,'2');
+                }
+
+                echo $jml ;
+
+    		}else{
+    			echo '0' ;
+    		}
+    	}
+
+    }
+
+    function get_notif_dpa_siap($jenis = '1'){
+
+    	if($this->check_session->user_session()){
+
+    		if(($this->check_session->get_level()==13)||($this->check_session->get_level()==4)){
+
+    			if(($jenis == '1') || ($jenis == '3') || ($jenis == '5')){
+		    		$unit = $this->check_session->get_unit();
+		            $tahun = $this->cur_tahun;
+		            $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
+		            // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
+
+		            echo $dpa_siap ; // - $dpa_kuitansi ;
+		        }else if($jenis == '2'){
+		        	$unit = $this->check_session->get_unit();
+		            $tahun = $this->cur_tahun;
+		            $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
+		            // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
+
+		            echo $dpa_siap ; // - $dpa_kuitansi ;
+
+		        }
+    		// }elseif($this->check_session->get_level()==3){
+
+    		// 	$this->load->model('user_model');
+      //           $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+      //           $unit_usul 		= $this->dpa_model->get_dpa_unit_usul_verifikator($user->id);
+
+      //           $jml = 0 ;
+
+      //           $tahun = $this->cur_tahun;
+
+      //           foreach($unit_usul as $u){
+      //           	$jml = $jml + $this->dpa_model->get_notif_dpa_jenis($u->kode_unit,$tahun,'2');
+      //           }
+
+      //           echo $jml ;
+
+    		// }else{
+    		// 	echo '0' ;
+    		}
+    	}
+
     }
     
     function daftar_validasi_rsa_ppk($sumber_dana = "")
@@ -392,6 +546,37 @@ Class Dpa extends CI_Controller {
 			redirect('welcome','refresh');	// redirect ke halaman home
 		}		
     }
+
+    function daftar_validasi_rsa_kpa($sumber_dana = "")
+    {
+        
+        $data['cur_tahun'] = $this->cur_tahun ;
+        
+//        var_dump($this->check_session->get_unit());die;
+		
+		/* check session	*/
+		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2))){
+//                        $unit = $this->check_session->get_unit() ;
+                        $unit = $this->check_session->get_unit();
+                        $tahun = $this->cur_tahun;
+							$data['main_menu']              = $this->load->view('main_menu','',TRUE);
+//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
+                        if(!empty($sumber_dana)){
+                            $subdata['rsa_usul_to_validate'] 	= $this->dpa_model->get_dpa_program_usul_to_validate_kpa($unit,$sumber_dana,$tahun);
+                        }
+                        $subdata['sumber_dana']         = $sumber_dana ;
+                        $subdata['tahun']         = $tahun ;
+			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
+			$data['main_content'] 		= $this->load->view("dpa/daftar_dpa_to_validate_kpa",$subdata,TRUE);
+			/*	Load main template	*/
+//			echo '<pre>';var_dump($subdata['rsa_usul_to_validate']);echo '</pre>';die;
+			$this->load->view('main_template',$data);
+		}else{
+			redirect('welcome','refresh');	// redirect ke halaman home
+		}		
+    }
+
+
     
     function daftar_validasi_rsa($unit,$sumber_dana = "",$tahun)
     {
@@ -411,8 +596,39 @@ Class Dpa extends CI_Controller {
                         $subdata['sumber_dana']         = $sumber_dana ;
                         $subdata['tahun']         = $tahun ;
                         $subdata['unit']         = $unit ;
+                        $subdata['nama_unit'] = $this->unit_model->get_single_unit($unit,'nama');
 			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
 			$data['main_content'] 		= $this->load->view("dpa/daftar_dpa_to_validate",$subdata,TRUE);
+			/*	Load main template	*/
+//			echo '<pre>';var_dump($subdata['rsa_usul_to_validate']);echo '</pre>';die;
+			$this->load->view('main_template',$data);
+		}else{
+			redirect('welcome','refresh');	// redirect ke halaman home
+		}		
+    }
+
+    function daftar_validasi_rsa_kbuu($unit,$sumber_dana = "",$tahun)
+    {
+        
+        $data['cur_tahun'] = $this->cur_tahun ;
+        
+//        var_dump($this->check_session->get_unit());die;
+		
+		/* check session	*/
+		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11))){
+//                        $unit = $this->check_session->get_unit() ;
+			// die;
+						$data['main_menu']              = $this->load->view('main_menu','',TRUE);
+//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
+                        if(!empty($sumber_dana)){
+                            $subdata['rsa_usul_to_validate'] 	= $this->dpa_model->get_dpa_program_usul_to_validate_kpa($unit,$sumber_dana,$tahun);
+                        }
+                        $subdata['sumber_dana']         = $sumber_dana ;
+                        $subdata['tahun']         = $tahun ;
+                        $subdata['unit']         = $unit ;
+                        $subdata['nama_unit'] = $this->unit_model->get_single_unit($unit,'nama');
+			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
+			$data['main_content'] 		= $this->load->view("dpa/daftar_dpa_to_validate_kbuu",$subdata,TRUE);
 			/*	Load main template	*/
 //			echo '<pre>';var_dump($subdata['rsa_usul_to_validate']);echo '</pre>';die;
 			$this->load->view('main_template',$data);
@@ -458,9 +674,13 @@ Class Dpa extends CI_Controller {
             echo 'impor ke-<span class="badge">'.$result.'</span>';
         }else{
             if(($result % 2)==0){
-                echo 'impor ke-<span class="badge badge-success">'.$result.'</span>';
+                // echo 'impor ke-<span class="badge badge-success">'.$result.'</span>'; // DIGANTI TULISAN REVISI DULU
+
+                echo 'revisi ke-<span class="badge badge-success">'.( $result - 1 ).'</span>'; 
             }else{
-                echo 'impor ke-<span class="badge badge-danger">'.$result.'</span>';
+                // echo 'impor ke-<span class="badge badge-danger">'.$result.'</span>';
+
+                echo 'revisi ke-<span class="badge badge-danger">'.( $result - 1 ).'</span>'; 
             }
             
         }
@@ -515,34 +735,9 @@ Class Dpa extends CI_Controller {
     }
     
     
-    function realisasi_dpa($sumber_dana = "", $jenis = "")
-    {
-        
-        $data['cur_tahun'] = $this->cur_tahun ;
-        
-//        var_dump($this->check_session->get_unit());die;
-		
-		/* check session	*/
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
-                        $unit = $this->check_session->get_unit() ;
-			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
-                        if(!empty($sumber_dana)){
-                            $subdata['rsa_usul'] 	= $this->dpa_model->get_rsa_program_usul($unit,$sumber_dana,$this->cur_tahun);
-                        }
-                        $subdata['sumber_dana']         = $sumber_dana ;
-			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-                        $subdata['jenis']               = $jenis;
-			$data['main_content'] 		= $this->load->view("dpa/realisasi_dpa",$subdata,TRUE);
-			/*	Load main template	*/
-//			echo '<pre>';var_dump($subdata['rsa_usul']);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}		
-    }
 
-	function kroscek(){
+
+	function kroscek($sumber_dana = ''){
 
 
 // 		$data['main_menu']              = $this->load->view('main_menu','',TRUE);
@@ -562,16 +757,25 @@ Class Dpa extends CI_Controller {
 		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==1))){
 			
                         
-			if(empty($tahun)){
-                            $tahun = $this->cur_tahun ;
-                        }
-                        $subdata['cur_tahun']               = $tahun;
-			$subdata['cur_tahun'] = $this->cur_tahun ;
+		if(empty($sumber_dana)){
+
+			$sumber_dana = 'SELAIN-APBN' ;
+                        
+        }
+
+        $tahun = $this->cur_tahun ;
+
+        $subdata['cur_tahun']               = $tahun;
+		$subdata['cur_tahun'] = $this->cur_tahun ;
 
 		$data['main_menu']          = $this->load->view('main_menu','',TRUE);
 
 
+
+
 		$subdata['akun_kroscek']    = $this->dpa_model->get_kroscek_akun($sumber_dana,$this->cur_tahun);
+
+		$subdata['sd'] = $sumber_dana ;
 
 		// var_dump($subdata); die;
 
@@ -597,21 +801,35 @@ Class Dpa extends CI_Controller {
 		echo $nama;
 	}
 
-	function get_rba($kode,$sumber_dana,$tahun){
+	function get_rba($kode,$sumber_dana,$tahun = ''){
 
 		// echo 'dd';
 		// die;
 		// $kode_sub_subunit = substr($kode,0,6);
+
+		if(empty($tahun)){
+
+			$tahun = $this->cur_tahun ;
+                        
+        }
+
 		$jumlah = $this->dpa_model->get_rba($kode,$sumber_dana,$tahun);
 
 		echo $jumlah;
 	}
 
-	function get_rsa($kode,$sumber_dana,$tahun){
+	function get_rsa($kode,$sumber_dana,$tahun = ''){
 
 		// echo 'dd';
 		// die;
 		// $kode_sub_subunit = substr($kode,0,6);
+		
+		if(empty($tahun)){
+
+			$tahun = $this->cur_tahun ;
+                        
+        }
+
 		$jumlah = $this->dpa_model->get_rsa($kode,$sumber_dana,$tahun);
 
 		echo $jumlah;

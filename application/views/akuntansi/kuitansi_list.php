@@ -1,6 +1,6 @@
 <style type="text/css">
 table {
-        width: 100%;
+        width: 100% !important;
     }
 
 thead, tbody, tr, td, th { display: block; }
@@ -13,7 +13,7 @@ tr:after {
 }
 
 thead th {
-    height: 30px;
+    height: 80px !important;
 
     /*text-align: left;*/
 }
@@ -24,12 +24,13 @@ tbody {
 }
 
 thead {
-    /* fallback */
+	width:1500px;
+    overflow-x: auto;
 }
 
 
 tbody td, thead th {
-    width: 8%;
+    width: 100px;
     float: left;
 }
 </style>
@@ -56,9 +57,11 @@ tbody td, thead th {
 </div><!--/.row-->
 <hr/>
 <ul class="nav nav-tabs">
-  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_ls'); ?>">L3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_spm'); ?>">SPM non-kuitansi&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_up'); ?>">UP / PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>">GUP / GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup'); ?>">TUP / TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_ls'); ?>">LS- 3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm; ?></span></a></li>
 </ul>
 <div class="row">
 	<div class="col-sm-9">
@@ -124,6 +127,7 @@ tbody td, thead th {
 					<th>URAIAN</th>
 					<th>AKUN DEBET</th>
 					<th>AKUN KREDIT</th>
+					<th style="width:250px">PAJAK</th>
 					<th>JUMLAH</th>
 					<th>AKSI</th>
 				</tr>
@@ -141,6 +145,16 @@ tbody td, thead th {
 					<td><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->kode_akun; ?></td>
 					<td><?php echo '?'; ?></td>
+					<?php 
+					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
+					?>
+					<td style="width:250px">
+					<?php foreach ($pajak as $entry_pajak): ?>
+		              
+		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
+		              
+		          <?php endforeach ?>
+		          	</td>
 					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
 					<td>						
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
@@ -194,5 +208,28 @@ function get_nama_unit($unit){
 	foreach($q as $result){
 		return $result->nama_unit;
 	}
+}
+
+function get_tabel_by_jenis($jenis)
+{
+	if ($jenis == 'GP') {
+		return 'rsa_kuitansi_detail_pajak';
+	}elseif ($jenis == 'L3') {
+		return 'rsa_kuitansi_detail_pajak_lsphk3';
+	}
+}
+function get_detail_pajak($no_bukti,$jenis)
+{
+	$ci =& get_instance();
+	$hasil = $ci->db->get_where(get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+	
+	$data = array();
+
+	foreach ($hasil as $entry) {
+		$detail = $ci->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
+		$data[] = array_merge($entry,$detail);
+	}
+
+	return $data;
 }
 ?>

@@ -598,7 +598,7 @@ function terbilang(bilangan) {
 			<tr class="tr_up">
 				<td colspan="3">Sudah Diterima dari</td>
 				<td>: </td>
-                                <td colspan="7">Pejabat Pembuat Komitmen<!-- / Pejabat Pelaksana dan Pengendali Kegiatan --> <?=$nm_unit?></td>
+                                <td colspan="7">Pejabat Pelaksana Dan Pengendali Kegiatan (PPPK)<!-- / Pejabat Pelaksana dan Pengendali Kegiatan --> <?=$nm_unit?></td>
 			</tr>
 			<tr class="tr_up">
 				<td colspan="3">Jumlah Uang</td>
@@ -659,7 +659,7 @@ function terbilang(bilangan) {
 			<tr>
                             <td colspan="8">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
-                                Pejabat Pembuat Komitmen (PPK)
+                                Pejabat Pelaksana Dan Pengendali Kegiatan (PPPK)
                             </td>
                             <td colspan="3">
                                 Semarang, <span id="tgl_kuitansi">-</span><br />

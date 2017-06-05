@@ -1,3 +1,11 @@
+<script type="text/javascript">
+$(document).ready(function(){
+     // $("#notif-dpa").load( "<?=site_url('dpa/get_notif_dpa')?>");
+     // $("#notif-dpa-gup").load( "<?=site_url('dpa/get_notif_dpa_siap/1')?>");
+     $("#notif-dpa-lsp").load( "<?=site_url('dpa/get_notif_dpa_siap/2')?>");
+     // $("#notif-dpa-tup").load( "<?=site_url('dpa/get_notif_dpa_siap/3')?>");
+});
+</script>
 <div id="page-wrapper" >
   <div id="page-inner">
       
@@ -20,6 +28,7 @@
                       <h4>DPA</h4>
                       </a>
                       </div>
+                      <span class="badge badge-danger bg-notif" id="notif-dpa-lsp">0</span>
 
 
                   </div>
