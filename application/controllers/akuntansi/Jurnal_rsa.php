@@ -90,7 +90,7 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['akun_debet_akrual'] = $akun_debet_akrual;
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
 
-                $isian['pajak'] = null;
+                // $isian['pajak'] = null;
                 // print_r($isian);die();
                 // print_r($isian['pajak']);die();
             } else {

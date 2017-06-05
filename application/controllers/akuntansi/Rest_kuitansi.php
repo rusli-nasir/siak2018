@@ -72,16 +72,23 @@ class Rest_kuitansi extends MY_Controller {
 			$data[] = $this->Kuitansi_model->get_kuitansi_posting($id);
 		}
 
+		// print_r($data);die();
+
 		foreach ($data as $entry) {
 			$entry['tanggal_posting'] = $tanggal_posting;
 			$hasil[] = $this->Kuitansi_model->add_kuitansi_jadi($entry,'post');
 
-			if ($entry['id_pajak'] !== 0) {
+			// print_r($entry);
+
+			if ($entry['id_pajak'] != 0) {
 				$this->Posting_model->posting_kuitansi_full($entry['id_pajak']);
 				$hasil[] = $entry['id_pajak'];
 			}
 		}
+
+		// echo "2";
 		// $hasil = $this->rest->post('input_batch', $data, 'json');
+		// print_r($hasil);die();
 		
 		if ($hasil != null){
 			foreach ($hasil as $id) {
