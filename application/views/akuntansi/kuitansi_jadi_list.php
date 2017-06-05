@@ -1,6 +1,6 @@
 <style type="text/css">
 table {
-        width: 100% !important;
+        width:1900px;
     }
 
 thead, tbody, tr, td, th { display: block; }
@@ -24,7 +24,7 @@ tbody {
 }
 
 thead {
-	width:1650px;
+	width:1900px;
     overflow-x: auto;
 }
 
@@ -124,7 +124,7 @@ tbody td, thead th {
 <br/>
 <div class="row">
 	<div class="col-sm-12">
-		<table class="table table-striped">
+		<table class="table">
 			<thead>
 				<tr>
 					<th style="width:2% !important;">NO</th>
@@ -138,6 +138,7 @@ tbody td, thead th {
 					<th style="width:500px !important" nowrap>NO. AKUN <br/><span style="color:blue;">KAS</span><br/>AKRUAL</th>
 					<th style="width:110px;">DEBET</th>
 					<th style="width:110px;">KREDIT</th>
+					<th style="width:250px">PAJAK</th>
 					<th style="width:110px;">STATUS</th>
 					<th style="width:110px;">AKSI</th>
 				</tr>
@@ -161,6 +162,16 @@ tbody td, thead th {
 					<td style="width:500px !important" nowrap><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td style="width:110px;"><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
 					<td style="width:110px;"><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
+					<?php 
+					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
+					?>
+					<td style="width:250px;font-size:8pt;">
+					<?php foreach ($pajak as $entry_pajak): ?>
+		              
+		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
+		              
+		          <?php endforeach ?>
+		          	</td>
 					<td style="width:110px;">
 						<?php if($result->flag==1){ ?>
 							<?php if($result->status=='revisi'){ ?>
@@ -227,5 +238,28 @@ function get_nama_unit($unit){
 	foreach($q as $result){
 		return $result->nama_unit;
 	}
+}
+
+function get_tabel_by_jenis($jenis)
+{
+	if ($jenis == 'GP') {
+		return 'rsa_kuitansi_detail_pajak';
+	}elseif ($jenis == 'L3') {
+		return 'rsa_kuitansi_detail_pajak_lsphk3';
+	}
+}
+function get_detail_pajak($no_bukti,$jenis)
+{
+	$ci =& get_instance();
+	$hasil = $ci->db->get_where(get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+	
+	$data = array();
+
+	foreach ($hasil as $entry) {
+		$detail = $ci->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
+		$data[] = array_merge($entry,$detail);
+	}
+
+	return $data;
 }
 ?>
