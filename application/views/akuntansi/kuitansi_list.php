@@ -24,7 +24,7 @@ tbody {
 }
 
 thead {
-	width:1500px;
+	width:1700px;
     overflow-x: auto;
 }
 
@@ -117,38 +117,38 @@ tbody td, thead th {
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>NO</th>
+					<th style="width:4% !important">NO</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
 					<th>NO.SPM</th>
 					<th>JENIS</th>
 					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
-					<th>URAIAN</th>
+					<th style="width:250px">URAIAN</th>
 					<th>AKUN DEBET</th>
 					<th>AKUN KREDIT</th>
-					<th style="width:250px">PAJAK</th>
+					<th style="width:350px">PAJAK</th>
 					<th>JUMLAH</th>
 					<th>AKSI</th>
 				</tr>
 			</thead>
-			<tbody style="font-size:8pt;">
+			<tbody style="font-size:12pt;">
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
-					<td><?php echo $no; ?></td>
+					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tgl_kuitansi)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
 					<td><?php echo $result->str_nomor_trx_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>
 					<td><?php echo substr($result->kode_usulan_belanja,6,2); ?></td>
 					<td><?php echo get_unit($result->kode_unit); ?></td>
-					<td><?php echo $result->uraian; ?></td>
+					<td style="width:250px"><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->kode_akun; ?></td>
 					<td><?php echo '?'; ?></td>
 					<?php 
 					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
 					?>
-					<td style="width:250px">
+					<td style="width:350px">
 					<?php foreach ($pajak as $entry_pajak): ?>
 		              
 		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>

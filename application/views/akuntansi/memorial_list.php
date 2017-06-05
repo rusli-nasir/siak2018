@@ -78,19 +78,13 @@
 					<td><?php echo $result->akun_kredit; ?></td>
 					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
 					<td>						
-						<?php if($this->session->userdata('level')==1){ ?>
-							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
-								<a href="<?php echo site_url('akuntansi/memorial/edit_memorial/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
-							<?php }else{ ?>
-								<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
-							<?php } ?>
-						<?php }else if($this->session->userdata('level')==2){ ?>
+						<?php if($this->session->userdata('level')==2){ ?>
 							<?php if($result->flag==1 AND ($result->status=='proses' OR $result->status=='direvisi')){ ?>
 								<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
 							<?php }else{ ?>
 								<a href="<?php echo site_url('akuntansi/memorial/detail_memorial/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 							<?php } ?>
-						<?php }else if($this->session->userdata('level')==3){ ?>
+						<?php }else if($this->session->userdata('level')==3 OR $this->session->userdata('level')==1){ ?>
 							<a href="<?php echo site_url('akuntansi/memorial/edit_memorial/'.$result->id_kuitansi_jadi); ?>"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-cog"></span> Edit</button></a>
 							<a href="<?php echo site_url('akuntansi/memorial/print_memorial/'.$result->id_kuitansi_jadi); ?>" target="_blank"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-cog"></span> Print</button></a>
 						<?php } ?>

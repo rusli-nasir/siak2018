@@ -165,7 +165,7 @@ tbody td, thead th {
 					<?php 
 					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
 					?>
-					<td style="width:250px;font-size:8pt;">
+					<td style="width:250px;font-size:12pt;">
 					<?php foreach ($pajak as $entry_pajak): ?>
 		              
 		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>

@@ -28,6 +28,20 @@ $(document).ready(function(){
       }
     })
   })
+
+  $("#tambah_pajak_btn").click(function(){
+    $.ajax({
+      url:host+'akuntansi/memorial/add_pajak',
+      data:{},
+      success:function(data){
+        $("#field_pajak").append(data);
+      }
+    })
+  })
+
+  $(document).on('click', '.del_pajak', function(){
+      $(this).parents('tr').remove();
+  });
 })
 </script>
 
@@ -564,21 +578,6 @@ $(document).ready(function(){
           $('#alert-selisih').attr('style', 'text-align:center;display:none;');
       }
   }
-
-  $("#tambah_pajak_btn").click(function(){
-    $.ajax({
-      url:'add_pajak',
-      data:{},
-      success:function(data){
-        $("#field_pajak").append(data);
-      }
-    })
-  })
-
-  $(document).on('click', '.del_pajak', function(){
-      $(this).parents('tr').remove();
-  });
-
 
   <?php if (isset($unit_kerja)): ?>
       selectize3.setValue('<?=$unit_kerja?>');
