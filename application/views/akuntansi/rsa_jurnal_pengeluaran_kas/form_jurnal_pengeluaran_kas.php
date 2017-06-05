@@ -17,6 +17,8 @@
 
 <!-- Text input-->
 <?php
+$array_spm = $this->Spm_model->get_jenis_spm();
+
 if($jenis=='NK'){
   $no_bukti = substr($str_nomor_trx_spm, 6, 3).substr($str_nomor_trx_spm, 0, 5); 
 }else{
@@ -175,6 +177,11 @@ if($jenis=='NK'){
       </select> -->
 
     <div class="col-md-3">
+    <?php 
+    if (in_array($jenis,$array_spm)) {
+      $pengeluaran = $jumlah_debet;
+    }
+    ?>
     <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text" value="<?=$pengeluaran?>" placeholder="Jumlah Akun Debet" class="form-control input-md" required="" disabled>
       
     </div>
@@ -191,7 +198,13 @@ if($jenis=='NK'){
     <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
-        <option value="911101">911101 - SAL</option>
+        <?php if (in_array($jenis,$array_spm)): ?>
+          <option value="<?php echo $akun_kredit ?>" selected><?php echo $kas_akun_kredit ?></option>
+        <?php endif ?>
+        ?>
+        <?php if (!in_array($jenis,$array_spm)): ?>
+          <option value="911101">911101 - SAL</option>
+        <?php endif ?>
       </select>
     </div>
     <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->
@@ -212,6 +225,11 @@ if($jenis=='NK'){
       </select>
     </div>
     <div class="col-md-3">
+    <?php 
+    if (in_array($jenis,$array_spm)) {
+      $pengeluaran = $jumlah_kredit;
+    }
+    ?>
     <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?=$pengeluaran?>" disabled required="">
       
     </div>

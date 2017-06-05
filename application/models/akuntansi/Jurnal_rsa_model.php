@@ -17,7 +17,7 @@ class Jurnal_rsa_model extends CI_Model {
 
     public function get_kuitansi($id_kuitansi,$tabel,$tabel_detail)
     {
-    	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
+        $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
         $hasil['tanggal_bukti'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));

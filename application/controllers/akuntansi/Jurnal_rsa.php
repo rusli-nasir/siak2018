@@ -29,7 +29,12 @@ class Jurnal_rsa extends MY_Controller {
 		if($this->form_validation->run())     
         {   
             $entry = $this->input->post();
-            if ($jenis != 'NK')
+
+            $array_spm = $this->Spm_model->get_jenis_spm();
+            if (in_array($jenis,$array_spm)){
+                $kuitansi = $this->Spm_model->get_spm_transfer($id_kuitansi,$jenis);
+            }
+            else if ($jenis != 'NK')
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
             else {
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer_nk($id_kuitansi);
@@ -41,19 +46,22 @@ class Jurnal_rsa extends MY_Controller {
 
             $entry = array_merge($kuitansi,$entry);
 
-            // print_r($entry);die();
 
             $entry['jumlah_kredit'] = $entry['jumlah_debet'];
             $entry['flag'] = 1;
             $entry['tipe'] = 'pengeluaran';
             $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
 
+
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
             $updater =  array();
             $updater['flag_proses_akuntansi'] = 1;
 
-            if ($jenis != 'NK') {
+            if (in_array($jenis,$array_spm)){
+                $q2 = $this->Spm_model->update_spm($id_kuitansi,$updater,$jenis);
+            }
+            else if ($jenis != 'NK') {
                 $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($kuitansi['jenis']),$updater);
                 $array_pajak = $this->Pajak_model->get_transfer_pajak($q1);
                 $this->Pajak_model->insert_pajak($q1,$array_pajak);
@@ -71,13 +79,19 @@ class Jurnal_rsa extends MY_Controller {
         }
         else
         {          
-            if ($jenis != 'NK'){
+            if (in_array($jenis,$this->Spm_model->get_jenis_spm())){
+                $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
+            }
+            else if ($jenis != 'NK'){
 			    $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
                 $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
                 $akun_debet_akrual = $isian['kode_akun'];
                 $akun_debet_akrual[0] = 7;
                 $isian['akun_debet_akrual'] = $akun_debet_akrual;
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+
+                $isian['pajak'] = null;
+                // print_r($isian);die();
                 // print_r($isian['pajak']);die();
             } else {
                 $isian = $this->Kuitansi_model->get_kuitansi_nk($id_kuitansi);
