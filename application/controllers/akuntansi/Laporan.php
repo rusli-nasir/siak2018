@@ -239,6 +239,8 @@ class Laporan extends MY_Controller {
 
         // print_r($data);die();
 
+        // print_r($data);die();
+
         $n_akun = count($data);
 
         $path_template = realpath(FCPATH).'/assets/akuntansi/template_excel/template_jurnal_umum.xls';
@@ -438,7 +440,7 @@ class Laporan extends MY_Controller {
         $daterange = $this->input->post('daterange');
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
-        $periode_akhir = strtodate($date_t[1]);
+        $periode_akhir = strtodate($date_t[1]) or null;
 
         if ($unit == 'all') {
             $unit = null;
@@ -643,6 +645,7 @@ class Laporan extends MY_Controller {
     	ksort($data);
 
     	$n_akun = count($data);
+
 
         $path_template = realpath(FCPATH).'/assets/akuntansi/template_excel/template_neraca_saldo.xls';
         $excel = new PHPExcel_Reader_Excel5();
