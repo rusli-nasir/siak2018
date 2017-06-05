@@ -18,7 +18,7 @@
 	</div>
 </div><!--/.row-->
 <div class="row">
-	<div class="col-sm-8">
+	<div class="col-sm-12">
 		<?php
 		if($this->input->get('balasan')==1){
 			echo '<div class="alert alert-success">Berhasil memasukan data</div>';
@@ -56,19 +56,44 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-3">Saldo Awal</label>
+			<div class="row">
 				<div class="col-sm-6">
-					<input type="text" name="saldo_awal" maxlength="30" class="form-control" placeholder="4500000" pattern="[0-9]{1,30}" required>
-					Isi dengan angka saja tanpa spasi, ex : 12500000
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							Saldo Debet
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label class="control-label col-sm-3">Saldo Awal</label>
+								<div class="col-sm-6">
+									<input type="text" name="saldo_awal" maxlength="30" class="form-control" placeholder="4500000" pattern="[0-9]{1,30}" required>
+									Isi dengan angka saja tanpa spasi, ex : 12500000
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							Saldo Kredit
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label class="control-label col-sm-3">Saldo Awal</label>
+								<div class="col-sm-6">
+									<input type="text" name="saldo_kredit_awal" maxlength="30" class="form-control" placeholder="4500000" pattern="[0-9]{1,30}" required>
+									Isi dengan angka saja tanpa spasi, ex : 12500000
+								</div>
+							</div>
+							
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-3"></label>
-				<div class="col-sm-9">
+			<center>
 					<button type="submit" class="btn btn-primary">Submit</button>
-				</div>
-			</div>
+			</center>
 		</form>
 	</div>
 </div>
