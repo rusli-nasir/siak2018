@@ -26,6 +26,40 @@ class Kuitansi_model extends CI_Model {
 		}
 		return $query;
 	}
+    
+    function read_up($limit = null, $start = null, $keyword = null, $kode_unit = null){
+        if($kode_unit!=null){
+            $unit = 'AND kode_unit="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
+		if($limit!=null OR $start!=null){
+			$query = $this->db->query("SELECT * FROM trx_up WHERE posisi='SPP-FINAL' AND flag_proses_akuntansi=0 AND
+			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit LIMIT $start, $limit");
+		}else{
+			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit");
+		}
+		return $query;
+	}
+    
+    function read_tup($limit = null, $start = null, $keyword = null, $kode_unit = null){
+        if($kode_unit!=null){
+            $unit = 'AND kode_unit="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
+		if($limit!=null OR $start!=null){
+			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit LIMIT $start, $limit");
+		}else{
+			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit");
+		}
+		return $query;
+	}
 
     function read_spm($limit = null, $start = null, $keyword = null){
         if($this->session->userdata('kode_unit')==null){
@@ -127,10 +161,10 @@ class Kuitansi_model extends CI_Model {
 
     function read_kuitansi_posting_spm($limit = null, $start = null, $keyword = null){
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND jenis<>'pajak' AND 
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND jenis<>'pajak' AND
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
         }
         return $query;
