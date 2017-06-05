@@ -118,7 +118,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit);
+		$total_data = $this->Kuitansi_model->read_up(null, null, $keyword, $kode_unit);
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -149,12 +149,12 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit);
+		$this->data['query'] = $this->Kuitansi_model->read_up($config['per_page'], $id, $keyword, $kode_unit);
 
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		
-		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
+		$temp_data['content'] = $this->load->view('akuntansi/up_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
     
@@ -179,7 +179,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit);
+		$total_data = $this->Kuitansi_model->read_tup(null, null, $keyword, $kode_unit);
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -210,12 +210,12 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit);
+		$this->data['query'] = $this->Kuitansi_model->read_tup($config['per_page'], $id, $keyword, $kode_unit);
 
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		
-		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
+		$temp_data['content'] = $this->load->view('akuntansi/tup_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
 
