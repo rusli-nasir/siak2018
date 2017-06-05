@@ -444,7 +444,11 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                             <td style="width:200pt;padding-left:5pt;padding-bottom:5pt;">
                                 Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?strftime("%d %B %Y"):strftime("%d %B %Y", strtotime($tgl_spp)); ?>
                                 <br/>
+                                <?php if($kd_unit != '91'): ?>
                                 Kuasa Pengguna Anggaran,
+                                <?php else: ?>
+                                Pejabat Penandatangan SPM 
+                                <?php endif; ?>
                                 <br/><br/><br/><br/><br/><br/>
                                 <?php echo $detail_up->namakpa; ?>
                                 <br/>

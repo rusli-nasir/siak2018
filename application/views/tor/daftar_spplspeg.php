@@ -229,7 +229,7 @@
 							<?php
 									}elseif($value->proses==1 || $value->proses==2){
 							// masa menanti kentut yang indah
-										echo "<a class=\"btn btn-default btn-sm\" disabled=\"disabled\" title=\"Menunggu keputusan dari PPPK SUKPA\"><i class=\"fa fa-spinner\"></i></a>";
+										echo "<a class=\"btn btn-default btn-sm\" disabled=\"disabled\" title=\"Menunggu keputusan dari PPK SUKPA\"><i class=\"fa fa-spinner\"></i></a>";
 								/*	}elseif($value->proses==2){ /*
 							?>
 							<a class="btn btn-primary btn-sm buat-spm" rel="3" id="<?php echo $value->id_sppls; ?>" title="Buat SPM dari SPP yang telah disetujui"><i class="glyphicon glyphicon-pencil"></i></a>

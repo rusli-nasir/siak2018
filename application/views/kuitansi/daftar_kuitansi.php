@@ -1,3 +1,8 @@
+<style type="text/css">
+
+
+
+</style>
 <script type="text/javascript">
 	$(document).ready(function(){
             
@@ -5,6 +10,7 @@
             
             
             var aktv = '0';    
+
             $("#cetak").click(function(){
                     var mode = 'iframe'; //popup
                     var close = mode == "popup";
@@ -17,6 +23,43 @@
                 if (event.keyCode == 13) {
                     window.location = "<?=current_url()?>?n=" + $(this).val();
                 }
+            });
+
+
+            $(document).on('click', '#cr_tgl', function(event){
+                // if (event.keyCode == 13) {
+                    window.location = "<?=current_url()?>?t=" + $('#dp1').val();
+                // }
+            });
+
+
+            $(document).on('keyup', '#cr_uraian', function(event){
+                if (event.keyCode == 13) {
+                    window.location = "<?=current_url()?>?r=" + $(this).val();
+                }
+            });
+
+            // $("input:checkbox:disabled").each(function(){
+
+            //     console.log($(this).attr('rel'));
+
+            // });
+
+
+            // $('#datetimepicker1').datetimepicker({
+            //                                                             //viewMode: 'months',
+            //                                                             format: 'DD MMMM YYYY',
+            //                                                              widgetPositioning: 
+            //                                                              {
+            //                                                                 horizontal: 'left', 
+            //                                                                 vertical: 'bottom'
+            //                                                              } 
+
+            //                                                         });
+
+
+            $('#dp1').datepicker({
+                format: 'yyyy-mm-dd'
             });
                 
                 
@@ -213,8 +256,38 @@
                                     i++;
                             }
                         });
-                        $('#rel_kuitansi').val(JSON.stringify(rel_kuitansi));
-                        $('#form_usulkan_spp').submit();
+
+                        /* KONDISI TIDAK DIPAKAI BIAR BISA BUAT KUITANSI SEBANYAK BANYAKNYA DULU , DAN DIPINDAH PAS BUAT SPP */
+
+                        var tot_select = 0 ;
+                        var saldo_kas =  parseInt(string_to_angka($('#saldo_kas').text()));
+                        $('[class^="ck_"]').each(function(){
+                            var relck = $(this).attr('rel');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                var sub_tot_select = $('#td_sub_tot_' + relck).text();
+                                    tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+                            }
+                        });
+
+                        // console.log(saldo_kas + ' - ' + tot_select);
+
+                        if(saldo_kas >= tot_select){
+                            
+                            $('#rel_kuitansi').val(JSON.stringify(rel_kuitansi));
+                            $('#form_usulkan_spp').submit();
+
+                        }else{
+                            bootbox.alert({
+                                size: "small",
+                                title: "Perhatian",
+                                message: 'Maaf jumlah saldo anda tidak cukup',
+                                animate:false,
+                            });
+                            return false;
+                        }
+
+                        /* END KONDISI */
+
 //                        console.log(JSON.stringify(rel_kuitansi));
                     });
                     
@@ -235,10 +308,19 @@
                                     $('#kuitansi_tahun').text(kuitansi.tahun);
                                     $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
                                     $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
-                                    $('#uraian').text(kuitansi.uraian);
+                                    $('#uraian').text(decodeURIComponent(kuitansi.uraian));
                                     $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
-                                    $('#penerima_uang').text(kuitansi.penerima_uang);
-                                    $('#penerima_uang_nip').text(kuitansi.penerima_uang_nip);
+                                    $('#penerima_uang').text(decodeURIComponent(kuitansi.penerima_uang));
+                                    // var s = kuitansi.penerima_uang_nip ;
+                                    // console.log(s.trim());
+                                    // if((s.trim() != '-')&&(s.trim() != '.')){
+                                        // console.log('t');
+                                        $('#penerima_uang_nip').text(kuitansi.penerima_uang_nip);
+                                    // }
+                                    // else{
+                                        // console.log('f');
+                                        // $('#snip').hide();
+                                    // }
                                     var a = moment(kuitansi.tgl_kuitansi);
 //                                    var b = moment(a).add('hours', 1);
 //                                    var c = b.format("YYYY-MM-DD HH-mm-ss");
@@ -265,12 +347,13 @@
                                     
                                     var str_isi = '';
                                     $.each(kuitansi_detail,function(i,v){ 
+
                                         str_isi = str_isi + '<tr class="tr_new">';
                                         str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
-                                        str_isi = str_isi + '<td style="text-align:center">' + v.volume + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:center">' + (v.volume * 1) + '</td>' ;
                                         str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
                                         str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string(v.bruto) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
                                         var str_pajak = '' ;
                                         var str_pajak_nom = '' ;
                                         $.each(kuitansi_detail_pajak,function(ii,vv){
@@ -279,7 +362,7 @@
                                                 var jenis_pajak = jenis_pajak_.split("_").join(" ");
                                                 var dpp = vv.dpp == '0' ? '' : '(dpp)';
                                                 // console.log(vv.persen_pajak);
-                                                var str_99 = (vv.persen_pajak == '99')||(vv.persen_pajak == '98')? '' : vv.persen_pajak + '% ' ;
+                                                var str_99 = (vv.persen_pajak == '99')||(vv.persen_pajak == '98')||(vv.persen_pajak == '97')||(vv.persen_pajak == '96')||(vv.persen_pajak == '95')||(vv.persen_pajak == '94')||(vv.persen_pajak == '89')? '' : vv.persen_pajak + '% ' ;
                                                 str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
                                                 
                                                 str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
@@ -290,7 +373,7 @@
                                         str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
                                         
                                         str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:right" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
                                         
                                             str_isi = str_isi + '</tr>' ;
 
@@ -312,15 +395,15 @@
                                             });
                                             $('.sum_tot_pajak').html(angka_to_string(sub_tot_pajak));
                                             
-                                            $('[class^="sub_tot_pajak_"]').each(function(){
+                                            $('[class^="sub_tot_netto_"]').each(function(){
                                                 var prel = $(this).attr('rel');
                                                 var sub_tot_pajak__  = 0 ;
 //                                                console.log(prel + ' ' + sub_tot_pajak__);
-                                                $('[class^="sub_tot_pajak_' + prel + '"]').each(function(){
+                                                $('.sub_tot_pajak_' + prel).each(function(){
                                                     sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
                                                 });
                                                 var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_' + prel ).text())) ;
-                                                $('.sub_tot_netto_' + prel).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                                                $(this).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
                                             });
 
                                             var sum_tot_netto = 0 ;
@@ -465,7 +548,9 @@ function terbilang(bilangan) {
                 
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>DAFTAR KUITANSI GUP</h2> 
+                        <h2>DAFTAR KUITANSI <?php 
+                    if($jenis == 'GP'){echo 'GUP' ; }
+                    else if($jenis == 'TP'){echo 'TUP' ;}?></h2> 
                     </div>
                 </div>
                 <hr />
@@ -475,16 +560,56 @@ function terbilang(bilangan) {
                             
 				<form id="kentut" class="form-horizontal">
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-md-8">
+                        <div class="alert alert-warning" style="border-color: #ebccd1;">
 							<div class="form-group">
-								<label class="col-md-1">Tahun: </label>
-								<div class="col-md-3">
+								<label class="col-md-2">Tahun: </label>
+								<div class="col-md-4">
 									<?=form_dropdown('tahun',$this->option->get_option_tahun(date('Y'),date('Y')+7),$cur_tahun,array('class'=>'validate[required] form-control','id'=>'tahun'))?>
 								</div>
-								<div class="col-md-1">
+								<div class="col-md-2">
 									<button type="button" class="btn btn-primary btn-sm" id="pilih_tahun">Pilih Tahun</button>
 								</div>
 							</div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+
+                        <?php if($jenis == 'GP'): ?>
+                        <div class="panel panel-danger" style="margin-bottom: 0;">
+                            <div class="panel-heading">
+                              <h3 class="panel-title">UP TERSEDIA</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?=number_format(get_saldo_up($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?></span>,-</span></h3>
+                            </div>
+                        </div>
+                        <?php elseif($jenis == 'TP'): ?>
+                        <div class="panel panel-danger" style="margin-bottom: 0;">
+                            <div class="panel-heading">
+                              <h3 class="panel-title">TUP TERSEDIA</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?=number_format(get_saldo_tup($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?> </span>,-</span></h3>
+                            </div>
+                        </div>
+                    <?php elseif($jenis == 'KS'): ?>
+                        <div class="panel panel-danger" style="margin-bottom: 0;">
+                            <div class="panel-heading">
+                              <h3 class="panel-title">KS TERSEDIA</h3>
+                            </div>
+                            <div class="panel-body">
+                            <?php $i = array('1','2') ; $ni = count($i) ; foreach($i as $n): ?>
+                                <h3 style="margin: 0"><span class="text-danger">KS-<?=$n?> | Rp. <span id="saldo_kas"><?=number_format(get_saldo_tup($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?> </span>,-</span></h3>
+                                <?php if($n != $ni){ echo '<hr>' ; } ?>
+                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php else: ?>
+                                                    &nbsp;
+                        <?php endif; ?>
+
 						</div>
 					</div>
 				</form>
@@ -493,7 +618,9 @@ function terbilang(bilangan) {
                 <?php if($_SESSION['rsa_level'] == 13) : ?>
                 <div class="alert alert-warning" >
                     <button class="btn btn-warning" id="btn-spp" disabled="disabled" ><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Proses SPP</button>
-                    <button class="btn btn-success" id="btn-lihat-spp" onclick="window.location = '<?=site_url('rsa_gup/spp_gup')?>'" ><span class="glyphicon glyphicon-open-file" aria-hidden="true"></span> Lihat SPP Berjalan</button>
+                    <button class="btn btn-success" id="btn-lihat-spp" onclick="window.location = '<?php 
+                    if($jenis == 'GP'){echo site_url('rsa_gup/spp_gup') ; }
+                    else if($jenis == 'TP'){echo site_url('rsa_tup/spp_tup') ;}?>'" ><span class="glyphicon glyphicon-open-file" aria-hidden="true"></span> Lihat SPP Berjalan</button>
                 </div>
                 <?php else: ?>
                 <div class="alert alert-warning">
@@ -505,9 +632,9 @@ function terbilang(bilangan) {
                     <div class="col-md-12">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" id="k-aktif" ><a href="<?=site_url('kuitansi/daftar_kuitansi/GP/')?>" >Kuitansi Aktif</a></li>
-                        <li role="presentation" id="k-batal" ><a href="<?=site_url('kuitansi/daftar_kuitansi_batal/GP/')?>" >Batal</a></li>
-                        <li role="presentation" id="k-cair" ><a href="<?=site_url('kuitansi/daftar_kuitansi_cair/GP/')?>" >Cair</a></li>
+                        <li role="presentation" id="k-aktif" ><a href="<?=site_url('kuitansi/daftar_kuitansi/'.$jenis.'/')?>" >Kuitansi Aktif</a></li>
+                        <li role="presentation" id="k-batal" ><a href="<?=site_url('kuitansi/daftar_kuitansi_batal/'.$jenis.'/')?>" >Batal</a></li>
+                        <li role="presentation" id="k-cair" ><a href="<?=site_url('kuitansi/daftar_kuitansi_cair/'.$jenis.'/')?>" >Cair</a></li>
                     </ul>
                     </div>
                     <br />
@@ -540,8 +667,35 @@ function terbilang(bilangan) {
                     }
                     ?>
 
-			<div class="col-md-12 table-responsive">
-				<table class="table table-bordered table-striped table-hover small">
+                    <?php 
+                    if(isset($dgt)){
+
+                        setlocale(LC_ALL, 'id_ID.utf8'); $dgt = strftime("%d %B %Y", strtotime($dgt));
+
+                    ?>
+                    <div class="col-md-12">
+                    <div class="alert alert-info" style="padding-top:5px;padding-bottom:5px;">
+                        <span class="text-danger"><b>Filter :</b></span> tanggal [ <b><?=$dgt?></b> ] <!-- <a href="<?=current_url()?>" class="">RESET</a> -->
+                    </div>
+                    </div>
+                    <?php 
+                    }
+                    ?>
+
+                    <?php 
+                    if(isset($dgr)){
+                    ?>
+                    <div class="col-md-12">
+                    <div class="alert alert-info" style="padding-top:5px;padding-bottom:5px;">
+                        <span class="text-danger"><b>Filter :</b></span> uraian [ <b><?=$dgr?></b> ] <!-- <a href="<?=current_url()?>" class="">RESET</a> -->
+                    </div>
+                    </div>
+                    <?php 
+                    }
+                    ?>
+
+			<div class="col-md-12 table-responsive" style="">
+				<table class="table table-bordered table-striped table-hover small"  style="">
 					<thead>
 					<tr>
                         <th class="text-center col-md-1" style="vertical-align: middle;">No</th>
@@ -564,7 +718,9 @@ function terbilang(bilangan) {
 					</thead>
 					<tbody>
                         <tr>
-                            <td class="text-center col-md-1" style="vertical-align: middle;">&nbsp;</td>
+                            <td class="text-center col-md-1" style="vertical-align: middle;">
+                                <a href="<?=current_url()?>" class="btn btn-sm btn-success">RESET</a>
+                            </td>
                             <td class="text-center col-md-1" style="vertical-align: middle;">
                                 <div class="btn-group">
                                   <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -591,13 +747,27 @@ function terbilang(bilangan) {
                                 <input type="text" class="form-control input-sm" placeholder="cari.." id="cr_nomor">
                             </td>
                             <td class="text-center col-md-2" style="vertical-align: middle;">
-                                <input type="text" class="form-control input-sm" placeholder="cari..">
+                                <!-- <div class="form-group" style="margin-bottom: 0px;">
+                                    <div class="input-group date" id="datetimepicker1">
+                                        <input type='text' class="form-control input-sm" id="dp1" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div> -->
+                                <div class="input-group">
+                                      <input type="text" class="form-control input-sm" placeholder="cari.." id="dp1" >
+                                      <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm" type="button" id="cr_tgl">Cari</button>
+                                      </span>
+                                    </div><!-- /input-group -->
+
                             </td>
                             <td class="text-center col-md-2" style="vertical-align: middle;">
-                                <input type="text" class="form-control input-sm" placeholder="cari..">
+                                <input type="text" class="form-control input-sm" placeholder="cari.." id="cr_uraian">
                             </td>
                             <td class="text-center col-md-1" style="vertical-align: middle;">
-                                <input type="text" class="form-control input-sm" placeholder="cari..">
+                                <!-- <input type="text" class="form-control input-sm" placeholder="cari.."> -->
                             </td>
                             <td class="text-center col-md-1" style="vertical-align: middle;">&nbsp;</td>
                                                     <td class="text-center col-md-1" style="vertical-align: middle;">&nbsp;</td>
@@ -609,11 +779,12 @@ function terbilang(bilangan) {
 	<?php
 		if(!empty($daftar_kuitansi)){
 //                    echo '<pre>';var_dump($daftar_kuitansi);echo '</pre>';
-                    $tot_kuitansi = 0 ;
+            $tot_kuitansi = 0 ;
 			foreach ($daftar_kuitansi as $key => $value) {
 
-                if(isset($dgu)||isset($dgn)){
-                    if(($value->kode_unit == $dgu)||(stripos($value->no_bukti, $dgn) !== false)){
+                if(isset($dgu)||isset($dgn)||isset($dgt)||isset($dgr)){
+                    setlocale(LC_ALL, 'id_ID.utf8');
+                    if(($value->kode_unit == $dgu)||(stripos($value->no_bukti, $dgn)!== false)||(strftime("%d %B %Y", strtotime($value->tgl_kuitansi)) == $dgt)||(stripos($value->uraian, $dgr)!== false)){
                 
 	?>
 					<tr>
@@ -622,7 +793,7 @@ function terbilang(bilangan) {
 						<td class="text-center"><?php echo $value->no_bukti; ?></td>
                                                 <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
 						<td class=""><?php echo $value->uraian; ?></td>
-						<td class="text-right">
+						<td class="text-right" id="td_sub_tot_<?=$value->id_kuitansi?>">
                                                 <?=number_format($value->pengeluaran, 0, ",", ".")?>
                                                 <?php $tot_kuitansi = $tot_kuitansi + $value->pengeluaran ; ?>
                                                 </td>
@@ -641,7 +812,7 @@ function terbilang(bilangan) {
                                                                 <button type="button" class="btn btn-success btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPM <br>SPM : <?=$value->str_nomor_trx_spm?> <br>SPP : <?=$value->str_nomor_trx?>')" title="STATUS : SPM"><i class="glyphicon glyphicon-file"></i></button>
                                                                 <?php else: ?>
                                                                     <?php if(!is_null($value->str_nomor_trx)):?>
-                                                                    <button type="button" class="btn btn-warning btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPP <br>SPP <?=$value->str_nomor_trx?>')" title="STATUS : SPP"><i class="glyphicon glyphicon-file"></i></button>
+                                                                    <button type="button" class="btn btn-warning btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPP <br>SPP : <?=$value->str_nomor_trx?>')" title="STATUS : SPP"><i class="glyphicon glyphicon-file"></i></button>
                                                                     <!--<button type="button" class="btn btn-success btn-sm btn_proses" rel="<?php echo $value->id_kuitansi; ?>" title="Diajukan SPP"><i class="glyphicon glyphicon-file"></i></button>-->
                                                                     <?php endif; ?>
                                                                 <?php endif; ?>
@@ -684,7 +855,7 @@ function terbilang(bilangan) {
                         <td class="text-center"><?php echo $value->no_bukti; ?></td>
                                                 <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
                         <td class=""><?php echo $value->uraian; ?></td>
-                        <td class="text-right">
+                        <td class="text-right" id="td_sub_tot_<?=$value->id_kuitansi?>">
                                                 <?=number_format($value->pengeluaran, 0, ",", ".")?>
                                                 <?php $tot_kuitansi = $tot_kuitansi + $value->pengeluaran ; ?>
                                                 </td>
@@ -703,7 +874,7 @@ function terbilang(bilangan) {
                                                                 <button type="button" class="btn btn-success btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPM <br>SPM : <?=$value->str_nomor_trx_spm?> <br>SPP : <?=$value->str_nomor_trx?>')" title="STATUS : SPM"><i class="glyphicon glyphicon-file"></i></button>
                                                                 <?php else: ?>
                                                                     <?php if(!is_null($value->str_nomor_trx)):?>
-                                                                    <button type="button" class="btn btn-warning btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPP <br>SPP <?=$value->str_nomor_trx?>')" title="STATUS : SPP"><i class="glyphicon glyphicon-file"></i></button>
+                                                                    <button type="button" class="btn btn-warning btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPP <br>SPP : <?=$value->str_nomor_trx?>')" title="STATUS : SPP"><i class="glyphicon glyphicon-file"></i></button>
                                                                     <!--<button type="button" class="btn btn-success btn-sm btn_proses" rel="<?php echo $value->id_kuitansi; ?>" title="Diajukan SPP"><i class="glyphicon glyphicon-file"></i></button>-->
                                                                     <?php endif; ?>
                                                                 <?php endif; ?>
@@ -765,10 +936,19 @@ function terbilang(bilangan) {
 					</tr>
                                         </tbody>
 				</table>
-                            <form action="<?=site_url('rsa_gup/create_spp_gup')?>" id="form_usulkan_spp" method="post" style="display: none"  >
+                            <form action="<?php 
+                    if($jenis == 'GP'){echo site_url('rsa_gup/create_spp_gup') ; }
+                    else if($jenis == 'TP'){echo site_url('rsa_tup/create_spp_tup') ;}?>" id="form_usulkan_spp" method="post" style="display: none"  >
                                 <input type="text" name="rel_kuitansi" id="rel_kuitansi" value="" />
                                 <input type="text" name="proses" id="proses" value="SPP-DRAFT" />
                             </form>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
 			</div>
 		</div>
 
@@ -935,11 +1115,11 @@ function terbilang(bilangan) {
 				</td>
                         </tr>
 			<tr>
-                            <td colspan="7">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                            <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
                                 Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
                             </td>
-                            <td colspan="4">
+                            <td colspan="4" style="vertical-align: top;">
                                 Semarang, <span id="tgl_kuitansi">-</span><br />
                                 Penerima Uang
                             </td>
@@ -953,10 +1133,10 @@ function terbilang(bilangan) {
 				</td>
                         </tr>
                         <tr >
-                            <td colspan="7" style="border-bottom: 1px solid #000"><span id="nmpppk">-</span><br>
+                            <td colspan="7" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span id="nmpppk">-</span><br>
                                     NIP. <span id="nippppk">-</span></td>
-                            <td colspan="4" style="border-bottom: 1px solid #000"><span class="edit_here" id="penerima_uang">-</span><br />
-                                NIP. <span class="edit_here" id="penerima_uang_nip">-</span>
+                            <td colspan="4" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span class="edit_here" style="white-space: pre-line;" id="penerima_uang">-</span><br />
+                                <span id="snip">NIP. <span class="edit_here" id="penerima_uang_nip">-</span></span>
                             </td>
 			</tr>
                         <tr >

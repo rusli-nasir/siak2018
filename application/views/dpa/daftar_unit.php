@@ -59,7 +59,7 @@ function get_unit_dpa(){
         var el = $(this); 
 
         el.find('td.impor').load("<?php echo site_url('dpa/get_impor_number_unit'); ?>/"+$(this).attr('rel')+"/"+$("#sumber_dana").val()+"/"+$("#tahun").val());
-		 el.find('td.impor').load("<?php echo site_url('dpa/get_impor_number_unit'); ?>/"+$(this).attr('rel')+"/"+$("#sumber_dana").val()+"/"+$("#tahun").val());
+		// el.find('td.impor').load("<?php echo site_url('dpa/get_impor_number_unit'); ?>/"+$(this).attr('rel')+"/"+$("#sumber_dana").val()+"/"+$("#tahun").val());
         el.find('td.rkat').load("<?php echo site_url(); ?>/dpa/get_impor_rkat_unit/"+el.attr('rel')+"/"+$("#sumber_dana").val()+"/"+$("#tahun").val());
         el.find('td.rsa').load("<?php echo site_url(); ?>/dpa/get_impor_rsa_unit/"+el.attr('rel')+"/"+$("#sumber_dana").val()+"/"+$("#tahun").val());
               
@@ -158,16 +158,16 @@ $(document).on("click",".tb-print",function(){
     
     var rkat = $(this).parent().parent().find('td.rkat').html();
     
-    var el = $(this);
+    // var el = $(this);
     
     if(rkat != '0'){
     
         //if(confirm('Apakah anda yakin, cetak unit : '+unit+' ?')){
 
             // el.attr('disabled','disabled');
-            el.hide(function(){
-                el.siblings('div.progress').show();
-            });
+            // el.hide(function(){
+            //     el.siblings('div.progress').show();
+            // });
             var data='unit/' + unit +'/sumber_dana/'+ sumber_dana +'/tahun/'+tahun;
 			window.location="<?=site_url("dpa/cetak_dpa")?>/"+data;
             /*$.ajax({
@@ -297,7 +297,7 @@ $(document).on("change","#unit",function(){
             <div id="page-inner">
                 <div class="row">
                     <div class="col-lg-12">
-                     <h2>IMPOR RKAT</h2>    
+                     <h2>REVISI DPA</h2>    
                     </div>
                 </div>
                 <hr />
@@ -371,10 +371,10 @@ $(document).on("change","#unit",function(){
                             <thead>
                                 <tr >
                                         <th class="col-md-1" >Kode</th>
-                                        <th class="col-md-2" >Unit</th>
+                                        <th class="col-md-4" >Unit</th>
                                         <th class="col-md-2" >&nbsp;</th>
                                         <th class="col-md-2" >RKAT</th>
-                                        <th class="col-md-2" >RSA</th>
+                                        <!--<th class="col-md-2" >RSA</th>-->
                                         <th class="col-md-3" style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
@@ -385,7 +385,7 @@ $(document).on("change","#unit",function(){
                                         <td class="text-danger"><a href="<?=site_url("geser/daftar_program/".$u->kode_unit)?>"><b><?=$u->nama_unit?></b></a></td>
                                         <td class="impor">&nbsp;</td>
                                         <td style="text-align: right" class="rkat">&nbsp;</td>
-                                        <td style="text-align: right" class="rsa">&nbsp;</td>
+                                        <!--<td style="text-align: right" class="rsa">&nbsp;</td>-->
                                         <td align="center">
                                             <div class="progress" style="display: none;margin-bottom: 14px;">
                                                 <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
@@ -393,12 +393,12 @@ $(document).on("change","#unit",function(){
                                             </div>
                                            
 											<div class="btn-group" role="group" aria-label="...">
-											  <button type="button" class="btn btn-warning btn-sm tb-impor" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Impor</buttton></button>
+											  <!--<button type="button" class="btn btn-warning btn-sm tb-impor" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Impor</buttton></button>-->
 											  
 											   <button type="button" class="btn btn-success btn-sm tb-print" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</buttton></button>
 											
 											 
-											  <button type="button" class="btn btn-info btn-sm tb-revisi" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Revisi</buttton></button>
+											  <!--<button type="button" class="btn btn-info btn-sm tb-revisi" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Revisi</buttton></button>-->
 											</div>
                                         </td>
                                     </tr>
@@ -407,12 +407,12 @@ $(document).on("change","#unit",function(){
                             </tbody>
                             <tbody id="tb-empty">
                                 <tr >
-                                    <td colspan="6"> - kosong -</td>
+                                    <td colspan="5"> - kosong -</td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="6">&nbsp;</td>
+                                    <td colspan="5">&nbsp;</td>
                                 </tr>
                             </tfoot>
                         </table>

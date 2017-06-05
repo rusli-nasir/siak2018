@@ -11,7 +11,7 @@
                 $this->cur_tahun = $this->setting_model->get_tahun();
 			$this->load->library(array('form_validation','option'));
 			$this->load->helper('form');
-			$this->load->model(array('rsa_up_model','setting_up_model'));
+			$this->load->model(array('rsa_up_model','rsa_tambah_up_model','setting_up_model'));
 			$this->load->model("user_model");
                         $this->load->model("unit_model");
                         $this->load->model('menu_model');
@@ -1376,6 +1376,7 @@
                                     'kd_akun_kas' => '112111',
                                     'kd_unit' => $kd_unit,
                                     'deskripsi' => 'UP UNIT ' . $kd_unit,//$this->input->post('deskripsi'),
+                                    'jenis' => 'UP',
                                     'no_spm' => $this->input->post('nomor_trx'),
                                     'kredit' => '0',
                                     'debet' => $this->input->post('kredit'),
@@ -1710,6 +1711,42 @@
                     }else{
                             redirect('welcome','refresh');  // redirect ke halaman home
                     }
+                }
+
+                function get_notif_approve(){
+
+                    if($this->check_session->user_session()){
+
+                        $level = $this->check_session->get_level() ;
+
+                        $kode_unit_subunit = $this->check_session->get_unit();
+
+                        $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+
+                        $notif = $this->rsa_up_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
+
+                        echo $notif ;
+                    }
+
+                }
+
+                function get_notif_approve_all(){
+
+                    if($this->check_session->user_session()){
+
+                        $level = $this->check_session->get_level() ;
+
+                        $kode_unit_subunit = $this->check_session->get_unit();
+
+                        $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+
+                        $notif_up = $this->rsa_up_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
+
+                        $notif_tambah_up = $this->rsa_tambah_up_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
+
+                        echo $notif_up + $notif_tambah_up ;
+                    }
+
                 }
                 
                 

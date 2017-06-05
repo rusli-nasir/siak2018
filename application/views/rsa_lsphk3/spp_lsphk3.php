@@ -296,7 +296,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?=number_format($detail_lsphk3['nom'], 0, ",", ".")?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_lsphk3['terbilang'])?> Rupiah</span></b>)</li>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_lsphk3['terbilang'])?> <?php echo substr($detail_lsphk3['terbilang'],strlen($detail_lsphk3['terbilang'])-6,6) == 'Rupiah' ? '' : 'Rupiah' ; ?></span></b>)</li>
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=$i->uraian?></span></li>
                                                 <li>Nama Pihak Ketiga : <span id="penerima"><?=$u->nama_rekanan?></span></li>
                                                 <li>Alamat : <span id="alamat"><?=$u->alamat_rekanan?></span></li>

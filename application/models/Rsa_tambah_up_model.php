@@ -579,6 +579,65 @@ class Rsa_tambah_up_model extends CI_Model {
 //                    return array();
 //            }
         }
+
+        function get_unit_under_verifikator($id_user_verifikator){
+            $query = "SELECT kode_unit_subunit FROM rsa_verifikator_unit WHERE id_user_verifikator = '{$id_user_verifikator}' " ;
+
+            $q = $this->db->query($query);
+
+            return $q->result() ;
+
+        }
+
+
+
+                function get_notif_approve($kode_unit_subunit,$level,$id_user_verifikator){
+
+                    $query = '' ;
+
+
+                    if($level == '14'){ // PPK SUKPA
+                           $query = "SELECT COUNT(posisi) AS jml FROM trx_tambah_up WHERE posisi = 'SPP-DRAFT' AND kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1' " ; 
+
+                        }else if($level == '2'){ // KPA
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_tambah_up WHERE posisi = 'SPM-DRAFT-PPK' AND kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1' " ; 
+
+                        }else if($level == '3'){ // VERIFIKATOR
+
+                            // echo $id_user_verifikator ; die ;
+
+                            $unit = $this->get_unit_under_verifikator($id_user_verifikator);
+
+                            $str_unit = '' ;
+
+                            foreach($unit as $u){
+                                $str_unit = $str_unit . "'". $u->kode_unit_subunit . "'," ; 
+                            }
+
+                            $str_unit = substr($str_unit, 0, -1);
+
+                            
+
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_tambah_up WHERE posisi = 'SPM-DRAFT-KPA' AND kode_unit_subunit IN ({$str_unit}) AND aktif = '1' " ; 
+
+                           // echo $query ; die ;
+
+                        }else if($level == '11'){ // KBUU
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_tambah_up WHERE posisi = 'SPM-FINAL-VERIFIKATOR' AND aktif = '1' GROUP BY  posisi " ;
+
+                        }
+
+                        // echo $query ; die ;
+
+                    $q = $this->db->query($query);
+
+                    if($q->num_rows() > 0){
+                       return $q->row()->jml;
+                    }else{
+                        return '0';
+                    }
+
+        }
         
 //        function get_urut($kode_unit_subunit,$jenis,$tahun){
 //            $q = $this->db->query("SELECT IFNULL(MAX(urut),0) AS nt FROM trx_nomor_tambah_up WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = '{$jenis}'  AND tahun = '{$tahun}' ");

@@ -58,14 +58,20 @@ Class Serpis extends CI_Controller {
 		$sql2 = array();
 		$tabel1 = array(); $tabel2 = array(); $tabel3 = array(); $tabel4 = array();
 		$col_tabel1 = array(); $col_tabel2 = array(); $col_tabel3 = array(); $col_tabel4 = array();
-
+		// $i++;
+		$rekanan = array();
+		$kontrak = array();
+		$utama = array();
 		foreach ($vr2 as $k => $vr){
 				$tabel2 = $vr['barang'];
 				$tabel3 = $vr['kontrak'];
+				$kontrak[] = $vr['kontrak'];
 				$tabel4 = $vr['rekanan'];
+				$rekanan[] = $vr['rekanan'];
 				unset($vr['barang']); unset($vr['kontrak']); unset($vr['rekanan']);
-				
+
 				$tabel1 = $vr;
+				$utama[] = $vr;
 				if(is_array($tabel1) && count($tabel1)>0){
 					$col_tabel1 = array_keys($tabel1);
 				}
@@ -78,7 +84,7 @@ Class Serpis extends CI_Controller {
 				if(is_array($tabel4) && count($tabel4)>0){
 					$col_tabel4 = array_keys($tabel4);
 				}
-				
+
 				// utama ==> tabel1
 				if(is_array($tabel1) && count($tabel1)>0){
 					// print_r($tabel1); echo "<br />";
@@ -119,7 +125,7 @@ Class Serpis extends CI_Controller {
 					// echo "SQL2 : ".$sql."<br />";
 					$this->db->query($sql);
 				}
-				
+
 				// proses ==> tabel3
 				if(is_array($tabel3) && count($tabel3)>0){
 					$sql = "REPLACE INTO rsa_spm_prosespihak3(";
@@ -149,25 +155,50 @@ Class Serpis extends CI_Controller {
 					$this->db->query($sql);*/
 					$sql.= "('".implode("', '", $tabel4)."')";
 					// echo "SQL 4 : ".$sql."<br />";
-					$this->db->query($sql);
+					if($this->db->query($sql)){}
 				}
-
-				/*echo "<p>Preview Tabel :</p>";
-				echo "<pre>";
-				print_r($tabel1);
-				print_r($tabel2);
-				print_r($tabel3);
-				print_r($tabel4);
-				echo "</pre>";*/
+				// $i++;
+				// echo "<p>Preview Tabel :</p>";
+				// echo "<pre>";
+				// print_r($tabel1);
+				// print_r($tabel2);
+				// print_r($tabel3);
+				// print_r($tabel4);
+				// echo "</pre>";
+				// exit;
 		}
 
+		// foreach ($rekanan as $k => $v) {
+		// 	if(is_array($v) && count($v)>0){
+		// 		$sql = "REPLACE INTO rsa_spm_rekananpihak3(";
+		// 		$sql.= implode(", ",$col_tabel4).") VALUES ";
+		// 		// $i=0;
+		// 		/*foreach($tabel4 as $x){
+		// 			$sql4[$i]="('".implode("', '", $x)."')";
+		// 			$i++;
+		// 		}
+		// 		$sql.=implode(", ",$sql4);
+		// 		$this->db->query($sql);*/
+		// 		$sql.= "('".implode("', '", $v)."')";
+		// 		// echo "SQL 4 : ".$sql."<br /><br />";
+		// 		if($this->db->query($sql)){
+		// 		// 	echo "Import Rekanan #".$i." Sukses. SQL Query: ".$sql."<br/><br/>";
+		// 		}
+		// 	}
+		// }
+
+		// echo "<p>Preview Tabel :</p>";
+		// echo "<pre>";
+		// print_r($utama);
+		// echo "</pre>";
+		// exit;
 
 		redirect('dashboard','refresh');
-		
+
 	}
 	function daftar_lsp3($sumber_dana = "")
     {
-        
+
 		$data['cur_tahun'] = $this->cur_tahun ;
         //        var_dump($this->check_session->get_unit());die;
 		/* check session	*/
@@ -185,7 +216,7 @@ Class Serpis extends CI_Controller {
 			$this->load->view('main_template',$data);
 		}else{
 			redirect('welcome','refresh');	// redirect ke halaman home
-		}		
+		}
     }
 	  function tabel_lsp3($sumber_dana,$tahun){
         /* check session	*/
@@ -196,7 +227,7 @@ Class Serpis extends CI_Controller {
             }else{
                     redirect('welcome','refresh');	// redirect ke halaman home
             }
-        
+
     }
 	 function usulan_lsp3($kode,$sumber_dana){
 

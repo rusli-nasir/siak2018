@@ -67,9 +67,15 @@ class Subunit_model extends CI_Model{
 
 	function get_single_subunit($where="",$field){
 
-		$this->db->where('kode_subunit',$where);
+		$rba = $this->load->database('rba', TRUE);
 
-		$query = $this->db->get('rsa_subunit')->row();
+		// var_dump($where) ; die ;
+
+		$rba->where('kode_subunit',$where);
+
+		$query = $rba->get('subunit')->row();
+
+
 
 		if(empty($field)){
 			return $query ;

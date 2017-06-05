@@ -1,3 +1,12 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    // $("#notif-dpa").load( "<?=site_url('dpa/get_notif_dpa')?>");
+     // $("#notif-dpa-gup").load( "<?=site_url('dpa/get_notif_dpa_siap/1')?>");
+
+     $("#notif-up-spp-spm").load( "<?=site_url('rsa_up/get_notif_approve')?>");
+     $("#notif-tambah-up-spp-spm").load( "<?=site_url('rsa_tambah_up/get_notif_approve')?>");
+});
+</script>
 <div id="page-wrapper" >
             <div id="page-inner">
                 <div class="row">
@@ -39,7 +48,7 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
-                     
+                      <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span>
                      
                   </div>
                     
@@ -50,6 +59,7 @@
                       <h4>PUP</h4>
                       </a>
                       </div>
+                       <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
                      
                      
                   </div>
@@ -84,7 +94,7 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span>
                      
                   </div>
                     
@@ -95,7 +105,7 @@
                       <h4>PUP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
                      
                   </div>
                     
@@ -145,7 +155,7 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span>
                      
                   </div>
                     
@@ -156,7 +166,7 @@
                       <h4>PUP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
                      
                   </div>
                     
@@ -179,7 +189,7 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
-                        
+                       <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span> 
                         
                      
                      
@@ -192,7 +202,7 @@
                       <h4>PUP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
                      
                   </div>
                     

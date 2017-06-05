@@ -31,6 +31,19 @@ var pj_p_nilai_all = [];
 
 $(document).ready(function(){
 
+    // $(document).ready(function(){
+
+    var un = '<?php echo $this->uri->segment(5); ?>';
+
+    if((un=='1') || (un=='3')){
+
+        bootbox.alert({
+            title: "PESAN",
+            message: "SEKARANG SILAHKAN BUAT KUITANSI SEBANYAK-BANYAKNYA.<br>THX.",
+        });
+
+    }
+
     autosize($('textarea'));
 
 
@@ -49,28 +62,38 @@ $(document).ready(function(){
                         var d = JSON.parse(data);
                         // if(d.no_bukti)
                         var s = d.proses;
+                        var u = '<?php echo $this->uri->segment(5); ?>';
+
                         if(s.substr(0, 1) == '3'){
+                            if((u=='1') || (u=='3') || (u=='5')){ // GUP , TP dan KS
+                                if(d.aktif=='1'){
+                                    el.addClass('btn-primary');
+                                    el.html('<i class="glyphicon glyphicon-file"></i>');
+                                    el.attr('title','STATUS : KUITANSI');
+                                    el.attr('data-original-title','STATUS : KUITANSI');
+                                    el.attr('onclick','bootbox.alert("STATUS : KUITANSI <br>KUITANSI : '+ d.no_bukti +'")') ;
 
-                            if(d.aktif=='1'){
-                                el.addClass('btn-primary');
-                                el.html('<i class="glyphicon glyphicon-file"></i>');
-                                el.attr('title','STATUS : KUITANSI');
-                                el.attr('data-original-title','STATUS : KUITANSI');
-                                el.attr('onclick','bootbox.alert("STATUS : KUITANSI <br>KUITANSI : '+ d.no_bukti +'")') ;
+                                    //<input type="checkbox" disabled="disabled" checked="checked" aria-label="" rel="" class="">
 
-                                //<input type="checkbox" disabled="disabled" checked="checked" aria-label="" rel="" class="">
-
-                                $('.ck_' + rka).prop('disabled','disabled');
-                                $('.ck_' + rka).prop('checked','checked');
-                                $('.ck_' + rka).prop('rel','');
-                                $('.ck_' + rka).prop('class','');
-                            }else{
-                                el.addClass('btn-danger');
-                                el.addClass('btn_batal');
-                                el.attr('title','BATALKAN DPA !');
-                                el.attr('data-original-title','BATALKAN DPA !');
-                                el.removeAttr('onclick') ;
-                                el.html('<i class="glyphicon glyphicon-remove-sign"></i>'); 
+                                    $('.ck_' + rka).prop('disabled','disabled');
+                                    $('.ck_' + rka).prop('checked','checked');
+                                    $('.ck_' + rka).prop('rel','');
+                                    $('.ck_' + rka).prop('class','');
+                                }else{
+                                    el.addClass('btn-danger');
+                                    el.addClass('btn_batal');
+                                    el.attr('title','BATALKAN DPA !');
+                                    el.attr('data-original-title','BATALKAN DPA !');
+                                    el.removeAttr('onclick') ;
+                                    el.html('<i class="glyphicon glyphicon-remove-sign"></i>');
+                                }
+                            }else if(u=='2'){ // LS PEGAWAI
+                                    el.addClass('btn-danger');
+                                    el.addClass('btn_batal');
+                                    el.attr('title','BATALKAN DPA !');
+                                    el.attr('data-original-title','BATALKAN DPA !');
+                                    el.removeAttr('onclick') ;
+                                    el.html('<i class="glyphicon glyphicon-remove-sign"></i>');
                             }
 
                         }else if(s.substr(0, 1) == '4'){
@@ -80,7 +103,7 @@ $(document).ready(function(){
                                 el.attr('data-original-title','STATUS : SPP');
                                 el.attr('onclick','bootbox.alert("STATUS : SPP <br>KUITANSI : '+ d.no_bukti +'<br>SPP : '+ d.str_nomor_trx +'")') ;
                         }else if(s.substr(0, 1) == '5'){
-                                el.addClass('btn-success');    
+                                el.addClass('btn-success');
                                 el.attr('title','STATUS : SPM');
                                 el.attr('data-original-title','STATUS : SPM');
                                 el.attr('onclick','bootbox.alert("STATUS : SPM <br>KUITANSI : '+ d.no_bukti +'<br>SPP : '+ d.str_nomor_trx +'<br>SPM : '+ d.str_nomor_trx_spm +'")') ;
@@ -100,7 +123,7 @@ $(document).ready(function(){
                         el.removeAttr('onclick') ;
                         el.html('<i class="glyphicon glyphicon-remove-sign"></i>');
                     }
-                    
+
               }
             });
     });
@@ -117,7 +140,7 @@ $(document).ready(function(){
             event.preventDefault();
         }
     });
-    
+
     $('[class^="ck_"]').each(function(){
         //$('#btn-kuitansi').attr('disabled','disabled');
 //                        aktv = '0';
@@ -129,7 +152,7 @@ $(document).ready(function(){
 
         }
     });
-    
+
     $('[class^="all_ck_"]').each(function(){
         //$('#btn-kuitansi').attr('disabled','disabled');
 //                        aktv = '0';
@@ -141,28 +164,28 @@ $(document).ready(function(){
 
         }
     });
-    
+
     $(document).on("click","#myModalKuitansi #nmpppk",function(){
             $('#myModalP3K').modal('show');
     });
-        
+
     $(document).on("click","#myModalKuitansi #nippppk",function(){
             $('#myModalP3K').modal('show');
     });
-        
+
     $(document).on("click","#btn-pilih-pppk-ojo-dikopi-id-iki-yo-lek",function(){
         if($('input[name="id_user"]:checked').length > 0){
             var id_user = $("input[name='id_user']:checked").val();
             var nm_pppk = $("#nm_input_" + id_user).val();
             var nip_pppk = $("#nip_input_" + id_user).val();
-            
+
             $('#myModalKuitansi #nmpppk').text(nm_pppk);
             $('#myModalKuitansi #editpppk').remove();
             $('#myModalKuitansi #nmpppk').after('<span id="editpppk"> [ <a href="#" data-toggle="modal" data-target="#myModalP3K" style="cursor:pointer">edit</a> ]</span>');
             $('#myModalKuitansi #nippppk').text(nip_pppk);
-            
+
             $('#myModalP3K').modal('hide');
-            
+
         }else{
 //            alert('Mohon pilih salah satu PPPK.');
                 bootbox.alert({
@@ -172,47 +195,47 @@ $(document).ready(function(){
                     animate:false,
                 });
         }
-            
+
         });
-        
+
         $('#myModalP3K').on('show.bs.modal', function (e) {
             // do something...
-            
-            
+
+
         })
 
   // == CREATE BY DHANU // DELETE BUT CONFIRM IF CAUSED ERROR
   $(document).on("focusin","#myModalKuitansi2 #nmpppk",function(){
             $('#myModalP3K3').modal('show');
         });
-        
+
     $(document).on("focusin","#myModalKuitansi2 #nippppk",function(){
             $('#myModalP3K3').modal('show');
         });
-        
+
     $(document).on("click","#btn-pilih-pppk",function(){
         if($('input[name="id_user"]:checked').length > 0){
             var id_user = $("input[name='id_user']:checked").val();
             var nm_pppk = $("#nm_input_" + id_user).val();
             var nip_pppk = $("#nip_input_" + id_user).val();
-            
+
             $('#myModalKuitansi2 #nmpppk').text(nm_pppk);
             $('#myModalKuitansi2 #editpppk').remove();
             $('#myModalKuitansi2 #nmpppk').after('<span id="editpppk"> [ <a href="#" data-toggle="modal" data-target="#myModalP3K3" style="cursor:pointer">edit</a> ]</span>');
             $('#myModalKuitansi2 #nippppk').text(nip_pppk);
-            
+
             $('#myModalP3K3').modal('hide');
-            
+
         }else{
             alert('Mohon pilih salah satu PPPK.');
         }
-            
+
         });
-        
+
         $('#myModalP3K3').on('show.bs.modal', function (e) {
             // do something...
-            
-            
+
+
         })
 
   // == CREATE BY DHANU // DELETE BUT CONFIRM IF CAUSED ERROR
@@ -263,7 +286,7 @@ $(document).ready(function(){
 <?php
     // show manual override, untuk masukkan data secara manual
     if($this->cantik_model->manual_override()){
-?>   
+?>
     $('#kriteria_override').on('hidden.bs.modal',function(e){
         $('#form_kriteria')[0].reset();
     });
@@ -309,6 +332,8 @@ $(document).ready(function(){
         var akun = 'akun='+j;
         console.log('Akun SPPLS : ' + j);
         var data = $(this).serialize() + '&' + akun;
+				var a=confirm('Yakin dengan isian data yang di-isikan?');
+				if(a){
         $.ajax({
             type:"POST",
             url :"<?php echo site_url("tor/proses_override_sppls"); ?>",
@@ -322,6 +347,9 @@ $(document).ready(function(){
                 }
             }
         });
+				}else{
+					return false;
+				}
     });
     $('.what_a_fck').on('click',function(e){
         e.preventDefault();
@@ -333,7 +361,7 @@ $(document).ready(function(){
 
     // untuk pembatalan dpa
     // $('.btn_batal').on('click',function(e){ // TAK UBAH MAS , BY IDRIS
-    $( document ).on( "click", ".btn_batal", function(e){ 
+    $( document ).on( "click", ".btn_batal", function(e){
       e.preventDefault();
       var akun = $(this).attr('rel');
       $('.yakin_batal').prop('id',akun);
@@ -368,8 +396,8 @@ $(document).ready(function(){
     });
     // end here
   // == END HERE
-  
- 
+
+
     $(document).on("click",'#btn-kuitansi2',function(){
             // PREPARE GLOBAL VAR
 //            in_all = 0;
@@ -500,7 +528,7 @@ $(document).ready(function(){
 						// var checked = $('[class^="ck_'+ kode_usulan_belanja +'"]').
 						var id_kontrak = '';
                         var i = 0 ;
-						
+
                         $('[class^="ck_'+ kode_usulan_belanja +'"]').each(function(){
                             //$('#btn-kuitansi').attr('disabled','disabled');
                             var el = $(this).attr('rel');
@@ -602,14 +630,20 @@ $(document).ready(function(){
         $('[id^="td_kumulatif_"]').each(function(){
             var kd_usul = $(this).attr('rel');
 
-            if($(this).html() == '0'){
+            if($(this).text() != '0'){
 //                console.log(kd_usul);
-                $('[id^="tr_empty_'+ kd_usul +'"]').hide();
-                $('[id^="tr_unit_'+ kd_usul +'"]').hide();
-                $('[id^="tr_akun_'+ kd_usul +'"]').hide();
+                //$('[id^="tr_empty_'+ kd_usul +'"]').hide();
+                //$('[id^="tr_unit_'+ kd_usul +'"]').hide();
+                //$('[id^="tr_akun_'+ kd_usul +'"]').hide();
+                
+
+                $('[class^="tr_dpa_'+ kd_usul +'"]').hide();
+            }else{
+
                 $('[id^="tr_total_'+ kd_usul +'"]').hide();
                 $('[id^="tr_usulan_'+ kd_usul +'"]').hide();
                 $('[id^="tr_sisa_'+ kd_usul +'"]').hide();
+
             }
 
         });
@@ -659,8 +693,16 @@ $(document).ready(function(){
         $(document).on('change', '[class^="all_ck_"]', function(){
             var str = $(this).attr('rel');
             var badge_ = $('[id^="badge_id_'+ str +'"]').html();
-//            console.log(badge_);
-            var badge = badge_.trim();
+           // console.log(badge_);
+            var badge = '';
+
+            if (!(badge_ === undefined || badge_ === null)) {
+                 // do something
+                 badge = badge_.trim(); 
+            }
+
+            // console.log(badge);
+
 //            var kd_usulan_x = str.substr(0,18);
             var el = $(this) ;
 //            if( kd_usulan_x_tmp != kd_usulan_x ){
@@ -972,40 +1014,53 @@ $(document).ready(function(){
 
 
         });
-        
+
         $('#myModalKuitansi').on('show.bs.modal', function (e) {
 //            // do something...
 //            td_sub_tot_121130010101010101521213001
-//            
+//
 //            ck_121130010101010101521213001
 
             $('input[name="id_user"]').each(function(){
                 $(this).prop('checked', false);
             });
+
             
-            var tot_select = 0 ;
-            var saldo_kas =  parseInt(string_to_angka($('#saldo_kas').text()));
-            $('[class^="ck_"]').each(function(){
-                var relck = $(this).attr('rel');
-                if(($(this).is(':checked'))&&($(this).is(':enabled'))){
-                    var sub_tot_select = $('#td_sub_tot_' + relck).text();
-                        tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
-                }
-            });
+
+
 //            console.log(saldo_kas + ' | ' + tot_select);
-            if(saldo_kas >= tot_select){
-                return true;
-            }else{
-//                alert('Mohon maaf jumlah saldo UP anda tidak mencukupi !');
-                bootbox.alert({
-                    size: "small",
-                    title: "Perhatian",
-                    message: 'Maaf jumlah saldo UP anda tidak cukup ^_^',
-                    animate:false,
-                });
-                return false;
-            }
+
             
+            /* KONDISI TIDAK DIPAKAI BIAR BISA BUAT KUITANSI SEBANYAK BANYAKNYA DULU , DAN DIPINDAH PAS BUAT SPP */
+
+            // var tot_select = 0 ;
+            // var saldo_kas =  parseInt(string_to_angka($('#saldo_kas').text()));
+            // $('[class^="ck_"]').each(function(){
+            //     var relck = $(this).attr('rel');
+            //     if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+            //         var sub_tot_select = $('#td_sub_tot_' + relck).text();
+            //             tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+            //     }
+            // });
+
+            // if(saldo_kas >= tot_select){
+            //     return true;
+            // }else{
+            //     bootbox.alert({
+            //         size: "small",
+            //         title: "Perhatian",
+            //         message: 'Maaf jumlah saldo UP anda tidak cukup',
+            //         animate:false,
+            //     });
+            //     return false;
+            // }
+
+            /* END KONDISI */
+
+            return true;
+
+
+
         });
 
         $(document).on('click', '[id^="pilih_pajak_"]',  function(e){
@@ -1087,7 +1142,7 @@ $(document).ready(function(){
             // console.log(rel_1);
 
 
-            if(($(this).val() != '99')&&($(this).val() != '98')){
+            if(($(this).val() != '99')&&($(this).val() != '98')&&($(this).val() != '97')&&($(this).val() != '96')&&($(this).val() != '95')&&($(this).val() != '94')&&($(this).val() != '89')){
                 if($(this).is(':checked')){
 
                     var el = $(this);
@@ -1133,7 +1188,7 @@ $(document).ready(function(){
                 }
             }else{
 
-            	if($(this).val() == '98'){
+            	if(($(this).val() == '98')||($(this).val() == '97')||($(this).val() == '96')||($(this).val() == '95')||($(this).val() == '94')||($(this).val() == '89')){
 
 	            	if($(this).is(':checked')){
 
@@ -1158,7 +1213,7 @@ $(document).ready(function(){
 	                }
 
 
-	                
+
 	            }
 
                 if($(this).is(':checked')){
@@ -1201,8 +1256,22 @@ $(document).ready(function(){
             get_total_pajak();
         });
 
-
+        $(document).on('focusout', '#pj_nilai_81', function(){
+            get_total_pajak();
+        });
         $(document).on('focusout', '#pj_nilai_51', function(){
+            get_total_pajak();
+        });
+        $(document).on('focusout', '#pj_nilai_71', function(){
+            get_total_pajak();
+        });
+        $(document).on('focusout', '#pj_nilai_101', function(){
+            get_total_pajak();
+        });
+        $(document).on('focusout', '#pj_nilai_111', function(){
+            get_total_pajak();
+        });
+        $(document).on('focusout', '#pj_nilai_151', function(){
             get_total_pajak();
         });
 
@@ -1219,6 +1288,46 @@ $(document).ready(function(){
 
             if ($('#pj_p_51').is(':checked')) {
                 if(!$('#pj_nilai_51').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#pj_p_71').is(':checked')) {
+                if(!$('#pj_nilai_71').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#pj_p_101').is(':checked')) {
+                if(!$('#pj_nilai_101').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#pj_p_111').is(':checked')) {
+                if(!$('#pj_nilai_111').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#pj_p_151').is(':checked')) {
+                if(!$('#pj_nilai_151').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#pj_p_81').is(':checked')) {
+                if(!$('#pj_nilai_81').validationEngine("validate")){
 
                     p_ok = 'not_ok';
 
@@ -1283,7 +1392,7 @@ $(document).ready(function(){
                 if(pj_p_dpp[k]=='1'){
                     str_h = str_h + v + ' ' + pj_p_persen[k] + '% (dpp) <br />' ;
                 }else{
-                    if((pj_p_persen[k] != '99')&&(pj_p_persen[k] != '98')){
+                    if((pj_p_persen[k] != '99')&&(pj_p_persen[k] != '98')&&(pj_p_persen[k] != '97')&&(pj_p_persen[k] != '96')&&(pj_p_persen[k] != '95')&&(pj_p_persen[k] != '94')&&(pj_p_persen[k] != '89')){
                         str_h = str_h + v + ' ' + pj_p_persen[k] + '%  <br />' ;
                     }else{
                         str_h = str_h + v + ' <br />' ;
@@ -1296,7 +1405,7 @@ $(document).ready(function(){
             });
 
             if(str_h == ''){
-                $('.row_pajak_' + rel).html('<a data-toggle="modal" rel="'+ in_all + '_' + rel +'" id="edit_p_' + rel + '" href="#myModalPajakEdit" style="margin: 0 5px 0 5px;">- pilih -</a>');
+                $('.row_pajak_' + rel).html('<a data-toggle="modal" rel="'+ in_all + '_' + rel +'" id="edit_p_' + rel + '" href="#myModalPajakEdit" style="margin: 0 5px 0 5px;">[Edit]</a>');
                 $('.row_pajak_nom_' + rel).html(str_i);
             }else{
                 $('.row_pajak_' + rel).html(str_h + '[<a data-toggle="modal" href="#myModalPajakEdit" rel="'+ in_all + '_' + rel +'" id="edit_p_' + rel + ' " >Edit</a>]');
@@ -1351,7 +1460,7 @@ $(document).ready(function(){
             var rel_modal_a = rel_modal_.split("_");
             var rel_modal = rel_modal_a[1];
 //            console.log(rel_modal);
-            if(($(this).val() != '99')&&($(this).val() != '98')){
+            if(($(this).val() != '99')&&($(this).val() != '98')&&($(this).val() != '97')&&($(this).val() != '96')&&($(this).val() != '95')&&($(this).val() != '94')&&($(this).val() != '89')){
                 if($(this).is(':checked')){
 
                     var el = $(this);
@@ -1387,7 +1496,7 @@ $(document).ready(function(){
                 }
             }else{
 
-                if($(this).val() == '98'){
+                if(($(this).val() == '98')||($(this).val() == '97')||($(this).val() == '96')||($(this).val() == '95')||($(this).val() == '94')||($(this).val() == '89')){
 
                     if($(this).is(':checked')){
 
@@ -1412,7 +1521,7 @@ $(document).ready(function(){
                     }
 
 
-                    
+
                 }
 
                 if($(this).is(':checked')){
@@ -1458,7 +1567,23 @@ $(document).ready(function(){
             get_total_pajak_edit();
         });
 
+        $(document).on('focusout', '#edit_pj_nilai_81', function(){
+            get_total_pajak_edit();
+        });
+        $(document).on('focusout', '#edit_pj_nilai_71', function(){
+            get_total_pajak_edit();
+        });
+
         $(document).on('focusout', '#edit_pj_nilai_51', function(){
+            get_total_pajak_edit();
+        });
+        $(document).on('focusout', '#edit_pj_nilai_101', function(){
+            get_total_pajak_edit();
+        });
+        $(document).on('focusout', '#edit_pj_nilai_111', function(){
+            get_total_pajak_edit();
+        });
+        $(document).on('focusout', '#edit_pj_nilai_151', function(){
             get_total_pajak_edit();
         });
 
@@ -1482,7 +1607,7 @@ $(document).ready(function(){
                     $('#edit_pj_dpp_' + v).prop('checked',true);
                 }
 
-                if((pj_p_persen_all_[k] == '99')||(pj_p_persen_all_[k] == '98')){
+                if((pj_p_persen_all_[k] == '99')||(pj_p_persen_all_[k] == '98')||(pj_p_persen_all_[k] == '97')||(pj_p_persen_all_[k] == '96')||(pj_p_persen_all_[k] == '95')||(pj_p_persen_all_[k] == '94')||(pj_p_persen_all_[k] == '89')){
                     $('#edit_pj_nilai_' + v).removeAttr('disabled');
                 }
 
@@ -1524,6 +1649,46 @@ $(document).ready(function(){
 
             if ($('#edit_pj_p_51').is(':checked')) {
                 if(!$('#edit_pj_nilai_51').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#edit_pj_p_71').is(':checked')) {
+                if(!$('#edit_pj_nilai_71').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#edit_pj_p_101').is(':checked')) {
+                if(!$('#edit_pj_nilai_101').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#edit_pj_p_111').is(':checked')) {
+                if(!$('#edit_pj_nilai_111').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#edit_pj_p_151').is(':checked')) {
+                if(!$('#edit_pj_nilai_151').validationEngine("validate")){
+
+                    p_ok = 'not_ok';
+
+                }
+            }
+
+            if ($('#edit_pj_p_81').is(':checked')) {
+                if(!$('#edit_pj_nilai_81').validationEngine("validate")){
 
                     p_ok = 'not_ok';
 
@@ -1593,7 +1758,7 @@ $(document).ready(function(){
                 if(pj_p_dpp[k]=='1'){
                     str_h = str_h + v + ' ' + pj_p_persen[k] + '% (dpp) <br />' ;
                 }else{
-                    if((pj_p_persen[k] != '99')&&(pj_p_persen[k] != '98')){
+                    if((pj_p_persen[k] != '99')&&(pj_p_persen[k] != '98')&&(pj_p_persen[k] != '97')&&(pj_p_persen[k] != '96')&&(pj_p_persen[k] != '95')&&(pj_p_persen[k] != '94')&&(pj_p_persen[k] != '89')){
                         str_h = str_h + v + ' ' + pj_p_persen[k] + '%  <br />' ;
                     }else{
                         str_h = str_h + v + ' <br />' ;
@@ -1668,6 +1833,16 @@ $(document).ready(function(){
             // var kode_akun_tambah = kd_tambah;
             var ok = 'true';
 
+            $('#myModalKuitansi .input_boot').each(function(){
+                var el = $(this).text();
+                if( el.trim() == '- edit here -' ){
+
+                    ok = 'false';
+
+                }
+            });
+
+
             $('#myModalKuitansi .edit_here').each(function(){
                 var el = $(this).text();
                 if( el.trim() == '- edit here -' ){
@@ -1677,7 +1852,7 @@ $(document).ready(function(){
                 }
             });
 
-//            console.log($('#myModalKuitansi .sum_tot_netto').text()); 
+//            console.log($('#myModalKuitansi .sum_tot_netto').text());
 
             if(ok == 'true'){
                if($('#myModalKuitansi .sum_tot_netto').text() == '0'){
@@ -1739,7 +1914,7 @@ $(document).ready(function(){
 //            console.log(JSON.stringify(pj_p_persen_all));
 //            console.log(JSON.stringify(pj_p_nilai_all));
 
-                var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + uraian + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + kode_akun_tambah_ + '&penerima_uang=' + penerima_uang + '&penerima_uang_nip=' + penerima_uang_nip + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi #nippppk').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi #nippumk').text() + '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all) ; // '&penerima_uang_nip=' + penerima_uang_nip +
+                var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + encodeURIComponent(uraian) + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + kode_akun_tambah_ + '&penerima_uang=' + encodeURIComponent(penerima_uang) + '&penerima_uang_nip=' + penerima_uang_nip + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi #nippppk').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi #nippumk').text() + '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all) ; // '&penerima_uang_nip=' + penerima_uang_nip +
                 $.ajax({
                     type:"POST",
                     url :"<?=site_url("kuitansi/submit_kuitansi")?>",
@@ -1768,6 +1943,60 @@ $(document).ready(function(){
                     animate:false,
                 });
             }
+
+        });
+
+		$(document).on("click",".input_boot",function(){
+
+			var el = $(this) ;
+
+			var id_name = el.attr('id').toUpperCase();
+
+			var elval = el.text();
+
+			elval = elval.trim() ;
+
+			var val = '' ;
+
+			if(elval && (elval != '- edit here -')){
+				val = elval ;
+			}
+
+            var dialog = bootbox.prompt({ 
+			  size: "large",
+			  title: id_name, 
+			  value: val,
+			  inputType: 'textarea',
+			  onEscape: false,
+			  closeButton:false,
+              animate:false,
+			  callback: function(res){ 
+			  	if(res){
+			  		res = res.trim() ;
+			  		if(res != ''){
+			  			el.text(res);	
+
+			  		}else{
+			  			el.text('- edit here -');
+			  		}
+			  	}else{
+			  		if(elval == '- edit here -'){
+			  			el.text('- edit here -');	
+
+			  		}else{
+			  			el.text(elval);
+			  		}
+			  	}
+			  }
+			}) ;
+
+
+            dialog.init(function(){
+                dialog.find('.bootbox-body').prepend( '<div class="alert alert-warning">Apabila isian kosong harap diberi tanpa strip "-" ( tanpa tanda kutip ) untuk keseragaman</div>');
+                
+            });
+
+
 
         });
 
@@ -1951,25 +2180,25 @@ function get_total_pajak_edit(){
 </table>
                     </div>
                                                 <div class="col-lg-4">
-                                                    
+
                         <?php if($jenis == '1'): ?>
-                        <div class="panel panel-danger" style="margin-bottom: 0;">
+                        <!-- <div class="panel panel-danger" style="margin-bottom: 0;">
                             <div class="panel-heading">
                               <h3 class="panel-title">UP TERSEDIA</h3>
                             </div>
                             <div class="panel-body">
                                 <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?=number_format(get_saldo_up($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?></span>,-</span></h3>
                             </div>
-                        </div>
-                        <?php elseif($jenis == '2'): ?>
-                        <div class="panel panel-danger" style="margin-bottom: 0;">
+                        </div> -->
+                        <?php elseif($jenis == '3'): ?>
+                        <!-- <div class="panel panel-danger" style="margin-bottom: 0;">
                             <div class="panel-heading">
                               <h3 class="panel-title">TUP TERSEDIA</h3>
                             </div>
                             <div class="panel-body">
-                                <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?=number_format(0, 0, ",", ".")?></span>,-</span></h3>
+                                <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?=number_format(get_saldo_tup($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?></span>,-</span></h3>
                             </div>
-                        </div>
+                        </div> -->
                         <?php else: ?>
                                                     &nbsp;
                         <?php endif; ?>
@@ -2032,6 +2261,7 @@ function get_total_pajak_edit(){
                                 <?php $impor = 0 ; ?>
                                 <?php if(!empty($detail_akun_rba)): ?>
                                 <?php foreach($detail_akun_rba as $u){ ?>
+
                                     <?php if($temp_text_unit != $u->nama_subunit.$u->nama_sub_subunit): ?>
                                     <tr id="tr_empty_<?=$u->kode_usulan_belanja?>">
                                         <td colspan="8">&nbsp;</td>
@@ -2059,6 +2289,17 @@ function get_total_pajak_edit(){
                                         <!--<td colspan="8">&nbsp;</td>-->
                                     <?php endif; ?>
                                     <?php // echo '<pre>';var_dump($detail_rsa_dpa);echo '</pre>';?>
+
+                                    <?php // if(empty($detail_rsa_dpa)):?>
+
+                                    <tr id="" height="25px" style="" class="tr_dpa_<?=$u->kode_usulan_belanja?>" >
+                                        <td colspan="8" style="text-align:center">- kosong -</td>
+                                    </tr>
+                                    <tr id="" height="25px" style="" class="tr_dpa_<?=$u->kode_usulan_belanja?>" >
+                                        <td colspan="8" style="text-align:center"></td>
+                                    </tr>
+
+                                    <?php // endif; ?>
                                     <?php $i=0; foreach($detail_rsa_dpa as $ul){ ?>
                                         <?php $impor = $ul->impor; ?>
                                         <?php if(( $ul->kode_usulan_belanja == $u->kode_usulan_belanja) && (substr($ul->proses,1,1) == $jenis) ): ?>
@@ -2071,11 +2312,11 @@ function get_total_pajak_edit(){
 												<?php
 													}
 												?>
-													
+
                                                     <?php if(substr($ul->proses,1,1)=='1'){echo '<span class="badge badge-gup" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">GP</span>';}elseif(substr($ul->proses,1,1)=='2'){echo '<span class="badge badge-lp" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">LP</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-l3" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">L3</span>';}elseif(substr($ul->proses,1,1)=='3'){echo '<span class="badge badge-tup" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">TP</span>';}elseif(substr($ul->proses,1,1)=='5'){echo '<span class="badge badge-ks" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">KS</span>';}else{} ?> <?=$ul->kode_akun_tambah?>
                                                 </td>
                                                 <td ><?=$ul->deskripsi?></td>
-                                                <td ><?=$ul->volume?></td>
+                                                <td ><?=$ul->volume + 0?></td>
                                                 <td ><?=$ul->satuan?></td>
                                                 <td style="text-align: right"><?=number_format($ul->harga_satuan, 0, ",", ".")?></td>
                                                 <td style="text-align: right" id="td_sub_tot_<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>">
@@ -2133,7 +2374,7 @@ function get_total_pajak_edit(){
                                                 <td align="center">
 
                                                     <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait.."><i class="glyphicon glyphicon-repeat"></i></button>
-                                                    
+
                                                 </td>
                                                 <td>
                                                     <div class="input-group">
@@ -2170,7 +2411,7 @@ function get_total_pajak_edit(){
                                                 </td>
                                                 <?php else: ?>
                                                 <td align="center">&nbsp;
-                                                  
+
                                                 </td>
                                                 <td>
                                                     <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Proses</button>
@@ -2231,6 +2472,7 @@ function get_total_pajak_edit(){
 
                                 <?php } ?>
                                 <?php else: ?>
+                                    
 
                                 <?php endif; ?>
                                     <tr id="tr_kosong" height="25px" style="display: none" class="alert alert-warning" >
@@ -2330,7 +2572,7 @@ function get_total_pajak_edit(){
 			</tr>
 			<tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
 			<tr>
@@ -2340,7 +2582,7 @@ function get_total_pajak_edit(){
 			</tr>
                         <tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
 			<tr class="tr_up">
@@ -2361,7 +2603,7 @@ function get_total_pajak_edit(){
 			<tr class="tr_up">
 				<td colspan="3">Untuk Pembayaran</td>
 				<td>: </td>
-                                <td colspan="7"><span class="edit_here" contenteditable="true" placeheld="yes" id="uraian">- edit here -</span></td>
+                                <td colspan="7"><span id="uraian" class="input_boot" style="cursor:pointer">- edit here -</span></td> <!--contenteditable="true" class="edit_here"-->
 			</tr>
 			<tr class="tr_up">
 				<td colspan="3">Sub Kegiatan</td>
@@ -2370,7 +2612,7 @@ function get_total_pajak_edit(){
 			</tr>
                         <tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
                         <tr>
@@ -2414,15 +2656,15 @@ function get_total_pajak_edit(){
 			</tr>
                         <tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
 			<tr>
-                            <td colspan="7">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                            <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
                                 Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
                             </td>
-                            <td colspan="4">
+                            <td colspan="4" style="vertical-align: top;">
                                 Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y"); ?><br />
                                 Penerima Uang
                             </td>
@@ -2436,12 +2678,12 @@ function get_total_pajak_edit(){
 				</td>
                         </tr>
                         <tr >
-                            <td colspan="7" style="border-bottom: 1px solid #000">
+                            <td colspan="7" style="border-bottom: 1px solid #000;vertical-align: bottom;">
                                 <span class="edit_here" id="nmpppk" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nm_lengkap']; ?>- edit here -</span><br>
                                     NIP. <span class="edit_here" id="nippppk" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nip'] ; ?>- edit here -</span>
                                     </td>
-                            <td colspan="4" style="border-bottom: 1px solid #000"><span class="edit_here" contenteditable="true" id="penerima_uang">- edit here -</span><br />
-                                NIP. <span class="edit_here" contenteditable="true" id="penerima_uang_nip">- edit here -</span>
+                            <td colspan="4" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span class="input_boot" style="cursor:pointer;white-space: pre-line;" id="penerima_uang">- edit here -</span><br />
+                                NIP. <span class="input_boot" style="cursor:pointer" id="penerima_uang_nip">- edit here -</span>
                                 </td>
 			</tr>
                         <tr >
@@ -2494,8 +2736,8 @@ function get_total_pajak_edit(){
 				</td>
                         </tr>
                         <tr>
-                            <td colspan="11" ><span class="edit_here" contenteditable="true" id="penerima_barang">- edit here -</span><br />
-                                    NIP. <span class="edit_here" contenteditable="true" id="penerima_barang_nip">- edit here -</span>
+                            <td colspan="11" ><span class="input_boot" id="penerima_barang" style="cursor:pointer">- edit here -</span><br />
+                                    NIP. <span class="input_boot" id="penerima_barang_nip" style="cursor:pointer">- edit here -</span>
 				</td>
 			</tr>
 
@@ -2552,6 +2794,26 @@ function get_total_pajak_edit(){
                             </td>
                             <td>
                                 <input class="form-control input-sm pj_nilai_ppn" disabled="disabled" name="pajak[0][2]" id="pj_nilai_1" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="81_ppn" id="pj_p_81" name="pajak[80][0]" type="checkbox" class="pj_p_ppn" value="89" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="81" id="pj_dpp_81" disabled="disabled" class="pj_dpp_ppn" name="pajak[80][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="pj_nilai_81" class="form-control input-sm pj_nilai_ppn xnumber validate[required]" disabled="disabled" name="pajak[80][2]" type="text" />
                             </td>
                         </tr>
                         <tr>
@@ -2701,6 +2963,26 @@ function get_total_pajak_edit(){
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="71_pphps22" id="pj_p_71" name="pajak[61][0]" type="checkbox" class="pj_p_pphps22" value="97" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="71" id="pj_dpp_71" disabled="disabled" class="pj_dpp_pphps22" name="pajak[61][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="pj_nilai_71" class="form-control input-sm pj_nilai_pphps22 xnumber validate[required]" disabled="disabled" name="pajak[61][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="3" class="alert-warning"><b>PPh Ps 23</b></td>
                         </tr>
                         <tr>
@@ -2764,6 +3046,26 @@ function get_total_pajak_edit(){
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="101_pphps23" id="pj_p_101" name="pajak[91][0]" type="checkbox" class="pj_p_pphps23" value="96" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="101" id="pj_dpp_101" disabled="disabled" class="pj_dpp_pphps23" name="pajak[91][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="pj_nilai_101" class="form-control input-sm pj_nilai_pphps23 xnumber validate[required]" disabled="disabled" name="pajak[91][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="3" class="alert-warning"><b>PPh Ps 26</b></td>
                         </tr>
                         <tr>
@@ -2784,6 +3086,26 @@ function get_total_pajak_edit(){
                             </td>
                             <td>
                                 <input id="pj_nilai_11" class="form-control input-sm pj_nilai_pphps26" disabled="disabled" name="pajak[10][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="111_pphps26" id="pj_p_111" name="pajak[101][0]" type="checkbox" class="pj_p_pphps26" value="95" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="111" id="pj_dpp_111" disabled="disabled" class="pj_dpp_pphps26" name="pajak[101][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="pj_nilai_111" class="form-control input-sm pj_nilai_pphps26 xnumber validate[required]" disabled="disabled" name="pajak[101][2]" type="text" />
                             </td>
                         </tr>
                         <tr>
@@ -2867,6 +3189,26 @@ function get_total_pajak_edit(){
                             </td>
                             <td>
                                 <input id="pj_nilai_15" class="form-control input-sm pj_nilai_pphps42" disabled="disabled" name="pajak[14][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="151_pphps42" id="pj_p_151" name="pajak[141][0]" type="checkbox" class="pj_p_pphps42" value="94" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="151" id="pj_dpp_151" disabled="disabled" class="pj_dpp_pphps42" name="pajak[141][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="pj_nilai_151" class="form-control input-sm pj_nilai_pphps42 xnumber validate[required]" disabled="disabled" name="pajak[141][2]" type="text" />
                             </td>
                         </tr>
                         <tr>
@@ -2957,6 +3299,26 @@ function get_total_pajak_edit(){
                             </td>
                             <td>
                                 <input class="form-control input-sm edit_pj_nilai_ppn" disabled="disabled" name="pajak[0][2]" id="edit_pj_nilai_1" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="81_ppn" id="edit_pj_p_81" name="pajak[80][0]" type="checkbox" class="edit_pj_p_ppn" value="89" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="81" id="edit_pj_dpp_81" disabled="disabled" class="edit_pj_dpp_ppn" name="pajak[80][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="edit_pj_nilai_81" class="form-control input-sm edit_pj_nilai_ppn xnumber validate[required]" disabled="disabled" name="pajak[80][2]" type="text" />
                             </td>
                         </tr>
                         <tr>
@@ -3106,6 +3468,26 @@ function get_total_pajak_edit(){
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="71_pphps22" id="edit_pj_p_71" name="pajak[61][0]" type="checkbox" class="edit_pj_p_pphps22" value="97" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="71" id="edit_pj_dpp_71" disabled="disabled" class="edit_pj_dpp_pphps22" name="pajak[61][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="edit_pj_nilai_71" class="form-control input-sm edit_pj_nilai_pphps22 xnumber validate[required]" disabled="disabled" name="pajak[61][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="3" class="alert-warning"><b>PPh Ps 23</b></td>
                         </tr>
                         <tr>
@@ -3169,6 +3551,26 @@ function get_total_pajak_edit(){
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="101_pphps23" id="edit_pj_p_101" name="pajak[91][0]" type="checkbox" class="edit_pj_p_pphps23" value="96" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="101" id="edit_pj_dpp_101" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[91][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="edit_pj_nilai_101" class="form-control input-sm edit_pj_nilai_pphps23 xnumber validate[required]" disabled="disabled" name="pajak[91][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="3" class="alert-warning"><b>PPh Ps 26</b></td>
                         </tr>
                         <tr>
@@ -3189,6 +3591,26 @@ function get_total_pajak_edit(){
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_11" class="form-control input-sm edit_pj_nilai_pphps26" disabled="disabled" name="pajak[10][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="111_pphps26" id="edit_pj_p_111" name="pajak[101][0]" type="checkbox" class="edit_pj_p_pphps26" value="95" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="111" id="edit_pj_dpp_111" disabled="disabled" class="edit_pj_dpp_pphps26" name="pajak[101][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="edit_pj_nilai_111" class="form-control input-sm edit_pj_nilai_pphps26 xnumber validate[required]" disabled="disabled" name="pajak[101][2]" type="text" />
                             </td>
                         </tr>
                         <tr>
@@ -3272,6 +3694,26 @@ function get_total_pajak_edit(){
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_15" class="form-control input-sm edit_pj_nilai_pphps42" disabled="disabled" name="pajak[14][2]" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                      <input rel="151_pphps42" id="edit_pj_p_151" name="pajak[141][0]" type="checkbox" class="edit_pj_p_pphps42" value="94" />
+                                      Custom
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <div class="checkbox" style="display: none">
+                                    <label>
+                                      <input rel="151" id="edit_pj_dpp_151" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[141][1]" type="checkbox" value="1" />
+                                    </label>
+                                  </div>
+                            </td>
+                            <td>
+                                <input id="edit_pj_nilai_151" class="form-control input-sm edit_pj_nilai_pphps42 xnumber validate[required]" disabled="disabled" name="pajak[141][2]" type="text" />
                             </td>
                         </tr>
                         <tr>
@@ -3371,7 +3813,7 @@ function get_total_pajak_edit(){
         font-weight: normal;
         max-width: inherit;
         font-size: 90%;
-    }   
+    }
 </style>
 <!-- /.modal-dialog untuk menambahkan item transaksi-->
 <div class="modal fade" id="kriteria_override" tabindex="-1" role="dialog" arialabelledby="myModalLabel">
@@ -3433,7 +3875,9 @@ function get_total_pajak_edit(){
                   <div class="form-group">
                     <label for="unit_id">Unit Pegawai:&nbsp;<label class="small" style="background-color:#eee;padding:3px;vertical-align:center;"><input type="checkbox" class="master_unit_id"/>&nbsp;cek semua</label></label>
                     <div class="row">
-                    <?php echo $unitList; ?>
+                    <?php 
+											if(!is_null($unitList)){ echo $unitList; }else{ echo "<p class=\"text-center text-info\" style=\"border:1px solid #31708f;margin-left:10px;margin-right:10px;\">Tidak perlu memilih unit untuk membuat SPP</p>"; }
+										?>
                 </div>
                   </div>
                 </div>
@@ -3458,7 +3902,7 @@ function get_total_pajak_edit(){
                                 </div>
                                 <div class="col-md-12">
                 <?php
-                                $stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar');
+                                $stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar', '13'=>'Diberhentikan Sementara');
                                 foreach ($stt as $k => $v) {
                                     $ch = "";
                                     if(isset($_SESSION['ovr']['status']) && in_array($k,$_SESSION['ovr']['status'])){
@@ -3527,7 +3971,7 @@ function get_total_pajak_edit(){
               </div>
             </div>
           </div>
-            
+
         </div>
         <div class="modal-footer">
           <div class="btn-group pull-right">
@@ -3639,7 +4083,7 @@ function get_total_pajak_edit(){
 			</tr>
 			<tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
 			<tr>
@@ -3649,7 +4093,7 @@ function get_total_pajak_edit(){
 			</tr>
                         <tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
 			<tr class="tr_up">
@@ -3679,7 +4123,7 @@ function get_total_pajak_edit(){
 			</tr>
                         <tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
                         <tr>
@@ -3710,7 +4154,7 @@ function get_total_pajak_edit(){
 			</tr>
                         <tr>
                                 <td colspan="11">&nbsp;
-                                    
+
 				</td>
                         </tr>
 			<tr>
@@ -3880,7 +4324,7 @@ function get_total_pajak_edit(){
             <?php if(!empty($pppk)): ?>
             <?php foreach($pppk as $p): ?>
             <div class="row">
-                
+
                 <div class="col-md-12">
                   <div class="input-group">
                     <span class="input-group-addon">
@@ -3891,9 +4335,9 @@ function get_total_pajak_edit(){
                       <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
-               
+
             </div>
-             
+
             <?php endforeach;?>
             <?php else: ?>
             <div class="alert alert-warning">
@@ -3902,7 +4346,7 @@ function get_total_pajak_edit(){
             <?php endif; ?>
             </div>
           </div>
-           
+
           <div class="modal-footer">
             <button type="button" class="btn btn-success" id="btn-pilih-pppk-ojo-dikopi-id-iki-yo-lek" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Pilih</button>
             <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
@@ -3924,7 +4368,7 @@ function get_total_pajak_edit(){
             <?php if(!empty($pppk)): ?>
             <?php foreach($pppk as $p): ?>
             <div class="row">
-                
+
                 <div class="col-md-12">
                   <div class="input-group">
                     <span class="input-group-addon">
@@ -3935,9 +4379,9 @@ function get_total_pajak_edit(){
                       <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
-               
+
             </div>
-             
+
             <?php endforeach;?>
             <?php else: ?>
             <div class="alert alert-warning">
@@ -3946,7 +4390,7 @@ function get_total_pajak_edit(){
             <?php endif; ?>
             </div>
           </div>
-           
+
           <div class="modal-footer">
             <button type="button" class="btn btn-success" id="btn-pilih-pppk" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Pilih</button>
             <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>

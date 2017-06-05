@@ -61,6 +61,8 @@ Class Kuitansi extends CI_Controller {
                 }
 
 
+
+
                 if(!$ok){
 
                     $this->session->set_flashdata('message', '<div class="alert alert-danger" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Kuitansi gagal disubmit, silahkan coba lagi.</div>');
@@ -73,24 +75,30 @@ Class Kuitansi extends CI_Controller {
 
                 $total_dpa = 0 ;
 
-                if($ok){
+                /* KONDISI DIBAWAH DI MATIKAN KARENA AGAR BISA MEMBUAT KUITANSI SEBANYAK BANYAK NYA */
 
-                    $saldo = get_saldo_up($this->check_session->get_unit(),$this->cur_tahun);
+//                 if($ok){
 
-                    foreach($pajak_kode_usulan_ as $pajak_kode_usulan ){
+//                     $saldo = get_saldo_up($this->check_session->get_unit(),$this->cur_tahun);
+
+//                     foreach($pajak_kode_usulan_ as $pajak_kode_usulan ){
                     
-//                    get_single_detail_rsa_dpa($kode_usulan_belanja,$kode_akun_tambah,$sumber_dana,$tahun){
-                        $detail_belanja = $this->tor_model->get_single_detail_rsa_dpa(substr($pajak_kode_usulan,0,24),substr($pajak_kode_usulan,24,3),$this->input->post('sumber_dana'),$this->cur_tahun);
+// //                    get_single_detail_rsa_dpa($kode_usulan_belanja,$kode_akun_tambah,$sumber_dana,$tahun){
+//                         $detail_belanja = $this->tor_model->get_single_detail_rsa_dpa(substr($pajak_kode_usulan,0,24),substr($pajak_kode_usulan,24,3),$this->input->post('sumber_dana'),$this->cur_tahun);
 
-                        $total_dpa = $total_dpa + ( $detail_belanja->harga_satuan * $detail_belanja->volume ) ;
-                    }
+//                         $total_dpa = $total_dpa + ( $detail_belanja->harga_satuan * $detail_belanja->volume ) ;
+//                     }
 
-                    if($saldo < $total_dpa){
-                        $ok = FALSE ;
-                        // break;
-                    }
+//                     if($saldo < $total_dpa){
+//                         $ok = FALSE ;
+//                         // break;
+//                     }
 
-                }
+//                 }
+
+                /* END KONSISI */
+
+                //  echo $ok ; die ; 
  
 
                 if(!$ok){
@@ -174,7 +182,7 @@ Class Kuitansi extends CI_Controller {
                     $detail_belanja = $this->tor_model->get_single_detail_rsa_dpa(substr($pajak_kode_usulan,0,24),substr($pajak_kode_usulan,24,3),$this->input->post('sumber_dana'),$this->cur_tahun);
                     $data = array(
                         'id_kuitansi' => $id_kuitansi,
-                        'no_bukti' => $this->input->post('no_bukti'),
+                        'no_bukti' => $no_bukti,//$this->input->post('no_bukti'),
                         'kode_usulan_belanja' => substr($pajak_kode_usulan,0,24),
                         'kode_akun_tambah' => substr($pajak_kode_usulan,24,3),
                         'deskripsi' => $detail_belanja->deskripsi,
@@ -205,7 +213,7 @@ Class Kuitansi extends CI_Controller {
                             
                                     $data = array(
                                         'id_kuitansi_detail' => $id_kuitansi_detail,
-                                        'no_bukti' => $this->input->post('no_bukti'),
+                                        'no_bukti' => $no_bukti,//$this->input->post('no_bukti'),
                                         'id_input_pajak' => $pajak_id_input,
                                         'jenis_pajak' => $jenis_pajak,
                                         'dpp' => $pajak_dpp_[$ii][$k],
@@ -312,6 +320,7 @@ Class Kuitansi extends CI_Controller {
 //                                $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi_own($jenis,$kode_unit_subunit,$tahun);
 //                            }
 //                            echo '<pre>';var_dump($subdata['daftar_kuitansi']);echo '</pre>';die;
+                            $subdata['jenis'] = $jenis;
                             $subdata['k_tab'] = 'k-aktif';
                             $subdata['tsite'] = "kuitansi/daftar_kuitansi" ;
                             $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'AKTIF');
@@ -329,6 +338,20 @@ Class Kuitansi extends CI_Controller {
                             if(!empty($dg)){
                                 if(!empty($dg['n'])){
                                     $subdata['dgn'] = $dg['n'] ;
+
+                                }
+                            }
+
+                            if(!empty($dg)){
+                                if(!empty($dg['t'])){
+                                    $subdata['dgt'] = $dg['t'] ;
+
+                                }
+                            }
+
+                            if(!empty($dg)){
+                                if(!empty($dg['r'])){
+                                    $subdata['dgr'] = $dg['r'] ;
 
                                 }
                             }
@@ -398,6 +421,7 @@ Class Kuitansi extends CI_Controller {
 //                                $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi_own($jenis,$kode_unit_subunit,$tahun);
 //                            }
 //                            echo '<pre>';var_dump($subdata['daftar_kuitansi']);echo '</pre>';die;
+                            $subdata['jenis'] = $jenis;
                             $subdata['k_tab'] = 'k-batal';
                             $subdata['tsite'] = "kuitansi/daftar_kuitansi_batal" ;
                             $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'BATAL');
@@ -418,6 +442,21 @@ Class Kuitansi extends CI_Controller {
 
                                 }
                             }
+
+                            if(!empty($dg)){
+                                if(!empty($dg['t'])){
+                                    $subdata['dgt'] = $dg['t'] ;
+
+                                }
+                            }
+
+                            if(!empty($dg)){
+                                if(!empty($dg['r'])){
+                                    $subdata['dgr'] = $dg['r'] ;
+
+                                }
+                            }
+
                             $data['main_content']           = $this->load->view("kuitansi/daftar_kuitansi",$subdata,TRUE);
                             /*	Load main template	*/
     //			echo '<pre>';var_dump($subdata['unit_usul_impor']);echo '</pre>';die;
@@ -484,6 +523,7 @@ Class Kuitansi extends CI_Controller {
 //                                $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi_own($jenis,$kode_unit_subunit,$tahun);
 //                            }
 //                            echo '<pre>';var_dump($subdata['daftar_kuitansi']);echo '</pre>';die;
+                            $subdata['jenis'] = $jenis;
                             $subdata['k_tab'] = 'k-cair';
                             $subdata['tsite'] = "kuitansi/daftar_kuitansi_cair" ;
                             // echo  $kode_unit_subunit ; die;
@@ -505,6 +545,21 @@ Class Kuitansi extends CI_Controller {
 
                                 }
                             }
+
+                            if(!empty($dg)){
+                                if(!empty($dg['t'])){
+                                    $subdata['dgt'] = $dg['t'] ;
+
+                                }
+                            }
+
+                            if(!empty($dg)){
+                                if(!empty($dg['r'])){
+                                    $subdata['dgr'] = $dg['r'] ;
+
+                                }
+                            }
+
                             $data['main_content']           = $this->load->view("kuitansi/daftar_kuitansi",$subdata,TRUE);
                             /*	Load main template	*/
     //			echo '<pre>';var_dump($subdata['unit_usul_impor']);echo '</pre>';die;
@@ -519,12 +574,13 @@ Class Kuitansi extends CI_Controller {
                         $data_kuitansi = $this->kuitansi_model->get_data_kuitansi($this->input->post('id'),$this->cur_tahun);
                         $data_detail_kuintansi = $this->kuitansi_model->get_data_detail_kuitansi($this->input->post('id'),$this->cur_tahun);
                         $data_detail_pajak_kuintansi = $this->kuitansi_model->get_data_detail_pajak_kuitansi($this->input->post('id'),$this->cur_tahun);
-//                        var_dump(array(
-//                            'kuitansi' => $data_kuitansi,
-//                            'kuitansi_detail' => $data_detail_kuintansi,
-//                            'kuitansi_detail_pajak' => $data_detail_pajak_kuintansi
-//                                )
-//                            );die;
+                       // var_dump(array(
+                       //     'kuitansi' => $data_kuitansi,
+                       //     'kuitansi_detail' => $data_detail_kuintansi,
+                       //     'kuitansi_detail_pajak' => $data_detail_pajak_kuintansi
+                       //         )
+                       //     );
+                       // die;
                         echo json_encode(array(
                             'kuitansi' => $data_kuitansi,
                             'kuitansi_detail' => $data_detail_kuintansi,

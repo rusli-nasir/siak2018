@@ -17,8 +17,8 @@
 								<span class="fa fa-caret-down"></span>
 							</button>
 							<ul class="dropdown-menu">
-                <li><a href="#"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;Gaji Tenaga Tetap Non PNS</a></li>
-                <li><a href="#"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Gaji Tenaga Kerja Kontrak</a></li>
+                <!-- <li><a href="#"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;Gaji Tenaga Tetap Non PNS</a></li> -->
+                <li><a href="<?php echo site_url('kontrak'); ?>"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Gaji Tenaga Kerja Kontrak</a></li>
               </ul>
 						</div>
 					</div>

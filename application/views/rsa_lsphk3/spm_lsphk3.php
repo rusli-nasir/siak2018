@@ -109,7 +109,7 @@ $(document).ready(function(){
     
     $(document).on("click",'#proses_spm',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPM-DRAFT-PPK' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&nomor_trx_spp=' + $('#nomor_trx').html() + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmppk=' + $('#nmppk').text() + '&nipppk=' + $('#nipppk').text() + '&nmkpa=' + $('#nmkpa').text() + '&nipkpa=' + $('#nipkpa').text() + '&nmverifikator=' + $('#nmverifikator').text() + '&nipverifikator=' + $('#nipverifikator').text() + '&nmkbuu=' + $('#nmkbuu').text() + '&nipkbuu=' + $('#nipkbuu').text() + '&nmbuu=' + $('#nmbuu').text() + '&nipbuu=' + $('#nipbuu').text() + '&kuitansi_id=' + $('#kuitansi_id').text()
+            var data = 'proses=' + 'SPM-DRAFT-PPK' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&nomor_trx_spp=' + $('#nomor_trx').html() + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmppk=' + $('#nmppk').text() + '&nipppk=' + $('#nipppk').text() + '&nmkpa=' + $('#nmkpa').text() + '&nipkpa=' + $('#nipkpa').text() + '&nmverifikator=' + $('#nmverifikator').text() + '&nipverifikator=' + $('#nipverifikator').text() + '&nmkbuu=' + $('#nmkbuu').text() + '&nipkbuu=' + $('#nipkbuu').text() + '&nmbuu=' + $('#nmbuu').text() + '&nipbuu=' + $('#nipbuu').text() + '&kuitansi_id=' + $('#kuitansi_id').text();
             $.ajax({
                 type:"POST",
                 url :"<?=site_url('rsa_lsphk3/usulkan_spm_lsphk3')?>",
@@ -923,14 +923,14 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?php echo isset($detail_lsphk3['nom'])?number_format($detail_lsphk3['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?></span></b>)</li>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?> Rupiah</span></b>)</li>
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=$pekerjaan[0]->uraian?></span></li>
                                                 <li>Nama Pihak Ketiga : <span id="penerima"><?=$u->nama_rekanan?></span></li>
                                                 <li>Alamat : <span id="alamat"><?=$u->alamat_rekanan?></span></li>
                                                 <li>Nama Bank : <span id="nmbank"><?=$u->bank_rekanan?></span></li>
                                                 <li>No. Rekening Bank : <span id="rekening"><?=$u->rekening_rekanan?></span></li>
                                                 <li>No. NPWP : <span id="npwp"><?=$u->npwp?></span></li>
-												<li>Sumber Dana dari <?=$pekerjaan[0]->sumber_dana?>: <span id="untuk_bayar">Rp. <span id="jumlah_bayar"><?=number_format($detail_lsphk3['nom'], 0, ",", ".")?></span></li>
+												
                                         </ol>
                                     </td>
                                 </tr>
@@ -1126,7 +1126,15 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
                                 <td  style="line-height: 16px;border-left: none;border-top:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-                                    Kuasa Pengguna Anggaran<br>
+                                    <?php 
+									if($unit_id==91){
+									?>
+									Pejabat Penandatangan SPM
+									<?php }else{
+										?>
+									
+										Kuasa Pengguna Anggaran
+									<?php }?><br>
                                                                         <br>
                                                                         <br>
                                                                         <br>
@@ -1158,8 +1166,8 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                         NIP. <span id="nipverifikator"><?php echo isset($detail_verifikator->nomor_induk)? $detail_verifikator->nomor_induk : '' ;?></span><br>
                                     </td>
                                     <td colspan="2" style="vertical-align: top;line-height: 16px;padding-left: 10px;">
-                                        <?php if(isset($detail_spm_up['nom'])){ ?>
-                                            <?php if($detail_spm_up['nom'] >= 100000000){ ?>
+                                        <?php if(isset($detail_spm_lsphk3['nom'])){ ?>
+                                            <?php if($detail_spm_lsphk3['nom'] >= 100000000){ ?>
                                             Setuju dibayar : <br>
                                             Kuasa Bendahara Umum Undip harap membayar<br>
                                             kepada nama yang tersebut sesuai SPM dari KPA<br>

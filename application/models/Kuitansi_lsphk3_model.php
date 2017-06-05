@@ -182,9 +182,9 @@ class Kuitansi_lsphk3_model extends CI_Model{
     }
 
     function get_data_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi_lsphk3.tgl_kuitansi,rsa.rsa_kuitansi_lsphk3.tahun,rsa.rsa_kuitansi_lsphk3.no_bukti,"
+        $str = "SELECT rsa.rsa_kuitansi_lsphk3.tgl_kuitansi,rsa.rsa_kuitansi_lsphk3.tahun,rsa.rsa_kuitansi_lsphk3.no_bukti,rsa_kuitansi_lsphk3.jenis,"
                 . "rba.akun_belanja.nama_akun,"
-                . "SUM(rsa.rsa_kuitansi_detail_lsphk3.volume*rsa.rsa_kuitansi_detail_lsphk3.harga_satuan) AS pengeluaran,"
+                ."SUM(rsa.rsa_kuitansi_detail_lsphk3.volume*rsa.rsa_kuitansi_detail_lsphk3.harga_satuan) AS pengeluaran,"
                 . "rsa.rsa_kuitansi_lsphk3.uraian,rba.subkomponen_input.nama_subkomponen,"
                 . "rsa.rsa_kuitansi_lsphk3.penerima_uang,rsa.rsa_kuitansi_lsphk3.penerima_barang,rsa.rsa_kuitansi_lsphk3.penerima_barang_nip,"
                 . "rsa.rsa_kuitansi_lsphk3.nmpppk,rsa.rsa_kuitansi_lsphk3.nippppk,rsa.rsa_kuitansi_lsphk3.nmbendahara,rsa.rsa_kuitansi_lsphk3.nipbendahara,rsa.rsa_kuitansi_lsphk3.nmpumk,rsa.rsa_kuitansi_lsphk3.nippumk,rsa.rsa_kuitansi_lsphk3.penerima_uang,rsa.rsa_kuitansi_lsphk3.aktif,rsa.rsa_kuitansi_lsphk3.str_nomor_trx "
@@ -669,7 +669,7 @@ class Kuitansi_lsphk3_model extends CI_Model{
                // . "AND rsa.rsa_kuitansi.id_kuitansi = '{$id}' "
                 //. "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' ";
 
-//            var_dump($str);die;
+           // var_dump($str);die;
 
             $q = $this->db->query($str);
     //            var_dump($q->num_rows());die;

@@ -34,9 +34,39 @@ class Kas_bendahara_model extends CI_Model{
             return $result ;
             
         }
+
+        function get_kas_bendahara_tup($kode_unit,$tahun){
+            $query = "SELECT * FROM kas_bendahara WHERE kd_unit = '{$kode_unit}' AND tahun = '{$tahun}' AND aktif = '2'" ;
+
+//                        echo $query; die;
+
+            $q = $this->db->query($query);
+
+            $result = $q->row();
+
+//                var_dump($result);die;
+
+            return $result ;
+            
+        }
         
         function get_kas_saldo($kode_unit,$tahun){
             $query = "SELECT saldo FROM kas_bendahara WHERE kd_unit = '{$kode_unit}' AND tahun = '{$tahun}' AND aktif = '1'" ;
+
+            // echo $query ; 
+
+            $q = $this->db->query($query);
+    //            var_dump($q->num_rows());die;
+                if($q->num_rows() > 0){
+                   return $q->row()->saldo;
+                }else{
+                    return 0;
+                } 
+            
+        }
+
+        function get_kas_saldo_tup($kode_unit,$tahun){
+            $query = "SELECT saldo FROM kas_bendahara WHERE kd_unit = '{$kode_unit}' AND tahun = '{$tahun}' AND aktif = '2'" ;
 
             // echo $query ; 
 

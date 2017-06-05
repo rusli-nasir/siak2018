@@ -8,6 +8,22 @@ $(document).ready(function(){
 	});
         
         $('#sumber_dana').val("<?=$sumber_dana?>");
+
+        $('#txt_rkat').text($('#tot_rkat_txt').text()); 
+    $('#txt_rsa').text($('#tot_rsa_txt').text()); 
+
+
+    var jml_usulan_baru = 0 ;
+
+
+    $('.ada_usulan').each(function(){
+        var i = $(this).text() ; 
+
+        jml_usulan_baru = jml_usulan_baru + parseInt(i.trim()) ;
+    });
+
+
+    $('#jml_dpa_baru').text(jml_usulan_baru);
         
 });
 
@@ -115,58 +131,50 @@ $cur_tahun=$tgl['year']+1;
                 <hr />
                 <div class="row">  
                     <div class="col-lg-12">
-<!--<form class="form-horizontal alert alert-warning col-sm-8" method="post" id="form_dpa" action="">-->
-                <!--
-                <div class="form-group"  >
-			<label for="input1" class="col-md-4 control-label">Tahun</label>
-			<div class="col-md-8">
-                        <?=form_dropdown('tahun',$this->option->get_option_tahun(date('Y'),date('Y')+7),$cur_tahun,array('class'=>'validate[required] form-control','id'=>'tahun'))?>
-                                    
-			</div>
-		</div>
-                -->
-    <!--
-                <div id="div_unit">
-		<div class="form-group" >
-			    <label for="" class="col-md-4 control-label">Unit</label>
-			    <div class="col-md-8">
-			      <select name="unit" id="unit" class="validate[required] form-control">
-			      	  <option value="">-pilih-</option>
-					</select>
-			    </div>
-			  </div>
-		</div>
-    -->
-    <!--
-		<div id="div_subunit" style="display:none">
-		<div class="form-group" >
-			    <label for="" class="col-md-4 control-label">SubUnit</label>
-			    <div class="col-md-8">
-			      <select name="subunit" id="subunit" class="validate[required] form-control">
-			      	  <option value="">-pilih-</option>
-					</select>
-			    </div>
-                            </div>
-		</div>
-		<div id="div_sub_subunit" style="display:none">
-		<div class="form-group" >
-			    <label for="" class="col-md-4 control-label">Sub SubUnit</label>
-			    <div class="col-md-8">
-			      <select name="sub_subunit" id="sub_subunit" class="validate[required] form-control">
-			      	  <option value="">-pilih-</option>
-					</select>
-			    </div>
-                            </div>
-		</div>
-    -->
-<!--	<div class="form-group">
-	    <div class="col-sm-offset-2 col-sm-10">
-	      <button type="button" class="btn btn-primary" id="show"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search</button>
-	      <button type="reset" class="btn btn-info" id="reset"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Reset</button>
-	    </div>
-	  </div>
 
-			</form>-->
+                        <div class="row" style="margin: 0">    
+                    <div class="col-md-6 ">
+                        <ul class="list-group" style="margin:0 0 5px;">
+                            <li class="list-group-item" style="background: #EEE;">
+                                <div class="row" style="margin: 0">
+                                                                        <div class="col-md-4"><b>UNIT</b></div><div class="col-md-8">: <span class="text-danger"><b><?=$nama_unit?></b></span></div> 
+                                                                    </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row" style="margin: 0">
+                                                                        <div class="col-md-4"><b>DPA baru</b></div><div class="col-md-8">: <span class="text-danger"><b><span id="jml_dpa_baru">0</span></b></span></div> 
+                                                                    </div>
+                            </li>
+                        </ul>
+                    </div>
+                                        <div class="col-md-6">
+                    <ul class="list-group" style="margin:0 0 5px;">
+                            <li class="list-group-item">
+                                <div class="row" style="margin: 0">
+                                    <div class="col-md-4"><b>RKAT</b></div><div class="col-md-8">: <span class="text-danger" ><b id="txt_rkat">0</b></span></div> 
+                                                                    </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row" style="margin: 0">
+                                    <div class="col-md-4"><b>RSA</b></div><div class="col-md-8">: <span class="text-danger" ><b id="txt_rsa">0</b></span></div> 
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+<!--                    <div class="col-md-6">
+                        <div class="panel panel-danger" style="margin-bottom: 0;">
+                            <div class="panel-heading">
+                              <h3 class="panel-title">UP TERSEDIA</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas">1.974.768</span>,-</span></h3>
+                            </div>
+                        </div>
+                    </div>-->
+                                                        </div>
+
+                                                        <br>
+
 			<div id="temp" style="display:none"></div>
                         <div id="o-table">
                         <table class="table table-striped">
@@ -175,7 +183,8 @@ $cur_tahun=$tgl['year']+1;
                                         <th class="col-md-3" >Program</th>
                                         <th class="col-md-3" >Kegiatan</th>
                                         <th class="col-md-3" >Sub Kegiatan</th>
-                                        <th class="col-md-2" >&nbsp;</th>
+                                        <th class="col-md-1" >RKAT</th>
+                                        <th class="col-md-1" >RSA</th>
                                         <th class="col-md-1" style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
@@ -183,6 +192,7 @@ $cur_tahun=$tgl['year']+1;
                                 <?php $temp_text_program = ''; ?>
                                 <?php $temp_text_komponen = ''; ?>
                                 <?php $total_g = 0 ; ?>
+                                <?php $total_h = 0 ; ?>
                                 <?php if(!empty($rsa_usul_to_validate)): ?>
                                 <?php foreach($rsa_usul_to_validate as $i => $u){ ?>
                                     <tr rel="<?=$u->k_unit.$u->kode_rka?>" class="tr-unit" height="25px">
@@ -199,6 +209,7 @@ $cur_tahun=$tgl['year']+1;
                                             <td class="">&nbsp;</td>
                                         <?php endif; ?>
                                         <td class=""><?=$u->nama_subkomponen?></td>
+                                        <!--
                                         <?php if($u->jml_proses == 0){ ?>
                                         <td class="impor">
                                             usulan baru : <span class="badge"><?=$u->jml_proses?></span>
@@ -208,12 +219,19 @@ $cur_tahun=$tgl['year']+1;
                                             usulan baru : <span class="badge badge-danger"><?=$u->jml_proses?></span>
                                         </td>
                                         <?php } ?>
-                                        
-                                        <!--<td style="text-align: right" class="rkat">&nbsp;</td>-->
-                                        <!--<td style="text-align: right" class="rsa">&nbsp;</td>-->
+                                        -->
+                                        <td class="" style="text-align: right"><?=number_format($u->jumlah_tot, 0, ",", ".")?><?php $total_g = $total_g + $u->jumlah_tot; ?></td>
+                                        <td class="" style="text-align: right"><?=number_format($u->jumlah_rsa, 0, ",", ".")?><?php $total_h = $total_h + $u->jumlah_rsa; ?></td>
 
                                         <td align="center">
-                                            <buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$u->kode_rka?><?php //$u->k_unit.$u->kode_rka; ?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</buttton>
+                                            <?php if($u->jml_proses > 0){ ?>
+                                            <buttton type="button" class="btn btn-danger btn-sm tb-buat-tor ada_usulan" rel="<?=$u->kode_rka?><?php // $u->k_unit.$u->kode_rka; ?>" > <?=$u->jml_proses?> </buttton>
+                                            <?php }else{ ?>
+
+                                                <buttton type="button" class="btn btn-default btn-sm tb-buat-tor" rel="<?=$u->kode_rka?><?php // $u->k_unit.$u->kode_rka; ?>" > - </buttton>
+
+                                            <?php } ?>
+                                            <!-- <buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$u->kode_rka?><?php //u->k_unit.$u->kode_rka ; ?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</buttton> -->
                                         </td>
                                         
                                         
@@ -221,12 +239,19 @@ $cur_tahun=$tgl['year']+1;
 
                                 <?php } ?>
                                     <tr >
-                                        <td colspan="5">&nbsp;</td>
+                                        <td colspan="6">&nbsp;</td>
+                                    </tr>
+                                    <tr id="" height="25px" class="alert alert-danger" style="font-weight: bold">
+                                        <td colspan="2" style="text-align: center">Total </td>
+                                        <td style="text-align: right">:</td>
+                                        <td style="text-align: right" id="tot_rkat_txt"><?=number_format($total_g, 0, ",", ".")?></td>
+                                        <td style="text-align: right" id="tot_rsa_txt"><?=number_format($total_h, 0, ",", ".")?></td>
+                                        <td>&nbsp;</td>
                                     </tr>
                                     
                                 <?php else: ?>
                                 <tr id="tr-empty">
-                                                <td colspan="5"> - kosong / belum ada usulan - </td>
+                                                <td colspan="6"> - kosong / belum ada usulan - </td>
                                 </tr>
                                 <?php endif; ?>
                                 
@@ -238,7 +263,7 @@ $cur_tahun=$tgl['year']+1;
                             </tbody>-->
                             <tfoot>
                                 <tr>
-                                    <td colspan="5">&nbsp;</td>
+                                    <td colspan="6">&nbsp;</td>
                                 </tr>
                             </tfoot>
                         </table>

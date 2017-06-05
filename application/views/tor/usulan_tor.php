@@ -2,6 +2,13 @@
 $(document).ready(function(){
     
     autosize($('textarea'));
+
+    // $('.xfloat').tooltip();
+
+    $('body').tooltip({
+        selector: '.xfloat'
+    });
+
 <?php
 	if(!$this->cantik_model->get_status_override()){
 ?>
@@ -217,6 +224,42 @@ $(document).ready(function(){
             });
         });
 
+        // $('input.xnumber').focusout(function() {
+        $(document).on("focusout","input.xfloat",function(){
+
+            var kode_usulan_belanja = $(this).attr('rel');
+
+                if($(this).val()==''){
+                        $(this).val('0');
+
+                }
+                else{
+                        // var str = $(this).val();
+                        // $(this).val(string_to_angka(str));
+
+                        calcinput(kode_usulan_belanja);
+
+                        //alert(str);
+                        //$(this).val(str);
+                }
+
+        });
+
+
+        // $('input.xnumber').keyup(function(event) {
+        $(document).on("keyup","input.xfloat",function(event){
+
+            var val = $(this).val();
+            if(isNaN(val)){
+                 val = val.replace(/[^0-9\.]/g,'');
+                 if(val.split('.').length>2) 
+                     val =val.replace(/\.+$/,"");
+            }
+            $(this).val(val); 
+
+        });
+
+
         		// $('#tambah').click(function(){
         $(document).on("click",'[id^="tambah_"]',function(){
             var kode_usulan_belanja = $(this).attr('rel');
@@ -339,7 +382,7 @@ function angka_to_string(num){
 function calcinput(kode_usulan_belanja){
 
         if ($('#volume_edit').length) {
-                if(isNaN(parseInt($('#volume_edit').val()))){var vol	= 0;}else{var vol	= parseInt($('#volume_edit').val());}
+                if(isNaN(parseFloat($('#volume_edit').val()))){var vol	= 0;}else{var vol	= parseFloat($('#volume_edit').val());}
                 if(isNaN(parseInt($('#tarif_edit').val()))){var tarif	= 0;}else{var tarif	= parseInt($('#tarif_edit').val());}
 
                 if(vol.length==0){ vol = 0;}
@@ -348,7 +391,7 @@ function calcinput(kode_usulan_belanja){
                 $('#jumlah_edit').val(hasil);
         }
         else{
-                if(isNaN(parseInt($('#volume_' + kode_usulan_belanja).val()))){var vol	= 0;}else{var vol	= parseInt($('#volume_' + kode_usulan_belanja).val());}
+                if(isNaN(parseFloat($('#volume_' + kode_usulan_belanja).val()))){var vol	= 0;}else{var vol	= parseFloat($('#volume_' + kode_usulan_belanja).val());}
                 if(isNaN(parseInt($('#tarif_' + kode_usulan_belanja).val()))){var tarif	= 0;}else{var tarif	= parseInt($('#tarif_' + kode_usulan_belanja).val());}
 
                 if(vol.length==0){ vol = 0;}
@@ -418,6 +461,15 @@ function submitedit(id_rsa_detail,kode_usulan_belanja){
 
 }
 
+function checkfloat(field, rules, i, options){
+
+            var v = field.val() ;
+            if(v == ''){
+                return "* Isian salah, con : 999999,99" ;
+            } 
+             
+        }
+
 
 </script>
 <?php
@@ -467,7 +519,7 @@ $cur_tahun=$tgl['year']+1;
 <tr class="">
 	<td class="col-md-2">Ket</td>
 	<td>
-            <span class="label label-success">&nbsp;</span> : siap diusulkan &nbsp;&nbsp;<span class="label label-danger">&nbsp;</span> : sedang diproses &nbsp;&nbsp;<span class="label label-info">&nbsp;</span> : telah disetujui
+            <span class="label badge-gup">&nbsp;</span> : GUP &nbsp;&nbsp;<span class="label badge-tup">&nbsp;</span> : TUP &nbsp;&nbsp;<span class="label badge-lp">&nbsp;</span> : LS-PEGAWAI &nbsp;&nbsp;<span class="label badge-l3">&nbsp;</span> : LS-PIHAK-3 &nbsp;&nbsp;<span class="label badge-ks">&nbsp;</span> : KERJA-SAMA
         </td>
 
 
@@ -522,12 +574,12 @@ $cur_tahun=$tgl['year']+1;
                                         <?php if($ul->kode_usulan_belanja == $u->kode_usulan_belanja): ?>
                                             <tr id="<?php echo $ul->id_rsa_detail ;?>" height="25px">
                                                 <td style="text-align: right">
-                                                    <?php if(substr($ul->proses,1,1)=='1'){echo '<span class="badge badge-gup">GP</span>';}elseif(substr($ul->proses,1,1)=='3'){echo '<span class="badge badge-tup">TP</span>';}elseif(substr($ul->proses,1,1)=='2'){echo '<span class="badge badge-lp">LP</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-l3">L3</span>';}elseif(substr($ul->proses,1,1)=='5'){echo '<span class="badge badge-ks">KS</span>';}elseif(substr($ul->proses,1,1)=='6'){echo '<span class="badge badge-ks">L3NK</span>';}else{
+                                                    <?php if(substr($ul->proses,1,1)=='1'){echo '<span class="badge badge-gup">GP</span>';}elseif(substr($ul->proses,1,1)=='3'){echo '<span class="badge badge-tup">TP</span>';}elseif(substr($ul->proses,1,1)=='2'){echo '<span class="badge badge-lp">LP</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-l3">L3</span>';}elseif(substr($ul->proses,1,1)=='5'){echo '<span class="badge badge-ks">KS</span>';}elseif(substr($ul->proses,1,1)=='6'){echo '<span class="badge badge-ks">LK</span>';}else{
 														
 													} ?> <?=$ul->kode_akun_tambah?>
                                                 </td>
                                                 <td ><?=$ul->deskripsi?></td>
-                                                <td ><?=$ul->volume?></td>
+                                                <td ><?=$ul->volume + 0?></td>
                                                 <td ><?=$ul->satuan?></td>
                                                 <td style="text-align: right"><?=number_format($ul->harga_satuan, 0, ",", ".")?></td>
                                                 <td style="text-align: right">
@@ -547,7 +599,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-success btn-sm" rel="<?php echo $ul->id_rsa_detail ;?>" id="proses_<?php echo $ul->id_rsa_detail ;?>" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Proses</button>
+                                                    <button type="button" class="btn btn-success btn-sm" rel="<?php echo $ul->id_rsa_detail ;?>" id="proses_<?php echo $ul->id_rsa_detail ;?>" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Pilih </button>
                                                 </td>
                                                 <?php elseif(substr($ul->proses,0,1) == 1): ?>
                                                 <td align="center">
@@ -558,7 +610,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> PPK  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> PPK </button>
                                                 </td>
                                                 <?php elseif(substr($ul->proses,0,1) == 2): ?>
                                                 <td align="center">
@@ -569,7 +621,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Ver  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Ver </button>
                                                 </td>
                                                 <?php elseif(substr($ul->proses,0,1) == 3): ?>
                                                 <td align="center">
@@ -580,7 +632,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-warning btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Done  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-warning btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Siap </button>
                                                 </td>
                                                <?php elseif(substr($ul->proses,0,1) == 4): ?>
                                                 <td align="center">
@@ -591,7 +643,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SPP  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SPP </button>
                                                 </td>
                                               <?php elseif(substr($ul->proses,0,1) == 5): ?>
                                                 <td align="center">
@@ -602,7 +654,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SPM  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SPM </button>
                                                 </td>
                                               <?php elseif(substr($ul->proses,0,1) == 6): ?>
                                                 <td align="center">
@@ -613,7 +665,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Cair  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Cair </button>
                                                 </td>
                                                 <?php else: ?>
                                                 <td align="center">
@@ -624,7 +676,7 @@ $cur_tahun=$tgl['year']+1;
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Proses</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Proses </button>
                                                 </td>
                                                 <?php endif; ?>
                                             </tr>
@@ -640,7 +692,7 @@ $cur_tahun=$tgl['year']+1;
                                             <td >
                                                 <textarea name="deskripsi" class="validate[required] form-control" rel="<?=$u->kode_usulan_belanja?>" id="deskripsi_<?=$u->kode_usulan_belanja?>" rows="1"></textarea>
                                             </td>
-                                            <td ><input name="volume" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" rel="<?=$u->kode_usulan_belanja?>" id="volume_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
+                                            <td ><input name="volume" class="validate[required,funcCall[checkfloat]] calculate form-control xfloat" rel="<?=$u->kode_usulan_belanja?>" id="volume_<?=$u->kode_usulan_belanja?>" type="text" value="" data-toggle="tooltip" data-placement="top" title="Silahkan masukan angka bulat atau pecahan. Kalo masih error silahkan kontak sy. thx" /></td>
                                             <td ><input name="satuan" class="validate[required,maxSize[30]] form-control" rel="<?=$u->kode_usulan_belanja?>" id="satuan_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
                                             <td ><input name="tarif" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" rel="<?=$u->kode_usulan_belanja?>" id="tarif_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
                                             <td ><input name="jumlah" rel="<?=$u->kode_usulan_belanja?>" id="jumlah_<?=$u->kode_usulan_belanja?>" type="text" class="form-control" readonly="readonly" value="" /></td>

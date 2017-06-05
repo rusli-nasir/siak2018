@@ -109,7 +109,7 @@ $(document).ready(function(){
         if(ok){
         
             if(confirm('Apakah anda yakin ?')){
-                var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&keluaran=' + JSON.stringify(keluaran) + '&nm_subkomponen=' + JSON.stringify(nm_subkomponen) ;
+                var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text()+ '&nmrekening=' + $('#nmrekening').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&keluaran=' + JSON.stringify(keluaran) + '&nm_subkomponen=' + JSON.stringify(nm_subkomponen) ;
                 $.ajax({
                     type:"POST",
                     url :"<?=site_url('rsa_lsphk3/usulkan_spp_lsphk3_nk')?>",
@@ -471,10 +471,14 @@ $kuitansi = isset($kuitansi[0])?$kuitansi[0]:'';
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?php echo $kuitansi->uraian?></span></li>
                                                 <li>Nama Pihak ke 3 : <span id="penerima"><?=$kuitansi->nmpihak3?></span></li>
                                                 <li>Alamat : <span id="alamat"><?=$kuitansi->alamat?></span></li>
+                                                
+												<li>Nama Bank : <span id="nmbank"><?=$kuitansi->nmbankphk3?></span></li>
                                                 </span></li>
+												 <li>Nama rekening : <span id="nmrekening"><?=$kuitansi->nmrekening?></span></li>
                                                 <li>No. Rekening Bank : <span id="rekening"><?=$kuitansi->norekpihak3?></span></li>
                                                 <li>No. NPWP : <span id="npwp"><?=$kuitansi->npwp?></span></li>
-												<li>Sumber Dana : <span id="sumber_dana"><?=$kuitansi->sumber_dana?></span></li>
+												
+												
                                         </ol>
                                     </td>
                                 </tr>

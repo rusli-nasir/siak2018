@@ -134,18 +134,18 @@ class Convertion{
 	function get_user_level($level){
 		switch ($level){
                         case '0'  : return '';break;
-			case '100': return 'ADMIN';break;
+						case '100': return 'ADMIN';break;
                         case '1'  : return 'AKUNTANSI';break;
                         case '2'  : return 'KPA';break;
                         case '3'  : return 'VERIFIKATOR';break;
                         case '4'  : return 'PUMK';break;
                         case '5'  : return 'BUU';break;
-			case '11' : return 'KUASA BUU';break;
+						case '11' : return 'KUASA BUU';break;
                         case '13' : return 'BENDAHARA';break;
                         case '14' : return 'PPK SUKPA';break;
                         case '15' : return 'PPPK';break;
-						 case '16' : return 'PPK';break;
-			default : return '';break;
+						case '16' : return 'PPK';break;
+						default : return '';break;
 		}
 	}
 	

@@ -140,13 +140,13 @@ $(document).on("click",".tb-lihat",function(){
                                             <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($uu->tgl_proses)?'':strftime("%d %B %Y", strtotime($uu->tgl_proses)); ?></td>
                                             <td align="center">
                                                 <?php if($uu->posisi=='SPM-FINAL-VERIFIKATOR'): ?>
-                                                <button class="btn btn-success tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <button class="btn btn-success btn-sm tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                                 <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
                                                 <?php elseif(($uu->posisi=='SPM-FINAL-KBUU')||($uu->posisi=='SPM-FINAL-BUU')): ?>
-                                                <button class="btn btn-danger tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <button class="btn btn-danger btn-sm tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                                 <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
                                                 <?php else: ?>
-                                                <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <button disabled="disabled" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
@@ -160,13 +160,13 @@ $(document).on("click",".tb-lihat",function(){
                                         <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($u->tgl_proses)?'':strftime("%d %B %Y", strtotime($u->tgl_proses)); ?></td>
                                         <td align="center">
                                             <?php if($u->posisi=='SPM-FINAL-VERIFIKATOR'): ?>
-                                            <button class="btn btn-success tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                            <button class="btn btn-success btn-sm tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                             <!--<a href="<?=site_url('rsa_up/spm_up_kbuu/').$u->kode_unit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
                                             <?php elseif(($u->posisi=='SPM-FINAL-KBUU')||($u->posisi=='SPM-FINAL-BUU')): ?>
-                                            <button class="btn btn-danger tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                            <button class="btn btn-danger btn-sm tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                             <!--<a href="<?=site_url('rsa_up/spm_up_kbuu/').$u->kode_unit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
                                             <?php else: ?>
-                                            <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                            <button disabled="disabled" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                             <?php endif; ?>
                                         </td>
                                     </tr>

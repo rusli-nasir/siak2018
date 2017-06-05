@@ -1,3 +1,11 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    // $("#notif-dpa").load( "<?=site_url('dpa/get_notif_dpa')?>");
+     $("#notif-dpa-gup").load( "<?=site_url('dpa/get_notif_dpa_siap/1')?>");
+
+     $("#notif-gup-spp-spm").load( "<?=site_url('rsa_gup/get_notif_approve')?>");
+});
+</script>
 <div id="page-wrapper" >
             <div id="page-inner">
                 <div class="row">
@@ -29,6 +37,7 @@
                       <h4>SPM GUP</h4>
                       </a>
                       </div>
+                      <span class="badge badge-danger bg-notif" id="notif-gup-spp-spm">0</span>
                      
                      
                   </div>
@@ -42,7 +51,7 @@
                       <h4>SPM GUP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-gup-spp-spm">0</span>
                      
                   </div>
                     
@@ -55,6 +64,7 @@
                       <h4>DPA</h4>
                       </a>
                       </div>
+                      <span class="badge badge-danger bg-notif" id="notif-dpa-gup">0</span>
 
 
                   </div>
@@ -102,7 +112,7 @@
                       <h4>SPM GUP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-gup-spp-spm">0</span>
                      
                   </div>
                     
@@ -125,7 +135,7 @@
                       <h4>SPM GUP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-gup-spp-spm">0</span>
                      
                   </div>
                     
@@ -149,6 +159,7 @@
                       <h4>DPA</h4>
                       </a>
                       </div>
+                      <span class="badge badge-danger bg-notif" id="notif-dpa-gup">0</span>
 
 
                   </div>

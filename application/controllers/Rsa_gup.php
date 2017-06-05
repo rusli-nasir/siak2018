@@ -13,8 +13,8 @@
             $this->load->helper('form');
             $this->load->model(array('rsa_gup_model','setting_up_model','kuitansi_model'));
             $this->load->model("user_model");
-            $this->load->model("unit_model");
-            $this->load->model('menu_model');
+                        $this->load->model("unit_model");
+                        $this->load->model('menu_model');
             $this->load->helper("security");
                         
 
@@ -255,6 +255,8 @@
                                 
                                 $data_akun_pengeluaran = array();   
                                 $data_spp_pajak = array();
+                                $data_rekap_pajak = array();
+                                $data_rekap_bruto = array();
                                 $data_akun_rkat = array();
                                 $data_akun_pengeluaran_lalu = array();
                                 $rincian_akun_pengeluaran = array();
@@ -285,7 +287,9 @@
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
                                    // echo '<pre>';print_r($rincian_akun_pengeluaran);echo '</pre>';die;
                                     $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__);
-                                    $data_akun5digit = array();
+
+                                    $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__);
+                                    $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__);
 //                                    if(!empty($data_akun_pengeluaran)){
                                     foreach($data_akun_pengeluaran as $da){
                                         $data_akun5digit[] =  $da->kode_akun5digit ;
@@ -368,7 +372,9 @@
                                         
                                         
 //                                    }
-                                    
+                                    // echo '<pre>' ; 
+                                    // var_dump($data_rekap_bruto); 
+                                    // echo '</pre>' ; die;
                                     
                                     
 //                                    echo '<pre>';print_r($data_akun_pengeluaran);echo '</pre>';die;
@@ -384,6 +390,8 @@
                                 $subdata['data_akun_rkat'] = $data_akun_rkat;
                                 $subdata['data_akun_pengeluaran_lalu'] = $data_akun_pengeluaran_lalu;
                                 $subdata['data_spp_pajak'] = $data_spp_pajak;
+                                $subdata['data_rekap_pajak'] = $data_rekap_pajak;
+                                $subdata['data_rekap_bruto'] = $data_rekap_bruto;
                                 $subdata['rincian_keluaran'] = $rincian_keluaran;
                                 $subdata['doc_gup'] = $dokumen_gup;
                                 $subdata['nomor_spp'] = $nomor_trx;
@@ -986,6 +994,8 @@
                                 
                                 $data_akun_pengeluaran = array();
                                 $data_spp_pajak = array();
+                                $data_rekap_pajak = array();
+                                $data_rekap_bruto = array();
                                 $data_akun_rkat = array();
                                 $data_akun_pengeluaran_lalu = array();
                                 $rincian_akun_pengeluaran = array();
@@ -1069,6 +1079,10 @@
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
                                    // echo '<pre>';print_r($rincian_akun_pengeluaran);echo '</pre>';die;
                                     $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__);
+
+                                    $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__);
+                                    $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__);
+
                                     $data_akun5digit = array();
 //                                    if(!empty($data_akun_pengeluaran)){
                                     foreach($data_akun_pengeluaran as $da){
@@ -1169,6 +1183,8 @@
                                 $subdata['data_akun_rkat'] = $data_akun_rkat;
                                 $subdata['data_akun_pengeluaran_lalu'] = $data_akun_pengeluaran_lalu;
                                 $subdata['data_spp_pajak'] = $data_spp_pajak;
+                                $subdata['data_rekap_pajak'] = $data_rekap_pajak;
+                                $subdata['data_rekap_bruto'] = $data_rekap_bruto;
                                 $subdata['rincian_keluaran'] = $rincian_keluaran;
                                 $subdata['rel_kuitansi'] = $du;
                                 $subdata['daftar_kuitansi'] = $daftar_kuitansi;
@@ -1554,6 +1570,8 @@
                                 }
                                 
                                 $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($this->check_session->get_unit(),$this->cur_tahun);
+
+                                // echo $this->check_session->get_unit() ; die ;
                               
                                 $subdata['doc_up'] = $dokumen_gup;
                                 
@@ -1580,6 +1598,8 @@
                                 $du = '' ;
                                 
                                 if(($dokumen_gup == 'SPP-FINAL') || ($dokumen_gup == 'SPP-DRAFT') || ($dokumen_gup == 'SPM-DRAFT-PPK') || ($dokumen_gup == 'SPM-DRAFT-KPA') || ($dokumen_gup == 'SPM-FINAL-VERIFIKATOR')  || ($dokumen_gup == 'SPM-FINAL-KBUU')){
+
+
                                   
                                     $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
                                     
@@ -1715,6 +1735,8 @@
                                 
                                 $data_akun_pengeluaran = array();
                                 $data_spp_pajak = array();
+                                $data_rekap_pajak = array();
+                                $data_rekap_bruto = array();
                                 $data_akun_rkat = array();
                                 $data_akun_pengeluaran_lalu = array();
                                 $rincian_akun_pengeluaran = array();
@@ -1797,6 +1819,10 @@
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
                                    // echo '<pre>';print_r($rincian_akun_pengeluaran);echo '</pre>';die;
                                     $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__);
+
+                                    $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__);
+                                    $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__);
+
                                     $data_akun5digit = array();
 //                                    if(!empty($data_akun_pengeluaran)){
                                     foreach($data_akun_pengeluaran as $da){
@@ -1903,6 +1929,8 @@
                                 $subdata['data_akun_rkat'] = $data_akun_rkat;
                                 $subdata['data_akun_pengeluaran_lalu'] = $data_akun_pengeluaran_lalu;
                                 $subdata['data_spp_pajak'] = $data_spp_pajak;
+                                $subdata['data_rekap_pajak'] = $data_rekap_pajak;
+                                $subdata['data_rekap_bruto'] = $data_rekap_bruto;
                                 $subdata['rincian_keluaran'] = $rincian_keluaran;
                                 $subdata['rel_kuitansi'] = $du;
                                 $subdata['daftar_kuitansi'] = $daftar_kuitansi;
@@ -2162,6 +2190,8 @@
                                 
                                 $data_akun_pengeluaran = array();
                                 $data_spp_pajak = array();
+                                $data_rekap_pajak = array();
+                                $data_rekap_bruto = array();
                                 $data_akun_rkat = array();
                                 $data_akun_pengeluaran_lalu = array();
                                 $rincian_akun_pengeluaran = array();
@@ -2244,6 +2274,10 @@
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
                                    // echo '<pre>';print_r($rincian_akun_pengeluaran);echo '</pre>';die;
                                     $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__);
+
+                                    $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__);
+                                    $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__);
+
                                     $data_akun5digit = array();
 //                                    if(!empty($data_akun_pengeluaran)){
                                     foreach($data_akun_pengeluaran as $da){
@@ -2351,6 +2385,8 @@
                                 $subdata['data_akun_rkat'] = $data_akun_rkat;
                                 $subdata['data_akun_pengeluaran_lalu'] = $data_akun_pengeluaran_lalu;
                                 $subdata['data_spp_pajak'] = $data_spp_pajak;
+                                $subdata['data_rekap_pajak'] = $data_rekap_pajak;
+                                $subdata['data_rekap_bruto'] = $data_rekap_bruto;
                                 $subdata['rincian_keluaran'] = $rincian_keluaran;
                                 $subdata['rel_kuitansi'] = $du;
                                 $subdata['daftar_kuitansi'] = $daftar_kuitansi;
@@ -2573,6 +2609,8 @@
                                 
                                 $data_akun_pengeluaran = array();
                                 $data_spp_pajak = array();
+                                $data_rekap_pajak = array();
+                                $data_rekap_bruto = array();
                                 $data_akun_rkat = array();
                                 $data_akun_pengeluaran_lalu = array();
                                 $rincian_akun_pengeluaran = array();
@@ -2655,6 +2693,10 @@
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
                                    // echo '<pre>';print_r($rincian_akun_pengeluaran);echo '</pre>';die;
                                     $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__);
+
+                                    $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__);
+                                    $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__);
+
                                     $data_akun5digit = array();
 //                                    if(!empty($data_akun_pengeluaran)){
                                     foreach($data_akun_pengeluaran as $da){
@@ -2753,6 +2795,8 @@
                                 $subdata['data_akun_rkat'] = $data_akun_rkat;
                                 $subdata['data_akun_pengeluaran_lalu'] = $data_akun_pengeluaran_lalu;
                                 $subdata['data_spp_pajak'] = $data_spp_pajak;
+                                $subdata['data_rekap_pajak'] = $data_rekap_pajak;
+                                $subdata['data_rekap_bruto'] = $data_rekap_bruto;
                                 $subdata['rincian_keluaran'] = $rincian_keluaran;
                                 $subdata['rel_kuitansi'] = $du;
                                 $subdata['daftar_kuitansi'] = $daftar_kuitansi;
@@ -2938,11 +2982,13 @@
                                                     $data[] = array(
                                                         'str_nomor_trx_spp' => $nomor_trx,
                                                         'kode_usulan_rka' => $kel[0],
+                                                        'jenis' => 'GUP',
                                                         'keluaran' => $kel[1],
                                                         'volume' => $kel[2],
                                                         'satuan' => $kel[3],
                                                         'kode_unit_subunit' => $kd_unit,
                                                         'tahun' => $this->cur_tahun,
+                                                        'tgl_proses' => date("Y-m-d H:i:s"),
                                                     );
                                                 }
                                             }
@@ -2959,7 +3005,7 @@
 
                                             $this->rsa_gup_model->proses_gup_spp_rka($data);
 
-                                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
                                             echo "sukses";
 
                                         }else{
@@ -3088,7 +3134,7 @@
                                         $this->kuitansi_model->insert_spm($data);
 
                                         $this->rsa_gup_model->proses_gup_spm_rka($data);
-                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
                                         echo "sukses";
                                     }else{
                                         echo "gagal";
@@ -3169,7 +3215,7 @@
                                     $this->load->model('kuitansi_model');
                                     $this->kuitansi_model->tolak_spp($data);
                                 }
-                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
                                 echo "sukses";
                             }else{
                                 echo "gagal";
@@ -3275,13 +3321,13 @@
                                         'tgl_proses' => date("Y-m-d H:i:s")
                                     );
                                     if($this->rsa_gup_model->proses_verifikator_gup($data_verifikator)){
-                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
                                         echo "sukses";
                                     }else{
                                         echo "gagal";
                                     }
                                 }else{
-                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
                                     echo "sukses";
                                 }
                             }else{
@@ -3349,6 +3395,7 @@
                                     'kd_akun_kas' => '112111',
                                     'kd_unit' => $kd_unit,
                                     'deskripsi' => 'KREDIT GUP UNIT ' . $kd_unit,//$this->input->post('deskripsi'),
+                                    'jenis' => 'GP',
                                     'no_spm' => $this->input->post('nomor_trx'),
                                     'kredit' => $this->input->post('kredit'),
                                     'debet' => '0',
@@ -3397,6 +3444,7 @@
                                         'kd_akun_kas' => '112111',
                                         'kd_unit' => $kd_unit,
                                         'deskripsi' => 'DEBIT GUP UNIT ' . $kd_unit,//$this->input->post('deskripsi'),
+                                        'jenis' => 'GP',
                                         'no_spm' => $this->input->post('nomor_trx'),
                                         'kredit' => '0',
                                         'debet' => $this->input->post('kredit'),
@@ -3417,7 +3465,7 @@
 
                                     $this->rsa_gup_model->proses_gup_cair_rka($data);
                                             
-                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM UP anda berhasil disubmit.</div>');
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
                                     echo "sukses";
                                 }else{
                                     echo "gagal";
@@ -3706,6 +3754,24 @@
                             redirect('welcome','refresh');  // redirect ke halaman home
                     }
                 }
+
+                function get_notif_approve(){
+
+                    if($this->check_session->user_session()){
+
+                        $level = $this->check_session->get_level() ;
+
+                        $kode_unit_subunit = $this->check_session->get_unit();
+
+                        $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+
+                        $notif = $this->rsa_gup_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
+
+                        echo $notif ;
+                    }
+
+                }
+
                 
         
     }

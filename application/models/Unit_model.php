@@ -63,9 +63,6 @@
 		function get_single_unit($where="",$field){
                     
             $rba = $this->load->database('rba', TRUE);
-		                  
-                        
-                        
 
 			$rba->where('kode_unit',$where);
 
@@ -197,6 +194,14 @@
                         $query = $rba->get('sub_subunit')->row();
 
                         return $query->nama_sub_subunit ;
+                }
+
+                function get_all_unit(){
+                    $rba = $this->load->database('rba', TRUE);
+
+                    $query = $rba->get('unit');
+
+                    return $query->result() ;
                 }
 
 	}

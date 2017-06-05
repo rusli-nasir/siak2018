@@ -25,7 +25,7 @@
                     <?php if($this->check_session->get_level() == 1) : // AKUNTANSI ?>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa" >
+                           <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa/SELAIN-APBN" >
  <i class="fa fa-cube fa-5x"></i>
                       <h4>Usulan DPA</h4>
                       </a>
@@ -36,7 +36,7 @@
                     <?php elseif($this->check_session->get_level() == 2) : // KPA ?>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                         <div class="div-square">
-                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa" >
+                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_rsa_kpa/SELAIN-APBN" >
    <i class="fa fa-cube fa-5x"></i>
                         <h4>Usulan DPA</h4>
                         </a>
@@ -48,7 +48,7 @@
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                         <div class="div-square">
-                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa" >
+                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa/SELAIN-APBN" >
    <i class="fa fa-cube fa-5x"></i>
                         <h4>Usulan DPA</h4>
                         </a>
@@ -59,7 +59,7 @@
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                         <div class="div-square">
-                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_dpa" >
+                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_dpa/SELAIN-APBN" >
    <i class="fa fa-cube fa-5x"></i>
                         <h4>Usulan DPA</h4>
                         </a>
@@ -71,7 +71,7 @@
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                         <div class="div-square">
-                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa" >
+                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_dpa/SELAIN-APBN" >
    <i class="fa fa-cube fa-5x"></i>
                         <h4>Usulan DPA</h4>
                         </a>
@@ -83,7 +83,7 @@
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                         <div class="div-square">
-                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_rsa_ppk/" >
+                             <a href="<?php echo base_url(); ?>index.php/dpa/daftar_validasi_rsa_ppk/SELAIN-APBN" >
    <i class="fa fa-cube fa-5x"></i>
                         <h4>Usulan DPA</h4>
                         </a>

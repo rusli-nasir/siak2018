@@ -34,25 +34,35 @@
                     <input type="hidden" id="proses_<?php echo $ul->id_rsa_detail;?>" value="2<?=substr($ul->proses,1,1)?>" />
                 </td>
                 <td ><?=$ul->deskripsi?></td>
-                <td ><?=$ul->volume?></td>
+                <td ><?=$ul->volume + 0?></td>
                 <td ><?=$ul->satuan?></td>
                 <td style="text-align: right"><?=number_format($ul->harga_satuan, 0, ",", ".")?></td>
                 <td style="text-align: right">
                     <?php $total_ = $total_ + ($ul->volume*$ul->harga_satuan); ?>
                     <?php $total_per_akun = $total_per_akun + ($ul->volume*$ul->harga_satuan); ?>
                     <?=number_format($ul->volume*$ul->harga_satuan, 0, ",", ".")?>
-					<?php 
+                    <?php
 													echo "<br><br>";
 													if(substr($ul->proses,1,1)=='4'){
 														if(isset($detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar) && $detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar != 0){
 															echo "<br /><a title=\"Kontrak Terbayar untuk Akun ini.\">KT: ".$this->cantik_model->number($detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar)."<br/>termin :".$detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->termin."</a>";
 														}
 													}
-													?>
-                </td>
+													?></td>
 
-                <?php if(substr($ul->proses,0,1) == 1): ?>
-                             
+                                                <?php if($ul->proses == 0) : ?>
+
+                                                <td align="center">
+                                                        <div class="btn-group">
+                                                            <button type="button" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</button>
+                                                        </div>
+                                                    </td>
+                                                    <td >
+                                                        <button type="button" disabled="disabled" class="btn btn-success btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Pilih </button>
+                                                    </td>
+
+                                                <?php elseif(substr($ul->proses,0,1) == 1): ?>
+
                                                 <td align="center">
                                                     <!--<buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$ul->kode_usulan_belanja?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span></buttton>-->
                                                     <div class="btn-group">
@@ -62,56 +72,91 @@
                                                 </td>
                                                 <td >
                                                     <div class="btn-group">
-													<?php
-														if(substr($ul->proses,1,1)=='4'){
-															$nilaikontrak = 0;
-															if(isset($detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar) && $detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar != 0){
-																$nilaikontrak=$detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar;
-															}
-															$nilai_dpa = $ul->volume*$ul->harga_satuan;
-															if($nilaikontrak!=$nilai_dpa){
-																	?>
-																	
+                                                    <?php
+                                                        if(substr($ul->proses,1,1)=='4'){
+                                                            $nilaikontrak = 0;
+                                                            if(isset($detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar) && $detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar != 0){
+                                                                $nilaikontrak=$detail_rsa_kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->kontrak_terbayar;
+                                                            }
+                                                                $nilai_dpa = $ul->volume*$ul->harga_satuan;
+
+                                                                if($nilaikontrak!=$nilai_dpa){
+                                                                    if(strpos(strtolower($ul->deskripsi),'listrik')!==false || strpos(strtolower($ul->deskripsi),'bpjs')!==false){
+                                                            ?>
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-success btn-sm" onclick="do_yes('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Left Align">Yes</button>
+                                                            <?php
+                                                                    }
+                                                            ?>
+
+                                                        <button title="NB:Kontrak Terbayar != nilai usulan DPA;" type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-danger btn-sm" onclick="do_no('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Center Align">No</button>
+                                                        <!--<div class="alert alert-danger">NB:Nilai Kontrak != nilai usulan DPA</div>-->
+                                                            <?php
+                                                            }else{
+                                                                ?>
+
+                                                                 <button type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-success btn-sm" onclick="do_yes('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Left Align">Yes</button>
                                                         <button type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-danger btn-sm" onclick="do_no('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Center Align">No</button>
-														<div class="alert alert-danger">NB:Nilai Kontrak != nilai usulan DPA</div>
-															<?php
-															}else{
-																?>
-																
-																 <button type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-success btn-sm" onclick="do_yes('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Left Align">Yes</button>
-                                                        <button type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-danger btn-sm" onclick="do_no('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Center Align">No</button>
-															<?php	
-															}
-															?>
-														<?php 
-														}else{	
-													?>
+                                                            <?php
+                                                            }
+                                                            ?>
+                                                        <?php
+                                                        }else{
+                                                    ?>
                                                         <button type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-success btn-sm" onclick="do_yes('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Left Align">Yes</button>
                                                         <button type="button" style="padding-left:5px;padding-right:5px;" rel="<?php echo $ul->id_rsa_detail;?>" class="btn btn-danger btn-sm" onclick="do_no('<?php echo $ul->id_rsa_detail ;?>','<?php echo $ul->kode_usulan_belanja ;?>',this)" aria-label="Center Align">No</button>
+                                                    
+                                                        <?php } ?>
                                                     </div>
                                                 </td>
-                                                                                                                <?php } ?>
                                                 <?php elseif(substr($ul->proses,0,1) == 2): ?>
                                                 <td align="center">
-                                                    <!--<buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$ul->kode_usulan_belanja?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span></buttton>-->
                                                     <div class="btn-group">
-                                                        <button type="button" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</button>
-    <!--                                                        <button type="button" disabled="disabled" rel="" class="btn btn-default btn-sm" id="" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>-->
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" id="" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Wait  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Ver </button>
                                                 </td>
                                                 <?php elseif(substr($ul->proses,0,1) == 3): ?>
                                                 <td align="center">
-                                                    <!--<buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$ul->kode_usulan_belanja?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span></buttton>-->
                                                     <div class="btn-group">
-                                                        <button type="button" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</button>
-    <!--                                                        <button type="button" disabled="disabled" rel="" class="btn btn-default btn-sm" id="" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>-->
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" id="" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Done  &nbsp;</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-warning btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Siap </button>
+                                                </td>
+                                                <?php elseif(substr($ul->proses,0,1) == 4): ?>
+                                                <td align="center">
+                                                    <div class="btn-group">
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" id="" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SPP </button>
+                                                </td>
+                                              <?php elseif(substr($ul->proses,0,1) == 5): ?>
+                                                <td align="center">
+                                                    <div class="btn-group">
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" id="" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> SPM </button>
+                                                </td>
+                                              <?php elseif(substr($ul->proses,0,1) == 6): ?>
+                                                <td align="center">
+                                                    <div class="btn-group">
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" onclick="" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                                        <button type="button" style="padding-left:5px;padding-right:5px;" disabled="disabled" rel="" class="btn btn-default btn-sm" id="" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="button" disabled="disabled" class="btn btn-info btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Cair </button>
                                                 </td>
                                                 <?php else: ?>
                                                     <td align="center">
@@ -122,9 +167,9 @@
                                                         </div>
                                                     </td>
                                                     <td >
-                                                        <button type="button" disabled="disabled" class="btn btn-warning btn-sm" rel="" id="proses_<?php echo $ul->id_rsa_detail ;?>" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Proses</button>
+                                                        <button type="button" disabled="disabled" class="btn btn-warning btn-sm" rel="" id="proses_<?php echo $ul->id_rsa_detail ;?>" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Pilih </button>
                                                     </td>
-                     
+
                                                 <?php endif; ?>
             </tr>
 
@@ -140,7 +185,7 @@
             <td >
                 <textarea name="deskripsi" class="validate[required] form-control" rel="<?=$u->kode_usulan_belanja?>" id="deskripsi_<?=$u->kode_usulan_belanja?>" rows="1"></textarea>
             </td>
-            <td ><input name="volume" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" rel="<?=$u->kode_usulan_belanja?>" id="volume_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
+            <td ><input name="volume" class="validate[required,funcCall[checkfloat]] calculate form-control xfloat" rel="<?=$u->kode_usulan_belanja?>" id="volume_<?=$u->kode_usulan_belanja?>" type="text" value="" data-toggle="tooltip" data-placement="top" title="Silahkan masukan angka bulat atau pecahan. Kalo masih error silahkan kontak sy. thx" /></td>
             <td ><input name="satuan" class="validate[required,maxSize[30]] form-control" rel="<?=$u->kode_usulan_belanja?>" id="satuan_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
             <td ><input name="tarif" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" rel="<?=$u->kode_usulan_belanja?>" id="tarif_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
             <td ><input name="jumlah" rel="<?=$u->kode_usulan_belanja?>" id="jumlah_<?=$u->kode_usulan_belanja?>" type="text" class="form-control" readonly="readonly" value="" /></td>
@@ -153,28 +198,28 @@
                             </div>
             </td>
             <td>&nbsp;</td>
-    </tr>  
+    </tr>
             -->
     <tr class="alert alert-danger">
-        <td colspan="4" style="text-align: right;">Usulan</td> 
+        <td colspan="4" style="text-align: right;">Usulan</td>
         <td style="text-align: right;">:</td>
         <td style="text-align: right;" rel="<?=$u->kode_usulan_belanja?>" id="td_usulan_<?=$u->kode_usulan_belanja?>"><?=number_format($u->total_harga, 0, ",", ".")?></td>
-        <td >&nbsp;</td> 
-        <td >&nbsp;</td> 
+        <td >&nbsp;</td>
+        <td >&nbsp;</td>
     </tr>
     <tr class="alert alert-info">
-            <td colspan="4" style="text-align: right;">Total</td> 
+            <td colspan="4" style="text-align: right;">Total</td>
             <td style="text-align: right;">:</td>
             <td style="text-align: right;" id="td_kumulatif_<?=$u->kode_usulan_belanja?>"><?=number_format($total_per_akun, 0, ",", ".")?></td>
             <td >&nbsp;</td>
-            <td >&nbsp;</td> 
+            <td >&nbsp;</td>
     </tr>
     <tr  class="alert alert-warning">
-            <td colspan="4" style="text-align: right;">Sisa</td> 
+            <td colspan="4" style="text-align: right;">Sisa</td>
             <td style="text-align: right;">:</td>
             <td style="text-align: right;" id="td_kumulatif_sisa_<?=$u->kode_usulan_belanja?>"><?=number_format(($u->total_harga - $total_per_akun), 0, ",", ".")?></td>
             <td >&nbsp;</td>
-            <td >&nbsp;</td> 
+            <td >&nbsp;</td>
     </tr>
 
     <?php $i_row++; ?>
@@ -190,5 +235,5 @@
         <td style="text-align: right">:</td>
         <td style="text-align: right"><?=number_format($total_, 0, ",", ".")?></td>
         <td >&nbsp;</td>
-        <td >&nbsp;</td> 
+        <td >&nbsp;</td>
     </tr>

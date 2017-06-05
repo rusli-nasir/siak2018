@@ -32,6 +32,8 @@ if ( ! function_exists('get_nama_sumber_dana'))
 
 		$CI = get_instance();
 
+
+
 		$name = 'asd' ;
 
 		if(strlen($kode_unit)==6){
@@ -39,6 +41,7 @@ if ( ! function_exists('get_nama_sumber_dana'))
 			$name = $CI->master_sub_subunit_model->get_single_sub_subunit($kode_unit,'nama');
 
 		}elseif(strlen($kode_unit)==4){
+            // echo $kode_unit ; die ;
 			$CI->load->model('subunit_model');
 			$name = $CI->subunit_model->get_single_subunit($kode_unit,'nama');
 
@@ -72,16 +75,17 @@ if ( ! function_exists('get_nama_sumber_dana'))
     function get_level($level){
 		switch ($level){
                         case '0'  : return '';break;
-			case '100': return 'ADMIN';break;
+			            case '100': return 'ADMIN';break;
                         case '1'  : return 'AKUNTANSI';break;
                         case '2'  : return 'KPA';break;
                         case '3'  : return 'VERIFIKATOR';break;
                         case '4'  : return 'PUMK';break;
                         case '5'  : return 'BUU';break;
-			case '11' : return 'KUASA BUU';break;
+			            case '11' : return 'KUASA BUU';break;
                         case '13' : return 'BENDAHARA';break;
                         case '14' : return 'PPK SUKPA';break;
                         case '15' : return 'PPPK';break;
+                        case '16' : return 'PPK';break;
 			default : return '';break;
 		}
     }
@@ -111,7 +115,43 @@ if ( ! function_exists('get_nama_sumber_dana'))
             // echo $pengeluaran;
         }
 //        echo $pengeluaran;
+
         return ($saldo - $pengeluaran);
+
+        // return $saldo ;
+
+    }
+
+
+    function get_saldo_tup($kode_unit,$tahun){
+//        echo $kode_unit . $tahun ;
+        $CI = get_instance();
+        $saldo = 0 ;
+        $CI->load->model('kas_bendahara_model');
+        $CI->load->model('kuitansi_model');
+        if((substr($kode_unit,0,2)=='41')||(substr($kode_unit,0,2)=='42')||(substr($kode_unit,0,2)=='43')||(substr($kode_unit,0,2)=='44')){
+            if(strlen($kode_unit)>4){
+                $kode_unit = substr($kode_unit,0,4);
+            }
+            $saldo = $CI->kas_bendahara_model->get_kas_saldo_tup($kode_unit,$tahun);
+    //        echo $saldo;
+            // echo $pengeluaran;
+            $pengeluaran = $CI->kuitansi_model->get_pengeluaran_tup($kode_unit,$tahun);
+            // echo $pengeluaran;
+        }else{
+            if(strlen($kode_unit)>2){
+                $kode_unit = substr($kode_unit,0,2);
+            }
+            $saldo = $CI->kas_bendahara_model->get_kas_saldo_tup($kode_unit,$tahun);
+    //        echo $saldo;
+            $pengeluaran = $CI->kuitansi_model->get_pengeluaran_tup($kode_unit,$tahun);   
+            // echo $pengeluaran;
+        }
+//        echo $pengeluaran;
+        
+        return ($saldo - $pengeluaran);
+
+        // return $saldo ;
 
     }
     
@@ -120,19 +160,21 @@ if ( ! function_exists('get_nama_sumber_dana'))
         $pagu = 0 ;
         $CI->load->model('dpa_model');
 //        $CI->load->model('kuitansi_model');
-        if((substr($kode_unit,0,2)=='41')||(substr($kode_unit,0,2)=='42')||(substr($kode_unit,0,2)=='43')||(substr($kode_unit,0,2)=='44')){
-            if(strlen($kode_unit)>4){
-                $kode_unit = substr($kode_unit,0,4);
-            }
-            $pagu = $CI->dpa_model->get_pagu_rkat($kode_unit,$tahun,$jenis);
+        // if((substr($kode_unit,0,2)=='41')||(substr($kode_unit,0,2)=='42')||(substr($kode_unit,0,2)=='43')||(substr($kode_unit,0,2)=='44')){
+        //     if(strlen($kode_unit)>4){
+        //         $kode_unit = substr($kode_unit,0,4);
+        //     }
+        //     $pagu = $CI->dpa_model->get_pagu_rkat($kode_unit,$tahun,$jenis);
 
-        }else{
-            if(strlen($kode_unit)>2){
-                $kode_unit = substr($kode_unit,0,2);
-            }
-            $pagu = $CI->dpa_model->get_pagu_rkat($kode_unit,$tahun,$jenis);
+        // }else{
+        //     if(strlen($kode_unit)>2){
+        //         $kode_unit = substr($kode_unit,0,2);
+        //     }
+        //     $pagu = $CI->dpa_model->get_pagu_rkat($kode_unit,$tahun,$jenis);
 
-        }
+        // }
+
+        $pagu = $CI->dpa_model->get_pagu_rkat($kode_unit,$tahun,$jenis);
 
         return $pagu ;
     }
@@ -140,23 +182,28 @@ if ( ! function_exists('get_nama_sumber_dana'))
     function get_total_pengeluaran($kode_unit,$tahun){
         $CI = get_instance();
         $pengeluaran = 0 ;
-        $CI->load->model('kas_bendahara_model');
-        if((substr($kode_unit,0,2)=='41')||(substr($kode_unit,0,2)=='42')||(substr($kode_unit,0,2)=='43')||(substr($kode_unit,0,2)=='44')){
-            if(strlen($kode_unit)>4){
-                $kode_unit = substr($kode_unit,0,4);
-            }
-            $pengeluaran = $CI->kas_bendahara_model->get_total_pengeluaran_bendahara($kode_unit,$tahun);
-            // echo $pengeluaran;
+        // $CI->load->model('kas_bendahara_model');
+        $CI->load->model('serapan_model');
+        // if((substr($kode_unit,0,2)=='41')||(substr($kode_unit,0,2)=='42')||(substr($kode_unit,0,2)=='43')||(substr($kode_unit,0,2)=='44')){
+        //     if(strlen($kode_unit)>4){
+        //         $kode_unit = substr($kode_unit,0,4);
+        //     }
+        //     // $pengeluaran = $CI->kas_bendahara_model->get_total_pengeluaran_bendahara($kode_unit,$tahun);
+        //     // echo $pengeluaran;
+        //     $pengeluaran = $CI->serapan_model->get_total_serapan($kode_unit,$tahun);
 
 
-        }else{
-            if(strlen($kode_unit)>2){
-                $kode_unit = substr($kode_unit,0,2);
-            }
-            $pengeluaran = $CI->kas_bendahara_model->get_total_pengeluaran_bendahara($kode_unit,$tahun);
-            // echo $pengeluaran;
+        // }else{
+        //     if(strlen($kode_unit)>2){
+        //         $kode_unit = substr($kode_unit,0,2);
+        //     }
+        //     // $pengeluaran = $CI->kas_bendahara_model->get_total_pengeluaran_bendahara($kode_unit,$tahun);
+        //     $pengeluaran = $CI->serapan_model->get_total_serapan($kode_unit,$tahun);
+        //     // echo $pengeluaran;
 
-        }
+        // }
+
+        $pengeluaran = $CI->serapan_model->get_total_serapan($kode_unit,$tahun);
         
         
         return $pengeluaran;
@@ -215,26 +262,4 @@ if ( ! function_exists('get_nama_sumber_dana'))
 
     function decodeText($txt){
         return html_entity_decode($txt,ENT_QUOTES);
-    }
-
-    function strtodate($str){
-        if(!$str) return null;
-        $list = 
-            array(
-                'JANUARI'=>'01',
-                'FEBRUARI'=>'02',
-                'MARET'=>'03',
-                'APRIL'=>'04',
-                'MEI'=>'05',
-                'JUNI'=>'06',
-                'JULI'=>'07',
-                'AGUSTUS'=>'08',
-                'SEPTEMBER'=>'09',
-                'OKTOBER'=>'10',
-                'NOVEMBER'=>'11',
-                'DESEMBER'=>'12'
-                 );
-        $tokens = explode(' ', $str);
-        $tokens[1] = $list[strtoupper($tokens[1])];
-        return $tokens[2].'-'.$tokens[1].'-'.$tokens[0];
     }

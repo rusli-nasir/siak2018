@@ -169,7 +169,11 @@ $cur_tahun=$tgl['year']+1;
                 <hr />
                 <div class="row">  
                     <div class="col-lg-12">
-<form class="form-horizontal alert alert-warning col-sm-8" method="post" id="form_dpa" action="">
+
+                    <div class="row">
+                <div class="col-lg-8">
+
+<form class="form-horizontal alert alert-warning" method="post" id="form_dpa" action="">
                 <!--
                 <div class="form-group"  >
 			<label for="input1" class="col-md-4 control-label">Tahun</label>
@@ -232,6 +236,10 @@ $cur_tahun=$tgl['year']+1;
 	  </div>
 
 			</form>
+
+            </div>
+            </div>
+            
 			<div id="temp" style="display:none"></div>
                         <div id="o-table">
                         <table class="table table-striped">
@@ -240,7 +248,8 @@ $cur_tahun=$tgl['year']+1;
                                         <th class="col-md-3" >Program</th>
                                         <th class="col-md-3" >Kegiatan</th>
                                         <th class="col-md-3" >Sub Kegiatan</th>
-                                        <th class="col-md-2" >RKAT</th>
+                                        <th class="col-md-1" >RKAT</th>
+                                        <th class="col-md-1" >RSA</th>
                                         <th class="col-md-1" style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
@@ -248,6 +257,7 @@ $cur_tahun=$tgl['year']+1;
                                 <?php $temp_text_program = ''; ?>
                                 <?php $temp_text_komponen = ''; ?>
                                 <?php $total_g = 0 ; ?>
+                                <?php $total_h = 0 ; ?>
                                 <?php if(!empty($rsa_usul)): ?>
                                 <?php foreach($rsa_usul as $i => $u){ ?>
                                     <tr rel="<?=$u->k_unit.$u->kode_rka?>" class="tr-unit" height="25px">
@@ -265,11 +275,12 @@ $cur_tahun=$tgl['year']+1;
                                         <?php endif; ?>
                                         <td class=""><?=$u->nama_subkomponen?></td>
                                         <td class="" style="text-align: right"><?=number_format($u->jumlah_tot, 0, ",", ".")?><?php $total_g = $total_g + $u->jumlah_tot; ?></td>
+                                        <td class="" style="text-align: right"><?=number_format($u->jumlah_rsa, 0, ",", ".")?><?php $total_h = $total_h + $u->jumlah_rsa; ?></td>
                                         <!--<td style="text-align: right" class="rkat">&nbsp;</td>-->
                                         <!--<td style="text-align: right" class="rsa">&nbsp;</td>-->
                                         
                                             <td align="center">
-                                                <buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$u->kode_rka?><?php // $u->k_unit.$u->kode_rka; ?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Usulkan</buttton>
+                                                <buttton type="button" class="btn btn-danger btn-sm tb-buat-tor" rel="<?=$u->kode_rka?><?php // $u->k_unit.$u->kode_rka; ?>" ><!--<span class="glyphicon glyphicon-share" aria-hidden="true"></span>-->Go!</buttton>
                                             </td>
                                         
                                         
@@ -277,17 +288,18 @@ $cur_tahun=$tgl['year']+1;
 
                                 <?php } ?>
                                     <tr >
-                                        <td colspan="5">&nbsp;</td>
+                                        <td colspan="6">&nbsp;</td>
                                     </tr>
                                     <tr id="" height="25px" class="alert alert-danger" style="font-weight: bold">
                                         <td colspan="2" style="text-align: center">Total </td>
                                         <td style="text-align: right">:</td>
                                         <td style="text-align: right"><?=number_format($total_g, 0, ",", ".")?></td>
+                                        <td style="text-align: right"><?=number_format($total_h, 0, ",", ".")?></td>
                                         <td>&nbsp;</td>
                                     </tr>
                                 <?php else: ?>
                                 <tr id="tr-empty">
-                                                <td colspan="5"> - kosong / belum disetujui - </td>
+                                                <td colspan="6"> - kosong / belum disetujui - </td>
                                 </tr>
                                 <?php endif; ?>
                                 
@@ -299,7 +311,7 @@ $cur_tahun=$tgl['year']+1;
                             </tbody>-->
                             <tfoot>
                                 <tr>
-                                    <td colspan="5">&nbsp;</td>
+                                    <td colspan="6">&nbsp;</td>
                                 </tr>
                             </tfoot>
                         </table>

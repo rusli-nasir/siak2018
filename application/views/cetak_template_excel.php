@@ -1,6 +1,9 @@
 <?php
 	header("Content-Type: application/vnd.ms-excel; charset=utf-8");
-  header('Content-Disposition: attachment; filename='.date('Ymd His').'_daftar_demi_undip.xls');
+	if(!isset($filename) || is_null($filename)){
+		$filename = date('Ymd His')."_daftar_demi_undip.xls";
+	}
+  header('Content-Disposition: attachment; filename='.$filename);
 ?>
 <html>
 	<body>
