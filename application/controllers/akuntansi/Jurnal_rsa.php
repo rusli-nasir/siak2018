@@ -100,7 +100,18 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['jenis_pembatasan_dana'] = '';
                 $isian['jenis_isian'] = 'nk';
                 $isian['tanggal_bukti'] = $isian['tanggal'];
-                $isian['pajak'] = null;
+
+                if ($isian['pajak'] == 0) {
+                    $isian['pajak'] = null;
+                }else {
+                    $pajak = $isian['pajak'];
+                    unset($isian['pajak']);
+                    $isian['pajak'][0] = $this->Pajak_model->get_akun_by_jenis('PPh_Ps_21');
+                    $isian['pajak'][0]['rupiah_pajak'] = $pajak;
+                    $isian['pajak'][0]['persen_pajak'] = null;
+                }
+
+
                 // print_r($isian);die();
             }
             // print_r($isian);die();
