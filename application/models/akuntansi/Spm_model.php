@@ -9,6 +9,7 @@ class Spm_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
         $this->load->model('rsa_gup_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
+        $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
     }
 	
@@ -38,7 +39,7 @@ class Spm_model extends CI_Model {
 						'TUP' => 'trx_spm_tambah_tup_data',
 						'PUP' => 'trx_spm_tambah_up_data',
 						'TUP_NIHIL' => 'trx_spm_tup_data',
-						'LSPHK3' => 'trx_lsphk3_data',
+						'LSPHK3' => 'trx_spm_lsphk3_data',
 		);
 	}
 
@@ -101,6 +102,30 @@ class Spm_model extends CI_Model {
           	$inti['akun_kredit'] = $kredit['kd_akun_kas'];
           	$inti['jumlah_kredit'] = $kredit['kredit'];
           	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+          	if ($jenis == 'LSPHK3') {
+          		$this->db
+          				->where('posisi','SPM-FINAL-KBUU')
+          				->where('id_trx_nomor_lsphk3',$nomor_trx_spm)
+          		;
+
+          		$id_kuitansi = $this->db->get('trx_lsphk3')->row_array()['id_kuitansi'];
+
+          		$kuitansi = $this->db->get_where('rsa_kuitansi_lsphk3',array('id_kuitansi' => $id_kuitansi))->row_array();
+
+          		$inti['no_bukti'] = $kuitansi['no_bukti'];
+          		$inti['kode_usulan_belanja'] = $kuitansi['kode_usulan_belanja'];
+          		$inti['akun_debet'] = $kuitansi['kode_akun'];
+          		$inti['jumlah_debet'] = $inti['jumlah_bayar'];
+          		$inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
+
+          		$inti['akun_kredit'] = $kredit['kd_akun_kas'];
+	          	$inti['jumlah_kredit'] = $kredit['kredit'];
+	          	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+          		// print_r($id_kuitansi);
+          		$inti['pajak'] = $this->Pajak_model->get_detail_pajak($kuitansi['no_bukti'],'L3');
+          		// print_r($kuitansi);
+          		// die();
+          	}
 
           	return $inti;
             
@@ -157,6 +182,31 @@ class Spm_model extends CI_Model {
           	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
 
           	$field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');
+
+          	if ($jenis == 'LSPHK3') {
+          		$this->db
+          				->where('posisi','SPM-FINAL-KBUU')
+          				->where('id_trx_nomor_lsphk3',$nomor_trx_spm)
+          		;
+
+          		$id_kuitansi = $this->db->get('trx_lsphk3')->row_array()['id_kuitansi'];
+
+          		$kuitansi = $this->db->get_where('rsa_kuitansi_lsphk3',array('id_kuitansi' => $id_kuitansi))->row_array();
+
+          		$inti['no_bukti'] = $kuitansi['no_bukti'];
+          		$inti['kode_kegiatan'] = $kuitansi['kode_usulan_belanja'];
+          		$inti['akun_debet'] = $kuitansi['kode_akun'];
+          		$inti['jumlah_debet'] = $inti['jumlah_bayar'];
+          		$inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
+
+          		$inti['akun_kredit'] = $kredit['kd_akun_kas'];
+	          	$inti['jumlah_kredit'] = $kredit['kredit'];
+	          	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+
+          		// print_r($id_kuitansi);
+          		// print_r($kuitansi);
+          		// die();
+          	}
 
 	    	$field_asal = array_keys($inti);
 

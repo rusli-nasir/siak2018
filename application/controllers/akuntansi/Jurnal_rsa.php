@@ -60,6 +60,10 @@ class Jurnal_rsa extends MY_Controller {
 
             if (in_array($jenis,$array_spm)){
                 $q2 = $this->Spm_model->update_spm($id_kuitansi,$updater,$jenis);
+                if ($jenis == 'LSPHK3') {
+                    $array_pajak = $this->Pajak_model->get_transfer_pajak($q1);
+                    $this->Pajak_model->insert_pajak($q1,$array_pajak);
+                }
             }
             else if ($jenis != 'NK') {
                 $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($kuitansi['jenis']),$updater);
@@ -100,6 +104,11 @@ class Jurnal_rsa extends MY_Controller {
         {          
             if (in_array($jenis,$this->Spm_model->get_jenis_spm())){
                 $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
+                if ($jenis == 'LSPHK3') {
+                    $akun_debet_akrual = $isian['akun_debet'];
+                    $akun_debet_akrual[0] = 7;
+                    $isian['akun_debet_akrual'] = $akun_debet_akrual;
+                }
             }
             else if ($jenis != 'NK'){
 			    $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
