@@ -6,6 +6,14 @@
 		@page{
 			size:landscape;
 		}
+		.border {
+		    border-collapse: collapse;
+		}
+
+		.border td,
+		.border th{
+		    border: 1px solid black;
+		}
 		</style>
 		<script type="text/javascript">
 		window.print();
@@ -43,7 +51,7 @@
 	    	$jumlah_kredit = 0;
 	    	$iter = 0;
 
-	    	echo '<table style="font-size:10pt;width:1000px;border:1px solid #bdbdbd;margin-bottom:20px;" border="1">
+	    	echo '<table style="font-size:10pt;width:1000px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
 	    			<thead>
 	    				<tr style="background-color:#ECF379">
 	    					<th>No</th>

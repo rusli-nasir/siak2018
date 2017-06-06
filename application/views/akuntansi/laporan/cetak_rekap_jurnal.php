@@ -6,6 +6,14 @@
 		@page{
 			size:landscape;
 		}
+		.border {
+		    border-collapse: collapse;
+		}
+
+		.border td,
+		.border th{
+		    border: 1px solid black;
+		}
 		</style>
 		<script type="text/javascript">
 		window.print();
@@ -18,7 +26,7 @@
 			<?php echo $teks_periode; ?><br/>
 			<?php echo $teks_tahun_anggaran; ?><br/><br/>
 		</div>
-		<table style="width:1300px;font-size:10pt;" border="1">
+		<table style="width:1300px;font-size:10pt;" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
 					<th>No</th>
