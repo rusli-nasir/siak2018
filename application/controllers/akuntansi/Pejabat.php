@@ -6,6 +6,7 @@ class Pejabat extends MY_Controller {
         parent::__construct();
         $this->cek_session_in();
         $this->load->library('grocery_CRUD');
+        $this->db2 = $this->db2 = $this->load->database('rba',TRUE);
     }
 
 	public function manage(){
@@ -18,7 +19,17 @@ class Pejabat extends MY_Controller {
 
 		$crud->field_type('jabatan','dropdown',
 
-												array('kabag' => 'kabag','kasubbag' => 'kasubbag','operator' => 'operator','verifikator' => 'verifikator'));
+												array('kabag' => 'kabag','kasubbag' => 'kasubbag','operator' => 'operator','kpa' => 'kpa','ppk' => 'ppk'));
+
+		$unit = $this->db2->get('unit')->result_array();
+
+		$array_unit = array();
+		foreach ($unit as $entry) {
+			$array_unit[$entry['kode_unit']] = $entry['nama_unit'];
+		}
+
+		$crud->field_type('unit','dropdown',$array_unit);
+
 		// $level = substr($tabel, -1,1);
 
   //       $crud
