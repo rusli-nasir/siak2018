@@ -13,6 +13,7 @@ foreach($css_files as $file): ?>
 	<!-- page start-->
 	<div class="row mt">
 		<div class="col-md-8" style="width: 100%;display: block;">
+			<h2><?php echo $title; ?></h2>
 	<?php echo $output; ?>
 		</div>
 	</div>

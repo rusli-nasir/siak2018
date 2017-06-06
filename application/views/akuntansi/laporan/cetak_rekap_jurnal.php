@@ -47,6 +47,9 @@
 		        $jumlah_debet = 0;
 		        $jumlah_kredit = 0;
 
+		        $baris = 6;
+		        $total_data = 24;//count($query);
+
 		        foreach ($query as $entry) {
 		        	$transaksi = $entry['transaksi'];
             		$akun = $entry['akun'];
@@ -57,10 +60,10 @@
             				<td align="center" colspan="5" style="background-color:#D0FCEE" align="right">Keterangan</td>
             				<td colspan="3">'.$nama_unit.':<br/>'.$transaksi['uraian'].'</td>
             			</tr>';
-
-            		foreach ($akun as $in_akun) {
+            		$baris+=1;
+            		foreach ($akun as $in_akun) {			
             			echo '<tr>
-            					<td></td>
+            					<td>'.$baris.'</td>
             					<td>'.date("d M Y", strtotime($transaksi['tanggal'])).'</td>
             					<td>'.$transaksi['no_spm'].'</td>
             					<td>'.$transaksi['no_bukti'].'</td>
@@ -77,7 +80,25 @@
 				                    $jumlah_kredit += $in_akun['jumlah'];
 				                }
             			echo '</tr>';
+            			$baris+=1;            			
             		}
+            		if(($baris%35)>=25){
+            			$baris = 1;
+						echo '</tbody></table><div style="margin-bottom:1800px"></div><table style="width:1300px;font-size:10pt;" class="border">
+						<thead>
+							<tr style="background-color:#ECF379;height:45px">
+								<th>'.$iter.'</th>
+								<th>Tanggal</th>
+								<th>NO. SPM</th>
+								<th>NO. BUKTI</th>
+								<th>OUTPUT</th>
+								<th>Kode Akun</th>
+								<th width="350px">URAIAN</th>
+								<th>DEBET</th>
+								<th>KREDIT</th>
+							</tr>
+						</thead>';
+					}
 		        	$iter++;
 		        }
 				?>
@@ -90,20 +111,37 @@
     			</tr>';
 			?>
 		</table>
+		<div align="right" style="width:1300px;margin-top:40px;">
+			<div style="width:200px" align="left">
+				<?php 
+				echo 'Semarang, '.date("d-m-Y", strtotime($periode_akhir)).'<br/>Pengguna Anggaran<br/>';
+				echo get_nama_unit($unit).'<br/><br/><br/><br/>';
+				$pejabat = get_pejabat($unit, 'kpa'); 
+				echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
+				?>
+			</div>
+		</div>
 	</body>
 </html>
 <?php
 function get_nama_unit($kode_unit)
-    {
-    	$ci =& get_instance();
-    	$ci->db2 = $ci->load->database('rba', true);
-        $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
-        if ($hasil == null) {
-            return '-';
-        }
-        return $hasil['nama_unit'];
-
+{
+	$ci =& get_instance();
+	$ci->db2 = $ci->load->database('rba', true);
+    $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
+    if ($hasil == null) {
+        return '-';
     }
+    return $hasil['nama_unit'];
+
+}
+
+function get_pejabat($unit, $jabatan){
+	$ci =& get_instance();
+	$ci->db->where('unit', $unit);
+	$ci->db->where('jabatan', $jabatan);
+	return $ci->db->get('akuntansi_pejabat')->row_array();
+}
 
 function get_nama_akun_v($kode_akun){
 	$ci =& get_instance();

@@ -1244,6 +1244,26 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
  <![endif]>
 </table>
 
+<div align="right" style="width:100%;margin-top:40px;">
+  <div style="width:40%;" align="left">
+    <div style="width:50%;float:left;">
+      <?php 
+      echo 'Penyusun Laporan<br/><br/><br/><br/><br/><br/>';
+      $pejabat = get_pejabat($kode_unit, 'operator'); 
+      echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
+      ?>
+    </div>
+    <div style="width:50%;float:right">
+      <?php 
+      echo 'Semarang, '.date("d-m-Y", strtotime($tgl_kuitansi)).'<br/>Pengguna Anggaran<br/>';
+      echo get_nama_unit($kode_unit).'<br/><br/><br/><br/>';
+      $pejabat = get_pejabat($kode_unit, 'ppk'); 
+      echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
+      ?>
+    </div>
+  </div>
+</div>
+
 <p class=MsoNormal style='text-align:justify;text-justify:inter-ideograph'><span
 lang=DE style='font-size:12.0pt;line-height:105%;font-family:"Arial",sans-serif;
 mso-ansi-language:DE'>&nbsp;</span></p>
@@ -1253,3 +1273,24 @@ mso-ansi-language:DE'>&nbsp;</span></p>
 </body>
 
 </html>
+
+<?php
+function get_nama_unit($kode_unit)
+{
+  $ci =& get_instance();
+  $ci->db2 = $ci->load->database('rba', true);
+    $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
+    if ($hasil == null) {
+        return '-';
+    }
+    return $hasil['nama_unit'];
+
+}
+
+function get_pejabat($unit, $jabatan){
+  $ci =& get_instance();
+  $ci->db->where('unit', $unit);
+  $ci->db->where('jabatan', $jabatan);
+  return $ci->db->get('akuntansi_pejabat')->row_array();
+}
+?>

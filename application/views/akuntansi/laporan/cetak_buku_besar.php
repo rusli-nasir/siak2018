@@ -25,8 +25,15 @@
 			BUKU BESAR<br/>
 			<?php echo $periode_text; ?>
 		</div>
-		<?php 
-		foreach ($query as $key=>$entry){ 
+		<?php
+		$baris = 4;
+		$item = 1;
+		$total_data = 4;//count($query); 
+		$break = 'on';
+		foreach ($query as $key=>$entry){
+			if(($baris>=30) AND ($item==$total_data)){
+				echo '<div style="margin-bottom:1800px"></div>';
+			}
 			echo '<table style="font-size:10pt;">
 					<tr>
 						<td width="140px" style="font-weight:bold;">Unit Kerja</td>
@@ -45,11 +52,10 @@
 						<td>'.get_nama_akun_v((string)$key).'</td>
 					</tr>
 				</table>';
-
+			$baris += 4;
 			$saldo = $this->Akun_model->get_saldo_awal($key);
 	    	$jumlah_debet = 0;
 	    	$jumlah_kredit = 0;
-	    	$iter = 0;
 
 	    	echo '<table style="font-size:10pt;width:1000px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
 	    			<thead>
@@ -66,7 +72,7 @@
 	    			</thead>
 	    			<tbody>';
 	    			echo '<tr>
-    					<td>'.$iter.'</td>
+    					<td>1</td>
     					<td>1 Januari 2017</td>
     					<td></td>
     					<td>Saldo Awal</td>
@@ -75,7 +81,10 @@
     					<td></td>
     					<td align="right">'.number_format($saldo).'</td>
     				</tr>';
-	    	foreach ($entry as $transaksi) {
+    				$baris += 2;
+    		$iter = 1;
+	    	foreach ($entry as $transaksi) {	
+	    		$iter++;
 				echo '<tr>
 					<td>'.$iter.'</td>
 					<td>'.$transaksi['tanggal'].'</td>
@@ -95,6 +104,25 @@
 	    			}
 				echo '<td align="right">'.number_format($saldo).'</td>
 				</tr>';
+				$baris+=1;
+
+				if($total_data==1 AND $baris>=30 AND $break=='on'){
+					$break = 'off';
+					echo '</tbody></table><div style="margin-bottom:1800px"></div><table style="font-size:10pt;width:1000px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
+	    			<thead>
+	    				<tr style="background-color:#ECF379">
+	    					<th>No</th>
+	    					<th>Tanggal</th>
+	    					<th>No. Bukti</th>
+	    					<th>Uraian</th>
+	    					<th>Ref</th>
+	    					<th>Debet<br/>(Rp)</th>
+	    					<th>Kredit<br/>(Rp)</th>
+	    					<th>Saldo<br/>(Rp)</th>
+	    				</tr>
+	    			</thead>
+	    			<tbody>';
+				}
     		}
     		echo '</tbody>
     			<tfoot>
@@ -104,12 +132,37 @@
     					<td align="right">'.number_format($jumlah_kredit).'</td>
     					<td align="right">'.number_format($saldo).'</td>
     				</tr>
-    			</tfoot>';
+    			</tfoot>
+    			</table>';
+    		$baris+=1;
+		$item++;
 		}
 		?>
 	</body>
+	<div align="right" style="width:1000px">
+		<div style="width:200px" align="left">
+			<?php 
+			echo 'Semarang, '.date("d-m-Y", strtotime($periode_akhir)).'<br/>Pengguna Anggaran<br/>';
+			echo get_nama_unit($unit).'<br/><br/><br/><br/>';
+			$pejabat = get_pejabat($unit, 'kpa'); 
+			echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
+			?>
+		</div>
+	</div>
 </html>
 <?php
+function get_nama_unit($kode_unit)
+{
+	$ci =& get_instance();
+	$ci->db2 = $ci->load->database('rba', true);
+    $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
+    if ($hasil == null) {
+        return '-';
+    }
+    return $hasil['nama_unit'];
+
+}
+
 function get_nama_akun_v($kode_akun){
 	$ci =& get_instance();
 	if (isset($kode_akun)){
@@ -153,5 +206,12 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	return 1000000000;
+}
+
+function get_pejabat($unit, $jabatan){
+	$ci =& get_instance();
+	$ci->db->where('unit', $unit);
+	$ci->db->where('jabatan', $jabatan);
+	return $ci->db->get('akuntansi_pejabat')->row_array();
 }
 ?>

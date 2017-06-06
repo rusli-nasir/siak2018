@@ -659,6 +659,8 @@ class Laporan extends MY_Controller {
         }
 
         $data['periode_text'] = $teks_periode;
+        $data['unit'] = $unit;
+        $data['periode_akhir'] = $periode_akhir;
 
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
         $this->load->view('akuntansi/laporan/cetak_buku_besar',$data);
@@ -697,6 +699,9 @@ class Laporan extends MY_Controller {
 
         $data['teks_periode'] = $teks_periode;
         $data['teks_tahun_anggaran'] = $teks_tahun_anggaran;
+
+        $data['unit'] = $unit;
+        $data['periode_akhir'] = $periode_akhir;
 
         // print_r($this->input->post());die();
         // $akun = array(1,2,3,4,5,6,7,8,9);
@@ -747,6 +752,9 @@ class Laporan extends MY_Controller {
 
         $data['teks_periode'] = $teks_periode;
         $data['teks_tahun_anggaran'] = $teks_tahun_anggaran;
+        $data['unit'] = $unit;
+        $data['periode_akhir'] = $periode_akhir;
+
 
         $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
     }

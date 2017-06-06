@@ -5,7 +5,7 @@ class Pejabat extends MY_Controller {
 	public function __construct(){
         parent::__construct();
         $this->cek_session_in();
-        $this->load->library('grocery_CRUD');
+        $this->load->library('grocery_CRUD');       
         $this->db2 = $this->db2 = $this->load->database('rba',TRUE);
     }
 
@@ -46,7 +46,10 @@ class Pejabat extends MY_Controller {
   //       }
 
         $output = $crud->render(); 
-        $this->load->view('akuntansi/crud/manage',$output,false);
+        $output->title = 'Pejabat';
+        $output->menu12 = true;
+        $temp_data['content'] = $this->load->view('akuntansi/crud/manage',$output,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);   
 	}
 
 	public function list_akun()
