@@ -810,4 +810,10 @@ class Kuitansi extends MY_Controller {
 		$q = $query->num_rows();
 		return $q;
 	}
+    
+    /****************** RUPIAH MURNI ************************/
+    
+    // Redirect ke memorial
+    
+    /****************** RUPIAH MURNI ************************/
 }

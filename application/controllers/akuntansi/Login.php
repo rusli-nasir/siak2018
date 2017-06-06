@@ -57,16 +57,18 @@ class Login extends MY_Controller {
 		if ($login) {
 			if($this->session->userdata('level')==1){
 				redirect(site_url('akuntansi/kuitansi'));
-			}else if($this->session->userdata('level')==2){
+			} else if($this->session->userdata('level')==2){
 				if($this->session->userdata('kode_unit')==null){
 					redirect(site_url('akuntansi/kuitansi/pilih_unit'));
 				}else{
 					redirect(site_url('akuntansi/kuitansi/jadi'));
 				}
-			}else if($this->session->userdata('level')==3){
+			} else if($this->session->userdata('level')==3){
 				redirect(site_url('akuntansi/penerimaan/index'));
-			}else if($this->session->userdata('level')==4){
+			} else if($this->session->userdata('level')==4){
 				redirect(site_url('akuntansi/kuitansi/monitor'));
+			} else if($this->session->userdata('level')==5){
+				redirect(site_url('akuntansi/memorial'));
 			}
 		}
 	}
