@@ -59,7 +59,7 @@ class Pajak_model extends CI_Model {
     	$kuitansi['tipe'] = 'pajak';
 
 
-    	if ($array_pajak != null and $kuitansi['jenis'] != 'NK') {
+    	if ($array_pajak != null) {
     		$kuitansi['akun_debet'] = 0;
     		$kuitansi['akun_debet_akrual'] = 0;
     		$kuitansi['jumlah_debet'] = 0;

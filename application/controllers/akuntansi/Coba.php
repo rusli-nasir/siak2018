@@ -23,8 +23,10 @@ class Coba extends MY_Controller {
 
 	public function pajak()
 	{
-        $akun = array('411124','411122');
-		print_r($this->Laporan_model->get_data_buku_besar($akun,'pajak'));
+        $array_pajak = $this->Pajak_model->get_transfer_pajak(5);
+		print_r($array_pajak);
+        $pajak = $this->Pajak_model->get_akun_by_jenis('PPh_Ps_21');
+        print_r($pajak);
 	}
 
     public function spm()

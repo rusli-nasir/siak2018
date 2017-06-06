@@ -66,8 +66,27 @@ class Jurnal_rsa extends MY_Controller {
                 $array_pajak = $this->Pajak_model->get_transfer_pajak($q1);
                 $this->Pajak_model->insert_pajak($q1,$array_pajak);
             }
-            else
+            else{
                 $q2 = $this->Kuitansi_model->update_kuitansi_nk($id_kuitansi,$updater);
+                $pajak = $this->Pajak_model->get_akun_by_jenis('PPh_Ps_21');
+                $pajak['akun'] = $pajak['kode_akun'];
+                $pajak['persen_pajak'] = null;
+                $pajak['jenis'] = 'pajak';
+
+                $isian_ = $this->Kuitansi_model->get_kuitansi_nk($id_kuitansi);
+                $pajak['jumlah'] = $isian_['pajak'];
+
+                unset($pajak['kode_akun']);
+                unset($pajak['id_akun_pajak']);
+                unset($pajak['nama_akun']);
+
+                $array_pajak = array($pajak);
+
+                // print_r($array_pajak);die();
+
+
+                $this->Pajak_model->insert_pajak($q1,$array_pajak);
+            }
 
             if ($q1 and $q2)
             	$this->session->set_flashdata('success','Berhasil menyimpan !');
