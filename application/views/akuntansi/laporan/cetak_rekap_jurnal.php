@@ -8,7 +8,7 @@
 		}
 		</style>
 		<script type="text/javascript">
-		//window.print();
+		window.print();
 		</script>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
@@ -20,7 +20,7 @@
 		</div>
 		<table style="width:1300px;font-size:10pt;" border="1">
 			<thead>
-				<tr>
+				<tr style="background-color:#ECF379;height:45px">
 					<th>No</th>
 					<th>Tanggal</th>
 					<th>NO. SPM</th>
@@ -45,8 +45,8 @@
             		$nama_unit = get_nama_unit($transaksi['unit_kerja']);
             		
             		echo '<tr>
-            				<td align="center" style="background-color:#B1E9F2">'.$iter.'</td>
-            				<td align="center" colspan="5" style="background-color:#B1E9F2" align="right">Keterangan</td>
+            				<td align="center" style="background-color:#D0FCEE">'.$iter.'</td>
+            				<td align="center" colspan="5" style="background-color:#D0FCEE" align="right">Keterangan</td>
             				<td colspan="3">'.$nama_unit.':<br/>'.$transaksi['uraian'].'</td>
             			</tr>';
 
@@ -76,7 +76,7 @@
 			</tbody>
 			<?php
 			echo '<tr>
-    				<td align="right" colspan="7"><b>Jumlah Total</b></td>
+    				<td align="right" colspan="7" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
     				<td align="right">'.number_format($jumlah_debet,2).'</td>
     				<td align="right">'.number_format($jumlah_kredit,2).'</td>
     			</tr>';
