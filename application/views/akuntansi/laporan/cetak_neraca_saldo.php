@@ -6,6 +6,14 @@
 		@page{
 			size:landscape;
 		}
+		.border {
+		    border-collapse: collapse;
+		}
+
+		.border td,
+		.border th{
+		    border: 1px solid black;
+		}
 		</style>
 		<script type="text/javascript">
 		//window.print();
@@ -28,7 +36,7 @@
 							<td>2017</td>
 						</tr>
 				</table>';
-			echo '<table style="width:1300px;font-size:10pt;" border="1">
+			echo '<table style="width:1300px;font-size:10pt;" class="border">
 					<thead style="background-color:#ECF379;height:45px">
 						<tr>
 							<th rowspan="2">No</th>
@@ -97,14 +105,16 @@
 
 				$i++;
 			}
-			echo '<tr>
-    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-    				<td align="right">'.number_format($jumlah_debet,2).'</td>
-    				<td align="right">'.number_format($jumlah_kredit,2).'</td>
-    				<td align="right">'.number_format($jumlah_neraca_debet,2).'</td>
-    				<td align="right">'.number_format($jumlah_neraca_kredit,2).'</td>
-    			</tr>
-    			</tbody>
+    		echo '</tbody>
+	    			<tfoot>
+					 	<tr>
+		    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
+		    				<td align="right">'.number_format($jumlah_debet,2).'</td>
+		    				<td align="right">'.number_format($jumlah_kredit,2).'</td>
+		    				<td align="right">'.number_format($jumlah_neraca_debet,2).'</td>
+		    				<td align="right">'.number_format($jumlah_neraca_kredit,2).'</td>
+		    			</tr>
+	    			</tfoot>
 				</table>';
 		?>
 	</body>
