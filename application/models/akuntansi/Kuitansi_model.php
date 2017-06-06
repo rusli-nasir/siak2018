@@ -173,7 +173,7 @@ class Kuitansi_model extends CI_Model {
     /*----------------Penerimaan & memorial ---------------------*/
 
     function read_by_tipe($limit = null, $start = null, $keyword = null, $tipe = 'penerimaan'){
-        if($this->session->userdata('level')==1){
+        if($this->session->userdata('level')==1 || $this->session->userdata('level')==5){
             $filter_unit = "AND unit_kerja='".$this->session->userdata('kode_unit')."'";
         }else{
             $filter_unit = '';
