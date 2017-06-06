@@ -79,10 +79,14 @@ class Laporan extends MY_Controller {
         $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
         $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
         $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+        $query_7 = $this->Pajak_model->get_pajak();
 
         $i = 0;
         foreach($query_1->result() as $result){
             if($i==0){
+                $data[$i]['akun_6'] = 'all';
+                $data[$i]['nama'] = 'Semua Akun';
+                ++$i;
                 $data[$i]['akun_6'] = '911101';
                 $data[$i]['nama'] = 'SAL';
             }else{
@@ -116,8 +120,11 @@ class Laporan extends MY_Controller {
             $data[$i]['nama'] = $result->nama;
             $i++;
         }
-        $data[$i]['akun_6'] = '911101';
-        $data[$i]['nama'] = 'SAL';
+        foreach($query_7->result() as $result){
+            $data[$i]['akun_6'] = $result->kode_akun;
+            $data[$i]['nama'] = $result->nama_akun;
+            $i++;
+        }
 
         if($get_json){
             $json_data['hasil'] = $data;
@@ -144,10 +151,14 @@ class Laporan extends MY_Controller {
         $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
         $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
         $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+        $query_7 = $this->Pajak_model->get_pajak();
 
         $i = 0;
         foreach($query_1->result() as $result){
             if($i==0){
+                $data[$i]['akun_6'] = 'all';
+                $data[$i]['nama'] = 'Semua Akun';
+                ++$i;
                 $data[$i]['akun_6'] = '911101';
                 $data[$i]['nama'] = 'SAL';
             }else{
@@ -181,6 +192,11 @@ class Laporan extends MY_Controller {
         foreach($query_6->result() as $result){
             $data[$i]['akun_6'] = $result->akun_6;
             $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_7->result() as $result){
+            $data[$i]['akun_6'] = $result->kode_akun;
+            $data[$i]['nama'] = $result->nama_akun;
             $i++;
         }
         

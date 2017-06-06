@@ -41,15 +41,7 @@
                       sel.selectize();
                     }
                   });
-            } else if(optionSelected == 'Pajak'){
-                $.ajax({
-                  url:'get_pajak',
-                  data:{},
-                  success:function(data){
-                    $("#akun_list").html(data);
-                  }
-                })
-            }else{
+            } else{
               $.ajax({
                     url:host+'akuntansi/laporan/get_akun_akrual/get_json',
                     data:{},
@@ -146,7 +138,6 @@
           <select id="basis" name="basis" class="form-control" required="">
             <option value="kas">Kas</option>
             <option value="akrual">Akrual</option>
-            <option value="pajak">Pajak</option>
           </select>
       </div>
     </div>
