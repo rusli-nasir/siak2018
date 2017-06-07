@@ -77,8 +77,7 @@ class Spm_model extends CI_Model {
 
             $inti['id_kuitansi'] = $nomor_trx_spm;
             $inti['unit_kerja'] = $unit;
-            $inti['no_bukti'] = null;
-            $inti['kode_usulan_belanja'] = null;
+            
 
             $inti['uraian'] = $inti['untuk_bayar'] . " " . $unit;
 
@@ -102,6 +101,10 @@ class Spm_model extends CI_Model {
           	$inti['akun_kredit'] = $kredit['kd_akun_kas'];
           	$inti['jumlah_kredit'] = $kredit['kredit'];
           	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+
+          	$inti['no_bukti'] = $this->generate_no_bukti($inti['str_nomor_trx'],$jenis);
+            $inti['kode_usulan_belanja'] = $this->generate_kode_kegiatan($inti,$jenis);
+
           	if ($jenis == 'LSPHK3') {
           		$this->db
           				->where('posisi','SPM-FINAL-KBUU')
@@ -130,6 +133,35 @@ class Spm_model extends CI_Model {
           	return $inti;
             
         }
+	}
+
+	public function generate_no_bukti($spm,$jenis)
+	{
+		$temp = $spm;
+
+		$no_bukti = $jenis ."-". substr($temp,6,3) . substr($temp,0,5);
+		
+		return $no_bukti;
+	}
+
+	public function generate_kode_kegiatan($spm,$jenis)
+	{
+		return null;
+		
+		$array_sumber = array(
+						'UP' => '01',
+						'GUP' => '01',
+						'TUP' => '01',
+						'PUP' => '01',
+						'TUP_NIHIL' => '01',
+						'LSPHK3' => '01',
+		);
+
+		$kode_kegiatan = $spm['kode_unit_subunit'] . '00000000000000'. $array_sumber[$jenis] . $spm['akun_debet'];
+
+		// $no_bukti = $jenis . substr($temp,6,3) . substr($temp,0,5);
+		
+		return $kode_kegiatan;
 	}
 
 	public function get_spm_transfer($nomor_trx_spm,$jenis)
