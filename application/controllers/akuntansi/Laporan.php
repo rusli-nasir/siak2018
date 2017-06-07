@@ -785,7 +785,7 @@ class Laporan extends MY_Controller {
         }
 
     	// $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
-        $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+        $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
 
         $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";

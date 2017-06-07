@@ -108,7 +108,7 @@ class Laporan_model extends CI_Model {
 
     }
 
-    public function get_akun_tabel_relasi($array_akun,$jenis=null,$unit = null,$sumber_dana=null,$start_date=null,$end_date=null)
+    public function get_akun_tabel_relasi($array_akun,$jenis=null,$unit = null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
     {
         $data = array();
         foreach ($array_akun as $akun) {
@@ -123,7 +123,9 @@ class Laporan_model extends CI_Model {
 
             if ($jenis != null){
                 $this->db_laporan->where('jenis',$jenis);
-                $this->db_laporan->or_where('jenis','pajak');
+                if ($mode == 'neraca') {
+                    $this->db_laporan->or_where('jenis','pajak');
+                }
             }
 
 
@@ -202,16 +204,23 @@ class Laporan_model extends CI_Model {
         
     }
 
-    public function get_data_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
+    public function get_data_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
     {
         $tabel_utama = array();
         $tabel_relasi = array();
+        $tabel_relasi_pajak = array();
 
         $tabel_utama = $this->Laporan_model->get_akun_tabel_utama($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date);
 
-        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date);     
+        // print_r($array_akun);die();
 
-        $hasil = array_merge($tabel_utama,$tabel_relasi);
+        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date,$mode);         
+        $tabel_relasi_pajak = $this->Laporan_model->get_akun_tabel_relasi($array_akun,'pajak',$unit,$sumber_dana,$start_date,$end_date);         
+
+        $hasil = array_merge($tabel_utama,$tabel_relasi,$tabel_relasi_pajak);
+
+        // print_r($jenis);die();
+        // print_r($hasil);die();
 
 
         $data = array();
