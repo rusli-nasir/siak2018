@@ -198,7 +198,7 @@
           <?php
         }
         ?>
-        <?php if(!$selected): ?><option value="911101" selected>911101 - SAL</option><?php endif; ?>
+        <?php if(!$selected): ?><option value="911101" selected>911101 - SAL KBUU</option><?php endif; ?>
       </select>
     </div>
     <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->

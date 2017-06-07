@@ -199,11 +199,11 @@ if($jenis=='NK'){
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
         <?php if (in_array($jenis,$array_spm) and $jenis != 'LSPHK3' ): ?>
-          <option value="<?php echo $akun_kredit ?>" selected><?php echo $kas_akun_kredit ?></option>
+          <option value="<?php echo $akun_kredit ?>" selected><?php echo $kas_akun_kredit?></option>
         <?php endif ?>
         ?>
         <?php if (!in_array($jenis,$array_spm) or $jenis == 'LSPHK3'): ?>
-          <option value="911101">911101 - SAL</option>
+          <option value="<?php echo $akun_sal['akun_6'] ?>" selected><?php echo $akun_sal['akun_6']. " - ".$akun_sal['nama'] ?></option>
         <?php endif ?>
       </select>
     </div>

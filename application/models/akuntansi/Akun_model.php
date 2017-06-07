@@ -31,7 +31,7 @@ class Akun_model extends CI_Model {
 				}
 				return $hasil;
 			} else if (substr($kode_akun,0,1) == 9){
-				return 'SAL';
+				return $this->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 			} else if (substr($kode_akun,0,1) == 1){
 				$hasil = $this->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
 				if ($hasil == null){

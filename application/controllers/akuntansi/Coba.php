@@ -14,6 +14,7 @@ class Coba extends MY_Controller {
         $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
         $this->load->model('akuntansi/Laporan_model', 'Laporan_model');
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
 	}
 
     public function index()
@@ -32,6 +33,16 @@ class Coba extends MY_Controller {
     public function spm()
     {
         print_r($this->Spm_model->get_spm_input(24,'up'));
+    }
+
+    public function sal()
+    {
+        print_r($this->Jurnal_rsa_model->get_akun_sal_by_unit('1','all'));
+    }
+
+    public function akun()
+    {
+        print_r($this->Akun_model->get_nama_akun('911103'));
     }
 
     public function tgl_spm()

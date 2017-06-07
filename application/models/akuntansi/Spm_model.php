@@ -94,13 +94,24 @@ class Spm_model extends CI_Model {
           	$debet = $this->db->get_where($tabel_debet,array('no_spm' => $inti['str_nomor_trx']))->row_array();
           	$kredit = $this->db->get_where($tabel_kredit,array('no_spm' => $inti['str_nomor_trx']))->row_array();
 
-          	$inti['akun_debet'] = $debet['kd_akun_kas'];
-          	$inti['jumlah_debet'] = $debet['debet'];
-          	$inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
+            // $inti['akun_debet'] = $debet['kd_akun_kas'];
+            // $inti['jumlah_debet'] = $debet['debet'];
+            // $inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
 
-          	$inti['akun_kredit'] = $kredit['kd_akun_kas'];
+            // $inti['akun_kredit'] = $kredit['kd_akun_kas'];
+            // $inti['jumlah_kredit'] = $kredit['kredit'];
+            // $inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+
+            $sal_univ = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+            $sal_unit = $this->Jurnal_rsa_model->get_akun_sal_by_unit($inti['kode_unit_subunit']);
+
+          	$inti['akun_debet'] = $sal_unit['akun_6'];
+          	$inti['jumlah_debet'] = $debet['debet'];
+          	$inti['akun_debet_kas'] = $sal_unit['akun_6'] ." - ". $sal_unit['nama'];
+
+          	$inti['akun_kredit'] = $sal_univ['akun_6'];
           	$inti['jumlah_kredit'] = $kredit['kredit'];
-          	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+          	$inti['kas_akun_kredit'] = $sal_univ['akun_6'] ." - ". $sal_univ['nama'];
 
           	$inti['no_bukti'] = $this->generate_no_bukti($inti['str_nomor_trx'],$jenis);
             $inti['kode_usulan_belanja'] = $this->generate_kode_kegiatan($inti,$jenis);
@@ -205,13 +216,24 @@ class Spm_model extends CI_Model {
           	$debet = $this->db->get_where($tabel_debet,array('no_spm' => $inti['str_nomor_trx']))->row_array();
           	$kredit = $this->db->get_where($tabel_kredit,array('no_spm' => $inti['str_nomor_trx']))->row_array();
 
-          	$inti['akun_debet'] = $debet['kd_akun_kas'];
-          	$inti['jumlah_debet'] = $debet['debet'];
-          	$inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
+          	// $inti['akun_debet'] = $debet['kd_akun_kas'];
+          	// $inti['jumlah_debet'] = $debet['debet'];
+          	// $inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
 
-          	$inti['akun_kredit'] = $kredit['kd_akun_kas'];
-          	$inti['jumlah_kredit'] = $kredit['kredit'];
-          	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+          	// $inti['akun_kredit'] = $kredit['kd_akun_kas'];
+          	// $inti['jumlah_kredit'] = $kredit['kredit'];
+          	// $inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+
+            $sal_univ = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+            $sal_unit = $this->Jurnal_rsa_model->get_akun_sal_by_unit($inti['kode_unit_subunit']);
+
+            $inti['akun_debet'] = $sal_unit['akun_6'];
+            $inti['jumlah_debet'] = $debet['debet'];
+            $inti['akun_debet_kas'] = $sal_unit['akun_6'] ." - ". $sal_unit['nama'];
+
+            $inti['akun_kredit'] = $sal_univ['akun_6'];
+            $inti['jumlah_kredit'] = $kredit['kredit'];
+            $inti['kas_akun_kredit'] = $sal_univ['akun_6'] ." - ". $sal_univ['nama'];
 
           	$field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');
 
@@ -231,9 +253,15 @@ class Spm_model extends CI_Model {
           		$inti['jumlah_debet'] = $inti['jumlah_bayar'];
           		$inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
 
-          		$inti['akun_kredit'] = $kredit['kd_akun_kas'];
-	          	$inti['jumlah_kredit'] = $kredit['kredit'];
-	          	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
+              $sal_univ = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+
+              $inti['akun_kredit'] = $sal_univ['akun_6'];
+              $inti['jumlah_kredit'] = $kredit['kredit'];
+              $inti['kas_akun_kredit'] = $sal_univ['akun_6'] ." - ". $sal_univ['nama'];
+
+          		// $inti['akun_kredit'] = $kredit['kd_akun_kas'];
+	          	// $inti['jumlah_kredit'] = $kredit['kredit'];
+	          	// $inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
 
           		// print_r($id_kuitansi);
           		// print_r($kuitansi);

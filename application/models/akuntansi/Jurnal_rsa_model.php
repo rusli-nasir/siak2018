@@ -15,6 +15,18 @@ class Jurnal_rsa_model extends CI_Model {
         return $query;
     }
 
+    public function get_akun_sal_by_unit($kode_unit)
+    {
+        $this->db->where('kode_unit',$kode_unit);
+
+        return $this->db->get('akuntansi_sal_6')->row_array();
+    }
+
+    public function get_akun_sal_by_jenis($jenis,$tipe)
+    {
+        
+    }
+
     public function get_kuitansi($id_kuitansi,$tabel,$tabel_detail)
     {
         $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();

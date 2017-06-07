@@ -104,10 +104,12 @@ class Jurnal_rsa extends MY_Controller {
         {          
             if (in_array($jenis,$this->Spm_model->get_jenis_spm())){
                 $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
                 if ($jenis == 'LSPHK3') {
                     $akun_debet_akrual = $isian['akun_debet'];
                     $akun_debet_akrual[0] = 7;
                     $isian['akun_debet_akrual'] = $akun_debet_akrual;
+                    $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
                 }
             }
             else if ($jenis != 'NK'){
@@ -117,6 +119,7 @@ class Jurnal_rsa extends MY_Controller {
                 $akun_debet_akrual[0] = 7;
                 $isian['akun_debet_akrual'] = $akun_debet_akrual;
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
 
                 // $isian['pajak'] = null;
                 // print_r($isian);die();
@@ -138,6 +141,8 @@ class Jurnal_rsa extends MY_Controller {
                     $isian['pajak'][0]['rupiah_pajak'] = $pajak;
                     $isian['pajak'][0]['persen_pajak'] = null;
                 }
+
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
 
 
                 // print_r($isian);die();
@@ -168,6 +173,7 @@ class Jurnal_rsa extends MY_Controller {
     {
 
         $isian = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
+
         $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
         $isian['pajak'] = $this->Pajak_model->get_detail_pajak_jadi($id_kuitansi_jadi);
 
@@ -276,6 +282,8 @@ class Jurnal_rsa extends MY_Controller {
             $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
 
             $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+
+            $isian['pajak'] = $this->Pajak_model->get_detail_pajak_jadi($id_kuitansi_jadi);
 
             $isian['mode'] = $mode;
             $this->data['tab'] = 'beranda';
