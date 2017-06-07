@@ -43,6 +43,23 @@ class Kuitansi_model extends CI_Model {
 		}
 		return $query;
 	}
+
+    function read_gup($limit = null, $start = null, $keyword = null, $kode_unit = null){
+        if($kode_unit!=null){
+            $unit = 'AND trx_gup.kode_unit_subunit="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            (str_nomor_trx LIKE '%$keyword%') $unit");
+        }
+        return $query;
+    }
     
     function read_pup($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){

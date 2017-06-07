@@ -59,7 +59,8 @@ tbody td, thead th {
 <ul class="nav nav-tabs">
   <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_up'); ?>">UP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->up ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->up; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_pup'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>">GU&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab9)){ if($tab9==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_gup'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab7)){ if($tab7==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_nihil'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup_nihil'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil; ?></span></a></li>
@@ -141,7 +142,7 @@ tbody td, thead th {
 					<td><?php echo date("d/m/Y", strtotime($result->tgl_spm)); ?></td>
 					<td><?php /*echo $result->no_bukti;*/ ?></td>
 					<td><?php echo $result->str_nomor_trx; ?></td>
-					<td><?php echo "UP"; ?></td>
+					<td><?php if(isset($tab4)){ echo "UP"; }else{ echo 'GUP'; } ?></td>
 					<td><?php /*echo substr($result->kode_usulan_belanja,6,2);*/ ?></td>
 					<td><?php echo get_unit($result->kode_unit_subunit); ?></td>
 					<td><?php echo $result->untuk_bayar."<br>Penerima: ".$result->penerima; ?></td>
