@@ -18,7 +18,7 @@ class Pejabat extends MY_Controller {
 		$crud->set_field_upload('scan_ttd','assets/akuntansi/ttd');
 
 		$crud->field_type('jabatan','dropdown',
-												array('kabag' => 'kabag','kasubbag' => 'kasubbag','operator' => 'operator','kpa' => 'kpa','ppk' => 'ppk');
+												array('kabag' => 'kabag','kasubbag' => 'kasubbag','operator' => 'operator','kpa' => 'kpa','ppk' => 'ppk'));
 		$unit = $this->db2->get('unit')->result_array();
 
 		$array_unit = array();
