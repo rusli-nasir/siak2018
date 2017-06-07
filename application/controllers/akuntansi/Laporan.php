@@ -706,6 +706,51 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/laporan/cetak_rekap_jurnal',$data);
     }
 
+    public function cetak_neraca_saldo(){
+        $array_akun = array(1,2,3,4,5,6,7,8,9);
+
+        $basis = $this->input->post('basis');
+        
+        $daterange = $this->input->post('daterange');
+        $date_t = explode(' - ', $daterange);
+        $periode_awal = strtodate($date_t[0]);
+        $periode_akhir = strtodate($date_t[1]);
+        
+        $sumber_dana = $this->input->post('sumber_dana');
+        $unit = $this->input->post('sumber_dana');
+
+        if ($unit == 'all') {
+            $unit = null;
+        }
+
+        // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
+        $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+
+        $teks_sumber_dana = "NERACA SALDO ";
+        $teks_periode = "";
+
+        $teks_tahun_anggaran = substr($periode_akhir,0,4);
+        $teks_unit = "UNIVERSITAS DIPONEGORO";
+
+        if ($periode_awal != null and $periode_akhir != null){
+            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        }
+
+
+        if ($sumber_dana != null) {
+            $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
+        }
+
+        ksort($data);
+
+        $n_akun = count($data);
+
+        $data['teks_periode'] = $teks_periode;
+        $data['teks_tahun_anggaran'] = $teks_tahun_anggaran;
+
+        $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
+    }
+
     public function get_neraca_saldo($mode = null)
     {
     // 	if ($tipe == 'sak'){
