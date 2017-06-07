@@ -132,7 +132,6 @@ tbody td, thead th {
 				<tr>
 					<th style="width:2% !important;">NO</th>
 					<th style="width:110px;">TANGGAL</th>
-					<th style="width:110px;" style="width:110px;">NO.BUKTI</th>
 					<th style="width:110px;">NO.SPM</th>
 					<th style="width:70px;">JENIS</th>
 					<th style="width:70px;">KODE KEGIATAN</th>
@@ -156,7 +155,6 @@ tbody td, thead th {
 				<tr>
 					<td style="width:2% !important;"><?php echo $no; ?></td>
 					<td style="width:110px;"><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
-					<td style="width:110px;"><?php echo $result->no_bukti; ?></td>
 					<td style="width:110px;"><?php echo $result->no_spm; ?></td>
 					<td style="width:70px;"><?php echo $result->jenis; ?></td>
 					<td style="width:70px;"><?php echo substr($result->kode_kegiatan,6,2); ?></td>
@@ -164,17 +162,6 @@ tbody td, thead th {
 					<td style="width:110px;"><?php echo $result->uraian; ?></td>
 					<td style="width:500px !important" nowrap><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td style="width:110px;"><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
-					<td style="width:110px;"><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
-					<?php 
-					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
-					?>
-					<td style="width:250px;font-size:12pt;">
-					<?php foreach ($pajak as $entry_pajak): ?>
-		              
-		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
-		              
-		          <?php endforeach ?>
-		          	</td>
 					<td style="width:110px;">
 						<?php if($result->flag==1){ ?>
 							<?php if($result->status=='revisi'){ ?>

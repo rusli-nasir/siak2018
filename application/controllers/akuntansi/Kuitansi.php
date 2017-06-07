@@ -524,10 +524,9 @@ class Kuitansi extends MY_Controller {
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}	
 
-	public function jadi($id = 0){
+	public function jadi($id = 0, $jenis = 'GP'){
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
-		$this->data['tab1'] = true;
 		//level unit
 		if($this->session->userdata('kode_unit')!=null){
 			$kode_unit = $this->session->userdata('kode_unit');
@@ -548,7 +547,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword, $kode_unit);
+		$total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword, $kode_unit, $jenis);
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -579,7 +578,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit, $jenis);
 		$this->data['query'] = $this->data['query']->result_array();
         $this->load->model('akuntansi/Akun_model');
         foreach($this->data['query'] as $key=>$value){
@@ -590,9 +589,23 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
 
-        $this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
-        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
-        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>$jenis, 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+
+        if($jenis=='UP'){
+        	$this->data['tab1'] = true;
+        }else if($jenis=='PUP'){
+        	$this->data['tab2'] = true;
+        }else if($jenis=='GP'){
+        	$this->data['tab3'] = true;
+        }else if($jenis=='GP_NIHIL'){
+        	$this->data['tab4'] = true;
+        }else if($jenis=='TUP'){
+        	$this->data['tab5'] = true;
+        }else if($jenis=='TUP_NIHIL'){
+        	$this->data['tab6'] = true;
+        }
 
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -646,15 +659,19 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi_ls($config['per_page'], $id, $keyword);
+
+		$this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>'LSPHK3', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>'LSPHK3', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'jenis'=>'LSPHK3', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 		
-		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_list',$this->data,true);
+		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_lsphk3_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
 
 	public function jadi_spm($id = 0){
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
-		$this->data['tab3'] = true;
+		$this->data['tab8'] = true;
 		//search
 		if(isset($_POST['keyword_spm_jadi'])){
 			$keyword = $this->input->post('keyword_spm_jadi');
