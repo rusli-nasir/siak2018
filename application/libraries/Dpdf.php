@@ -5,7 +5,7 @@ class Dpdf
   public function generate($html,$filename)
   {
     define('DOMPDF_ENABLE_AUTOLOAD', false);
-    require_once './vendor/dompdf/dompdf/autoload.inc.php';
+    require_once './vendor/dompdf-master/autoload.inc.php';
  
     $dompdf = new DOMPDF();
     $dompdf->load_html($html);

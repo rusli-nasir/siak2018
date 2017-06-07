@@ -16,7 +16,7 @@
 		}
 		</style>
 		<script type="text/javascript">
-		window.print();
+		//window.print();
 		</script>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">

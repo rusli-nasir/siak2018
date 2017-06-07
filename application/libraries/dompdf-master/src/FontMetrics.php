@@ -124,28 +124,28 @@ class FontMetrics
     {
         $fontDir = $this->getOptions()->getFontDir();
         $rootDir = $this->getOptions()->getRootDir();
-        
+
         // FIXME: tempoarary define constants for cache files <= v0.6.2
         if (!defined("DOMPDF_DIR")) { define("DOMPDF_DIR", $rootDir); }
         if (!defined("DOMPDF_FONT_DIR")) { define("DOMPDF_FONT_DIR", $fontDir); }
-        
+
         $file = $rootDir . "/lib/fonts/dompdf_font_family_cache.dist.php";
         $distFonts = require $file;
-        
+
         if (!is_readable($this->getCacheFile())) {
             $this->fontLookup = $distFonts;
             return;
         }
-        
+
         $cacheData = require $this->getCacheFile();
-        
+
         $this->fontLookup = array();
         if (is_array($this->fontLookup)) {
             foreach ($cacheData as $key => $value) {
                 $this->fontLookup[stripslashes($key)] = $value;
             }
         }
-        
+
         // Merge provided fonts
         $this->fontLookup += $distFonts;
     }
@@ -182,45 +182,45 @@ class FontMetrics
         $localFile = $fontDir . DIRECTORY_SEPARATOR . md5($remoteFile);
         $localTempFile = $this->options->get('tempDir') . "/" . md5($remoteFile);
         $cacheEntry = $localFile;
-        $localFile .= ".".strtolower(pathinfo($remoteFile,PATHINFO_EXTENSION));
+        $localFile .= ".".strtolower(pathinfo(parse_url($remoteFile, PHP_URL_PATH),PATHINFO_EXTENSION));
 
         $styleString = $this->getType("{$style['weight']} {$style['style']}");
 
         if ( !isset($entry[$styleString]) ) {
             $entry[$styleString] = $cacheEntry;
-            
+
             // Download the remote file
-            list($remoteFileContent, $http_response_header) = @Helpers::getFileContent($remoteFile, null, $context);
+            list($remoteFileContent, $http_response_header) = @Helpers::getFileContent($remoteFile, $context);
             if (false === $remoteFileContent) {
                 return false;
             }
             file_put_contents($localTempFile, $remoteFileContent);
-            
+
             $font = Font::load($localTempFile);
-            
+
             if (!$font) {
                 unlink($localTempFile);
                 return false;
             }
-            
+
             $font->parse();
             $font->saveAdobeFontMetrics("$cacheEntry.ufm");
             $font->close();
-            
+
             unlink($localTempFile);
-            
+
             if ( !file_exists("$cacheEntry.ufm") ) {
                 return false;
             }
-            
+
             // Save the changes
             file_put_contents($localFile, $remoteFileContent);
-            
+
             if ( !file_exists($localFile) ) {
                 unlink("$cacheEntry.ufm");
                 return false;
             }
-            
+
             $this->setFontFamily($fontname, $entry);
             $this->saveFontFamilies();
         }
@@ -518,8 +518,9 @@ class FontMetrics
      */
     public function setCanvas(Canvas $canvas)
     {
-        $this->pdf = $canvas;
         $this->canvas = $canvas;
+        // Still write deprecated pdf for now. It might be used by a parent class.
+        $this->pdf = $canvas;
         return $this;
     }
 
