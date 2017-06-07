@@ -675,7 +675,7 @@ class Kuitansi extends MY_Controller {
 	public function jadi_ls($id = 0){
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
-		$this->data['tab2'] = true;
+		$this->data['tab7'] = true;
 		//search
 		if(isset($_POST['keyword_jadi_ls'])){
 			$keyword = $this->input->post('keyword_jadi_ls');
