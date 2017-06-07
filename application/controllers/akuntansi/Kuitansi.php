@@ -212,8 +212,8 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_up($config['per_page'], $id, $keyword, $kode_unit);
 
-		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
-		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 0)->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 1)->num_rows();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/up_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -273,8 +273,8 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_pup($config['per_page'], $id, $keyword, $kode_unit);
 
-		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
-		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_pup('SPM-FINAL-KBUU', 0)->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_pup('SPM-FINAL-KBUU', 1)->num_rows();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/up_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -334,8 +334,8 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_tup($config['per_page'], $id, $keyword, $kode_unit);
 
-		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
-		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 0)->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 1)->num_rows();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/tup_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -455,6 +455,9 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_ls($config['per_page'], $id, $keyword);
+
+		$this->data['kuitansi_non_jadi'] = 0;//$this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_jadi'] = 0;//$this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'kode_unit'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/lsphk3_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -513,6 +516,9 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_spm($config['per_page'], $id, $keyword);
+
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'proses'=>5, 'substr(unitsukpa,1,2)'=>$this->session->userdata('kode_unit')), 'kepeg_tr_spmls')->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'proses'=>5, 'substr(unitsukpa,1,2)'=>$this->session->userdata('kode_unit')), 'kepeg_tr_spmls')->num_rows();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/spm_non_kuitansi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);

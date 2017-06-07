@@ -33,6 +33,18 @@
 <div class="row">
 	<div class="col-sm-9">
 		<h1 class="page-header">SPM Non-Kuitansi</h1>
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="box-t">
+					<?php echo 'Total Kuitansi Belum di Jurnal: <br/><span style="color:red;font-size:16pt;">'.$kuitansi_non_jadi.'</span>'; ?>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="box-t">
+					<?php echo 'Total Kuitansi Sudah di Jurnal: <br/><span style="color:green;font-size:16pt;">'.$kuitansi_jadi.'</span>'; ?>
+				</div>
+			</div>
+		</div>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>

@@ -423,4 +423,37 @@ class Kuitansi_model extends CI_Model {
         $query = $this->db->get($table);
         return $query;
     }
+
+    public function total_up($posisi, $flag){
+        if($this->session->userdata('kode_unit')==null){
+            $filter_unit = '';
+        }else{
+            $filter_unit = 'AND substr(T.kode_unit_subunit,1,2)='.$this->session->userdata('kode_unit').'';
+        }
+
+        $query = $this->db->query("SELECT * FROM trx_up T, trx_spm_up_data U WHERE T.id_trx_nomor_up=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
+        return $query;
+    }
+
+    public function total_pup($posisi, $flag){
+        if($this->session->userdata('kode_unit')==null){
+            $filter_unit = '';
+        }else{
+            $filter_unit = 'AND substr(T.kode_unit_subunit,1,2)='.$this->session->userdata('kode_unit').'';
+        }
+
+        $query = $this->db->query("SELECT * FROM trx_tambah_up T, trx_spm_tambah_up_data U WHERE T.id_trx_nomor_tambah_up=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
+        return $query;
+    }
+
+    public function total_tup($posisi, $flag){
+        if($this->session->userdata('kode_unit')==null){
+            $filter_unit = '';
+        }else{
+            $filter_unit = 'AND substr(T.kode_unit_subunit,1,2)='.$this->session->userdata('kode_unit').'';
+        }
+
+        $query = $this->db->query("SELECT * FROM trx_tambah_tup T, trx_spm_tambah_tup_data U WHERE T.id_trx_nomor_tambah_tup=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
+        return $query;
+    }
 }
