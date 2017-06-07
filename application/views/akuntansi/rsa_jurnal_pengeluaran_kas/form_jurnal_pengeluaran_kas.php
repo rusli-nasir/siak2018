@@ -182,8 +182,8 @@ if($jenis=='NK'){
       $pengeluaran = $jumlah_debet;
     }
     ?>
-    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text" value="<?=$pengeluaran?>" placeholder="Jumlah Akun Debet" class="form-control input-md" required="" disabled>
-      
+    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="hidden" value="<?=$pengeluaran?>" placeholder="Jumlah Akun Debet" class="form-control input-md" required="" disabled>
+    <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?php if(strpos($pengeluaran, '.')!== false){ echo $pengeluaran; }else{ echo number_format($pengeluaran); } ?>" disabled>  
     </div>
 
   </div>
@@ -230,7 +230,8 @@ if($jenis=='NK'){
       $pengeluaran = $jumlah_kredit;
     }
     ?>
-    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?=$pengeluaran?>" disabled required="">
+    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="hidden" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?=$pengeluaran?>" disabled required="">
+    <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?php if(strpos($pengeluaran, '.')!== false){ echo $pengeluaran; }else{ echo number_format($pengeluaran); } ?>" disabled>
       
     </div>
   </div>
