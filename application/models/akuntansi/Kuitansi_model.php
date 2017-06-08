@@ -46,7 +46,7 @@ class Kuitansi_model extends CI_Model {
 
     function read_gup($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_gup.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND trx_spm_gup_data.kode_unit_subunit="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
