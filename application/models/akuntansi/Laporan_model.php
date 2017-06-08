@@ -9,6 +9,7 @@ class Laporan_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
         $this->db_laporan = $this->load->database('laporan',TRUE);
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+
     }
 
     function read_buku_besar_group($group = null){
