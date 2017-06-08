@@ -169,7 +169,8 @@ tbody td, thead th {
 					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
 					?>
 					<td style="width:250px;font-size:12pt;">
-					<?php foreach ($pajak as $entry_pajak): ?>
+
+					<?php if($pajak != null) foreach ($pajak as $entry_pajak): ?>
 		              
 		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
 		              
@@ -254,6 +255,10 @@ function get_tabel_by_jenis($jenis)
 function get_detail_pajak($no_bukti,$jenis)
 {
 	$ci =& get_instance();
+	if (strpos($no_bukti, '-')) {
+		return null;
+	}
+
 	$hasil = $ci->db->get_where(get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
 	
 	$data = array();
