@@ -456,7 +456,7 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_ls($config['per_page'], $id, $keyword);
 		
-		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
+		$temp_data['content'] = $this->load->view('akuntansi/lsphk3_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
 

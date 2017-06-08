@@ -24,7 +24,7 @@ tbody {
 }
 
 thead {
-	width:1700px;
+	width:1500px;
     overflow-x: auto;
 }
 
@@ -120,52 +120,41 @@ tbody td, thead th {
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th style="width:4% !important">NO</th>
+					<th>NO</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
 					<th>NO.SPM</th>
 					<th>JENIS</th>
 					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
-					<th style="width:250px">URAIAN</th>
+					<th>URAIAN</th>
 					<th>AKUN DEBET</th>
 					<th>AKUN KREDIT</th>
-					<th style="width:350px">PAJAK</th>
 					<th>JUMLAH</th>
 					<th>AKSI</th>
 				</tr>
 			</thead>
-			<tbody style="font-size:12pt;">
+			<tbody style="font-size:8pt;">
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
-					<td style="width:4% !important"><?php echo $no; ?></td>
-					<td><?php echo date("d/m/Y", strtotime($result->tgl_kuitansi)); ?></td>
+					<td><?php echo $no; ?></td>
+					<td><?php echo date("d/m/Y", strtotime($result->tgl_spm)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
-					<td><?php echo $result->str_nomor_trx_spm; ?></td>
-					<td><?php echo $result->jenis; ?></td>
-					<td><?php echo substr($result->kode_usulan_belanja,6,2); ?></td>
-					<td><?php echo get_unit($result->kode_unit); ?></td>
-					<td style="width:250px"><?php echo $result->uraian; ?></td>
+					<td><?php echo $result->str_nomor_trx; ?></td>
+					<td><?php echo "TUP"; ?></td>
+					<td><?php /*echo substr($result->kode_usulan_belanja,6,2);*/ ?></td>
+					<td><?php echo get_unit($result->kode_unit_subunit); ?></td>
+					<td><?php echo "Untuk bayar: ".$result->untuk_bayar."<br>Uraian: ".$result->uraian; ?></td>
 					<td><?php echo $result->kode_akun; ?></td>
-					<td><?php echo '?'; ?></td>
-					<?php 
-					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
-					?>
-					<td style="width:350px">
-					<?php foreach ($pajak as $entry_pajak): ?>
-		              
-		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
-		              
-		          <?php endforeach ?>
-		          	</td>
-					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
+                    <td><?php echo '?'; ?></td>
+					<td><?php echo $result->jumlah_bayar; ?></td>
 					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1)){ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/GP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_trx_spm_lsphk3_data).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php }else{ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/L3'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_trx_spm_lsphk3_data).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
