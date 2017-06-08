@@ -29,7 +29,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_up($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_up.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND trx_spm_up_data.kode_unit_subunit="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -63,7 +63,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_pup($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_tambah_up.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND trx_spm_tambah_up_data.kode_unit_subunit="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -80,7 +80,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_tup($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_tambah_tup.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND trx_spm_tambah_tup_data.kode_unit_subunit="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -97,7 +97,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_tup_nihil($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_tup.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND trx_spm_tup_data.kode_unit_subunit="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -168,10 +168,10 @@ class Kuitansi_model extends CI_Model {
 
     function read_kuitansi_jadi_ls($limit = null, $start = null, $keyword = null){
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND  
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='LSPHK3' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='LSPHK3' AND
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
         }
         return $query;
