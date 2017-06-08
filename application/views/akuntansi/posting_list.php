@@ -24,21 +24,25 @@
 </div><!--/.row-->
 <hr/>
 <ul class="nav nav-tabs">
-  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_posting; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_ls'); ?>">L3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls_posting; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_spm'); ?>">SPM non-kuitansi&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/UP'); ?>">UP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->up_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->up_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/PUP'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/GP'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/GP_NIHIL'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/TUP'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/TUP_NIHIL'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab7)){ if($tab7==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_ls'); ?>">LS- 3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_posting; ?></span></a></li>
 </ul>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Kuitansi Jadi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
+		<h1 class="page-header">Posting Kuitansi Jadi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
 </div><!--/.row-->
 <div class="row">
 	<div class="col-sm-4">
-		<?php if(isset($tab1)){ ?>
-		<form action="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>" method="post">
+		<form method="post">
 			<div class="input-group">
 				<span class="input-group-btn">
 	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_jadi'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
@@ -49,19 +53,6 @@
 	      		</span>
 	    	</div>
 	    </form>
-	    <?php }else{ ?>
-	    <form action="<?php echo site_url('akuntansi/kuitansi/index_ls'); ?>" method="post">
-			<div class="input-group">
-				<span class="input-group-btn">
-	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_jadi_ls'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
-	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_ls" value="<?php if($this->session->userdata('keyword_ls')) echo $this->session->userdata('keyword_ls'); ?>">
-	      		<span class="input-group-btn">
-	        		<button class="btn btn-default" type="submit">Cari</button>
-	      		</span>
-	    	</div>
-	    </form>
-	    <?php } ?>
 	</div>
 	<?php if($this->session->userdata('level')!='1'){ ?>
 	<div class="col-sm-4">	

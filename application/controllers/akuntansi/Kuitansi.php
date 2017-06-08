@@ -818,9 +818,8 @@ class Kuitansi extends MY_Controller {
 		echo json_encode($query);
 	}
     
-    public function posting(){
+    public function posting($id=0, $jenis = 'GP'){
 		$this->data['menu3'] = true;
-		$this->data['tab1'] = true;
 		//level unit
 		if($this->session->userdata('kode_unit')!=null){
 			$kode_unit = $this->session->userdata('kode_unit');
@@ -841,7 +840,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi_posting(null, null, $keyword, $kode_unit);
+		$total_data = $this->Kuitansi_model->read_kuitansi_posting(null, null, $keyword, $kode_unit, $jenis);
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -872,7 +871,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting($config['per_page'], $id, $keyword, $kode_unit);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting($config['per_page'], $id, $keyword, $kode_unit, $jenis);
 		$this->data['query'] = $this->data['query']->result_array();
         $this->load->model('akuntansi/Akun_model');
         foreach($this->data['query'] as $key=>$value){
@@ -882,6 +881,21 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
+        
+        if($jenis=='UP'){
+        	$this->data['tab1'] = true;
+        }else if($jenis=='PUP'){
+        	$this->data['tab2'] = true;
+        }else if($jenis=='GP'){
+        	$this->data['tab3'] = true;
+        }else if($jenis=='GP_NIHIL'){
+        	$this->data['tab4'] = true;
+        }else if($jenis=='TUP'){
+        	$this->data['tab5'] = true;
+        }else if($jenis=='TUP_NIHIL'){
+        	$this->data['tab6'] = true;
+        }
+        
 		$temp_data['content'] = $this->load->view('akuntansi/posting_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
     }
