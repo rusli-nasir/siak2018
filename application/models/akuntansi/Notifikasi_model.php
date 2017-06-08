@@ -18,7 +18,7 @@ class Notifikasi_model extends CI_Model {
         } else {
             $unit = '';
             $unit_jadi = '';
-            $subunit = 'like %';
+            $subunit = 'like \'%\'';
         }
         
         if($this->session->userdata('kode_unit')==null){
