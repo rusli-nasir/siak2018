@@ -151,7 +151,7 @@ class Kuitansi_model extends CI_Model {
 
 	function read_kuitansi_ls($limit = null, $start = null, $keyword = null, $kode_unit=null){
 		if($kode_unit!=null){
-            $unit = 'AND trx_lsphk3.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND trx_spm_lsphk3_data.kode_unit_subunit="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
