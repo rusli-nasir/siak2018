@@ -658,6 +658,8 @@ class Kuitansi extends MY_Controller {
         	$this->data['tab1'] = true;
         }else if($jenis=='PUP'){
         	$this->data['tab2'] = true;
+        }else if($jenis=='GUP'){
+        	$this->data['tab9'] = true;
         }else if($jenis=='GP'){
         	$this->data['tab3'] = true;
         }else if($jenis=='GP_NIHIL'){
