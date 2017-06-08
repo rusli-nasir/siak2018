@@ -473,4 +473,16 @@ class Kuitansi_model extends CI_Model {
         $query = $this->db->query("SELECT * FROM trx_tambah_tup T, trx_spm_tambah_tup_data U WHERE T.id_trx_nomor_tambah_tup=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
         return $query;
     }
+    
+    public function total_gup($posisi, $flag){
+        if($this->session->userdata('kode_unit')!=null){
+            $unit = 'AND trx_gup.kode_unit_subunit="'.$this->session->userdata('kode_unit').'"';
+        }else{
+            $unit = '';
+        }
+
+        
+            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_gup AND posisi='$posisi' AND flag_proses_akuntansi='$flag' AND no_spm = str_nomor_trx $unit");
+        return $query;
+    }
 }
