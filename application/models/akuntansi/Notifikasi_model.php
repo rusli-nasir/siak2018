@@ -47,18 +47,26 @@ class Notifikasi_model extends CI_Model {
                 break;
         }
 		$query = $this->db->query("SELECT
-            (SELECT count(*) FROM trx_spm_up_data, trx_up, kas_bendahara WHERE id_trx_spm_up_data = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_up.kode_unit_subunit $subunit) AS up,
-            (SELECT COUNT(*) FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE id_trx_spm_tambah_up_data = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_tambah_up.kode_unit_subunit $subunit) AS pup,
-            (SELECT Count(*) FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE id_trx_spm_tambah_tup_data = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_tambah_tup.kode_unit_subunit $subunit) AS tup,
-            (SELECT count(*) FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND trx_tup.kode_unit_subunit $subunit) AS tup_nihil,
+            (SELECT count(*) FROM trx_spm_up_data, trx_up, kas_bendahara WHERE id_trx_spm_up_data = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_spm_up_data.kode_unit_subunit $subunit) AS up,
+            (SELECT COUNT(*) FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE id_trx_spm_tambah_up_data = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_spm_tambah_up_data.kode_unit_subunit $subunit) AS pup,
+            (SELECT Count(*) FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE id_trx_spm_tambah_tup_data = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_spm_tambah_tup_data.kode_unit_subunit $subunit) AS tup,
+            (SELECT count(*) FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND trx_spm_tup_data.kode_unit_subunit $subunit) AS tup_nihil,
             (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS gup,
             (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=$level) AS ls,
             (SELECT COUNT(*) FROM kepeg_tr_spmls WHERE $filter_unit) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND $condstr $unit_jadi) AS gup_jadi,
             (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND $condstr) AS ls_jadi,
             (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND $condstr) AS spm_jadi $condstr2");
         $result =  $query->row_array();
+        
+        $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
+        
+        $result['tup_jadi'] = $this->Kuitansi_model->read_total(array('jenis'=>'TUP', 'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $result['up_jadi'] = $this->Kuitansi_model->read_total(array('jenis'=>'UP', 'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $result['tup_nihil_jadi'] = $this->Kuitansi_model->read_total(array('jenis'=>'TUP_NIHIL', 'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $result['pup_jadi'] = $this->Kuitansi_model->read_total(array('jenis'=>'PUP', 'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        
         $result['kuitansi'] = $result['up'] +$result['pup'] +$result['gup'] +$result['tup'] +$result['tup_nihil'] + $result['ls'] + $result['spm'];
-        $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['ls_jadi'] + $result['spm_jadi'];
+        $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['ls_jadi'] + $result['spm_jadi'] + $result['tup_jadi'] + $result['up_jadi'] + $result['tup_nihil_jadi'] + $result['pup_jadi'];
         return (object)$result;
 	}
 
