@@ -2,6 +2,8 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+
+<script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
   var host = location.protocol + '//' + location.host + '/rsa/index.php/';
@@ -313,7 +315,7 @@ $(document).ready(function(){
               <span class="input-group-addon" id="basic-addon2">%</span>
             </div>
           </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9]{1,20}" maxlength="5" placeholder="450000" class="form-control" required></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak" required></td>
         </tr>
       </tbody>
       <tfoot>
@@ -478,7 +480,11 @@ $(document).ready(function(){
   var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
 
 
-  
+  $(".jumlah_akun_kredit_kas").number(true,2);
+  $(".jumlah_akun_debet_kas").number(true,2);
+  $(".jumlah_akun_kredit_akrual").number(true,2);
+  $(".jumlah_akun_debet_akrual").number(true,2);
+  $(".number_pajak").number(true,2);
 
 
   $('#add-akunKredit_kas').click(function () {
@@ -492,7 +498,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
         template.find('select').selectize();
             registerEvents();
-
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
     
   $('#add-akunDebet_kas').click(function () {
@@ -506,7 +513,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
         template.find('select').selectize();
             registerEvents();
-
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
 
   $('#add-akunKredit_akrual').click(function () {
@@ -520,6 +528,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
         template.find('select').selectize();
       registerEvents();
+      var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
     
   $('#add-akunDebet_akrual').click(function () {
@@ -533,7 +543,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
         template.find('select').selectize();
             registerEvents();
-
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
     
   $("#no-kas").click(function(){
@@ -568,6 +579,7 @@ $(document).ready(function(){
       data:{},
       success:function(data){
         $("#field_pajak").append(data);
+        $(".number_pajak").number(true,2);
       }
     })
   });

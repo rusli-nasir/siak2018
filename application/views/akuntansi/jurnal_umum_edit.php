@@ -3,6 +3,8 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+
+<script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
 <script type="text/javascript">
   var host = location.protocol + '//' + location.host + '/rsa/index.php/';
     
@@ -60,6 +62,8 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -91,6 +95,8 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -109,6 +115,7 @@ $(document).ready(function(){
             $("#field_pajak").append(data);
             $("#field_pajak tr:last-child .persen_pajak").val(d['persen_pajak']);
             $("#field_pajak tr:last-child .jumlah").val(d['jumlah']);
+            $(".number_pajak").number(true,2);
             if($("#field_pajak tr:first-child .del_pajak")) $("#field_pajak tr:first-child .del_pajak").remove();
           }
         });
@@ -142,7 +149,8 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
-
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -174,6 +182,8 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -643,6 +653,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
         template.find('select').selectize();
             registerEvents();
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
 
   });
     
@@ -657,7 +669,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
         template.find('select').selectize();
             registerEvents();
-
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
 
   $('#add-akunKredit_akrual').click(function () {
@@ -671,6 +684,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
         template.find('select').selectize();
       registerEvents();
+      var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
     
   $('#add-akunDebet_akrual').click(function () {
@@ -684,7 +699,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
         template.find('select').selectize();
             registerEvents();
-
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
     
   $("#no-kas").click(function(){
@@ -719,6 +735,7 @@ $(document).ready(function(){
       data:{},
       success:function(data){
         $("#field_pajak").append(data);
+        $(".number_pajak").number(true,2);
       }
     })
   });

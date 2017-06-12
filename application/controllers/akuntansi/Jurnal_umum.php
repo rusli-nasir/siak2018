@@ -114,7 +114,7 @@ class Jurnal_umum extends MY_Controller {
               <span class="input-group-addon" id="basic-addon2">%</span>
             </div>
           </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9]{1,20}" maxlength="20" placeholder="450000" class="form-control jumlah number_pajak" required></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control jumlah number_pajak" required></td>
           <td><button type="button" class="del_pajak btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>';
     }
@@ -185,7 +185,7 @@ class Jurnal_umum extends MY_Controller {
             $entry_pajak = array();
             $array_pajak = array();
             for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
-                $entry_pajak['jumlah'] = $akun['jumlah'][$i];
+                $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
                 $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
                 $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
                 $entry_pajak['jenis'] = 'pajak';
@@ -202,7 +202,7 @@ class Jurnal_umum extends MY_Controller {
             $relasi = array();
             for ($i=0; $i < count($akun['akun_debet_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_debet_akrual'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_debet_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_akrual'][$i]);
                 $relasi['tipe'] = 'debet';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -213,7 +213,7 @@ class Jurnal_umum extends MY_Controller {
 
             for ($i=0; $i < count($akun['akun_kredit_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_kredit_akrual'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_kredit_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_akrual'][$i]);
                 $relasi['tipe'] = 'kredit';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -224,7 +224,7 @@ class Jurnal_umum extends MY_Controller {
 
             for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
             	$relasi['akun'] = $akun['akun_debet_kas'][$i];
-            	$relasi['jumlah'] = $akun['jumlah_akun_debet_kas'][$i];
+            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
             	$relasi['tipe'] = 'debet';
             	$relasi['no_bukti'] = $entry['no_bukti'];
             	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -235,7 +235,7 @@ class Jurnal_umum extends MY_Controller {
 
             for ($i=0; $i < count($akun['akun_kredit_kas']); $i++) { 
             	$relasi['akun'] = $akun['akun_kredit_kas'][$i];
-            	$relasi['jumlah'] = $akun['jumlah_akun_kredit_kas'][$i];
+            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
             	$relasi['tipe'] = 'kredit';
             	$relasi['no_bukti'] = $entry['no_bukti'];
             	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -321,7 +321,7 @@ class Jurnal_umum extends MY_Controller {
             $relasi = array();
             for ($i=0; $i < count($akun['kas_akun_debet']); $i++) { 
             	$relasi['akun'] = $akun['kas_akun_debet'][$i];
-            	$relasi['jumlah'] = $akun['jumlah_akun_debet'][$i];
+            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet'][$i]);
             	$relasi['tipe'] = 'debet';
             	$relasi['no_bukti'] = $entry['no_bukti'];
             	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -332,7 +332,7 @@ class Jurnal_umum extends MY_Controller {
             $relasi_kredit = array();
             for ($i=0; $i < count($akun['kas_akun_kredit']); $i++) { 
             	$relasi['akun'] = $akun['kas_akun_kredit'][$i];
-            	$relasi['jumlah'] = $akun['jumlah_akun_kredit'][$i];
+            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit'][$i]);
             	$relasi['tipe'] = 'kredit';
             	$relasi['no_bukti'] = $entry['no_bukti'];
             	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
