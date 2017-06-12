@@ -58,14 +58,16 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage('L');
 
-$html = 
+$html_head = 
 	'<body style="font-family:arial;">
 		<div align="center" style="font-weight:bold">
 			UNIVERSITAS DIPONEGORO<br/>
 			BUKU BESAR<br/>
 			'.$periode_text.'
 		</div><br/><br/>';
+$pdf->writeHTML($html_head, true, false, true, false, '');
 
+$html = '';
 		$baris = 4;
 		$item = 1;
 		$total_data = 4;//count($query); 
@@ -145,27 +147,6 @@ $html =
 				$html.= '<td align="right">'.number_format($saldo).'</td>
 				</tr>';
 				$baris+=1;
-
-				if($total_data==1 AND $baris>=30 AND $break=='on'){
-					$break = 'off';
-					$html.= '</tbody></table>';
-					// add a page
-					$pdf->AddPage('L');
-					$html .= '<table style="font-size:10pt;width:1000px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
-	    			<thead>
-	    				<tr style="background-color:#ECF379">
-	    					<th>No</th>
-	    					<th>Tanggal</th>
-	    					<th>No. Bukti</th>
-	    					<th>Uraian</th>
-	    					<th>Ref</th>
-	    					<th>Debet<br/>(Rp)</th>
-	    					<th>Kredit<br/>(Rp)</th>
-	    					<th>Saldo<br/>(Rp)</th>
-	    				</tr>
-	    			</thead>
-	    			<tbody>';
-				}
     		}
     		$html.= '</tbody>
     			<tfoot>
@@ -181,19 +162,34 @@ $html =
 		$item++;
 		}
 	
-$html .= '</body>
-	<div style="width:1000px;" align="right">
-		<div style="width:200px">
-			Semarang, '.date("d-m-Y", strtotime($periode_akhir)).'<br/>Pengguna Anggaran<br/>';
-$html .= get_nama_unit($unit).'<br/><br/><br/><br/>';
-			$pejabat = get_pejabat($unit, 'kpa'); 
-			$html .= $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
-$html .= '</div>
-	</div>';
+$html .= '</body>';
 
 // output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');
-
+$height = $pdf->getY();
+if($height>=135){
+	// add a page
+	$pdf->AddPage('L');
+	$pdf->writeHTML($html_head, true, false, true, false, '');
+	$pdf->writeHTML('<div align="center">................</div>', true, false, true, false, '');
+	$pdf->ln(15); 
+}
+$cell_height = 5;
+$pejabat = get_pejabat($unit, 'kpa');
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'Semarang, '.date("d-m-Y", strtotime($periode_akhir)),0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'Pengguna Anggaran',0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,get_nama_unit($unit),0,0,'L');
+$pdf->ln($cell_height+20); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,$pejabat['nama'],0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // reset pointer to the last page

@@ -58,14 +58,15 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage('L');
 
-$html = 
+$html_head = 
 	'<body style="font-family:arial;margin:20px 20px 20px 20px;">
 		<div align="center" style="font-weight:bold">
 			UNIVERSITAS DIPONEGORO<br/>
 			NERACA SALDO<br/>
 			'.$teks_periode.'<br/><br/>
 		</div>';
-			$html .= '<table style="font-size:10pt;">
+$pdf->writeHTML($html_head, true, false, true, false, '');
+			$html = '<table style="font-size:10pt;">
 						<tr>
 							<td width="250px"><b>Unit Kerja</b></td>
 							<td>UNIVERSITAS DIPONEGORO</td>
@@ -141,7 +142,7 @@ $html =
 		            }
 
 				$html .= '</tr>';
-
+				
 				$i++;
 			}
     		$html .= '</tbody>
@@ -154,19 +155,34 @@ $html =
 		    				<td align="right">'.number_format($jumlah_neraca_kredit,2).'</td>
 		    			</tr>
 	    			</tfoot>
-				</table>';
-		$html .= '<div align="right" style="width:700px;margin-top:40px;">
-			<div style="width:200px">
-				Semarang, '.date("d-m-Y", strtotime($periode_akhir)).'<br/>Pengguna Anggaran<br/>';
-		$html .= get_nama_unit($unit).'<br/><br/><br/><br/>';
-							$pejabat = get_pejabat($unit, 'kpa'); 
-							$html .= $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
-		$html .= '</div>
-			</div>
-	</body>';
+				</table></body>';
 
 // output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');
+$height = $pdf->getY();
+if($height>=135){
+	// add a page
+	$pdf->AddPage('L');
+	$pdf->writeHTML($html_head, true, false, true, false, '');
+	$pdf->writeHTML('<div align="center">................</div>', true, false, true, false, '');
+	$pdf->ln(15); 
+}
+$cell_height = 5;
+$pejabat = get_pejabat($unit, 'kpa');
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'Semarang, '.date("d-m-Y", strtotime($periode_akhir)),0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'Pengguna Anggaran',0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,get_nama_unit($unit),0,0,'L');
+$pdf->ln($cell_height+20); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,$pejabat['nama'],0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
