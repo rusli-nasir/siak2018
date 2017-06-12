@@ -4,6 +4,8 @@
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
 
+<script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){
   var host = location.protocol + '//' + location.host + '/rsa/index.php/';
