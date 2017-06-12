@@ -106,9 +106,9 @@ class Penerimaan extends MY_Controller {
             $entry['kode_kegiatan'] = null;
             $entry['akun_debet'] = $entry['kas_akun_debet'];
             unset($entry['kas_akun_debet']);
-            $entry['jumlah_debet'] = $entry['jumlah_akun_debet'];
+            $entry['jumlah_debet'] = $this->normal_number($entry['jumlah_akun_debet']);
             unset($entry['jumlah_akun_debet']);
-            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'];
+            $entry['jumlah_kredit'] = $this->normal_number($entry['jumlah_akun_kredit']);
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'penerimaan';
             $entry['flag'] =3;
@@ -169,9 +169,9 @@ class Penerimaan extends MY_Controller {
             $entry['kode_kegiatan'] = null;
             $entry['akun_debet'] = $entry['kas_akun_debet'];
             unset($entry['kas_akun_debet']);
-            $entry['jumlah_debet'] = $entry['jumlah_akun_debet'];
+            $entry['jumlah_debet'] = $this->normal_number($entry['jumlah_akun_debet']);
             unset($entry['jumlah_akun_debet']);
-            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'];
+            $entry['jumlah_kredit'] = $this->normal_number($entry['jumlah_akun_kredit']);
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'penerimaan';
 
