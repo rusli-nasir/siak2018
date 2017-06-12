@@ -29,7 +29,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_up($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_spm_up_data.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND substr(trx_up.kode_unit_subunit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -63,7 +63,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_pup($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_spm_tambah_up_data.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND substr(trx_tambah_up.kode_unit_subunit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -80,7 +80,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_tup($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_spm_tambah_tup_data.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND substr(trx_tambah_tup.kode_unit_subunit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -97,7 +97,7 @@ class Kuitansi_model extends CI_Model {
     
     function read_tup_nihil($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_spm_tup_data.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND substr(trx_tup.kode_unit_subunit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -151,7 +151,7 @@ class Kuitansi_model extends CI_Model {
 
 	function read_kuitansi_ls($limit = null, $start = null, $keyword = null, $kode_unit=null){
 		if($kode_unit!=null){
-            $unit = 'AND trx_spm_lsphk3_data.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND substr(trx_lsphk3.kode_unit_subunit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }

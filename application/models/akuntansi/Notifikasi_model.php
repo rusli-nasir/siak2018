@@ -47,7 +47,7 @@ class Notifikasi_model extends CI_Model {
                 break;
         }
 		$query = $this->db->query("SELECT
-            (SELECT count(*) FROM trx_spm_up_data, trx_up, kas_bendahara WHERE id_trx_spm_up_data = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_spm_up_data.kode_unit_subunit $subunit) AS up,
+            (SELECT count(*) FROM trx_spm_up_data, trx_up, kas_bendahara WHERE id_trx_spm_up_data = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND substr(trx_up.kode_unit_subunit,1,2) $subunit) AS up,
             (SELECT COUNT(*) FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE id_trx_spm_tambah_up_data = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_spm_tambah_up_data.kode_unit_subunit $subunit) AS pup,
             (SELECT Count(*) FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE id_trx_spm_tambah_tup_data = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_spm_tambah_tup_data.kode_unit_subunit $subunit) AS tup,
             (SELECT COUNT(*) FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND flag_proses_akuntansi=$level AND trx_spm_gup_data.kode_unit_subunit $subunit) AS gu,
