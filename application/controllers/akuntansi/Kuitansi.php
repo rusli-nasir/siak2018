@@ -271,7 +271,6 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-//		$this->data['query'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 0);
 		$this->data['query'] = $this->Kuitansi_model->read_up($config['per_page'], $id, $keyword, $kode_unit);
 
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 0)->num_rows();
