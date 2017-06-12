@@ -20,6 +20,7 @@ $(document).ready(function(){
       }
     })
   })
+  $(".number_pajak").number(true,2);
 
   $("#output").change(function(){
     var kode_kegiatan = $("#kegiatan").val();
@@ -62,6 +63,9 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
+
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -93,6 +97,9 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
+
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -111,6 +118,7 @@ $(document).ready(function(){
             $("#field_pajak").append(data);
             $("#field_pajak tr:last-child .persen_pajak").val(d['persen_pajak']);
             $("#field_pajak tr:last-child .jumlah").val(d['jumlah']);
+            $(".number_pajak").number(true,2);
             if($("#field_pajak tr:first-child .del_pajak")) $("#field_pajak tr:first-child .del_pajak").remove();
           }
         });
@@ -144,7 +152,8 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
-
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -176,6 +185,8 @@ $(document).ready(function(){
         var selectize_akun = $select_akun[0].selectize;
         selectize_akun.setValue(data['hasil'][index]['akun']);
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
       });
     }
   })
@@ -186,6 +197,7 @@ $(document).ready(function(){
       data:{},
       success:function(data){
         $("#field_pajak").append(data);
+        $(".number_pajak").number(true,2);
       }
     })
   });
@@ -643,7 +655,10 @@ $(document).ready(function(){
   var $select2 = $('.akun_kredit_akrual').selectize();  // This initializes the selectize control
   var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-
+$(".jumlah_akun_kredit_kas").number(true,2);
+  $(".jumlah_akun_debet_kas").number(true,2);
+  $(".jumlah_akun_kredit_akrual").number(true,2);
+  $(".jumlah_akun_debet_akrual").number(true,2);
   
 
   selectize3.setValue('<?=$kode_unit?>');
@@ -659,6 +674,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
         template.find('select').selectize();
             registerEvents();
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
 
   });
     
@@ -673,7 +690,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
         template.find('select').selectize();
             registerEvents();
-
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
 
   $('#add-akunKredit_akrual').click(function () {
@@ -687,6 +705,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
         template.find('select').selectize();
         registerEvents();
+        var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
   });
     
   $('#add-akunDebet_akrual').click(function () {
@@ -700,6 +720,8 @@ $(document).ready(function(){
         template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
         template.find('select').selectize();
             registerEvents();
+          var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
 
   });
     

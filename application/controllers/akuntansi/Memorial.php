@@ -154,7 +154,7 @@ class Memorial extends MY_Controller {
             $entry_pajak = array();
             $array_pajak = array();
             for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
-                $entry_pajak['jumlah'] = $akun['jumlah'][$i];
+                $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
                 $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
                 $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
                 $entry_pajak['jenis'] = 'pajak';
@@ -172,7 +172,7 @@ class Memorial extends MY_Controller {
             $relasi = array();
             for ($i=0; $i < count($akun['akun_debet_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_debet_akrual'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_debet_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_akrual'][$i]);
                 $relasi['tipe'] = 'debet';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -183,7 +183,7 @@ class Memorial extends MY_Controller {
 
             for ($i=0; $i < count($akun['akun_kredit_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_kredit_akrual'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_kredit_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_akrual'][$i]);
                 $relasi['tipe'] = 'kredit';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -194,7 +194,7 @@ class Memorial extends MY_Controller {
 
             for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
                 $relasi['akun'] = $akun['akun_debet_kas'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_debet_kas'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
                 $relasi['tipe'] = 'debet';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -205,7 +205,7 @@ class Memorial extends MY_Controller {
 
             for ($i=0; $i < count($akun['akun_kredit_kas']); $i++) { 
                 $relasi['akun'] = $akun['akun_kredit_kas'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_kredit_kas'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
                 $relasi['tipe'] = 'kredit';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -316,7 +316,7 @@ class Memorial extends MY_Controller {
             $relasi = array();
             for ($i=1; $i < count($akun['akun_debet_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_debet_akrual'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_debet_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_akrual'][$i]);
                 $relasi['tipe'] = 'debet';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -327,7 +327,7 @@ class Memorial extends MY_Controller {
 
             for ($i=1; $i < count($akun['akun_kredit_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_kredit_akrual'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_kredit_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_akrual'][$i]);
                 $relasi['tipe'] = 'kredit';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -338,7 +338,7 @@ class Memorial extends MY_Controller {
 
             for ($i=1; $i < count($akun['akun_debet_kas']); $i++) { 
                 $relasi['akun'] = $akun['akun_debet_kas'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_debet_kas'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
                 $relasi['tipe'] = 'debet';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -349,7 +349,7 @@ class Memorial extends MY_Controller {
 
             for ($i=1; $i < count($akun['akun_kredit_kas']); $i++) { 
                 $relasi['akun'] = $akun['akun_kredit_kas'][$i];
-                $relasi['jumlah'] = $akun['jumlah_akun_kredit_kas'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
                 $relasi['tipe'] = 'kredit';
                 $relasi['no_bukti'] = $entry['no_bukti'];
                 $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;

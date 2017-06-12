@@ -114,7 +114,7 @@ class Jurnal_umum extends MY_Controller {
               <span class="input-group-addon" id="basic-addon2">%</span>
             </div>
           </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9]{1,20}" maxlength="5" placeholder="450000" class="form-control jumlah" required></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9]{1,20}" maxlength="20" placeholder="450000" class="form-control jumlah number_pajak" required></td>
           <td><button type="button" class="del_pajak btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>';
     }

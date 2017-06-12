@@ -364,7 +364,6 @@ $(document).ready(function(){
   <div class="col-md-12" style="text-align:center;">
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
     <a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
-    <a href="#"><button id="keluars" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
 
@@ -586,6 +585,7 @@ $(document).ready(function(){
   });
     
   function validateForm(){
+
       if ((jml_kredit_kas != jml_kredit_akrual) || (jml_debet_kas != jml_debet_akrual) || (jml_total_kas != jml_total_akrual)){
           $('#alert-jumlah').attr('style', 'text-align:center');
           $('#alert-selisih').attr('style', 'text-align:center;display:none;');
@@ -599,13 +599,6 @@ $(document).ready(function(){
           $('#alert-selisih').attr('style', 'text-align:center;display:none;');
       }
   }
-
-  $("#keluars").click(function(){
-    $(".jumlah_akun_kredit_kas").each(function(){
-      var normal = $(this).val();
-      alert(normal);
-    });
-  })
 
   <?php if (isset($unit_kerja)): ?>
       selectize3.setValue('<?=$unit_kerja?>');

@@ -39,5 +39,9 @@ class MY_Controller extends CI_Controller{
 		}
 		return $format_baru;
 	}
+	
+	public function normal_number($number){
+		return str_replace('.', '', $number);
+	}
 }
 ?>
