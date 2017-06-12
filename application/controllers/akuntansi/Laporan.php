@@ -736,7 +736,8 @@ class Laporan extends MY_Controller {
         $data['periode_akhir'] = $periode_akhir;
 
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
-        $this->load->view('akuntansi/laporan/cetak_buku_besar',$data);
+        $this->load->view('akuntansi/laporan/pdf_buku_besar',$data);
+
     }
 
     public function cetak_rekap_jurnal(){
@@ -781,7 +782,7 @@ class Laporan extends MY_Controller {
         //public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
         $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
 
-        $this->load->view('akuntansi/laporan/cetak_rekap_jurnal',$data);
+        $this->load->view('akuntansi/laporan/pdf_rekap_jurnal',$data);
     }
 
     public function cetak_neraca_saldo(){
@@ -829,7 +830,7 @@ class Laporan extends MY_Controller {
         $data['periode_akhir'] = $periode_akhir;
 
 
-        $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
+        $this->load->view('akuntansi/laporan/pdf_neraca_saldo',$data);
     }
 
     public function get_neraca_saldo($mode = null)
