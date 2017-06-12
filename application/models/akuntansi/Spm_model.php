@@ -141,6 +141,10 @@ class Spm_model extends CI_Model {
           		// die();
           	}
 
+            if ($jenis == 'GUP') {
+              $inti['jumlah_debet'] = $inti['jumlah_kredit'];
+            }
+
           	return $inti;
             
         }
