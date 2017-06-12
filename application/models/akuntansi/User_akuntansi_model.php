@@ -23,4 +23,8 @@ class User_akuntansi_model extends CI_Model {
 			return $unit_short.'-'.sprintf("%02d", $no_user);
 		}
 	}
+    
+    public function ganti_password(){
+		$id_user = $this->db->get_where('akuntansi_user',array('password' => sha1($this->input->post('password_lama'))))->row_array();
+	}
 }
