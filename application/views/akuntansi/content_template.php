@@ -143,6 +143,8 @@
 			        </ul>
 			      </li>	
 			<?php } ?>
+            <li class="<?php if(isset($menu99)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/pengaturan/ganti_password'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Ganti Password</a></li>
+
 		</ul>
 
 	</div><!--/.sidebar-->
