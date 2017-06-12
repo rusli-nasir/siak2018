@@ -1245,15 +1245,14 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
 </table>
 
 <div align="right" style="width:100%;margin-top:40px;">
-  <div style="width:40%;" align="left">
-    <div style="width:50%;float:left;">
+    <div style="width:70%;float:left;margin-left:5%" align="left">
       <?php 
       echo 'Penyusun Laporan<br/><br/><br/><br/><br/><br/>';
       $pejabat = get_pejabat($kode_unit, 'operator'); 
       echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
       ?>
     </div>
-    <div style="width:50%;float:right">
+    <div style="width:25%;float:right" align="left">
       <?php 
       echo 'Semarang, '.date("d-m-Y", strtotime($tgl_kuitansi)).'<br/>Pengguna Anggaran<br/>';
       echo get_nama_unit($kode_unit).'<br/><br/><br/><br/>';
@@ -1261,7 +1260,6 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
       echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
       ?>
     </div>
-  </div>
 </div>
 
 <p class=MsoNormal style='text-align:justify;text-justify:inter-ideograph'><span
