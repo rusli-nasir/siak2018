@@ -522,6 +522,7 @@ class Memorial extends MY_Controller {
         $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
         $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
         $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+        $query_7 = $this->Memorial_model->read_akun('akuntansi_sal_6');
 
         $i = 0;
         foreach($query_1->result() as $result){
@@ -559,6 +560,11 @@ class Memorial extends MY_Controller {
             $data[$i]['nama'] = $result->nama;
             $i++;
         }
+        foreach($query_7->result() as $result){
+            $data[$i]['akun_7'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
         $data[$i]['akun_6'] = '911101';
         $data[$i]['nama'] = 'SAL';
 
@@ -572,6 +578,7 @@ class Memorial extends MY_Controller {
         $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
         $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
         $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+        $query_7 = $this->Memorial_model->read_akun('akuntansi_sal_6');
 
         $i = 0;
         foreach($query_1->result() as $result){
@@ -607,6 +614,11 @@ class Memorial extends MY_Controller {
             $i++;
         }
         foreach($query_6->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_7->result() as $result){
             $data[$i]['akun_6'] = $result->akun_6;
             $data[$i]['nama'] = $result->nama;
             $i++;
