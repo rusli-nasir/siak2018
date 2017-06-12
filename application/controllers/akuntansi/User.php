@@ -7,6 +7,34 @@ class User extends MY_Controller {
         $this->cek_session_in();
         $this->load->library('grocery_CRUD');       
         $this->db2 = $this->db2 = $this->load->database('rba',TRUE);
+        $this->load->model('akuntansi/User_akuntansi_model', 'User_akuntansi_model');
+    }
+
+	public function manage(){
+		$crud = new grocery_CRUD();
+
+		$crud->set_table('akuntansi_user');
+   		// $crud->set_primary_key("id_pejabat",'akuntansi_pejabat');
+
+		$crud->field_type('level','dropdown',
+												array('1' => 'Operator','2' => 'Verifikator','3' => 'Universitas'));
+
+		$crud->where('level <> 9 and level <> 5');
+
+		$unit = $this->db2->get('unit')->result_array();
+
+		$array_unit = array();
+		foreach ($unit as $entry) {
+			$array_unit[$entry['kode_unit']] = $entry['nama_unit'];
+		}
+
+		$crud->field_type('kode_unit','dropdown',$array_unit);
+		$crud->field_type('aktif','dropdown',array('1' => 'Aktif', '2' => 'Tidak Aktif'));
+		$crud->field_type('kode_user','hidden');
+		$crud
+				->field_type('password','password')
+				->callback_before_insert(array($this,'fill_form_callback'))
+		;
 
 		$crud->unset_edit();
 
@@ -29,6 +57,7 @@ class User extends MY_Controller {
 	        unset($post_array['password']);
 	    }
 
+	   	$post_array['kode_user'] = $this->User_akuntansi_model->generate_kode_user($post_array['kode_unit']);
 	 
 	  return $post_array;
 	}
