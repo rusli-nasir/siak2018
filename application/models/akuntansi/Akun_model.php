@@ -53,7 +53,5 @@ class Akun_model extends CI_Model {
 		$hasil = $this->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
 
 		return $hasil;
-
-
 	}
 }

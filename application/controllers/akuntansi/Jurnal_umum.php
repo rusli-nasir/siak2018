@@ -272,8 +272,10 @@ class Jurnal_umum extends MY_Controller {
 
         } else {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
-            $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+//            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+//            $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+            $this->data['akun_kas'] = $this->get_akun_kas();
+            $this->data['akun_akrual'] = $this->get_akun_akrual();
             $this->data['akun_pajak'] = $this->Pajak_model->get_pajak();
 
             //kode kegiatan
@@ -282,6 +284,118 @@ class Jurnal_umum extends MY_Controller {
 			$this->load->view('akuntansi/content_template',$temp_data,false);
         }
 	}
+    
+    public function get_akun_kas(){
+        $query_1 = $this->Memorial_model->read_akun('akuntansi_aset_6');
+        $query_2 = $this->Memorial_model->read_akun('akuntansi_hutang_6');
+        $query_3 = $this->Memorial_model->read_akun('akuntansi_aset_bersih_6');
+        $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
+        $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
+        $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+        $query_7 = $this->Memorial_model->read_akun('akuntansi_sal_6');
+
+        $i = 0;
+        foreach($query_1->result() as $result){
+            if($i==0){
+                $data[$i]['akun_6'] = '911101';
+                $data[$i]['nama'] = 'SAL';
+            }else{
+                $data[$i]['akun_6'] = $result->akun_6;
+                $data[$i]['nama'] = $result->nama;
+            }
+            $i++;
+        }
+        foreach($query_2->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_3->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_4->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_5->result() as $result){
+            $data[$i]['akun_6'] = $result->kode_akun;
+            $data[$i]['nama'] = $result->nama_akun;
+            $i++;
+        }
+        foreach($query_6->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_7->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        $data[$i]['akun_6'] = '911101';
+        $data[$i]['nama'] = 'SAL';
+
+        return $data;
+    }
+
+    public function get_akun_akrual(){
+        $query_1 = $this->Memorial_model->read_akun('akuntansi_aset_6');
+        $query_2 = $this->Memorial_model->read_akun('akuntansi_hutang_6');
+        $query_3 = $this->Memorial_model->read_akun('akuntansi_aset_bersih_6');
+        $query_4 = $this->Memorial_model->read_akun('akuntansi_lra_6');
+        $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
+        $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
+        $query_7 = $this->Memorial_model->read_akun('akuntansi_sal_6');
+
+        $i = 0;
+        foreach($query_1->result() as $result){
+            if($i==0){
+                $data[$i]['akun_6'] = '911101';
+                $data[$i]['nama'] = 'SAL';
+            }else{
+                $data[$i]['akun_6'] = $result->akun_6;
+                $data[$i]['nama'] = $result->nama;
+            }
+            $i++;
+        }
+        foreach($query_2->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_3->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_4->result() as $result){
+            $result->akun_6[0] = '6';
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_5->result() as $result){
+            $result->kode_akun[0] = '7';
+            $data[$i]['akun_6'] = $result->kode_akun;
+            $data[$i]['nama'] = $result->nama_akun;
+            $i++;
+        }
+        foreach($query_6->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+        foreach($query_7->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
+
+        return $data;
+    }
 
 	public function edit_jurnal_umum($id_kuitansi_jadi,$mode = null)
 	{
@@ -371,8 +485,10 @@ class Jurnal_umum extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
         	$this->data['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
-            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
-            $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+//            $this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
+//            $this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+            $this->data['akun_kas'] = $this->get_akun_kas();
+            $this->data['akun_akrual'] = $this->get_akun_akrual();
             $this->data['akun_pajak'] = $this->Pajak_model->get_pajak();
 
             //kode kegiatan

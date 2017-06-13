@@ -81,6 +81,7 @@ class Laporan extends MY_Controller {
         $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
         $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
         $query_7 = $this->Pajak_model->get_pajak();
+        $query_8 = $this->Memorial_model->read_akun('akuntansi_sal_6');
 
         $i = 0;
         foreach($query_1->result() as $result){
@@ -126,6 +127,11 @@ class Laporan extends MY_Controller {
             $data[$i]['nama'] = $result->nama_akun;
             $i++;
         }
+        foreach($query_8->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
+            $i++;
+        }
 
         if($get_json){
             $json_data['hasil'] = $data;
@@ -153,6 +159,7 @@ class Laporan extends MY_Controller {
         $query_5 = $this->Memorial_model->read_akun_rba('akun_belanja');
         $query_6 = $this->Memorial_model->read_akun('akuntansi_pembiayaan_6');
         $query_7 = $this->Pajak_model->get_pajak();
+        $query_8 = $this->Memorial_model->read_akun('akuntansi_sal_6');
 
         $i = 0;
         foreach($query_1->result() as $result){
@@ -198,6 +205,11 @@ class Laporan extends MY_Controller {
         foreach($query_7->result() as $result){
             $data[$i]['akun_6'] = $result->kode_akun;
             $data[$i]['nama'] = $result->nama_akun;
+            $i++;
+        }
+        foreach($query_8->result() as $result){
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
             $i++;
         }
         

@@ -245,9 +245,9 @@ class Memorial extends MY_Controller {
             $this->data['no_bukti'] = $this->Memorial_model->generate_nomor_bukti();
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
         	//$this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
-            $this->data['akun_kredit'] = $this->get_akun_kas();
+            $this->data['akun_kas'] = $this->get_akun_kas();
             //$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
-        	$this->data['akun_debet'] = $this->get_akun_akrual();
+        	$this->data['akun_akrual'] = $this->get_akun_akrual();
 
             //kode kegiatan
             $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
@@ -376,8 +376,8 @@ class Memorial extends MY_Controller {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-            $this->data['akun_kredit'] = $this->get_akun_kas();
-        	$this->data['akun_debet'] = $this->get_akun_akrual();
+            $this->data['akun_kas'] = $this->get_akun_kas();
+        	$this->data['akun_akrual'] = $this->get_akun_akrual();
 
             //kode kegiatan
             $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
@@ -561,7 +561,7 @@ class Memorial extends MY_Controller {
             $i++;
         }
         foreach($query_7->result() as $result){
-            $data[$i]['akun_7'] = $result->akun_6;
+            $data[$i]['akun_6'] = $result->akun_6;
             $data[$i]['nama'] = $result->nama;
             $i++;
         }
