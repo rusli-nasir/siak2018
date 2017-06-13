@@ -132,6 +132,7 @@ tbody td, thead th {
 			<thead>
 				<tr>
 					<th style="width:2% !important;">NO</th>
+					<th style="width:110px;">AKSI</th>
 					<th style="width:110px;">TANGGAL</th>
 					<th style="width:110px;" style="width:110px;">NO.BUKTI</th>
 					<th style="width:110px;">NO.SPM</th>
@@ -144,7 +145,6 @@ tbody td, thead th {
 					<th style="width:110px;">KREDIT</th>
 					<th style="width:250px">PAJAK</th>
 					<th style="width:110px;">STATUS</th>
-					<th style="width:110px;">AKSI</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -156,6 +156,24 @@ tbody td, thead th {
                 ?>
 				<tr>
 					<td style="width:2% !important;"><?php echo $no; ?></td>
+					<td style="width:110px;">						
+							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+						<?php if($this->session->userdata('level')==1){ ?>
+							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
+							<?php }else{ ?>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
+							<?php } ?>
+						<?php }else if($this->session->userdata('level')==2){ ?>
+							<?php if($result->flag==1 AND ($result->status=='proses' OR $result->status=='direvisi')){ ?>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
+							<?php }else{ ?>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
+							<?php } ?>
+						<?php }else if($this->session->userdata('level')==3){ ?>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
+						<?php } ?>
+					</td>
 					<td style="width:110px;"><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td style="width:110px;"><?php echo $result->no_bukti; ?></td>
 					<td style="width:110px;"><?php echo $result->no_spm; ?></td>
@@ -187,25 +205,7 @@ tbody td, thead th {
 						<?php }else if($result->flag==2){ ?>
 						<button class="btn btn-xs btn-success disabled">Disetujui</button>
 						<?php } ?>
-					</td>
-					<td style="width:110px;">						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-						<?php if($this->session->userdata('level')==1){ ?>
-							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
-								<a href="<?php echo site_url('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
-							<?php }else{ ?>
-								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
-							<?php } ?>
-						<?php }else if($this->session->userdata('level')==2){ ?>
-							<?php if($result->flag==1 AND ($result->status=='proses' OR $result->status=='direvisi')){ ?>
-								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
-							<?php }else{ ?>
-								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
-							<?php } ?>
-						<?php }else if($this->session->userdata('level')==3){ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
-						<?php } ?>
-					</td>
+					</td>					
 				</tr>
 				<?php $no++; } ?>
 			</tbody>
