@@ -16,11 +16,11 @@ class Kuitansi extends MY_Controller {
 	        //$this->db3 = $this->load->database('rsa', true);
 	    	$this->db2 = $this->load->database('rba', true);
 	    	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
-	        $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
+	        $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND tipe<>'pajak' AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
 	        foreach($this->data['tmp']->result_array() as $token){
 	            $this->data['jumlah_verifikasi'][$token['unit_kerja']] = $token['jumlah'];
 	        }
-	        $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=2 AND (status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
+	        $this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=2 AND tipe<>'pajak' AND (status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
 	        foreach($this->data['tmp']->result_array() as $token){
 	            $this->data['jumlah_posting'][$token['unit_kerja']] = $token['jumlah'];
 	        }
@@ -651,9 +651,9 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
 
-        $this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>$jenis, 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
-        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
-        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 
         if($jenis=='UP'){
         	$this->data['tab1'] = true;
