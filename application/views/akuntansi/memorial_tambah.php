@@ -319,7 +319,6 @@ $(document).ready(function(){
       <thead>
         <tr>
           <th style="width:30%">Jenis Pajak</th>
-          <th style="width:25%">Presentase</th>
           <th style="width:35%">Jumlah</th>
           <th style="width:10%">Aksi</th>
         </tr>
@@ -327,20 +326,14 @@ $(document).ready(function(){
       <tbody id="field_pajak">
         <tr>
           <td>
-            <select class="form-control" name="jenis_pajak[]" required>
+            <select class="form-control" name="jenis_pajak[]">
               <option value="">Pilih Jenis</option>
               <?php foreach($akun_pajak->result() as $result){ ?>
               <option value="<?php echo $result->jenis_pajak; ?>"><?php echo $result->jenis_pajak; ?></option>
               <?php } ?>
             </select>
           </td>
-          <td>
-            <div class="input-group">
-              <input type="text" name="persen_pajak[]" pattern="[0-9.]{1,3}" maxlength="5" placeholder="20" class="form-control" aria-describedby="basic-addon2" required>
-              <span class="input-group-addon" id="basic-addon2">%</span>
-            </div>
-          </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak" required></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak"></td>
         </tr>
       </tbody>
       <tfoot>

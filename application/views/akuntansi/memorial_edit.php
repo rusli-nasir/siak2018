@@ -119,7 +119,7 @@ $(document).ready(function(){
             $("#field_pajak tr:last-child .persen_pajak").val(d['persen_pajak']);
             $("#field_pajak tr:last-child .jumlah").val(d['jumlah']);
             $(".number_pajak").number(true,2);
-            if($("#field_pajak tr:first-child .del_pajak")) $("#field_pajak tr:first-child .del_pajak").remove();
+            //if($("#field_pajak tr:first-child .del_pajak")) $("#field_pajak tr:first-child .del_pajak").remove();
           }
         });
       });
@@ -487,7 +487,6 @@ $(document).ready(function(){
       <thead>
         <tr>
           <th style="width:30%">Jenis Pajak</th>
-          <th style="width:25%">Presentase</th>
           <th style="width:35%">Jumlah</th>
           <th style="width:10%">Aksi</th>
         </tr>

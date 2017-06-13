@@ -101,20 +101,14 @@ class Jurnal_umum extends MY_Controller {
         $akun_pajak = $this->Pajak_model->get_pajak();
         echo ' <tr>
           <td>
-            <select class="form-control" name="jenis_pajak[]" required>
+            <select class="form-control" name="jenis_pajak[]">
               <option value="">Pilih Jenis</option>';
               foreach($akun_pajak->result() as $result){ 
               echo '<option value="'.$result->jenis_pajak.'" '.($result->jenis_pajak==$selected ? "selected":"").'>'.$result->jenis_pajak.'</option>';
               }
         echo '</select>
           </td>
-          <td>
-            <div class="input-group">
-              <input type="text" name="persen_pajak[]" pattern="[0-9.]{1,3}" maxlength="5" placeholder="20" class="form-control persen_pajak" aria-describedby="basic-addon2" required>
-              <span class="input-group-addon" id="basic-addon2">%</span>
-            </div>
-          </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control jumlah number_pajak" required></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control jumlah number_pajak"></td>
           <td><button type="button" class="del_pajak btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>';
     }
