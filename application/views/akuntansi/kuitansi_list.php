@@ -114,6 +114,31 @@ tbody td, thead th {
 	    </form>
 	    <?php } ?>
 	</div>
+	<div class="col-sm-4">
+		<form action="<?php echo site_url('akuntansi/kuitansi/index'); ?>" method="post">
+			<div class="input-group">
+	      		<select name="keyword" class="form-control">
+					<option value="">Tampil Semua SPM</option>
+					<?php 
+					foreach($query_spm->result_array() as $result){ 
+					?>
+					<option value="<?php echo $result['str_nomor_trx_spm']; ?>"
+						<?php 
+						if($this->session->userdata('keyword')){
+							if($result['str_nomor_trx_spm']==$this->session->userdata('keyword')){
+								echo 'selected';
+							} 
+						}
+						?>
+						><?php echo $result['str_nomor_trx_spm']; ?></option>
+					<?php } ?>
+				</select>
+	      		<span class="input-group-btn">
+	        		<button class="btn btn-default" type="submit">Filter</button>
+	      		</span>
+	    	</div>		
+		</form>
+	</div>
 </div>
 <br/>
 <div class="row">
