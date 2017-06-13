@@ -122,6 +122,7 @@
 				<li class="<?php if(isset($menu8)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/saldo/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Saldo</a></li>
 				<li class="<?php if(isset($menu12)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/pejabat/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Pejabat</a></li>
 			<?php }else if($this->session->userdata('level')==4){ ?>
+				<li class="<?php if(isset($menu5)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/monitor'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Monitoring</a></li>	
 				<li class="dropdown">
 			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
 			        <span class="caret"></span></a>

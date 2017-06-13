@@ -17,7 +17,7 @@ class User extends MY_Controller {
    		// $crud->set_primary_key("id_pejabat",'akuntansi_pejabat');
 
 		$crud->field_type('level','dropdown',
-												array('1' => 'Operator','2' => 'Verifikator','3' => 'Universitas'));
+												array('1' => 'Operator','2' => 'Verifikator','3' => 'Universitas','4' => 'Monitoring','10' => 'Audit-Unit',));
 
 		$crud->where('level <> 9 and level <> 5');
 
