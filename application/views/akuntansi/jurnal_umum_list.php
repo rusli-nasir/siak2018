@@ -41,9 +41,11 @@
 	    	</div>
 	    </form>
 	</div>
+    <?php if($this->session->userdata('level')==5){ ?>
 	<div class="col-sm-8" align="right">
 		<a href="<?php echo site_url('akuntansi/jurnal_umum/input_jurnal_umum'); ?>"><button type="button" class="btn btn-primary">Isi Jurnal APBN</button></a>
 	</div>
+    <?php } ?>
 </div>
 <br/>
 <div class="row">

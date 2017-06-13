@@ -214,7 +214,7 @@
 
 
 						// Stop executing if the user didn't type a number key, a decimal character, backspace, or delete.
-						if( code != 8 && code != 45 && code != 127 && chara != dec_point && !chara.match(/[0-9]/) )
+						if( code != 8 && code != 45 && code != 127 && chara != dec_point && !chara.match(/[0-9.]/) )
 						{
 							// We need the original keycode now...
 							var key = (e.keyCode ? e.keyCode : e.which);
@@ -533,7 +533,7 @@
 					'paste.format' : function(e){
 
 						// Defint $this. It's used twice!.
-						var $this		= $(this),
+						/*var $this		= $(this),
 							original	= e.originalEvent,
 							val		= null;
 
@@ -549,7 +549,7 @@
 
 						// Stop the actual content from being pasted.
 						e.preventDefault();
-						return false;
+						return false;*/
 					}
 
 				})

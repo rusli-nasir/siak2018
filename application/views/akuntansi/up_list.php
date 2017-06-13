@@ -24,7 +24,7 @@ tbody {
 }
 
 thead {
-	width:1500px;
+	width:1200px;
     overflow-x: auto;
 }
 
@@ -121,7 +121,8 @@ tbody td, thead th {
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>NO</th>
+					<th style="width:4% !important">NO</th>
+					<th>AKSI</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
 					<th>NO.SPM</th>
@@ -132,23 +133,12 @@ tbody td, thead th {
 					<th>AKUN DEBET</th>
 					<th>AKUN KREDIT</th>
 					<th>JUMLAH</th>
-					<th>AKSI</th>
 				</tr>
 			</thead>
-			<tbody style="font-size:8pt;">
+			<tbody style="font-size:12pt;">
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
-					<td><?php echo $no; ?></td>
-					<td><?php echo date("d/m/Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php /*echo $result->no_bukti;*/ ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>
-					<td><?php if(isset($tab4)){ echo "UP"; }else{ echo 'GUP'; } ?></td>
-					<td><?php /*echo substr($result->kode_usulan_belanja,6,2);*/ ?></td>
-					<td><?php echo get_unit($result->kode_unit_subunit); ?></td>
-					<td><?php echo $result->untuk_bayar."<br>Penerima: ".$result->penerima; ?></td>
-					<td><?php echo $result->kd_akun_kas; ?></td>
-                    <td><?php echo '?'; ?></td>
-					<td><?php echo $result->debet; ?></td>
+					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>						
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
@@ -165,6 +155,16 @@ tbody td, thead th {
 							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
 						<?php } ?>
 					</td>
+					<td><?php echo date("d/m/Y", strtotime($result->tgl_spm)); ?></td>
+					<td><?php /*echo $result->no_bukti;*/ ?></td>
+					<td><?php echo $result->str_nomor_trx; ?></td>
+					<td><?php if(isset($tab4)){ echo "UP"; }else{ echo 'GUP'; } ?></td>
+					<td><?php /*echo substr($result->kode_usulan_belanja,6,2);*/ ?></td>
+					<td><?php echo get_unit($result->kode_unit_subunit); ?></td>
+					<td><?php echo $result->untuk_bayar."<br>Penerima: ".$result->penerima; ?></td>
+					<td><?php echo $result->kd_akun_kas; ?></td>
+                    <td><?php echo '?'; ?></td>
+					<td><?php echo $result->debet; ?></td>					
 				</tr>
 				<?php $no++; } ?>
 			</tbody>

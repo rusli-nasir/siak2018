@@ -78,7 +78,7 @@
 					<th>KREDIT</th>
 					<th>STATUS</th>
 					<th>AKSI</th>
-					<th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting"><input type="checkbox" id="select-all" form="form-posting">  Check All</th>
+					<th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting"><br><div class="checkbox"><label><input type="checkbox" id="select-all" form="form-posting">  Check All</label></div></th>
 				</tr>
 			</thead>
 			<tbody>

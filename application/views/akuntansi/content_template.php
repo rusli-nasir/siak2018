@@ -133,7 +133,7 @@
 			        </ul>
 			      </li>	
 			<?php } else if($this->session->userdata('level')==5){ ?>
-			     <li class="<?php if(isset($menu5)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/memorial/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Memorial</a></li>	
+			     <li class="<?php if(isset($menu6)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/jurnal_umum/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Jurnal-APBN</a></li>
                 <li class="dropdown">
 			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
 			        <span class="caret"></span></a>

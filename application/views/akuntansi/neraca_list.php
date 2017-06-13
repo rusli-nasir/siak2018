@@ -118,8 +118,9 @@
   var myForm = document.getElementById('form_pop');
     myForm.onsubmit = function() {
         var lebar = 0.9 * document.body.clientWidth;
-        var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width='+lebar+',height=700,left = 312,top = 234');
-        this.target = 'Popup_Window';
+        var win_name = Date.now();
+        var w = window.open('about:blank',win_name,'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width='+lebar+',height=700,left = 312,top = 234');
+        this.target = win_name;
     };
     
     $('input[name="daterange"]').daterangepicker(

@@ -245,9 +245,9 @@ class Memorial extends MY_Controller {
             $this->data['no_bukti'] = $this->Memorial_model->generate_nomor_bukti();
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
         	//$this->data['akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
-            $this->data['akun_kredit'] = $this->get_akun_kas();
+            $this->data['akun_kas'] = $this->get_akun_kas();
             //$this->data['akun_debet'] = $this->Akun_lra_model->get_akun_debet();
-        	$this->data['akun_debet'] = $this->get_akun_akrual();
+        	$this->data['akun_akrual'] = $this->get_akun_akrual();
 
             //kode kegiatan
             $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
@@ -376,8 +376,8 @@ class Memorial extends MY_Controller {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         	$this->data['mode'] = $mode;
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
-            $this->data['akun_kredit'] = $this->get_akun_kas();
-        	$this->data['akun_debet'] = $this->get_akun_akrual();
+            $this->data['akun_kas'] = $this->get_akun_kas();
+        	$this->data['akun_akrual'] = $this->get_akun_akrual();
 
             //kode kegiatan
             $this->data['kegiatan'] = $this->Memorial_model->read_akun_rba('kegiatan');
@@ -561,7 +561,7 @@ class Memorial extends MY_Controller {
             $i++;
         }
         foreach($query_7->result() as $result){
-            $data[$i]['akun_7'] = $result->akun_6;
+            $data[$i]['akun_6'] = $result->akun_6;
             $data[$i]['nama'] = $result->nama;
             $i++;
         }
@@ -654,13 +654,7 @@ class Memorial extends MY_Controller {
               }
         echo '</select>
           </td>
-          <td>
-            <div class="input-group">
-              <input type="text" name="persen_pajak[]" pattern="[0-9.]{1,3}" maxlength="5" placeholder="20" class="form-control" aria-describedby="basic-addon2" required>
-              <span class="input-group-addon" id="basic-addon2">%</span>
-            </div>
-          </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak" required></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak"></td>
           <td><button type="button" class="del_pajak btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>';
     }
