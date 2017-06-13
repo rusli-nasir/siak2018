@@ -118,7 +118,7 @@ tbody td, thead th {
 		<form action="<?php echo site_url('akuntansi/kuitansi/index'); ?>" method="post">
 			<div class="input-group">
 	      		<select name="keyword" class="form-control">
-					<option value="">Tampil Semua</option>
+					<option value="">Tampil Semua SPM</option>
 					<?php 
 					foreach($query_spm->result_array() as $result){ 
 					?>
