@@ -61,7 +61,7 @@ $pdf->AddPage('L');
 $html_head = 
 	'<body style="font-family:arial;">
 		<div align="center" style="font-weight:bold">
-			UNIVERSITAS DIPONEGORO<br/>
+			'.$teks_unit.'<br/>
 			BUKU BESAR<br/>
 			'.$periode_text.'
 		</div><br/><br/>';
@@ -96,6 +96,10 @@ $html = '';
 				</table>';
 			$baris += 4;
 			$saldo = $this->Akun_model->get_saldo_awal($key);
+			if ($saldo != null) {
+				$saldo = $saldo['saldo_awal'] - $saldo['saldo_kredit_awal'];
+			}
+			// print_r($entry);die();
 	    	$jumlah_debet = 0;
 	    	$jumlah_kredit = 0;
 
@@ -163,6 +167,8 @@ $html = '';
 		}
 	
 $html .= '</body>';
+
+// print_r($html);die();
 
 // output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');

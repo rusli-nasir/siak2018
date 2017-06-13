@@ -603,10 +603,11 @@ class Laporan extends MY_Controller {
                     $objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
                     $objWorksheet->setCellValueByColumnAndRow(1,$row,'01 Januari '.$teks_tahun);
                     $objWorksheet->setCellValueByColumnAndRow(3,$row,'Saldo Awal');
-                    $objWorksheet->setCellValueByColumnAndRow(7,$row,$saldo['saldo_awal']);
                     // $objWorksheet->setCellValueByColumnAndRow(8,$row,$saldo['saldo_kredit_awal']);
 
                     $saldo = $saldo['saldo_awal'] - $saldo['saldo_kredit_awal'];
+
+                    $objWorksheet->setCellValueByColumnAndRow(7,$row,$saldo);
 
                     $row++;
                     $iter++;
@@ -738,14 +739,21 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]) or null;
 
+        $mode = null;
+
         if ($unit == 'all') {
             $unit = null;
+            // $mode = 'neraca';
+            $data['teks_unit'] = "UNIVERSITAS DIPONEGORO";
+        } else {
+            $teks_unit = $this->Unit_kerja_model->get_nama_unit($unit);
+            $data['teks_unit'] = strtoupper(str_replace('Fak.', "Fakultas ", $teks_unit));
         }
+
         if ($sumber_dana == 'all') {
             $sumber_dana = null;
         }
 
-        $mode = 'neraca';
 
         $array_akun = array();
 
@@ -763,7 +771,6 @@ class Laporan extends MY_Controller {
         $teks_tahun = substr($periode_akhir,0,4);
         $data['teks_tahun_anggaran'] = "TAHUN ANGGARAN $teks_tahun";
 
-        $data['teks_unit'] = "UNIVERSITAS DIPONEGORO";
 
         if ($periode_awal != null and $periode_akhir != null){
             $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
