@@ -174,6 +174,12 @@ if($height>=135){
 	$pdf->writeHTML('<div align="center">................</div>', true, false, true, false, '');
 	$pdf->ln(15); 
 }
+// set color for background
+$pdf->SetFillColor(255, 255, 255);
+
+// set color for text
+$pdf->SetTextColor(0, 0, 0);
+
 $cell_height = 5;
 $pejabat = get_pejabat($unit, 'kpa');
 $pdf->cell(210,$cell_height,'',0,0,'C');
@@ -186,8 +192,8 @@ $pdf->cell(210,$cell_height,'',0,0,'C');
 $pdf->cell(60,$cell_height,get_nama_unit($unit),0,0,'L');
 $pdf->ln($cell_height+20); 
 $pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,$pejabat['nama'],0,0,'L');
-$pdf->ln($cell_height); 
+$pdf->MultiCell(60,$cell_height,$pejabat['nama'],0,0,'L');
+$pdf->ln(0); 
 $pdf->cell(210,$cell_height,'',0,0,'C');
 $pdf->cell(60,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
