@@ -72,6 +72,7 @@
 			<thead>
 				<tr>
 					<th width="5%">NO</th>
+					<th>AKSI</th>
 					<th>TANGGAL</th>
 					<th>NO.SPM</th>
 					<th width="20%">KODE KEGIATAN</th>
@@ -79,13 +80,22 @@
 					<th>AKUN DEBET</th>
 					<th>AKUN KREDIT</th>
 					<th>JUMLAH</th>
-					<th>AKSI</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
 					<td><?php echo $no; ?></td>
+					<td>						
+							<a href="<?php echo site_url('akuntansi/rsa_gup/spmls/id/'.$result->id_spmls);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+						<?php if($this->session->userdata('level')==1){ ?>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_spmls.'/NK'); ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+						<?php }else if($this->session->userdata('level')==2){ ?>
+							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
+						<?php }else if($this->session->userdata('level')==3){ ?>
+							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
+						<?php } ?>
+					</td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->nomor; ?></td>
 					<td><?php echo str_replace(',', '<br/>,', $result->detail_belanja); ?></td>
@@ -93,16 +103,6 @@
 					<td><?php echo substr($result->detail_belanja, 18, 6); ?></td>
 					<td><?php echo '?'; ?></td>
 					<td><?php echo number_format($result->jumlah_bayar); ?></td>
-					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/spmls/id/'.$result->id_spmls);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Jurnal</button></a>
-						<?php if($this->session->userdata('level')==1){ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_spmls.'/NK'); ?>"><button type="button" class="btn btn-sm btn-danger">Isi Kesetaraan</button></a>
-						<?php }else if($this->session->userdata('level')==2){ ?>
-							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
-						<?php }else if($this->session->userdata('level')==3){ ?>
-							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
-						<?php } ?>
-					</td>
 				</tr>
 				<?php $no++; } ?>
 			</tbody>
