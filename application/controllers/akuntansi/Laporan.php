@@ -242,8 +242,14 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]);
 
+        $teks_unit = null;
+
         if ($unit == 'all') {
             $unit = null;
+            $teks_unit = "UNIVERSITAS DIPONEGORO";
+        } else {
+            $teks_unit = $this->Unit_kerja_model->get_nama_unit($unit);
+            $teks_unit = strtoupper(str_replace('Fak.', "Fakultas ", $teks_unit));
         }
         if ($sumber_dana == 'all') {
             $sumber_dana = null;
@@ -312,6 +318,9 @@ class Laporan extends MY_Controller {
             $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
         }
 
+
+
+        $objWorksheet->setCellValueByColumnAndRow(0,1,$teks_unit);
         $objWorksheet->setCellValueByColumnAndRow(0,2,$teks_sumber_dana);
         $objWorksheet->setCellValueByColumnAndRow(0,3,$teks_periode);
         $objWorksheet->setCellValueByColumnAndRow(0,4,$teks_tahun_anggaran);
@@ -407,7 +416,14 @@ class Laporan extends MY_Controller {
         $objWorksheet->setCellValueByColumnAndRow(7,$row,$jumlah_debet);
         $objWorksheet->setCellValueByColumnAndRow(8,$row,$jumlah_kredit);
 
-        $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+        if ($unit == null) {
+            $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
+            $teks_kpa = "Rektor";
+        } else {
+            $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+            $teks_kpa = "Pengguna Anggaran";
+        }
+
 
         $row = $objWorksheet->getHighestRow() + 2;
         $kolom_kpa = 7;
@@ -416,10 +432,10 @@ class Laporan extends MY_Controller {
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Semarang, ". $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir));
         $row++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Pengguna Anggaran");
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_kpa);
         $row++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$this->Unit_kerja_model->get_nama_unit($unit));
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_unit);
         $row += 4;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$kpa['nama']);
@@ -483,11 +499,19 @@ class Laporan extends MY_Controller {
 
         $mode = null;
 
+        $teks_unit = null;
+
 
         if ($unit == 'all') {
             $unit = null;
-            $mode = 'neraca';
+            // $mode = 'neraca';
+            $teks_unit = "UNIVERSITAS DIPONEGORO";
+        } else {
+            $teks_unit = $this->Unit_kerja_model->get_nama_unit($unit);
+            $teks_unit = strtoupper(str_replace('Fak.', "Fakultas ", $teks_unit));
         }
+
+
         if ($sumber_dana == 'all') {
             $sumber_dana = null;
         }
@@ -500,9 +524,10 @@ class Laporan extends MY_Controller {
         }
         else {
             $array_akun[] = $akun;
+            // $mode = 'neraca';
         }
 
-        // print_r($array_akun);die();
+        // print_r($mode);die();
 
 
     	$data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
@@ -566,22 +591,27 @@ class Laporan extends MY_Controller {
 	    	$objWorksheet->setCellValueByColumnAndRow(2,$unit_row,$teks_unit);
 
 	    	$saldo = $this->Akun_model->get_saldo_awal($key);
+            // print_r($saldo);die();
 	    	$jumlah_debet = 0;
 	    	$jumlah_kredit = 0;
 	    	$iter = 0;
 
     		foreach ($entry as $transaksi) {
     			$iter++;
-                if ($iter == 1) {
+                if ($iter == 1 and $saldo != null) {
                     $objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
                     $objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
-                    $objWorksheet->setCellValueByColumnAndRow(1,$row,'01 Januari 2017');
+                    $objWorksheet->setCellValueByColumnAndRow(1,$row,'01 Januari '.$teks_tahun);
                     $objWorksheet->setCellValueByColumnAndRow(3,$row,'Saldo Awal');
-                    $objWorksheet->setCellValueByColumnAndRow(7,$row,$saldo);
+                    $objWorksheet->setCellValueByColumnAndRow(7,$row,$saldo['saldo_awal']);
+                    // $objWorksheet->setCellValueByColumnAndRow(8,$row,$saldo['saldo_kredit_awal']);
+
+                    $saldo = $saldo['saldo_awal'] - $saldo['saldo_kredit_awal'];
 
                     $row++;
                     $iter++;
                 }
+                
     			$objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
     			$objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
                 $objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['tanggal']);
@@ -613,19 +643,32 @@ class Laporan extends MY_Controller {
     		// $objWorksheet->setCellValueByColumnAndRow(2,$i+$row,$i+1);
     	}
 
-        $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+        // ============================================
+
+        // ============================================
+
+
+        if ($unit == null) {
+            $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
+            $teks_kpa = "Rektor";
+        } else {
+            $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+            $teks_kpa = "Pengguna Anggaran";
+        }
 
         $row = $objWorksheet->getHighestRow() + 2;
         $kolom_kpa = 6;
+
+
 
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Semarang, ". $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir));
         $row++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Pengguna Anggaran");
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_kpa);
         $row++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$this->Unit_kerja_model->get_nama_unit($unit));
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_unit);
         $row += 4;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$kpa['nama']);
@@ -854,9 +897,18 @@ class Laporan extends MY_Controller {
         $sumber_dana = $this->input->post('sumber_dana');
         $unit = $this->input->post('unit');
 
+        $teks_unit = null;
+
+
         if ($unit == 'all') {
             $unit = null;
+            $mode = 'neraca';
+            $teks_unit = "UNIVERSITAS DIPONEGORO";
+        } else {
+            $teks_unit = $this->Unit_kerja_model->get_nama_unit($unit);
+            $teks_unit = strtoupper(str_replace('Fak.', "Fakultas ", $teks_unit));
         }
+
 
     	// $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
@@ -865,7 +917,6 @@ class Laporan extends MY_Controller {
         $teks_periode = "";
 
         $teks_tahun_anggaran = substr($periode_akhir,0,4);
-        $teks_unit = "UNIVERSITAS DIPONEGORO";
 
         if ($periode_awal != null and $periode_akhir != null){
             $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
@@ -887,9 +938,11 @@ class Laporan extends MY_Controller {
         $objWorksheet = $objPHPExcel->getActiveSheet();
         $objWorksheet->setTitle('neraca_saldo');
 
+        $objWorksheet->setCellValueByColumnAndRow(0,1,$teks_unit);
         $objWorksheet->setCellValueByColumnAndRow(0,2,$teks_sumber_dana);
         $objWorksheet->setCellValueByColumnAndRow(0,3,$teks_periode);
         $objWorksheet->setCellValueByColumnAndRow(2,6,$teks_tahun_anggaran);
+        $objWorksheet->setCellValueByColumnAndRow(2,5,$teks_unit);
 
         $jumlah_debet = 0;
 	    $jumlah_kredit = 0;
@@ -900,10 +953,18 @@ class Laporan extends MY_Controller {
     	$i = 1;
 
     	foreach ($data as $key => $entry) {
-
+            // $key = '911101';
+            $debet = 0;
+            $kredit = 0;
 	    	$saldo = $this->Akun_model->get_saldo_awal($key);
-	    	$debet = 0;
-	    	$kredit = 0;
+            if ($saldo != null) {
+                $debet += $saldo['saldo_awal'];
+                $kredit += $saldo['saldo_kredit_awal'];
+                $saldo = $saldo['saldo_awal'] - $saldo['saldo_kredit_awal'];
+            }
+	    	// $debet = 0;
+	    	// $kredit = 0;
+            // print_r($saldo);
 	    	$objPHPExcel->getActiveSheet()->insertNewRowBefore($row,1); 
 	    	$objWorksheet->setCellValueByColumnAndRow(0,$row,$i);
 	    	$objWorksheet->setCellValueByColumnAndRow(1,$row,$key);
@@ -953,8 +1014,18 @@ class Laporan extends MY_Controller {
     	$objWorksheet->setCellValueByColumnAndRow(5,$row+1,$jumlah_neraca_debet);
     	$objWorksheet->setCellValueByColumnAndRow(6,$row+1,$jumlah_neraca_kredit);
 
+        //===========================
 
-        $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+
+        //===========================
+
+        if ($unit == null) {
+            $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
+            $teks_kpa = "Rektor";
+        } else {
+            $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+            $teks_kpa = "Pengguna Anggaran";
+        }
 
         $row = $objWorksheet->getHighestRow() + 2;
         $kolom_kpa = 5;
@@ -963,10 +1034,10 @@ class Laporan extends MY_Controller {
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Semarang, ". $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir));
         $row++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Pengguna Anggaran");
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_kpa);
         $row++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$this->Unit_kerja_model->get_nama_unit($unit));
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_unit);
         $row += 4;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$kpa['nama']);

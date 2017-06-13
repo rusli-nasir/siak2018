@@ -142,6 +142,10 @@
 						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>
 			        </ul>
 			      </li>	
+			<?php } else if($this->session->userdata('level')==9){ ?>
+			     <li class="<?php if(isset($menu13)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/user/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. User</a></li>	
+			     <li class="<?php if(isset($menu14)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/pejabat/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. Pejabat</a></li>	
+			     <li class="<?php if(isset($menu15)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/akun/list_akun'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. Akun</a></li>	
 			<?php } ?>
 		</ul>
 

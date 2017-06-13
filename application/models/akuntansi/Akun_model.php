@@ -50,6 +50,10 @@ class Akun_model extends CI_Model {
 
 	public function get_saldo_awal($kode_akun)
 	{
-		return 1000000000;
+		$hasil = $this->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+
+		return $hasil;
+
+
 	}
 }
