@@ -76,10 +76,10 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 							<td>2017</td>
 						</tr>
 				</table>';
-			$html .= '<table style="width:800px;font-size:10pt;" border="1">
+			$html .= '<table style="width:870px;font-size:10pt;" border="1">
 					<thead>
 						<tr style="background-color:#ECF379;height:45px">
-							<th rowspan="2">No</th>
+							<th rowspan="2" width="40px">No</th>
 							<th rowspan="2">Kode</th>
 							<th rowspan="2">Uraian</th>
 							<th align="center" colspan="2">Mutasi</th>
@@ -107,7 +107,7 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 		    	$kredit = 0;
 
 				$html .= '<tr>
-						<td>'.$i.'</td>
+						<td width="40px">'.$i.'</td>
 						<td>'.$key.'</td>
 						<td>'.get_nama_akun_v((string)$key).'</td>';
 					foreach ($entry as $transaksi) {
