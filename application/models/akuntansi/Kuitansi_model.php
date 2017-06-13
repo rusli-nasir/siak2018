@@ -36,10 +36,10 @@ class Kuitansi_model extends CI_Model {
 
         if($limit!=null OR $start!=null){
             $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
-            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit GROUP BY str_nomor_trx_spm ORDER BY str_nomor_trx_spm ASC LIMIT $start, $limit");
+            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit GROUP BY str_nomor_trx_spm ORDER BY str_nomor_trx_spm ASC, no_bukti ASC LIMIT $start, $limit");
         }else{
             $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
-            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC GROUP BY str_nomor_trx_spm");
+            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC GROUP BY str_nomor_trx_spm");
         }
         return $query;
     }

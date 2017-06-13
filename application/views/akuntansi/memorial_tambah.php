@@ -192,8 +192,8 @@ $(document).ready(function(){
     </select>
   </div>
 </div>
-<div class="form-group" align="center">
-  <input type="checkbox" id="no-kas">  Kosongkan Kas
+<div class="form-group checkbox" align="center">
+    <label><input type="checkbox" id="no-kas">  Kosongkan Kas</label>
 </div>
 <hr>
 <!-- Text input-->
