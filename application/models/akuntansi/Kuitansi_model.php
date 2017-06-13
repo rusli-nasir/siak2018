@@ -125,9 +125,9 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE flag_proses_akuntansi=0 AND nomor LIKE '%$keyword%' $filter_unit LIMIT $start, $limit");
+            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE flag_proses_akuntansi=0 AND proses=5 AND nomor LIKE '%$keyword%' $filter_unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE flag_proses_akuntansi=0 AND nomor LIKE '%$keyword%' $filter_unit");
+            $query = $this->db->query("SELECT * FROM kepeg_tr_spmls WHERE flag_proses_akuntansi=0 AND proses=5 AND nomor LIKE '%$keyword%' $filter_unit");
         }
         return $query;
     }
