@@ -155,7 +155,7 @@ tbody td, thead th {
 							<?php if(isset($tab1)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_trx_spm_gup_data).'/GUP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php }elseif(isset($tab4)){ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_trx_spm_up_data).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php }elseif(isset($tab9)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_trx_spm_gup_data).'/GUP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php } ?>

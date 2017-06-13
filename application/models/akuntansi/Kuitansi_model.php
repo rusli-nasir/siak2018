@@ -35,10 +35,10 @@ class Kuitansi_model extends CI_Model {
         }
 
 		if($limit!=null OR $start!=null){
-			$query = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE id_trx_spm_up_data = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+			$query = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
 			(str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
 		}else{
-			$query = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE id_trx_spm_up_data = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+			$query = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
 			(str_nomor_trx LIKE '%$keyword%') $unit");
 		}
 		return $query;

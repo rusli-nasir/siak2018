@@ -67,7 +67,6 @@ class Spm_model extends CI_Model {
 
             $this->db
             	->where('nomor_trx_spm',$nomor_trx_spm)
-            	->where('nomor_trx_spm',$nomor_trx_spm)
             	->from($tabel_data)
             ;
 
@@ -191,7 +190,6 @@ class Spm_model extends CI_Model {
             $tabel_kredit = "kas_undip";
 
             $this->db
-            	->where('nomor_trx_spm',$nomor_trx_spm)
             	->where('nomor_trx_spm',$nomor_trx_spm)
             	->from($tabel_data)
             ;

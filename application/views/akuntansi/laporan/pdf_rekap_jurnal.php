@@ -58,7 +58,7 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage('L');
 
-$html = 
+$html_head = 
 	'<body style="font-family:arial;margin:20px 20px 20px 20px;">
 		<div align="center" style="font-weight:bold">
 			UNIVERSITAS DIPONEGORO<br/>
@@ -66,10 +66,11 @@ $html =
 			'.$teks_periode.'<br/>
 			'.$teks_tahun_anggaran.'<br/><br/>
 		</div>';
-	$html .= '<table style="width:800px;font-size:10pt;" border="1">
+$pdf->writeHTML($html_head, true, false, true, false, '');
+	$html = '<table style="width:800px;font-size:10pt;" border="1">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
-					<th>No</th>
+					<th width="30px;">No</th>
 					<th>Tanggal</th>
 					<th>NO. SPM</th>
 					<th>NO. BUKTI</th>
@@ -95,14 +96,14 @@ $html =
             		$nama_unit = get_nama_unit($transaksi['unit_kerja']);
             		
             		$html .= '<tr>
-            				<td align="center" style="background-color:#D0FCEE">'.$iter.'</td>
+            				<td align="center" style="background-color:#D0FCEE" width="30px;">'.$iter.'</td>
             				<td align="center" colspan="5" style="background-color:#D0FCEE" align="right">Keterangan</td>
             				<td colspan="3">'.$nama_unit.':<br/>'.$transaksi['uraian'].'</td>
             			</tr>';
             		$baris+=1;
             		foreach ($akun as $in_akun) {			
             			$html .= '<tr>
-            					<td>'.$baris.'</td>
+            					<td width="30px;"></td>
             					<td>'.date("d M Y", strtotime($transaksi['tanggal'])).'</td>
             					<td>'.$transaksi['no_spm'].'</td>
             					<td>'.$transaksi['no_bukti'].'</td>
@@ -121,24 +122,11 @@ $html =
             			$html .= '</tr>';
             			$baris+=1;            			
             		}
-            		if(($baris%35)>=25){
-            			$baris = 1;
-						$html .= '</tbody></table><div style="margin-bottom:1800px"></div><table style="width:1300px;font-size:10pt;" class="border">
-						<thead>
-							<tr style="background-color:#ECF379;height:45px">
-								<th>'.$iter.'</th>
-								<th>Tanggal</th>
-								<th>NO. SPM</th>
-								<th>NO. BUKTI</th>
-								<th>OUTPUT</th>
-								<th>Kode Akun</th>
-								<th width="350px">URAIAN</th>
-								<th>DEBET</th>
-								<th>KREDIT</th>
-							</tr>
-						</thead>';
-					}
 		        	$iter++;
+		        	// add a page
+		        	if($baris%20 == 5){
+		        		$html .= '<br pagebreak="true"/>';
+		        	}
 		        }
 
 			$html .= '</tbody>';
@@ -148,19 +136,33 @@ $html =
     				<td align="right">'.number_format($jumlah_kredit,2).'</td>
     			</tr>';
 		$html .= '</table>';
-		$html .= '<div align="right" style="width:700px;margin-top:40px;">
-			<div style="width:200px">
-				Semarang, '.date("d-m-Y", strtotime($periode_akhir)).'<br/>Pengguna Anggaran<br/>';
-		$html .= get_nama_unit($unit).'<br/><br/><br/><br/>';
-							$pejabat = get_pejabat($unit, 'kpa'); 
-							$html .= $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
-		$html .= '</div>
-		</div>
-	</body>';
 
 // output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');
-
+$height = $pdf->getY();
+if($height>=135){
+	// add a page
+	$pdf->AddPage('L');
+	$pdf->writeHTML($html_head, true, false, true, false, '');
+	$pdf->writeHTML('<div align="center">................</div>', true, false, true, false, '');
+	$pdf->ln(15); 
+}
+$cell_height = 5;
+$pejabat = get_pejabat($unit, 'kpa');
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'Semarang, '.date("d-m-Y", strtotime($periode_akhir)),0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'Pengguna Anggaran',0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,get_nama_unit($unit),0,0,'L');
+$pdf->ln($cell_height+20); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,$pejabat['nama'],0,0,'L');
+$pdf->ln($cell_height); 
+$pdf->cell(210,$cell_height,'',0,0,'C');
+$pdf->cell(60,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // reset pointer to the last page

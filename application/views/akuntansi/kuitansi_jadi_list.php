@@ -73,7 +73,7 @@ tbody td, thead th {
 		<div class="row">
 			<div class="col-sm-4">
 				<div class="box-t">
-					<?php echo 'Total Kuitansi Disetujui: <br/><span style="color:green;font-size:16pt;">'.$kuitansi_ok.'</span>'; ?>
+					<?php echo 'Total Kuitansi Diverifikasi: <br/><span style="color:green;font-size:16pt;">'.$kuitansi_ok.'</span>'; ?>
 				</div>			
 			</div>
 			<div class="col-sm-4">

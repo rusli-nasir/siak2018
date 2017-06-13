@@ -54,9 +54,6 @@
 					<th>NO</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
-					<th>NO.SPM</th>
-					<th>JENIS</th>
-					<th>KODE KEGIATAN</th>
 					<th>UNIT</th>
 					<th>URAIAN</th>
 					<th>AKUN DEBET</th>
@@ -71,14 +68,11 @@
 					<td><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
-					<td><?php echo $result->no_spm; ?></td>
-					<td><?php echo $result->jenis; ?></td>
-					<td><?php echo $result->kode_kegiatan; ?></td>
 					<td><?php echo get_unit($result->unit_kerja); ?></td>
 					<td><?php echo $result->uraian; ?></td>
 					<td><?php echo $result->akun_debet; ?></td>
 					<td><?php echo $result->akun_kredit; ?></td>
-					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
+					<td><?php echo number_format($result->jumlah_debet); ?></td>
 					<td>						
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>

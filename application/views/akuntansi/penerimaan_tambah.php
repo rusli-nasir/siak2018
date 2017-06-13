@@ -3,8 +3,12 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+<script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
 <script type="text/javascript">
-  
+  $(document).ready(function(){
+    $("#jumlah_akun_debet").number(true,2);
+    $("#jumlah_akun_kredit").number(true,2);
+  })
 </script>
 
 <div class="row">
@@ -163,8 +167,10 @@
       </select>
     </div>
     <div class="col-md-3">
-    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md"  required="">
-      
+    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" style="background-color:#e6e6e6 !important" readonly>
+      <div style="font-size:9pt;color:#1c1c1c">
+        Masukan Jumlah pada kolom <b>Akun Debet</b>
+      </div>
     </div>
   </div>
   <hr/>
@@ -228,11 +234,12 @@
       selectize.setValue('<?=$kas_akun_debet?>');
   <?php endif ?>
 
-  $('#jumlah_akun_kredit').keyup(function () {
+  /*$('#jumlah_akun_kredit').keyup(function () {
     $('#jumlah_akun_debet').val(this.value)
-  })
+  })*/
 
   $('#jumlah_akun_debet').keyup(function () {
-    $('#jumlah_akun_kredit').val(this.value)
+    var current_val = $(this).val();
+    $('#jumlah_akun_kredit').val(current_val);
   })
 </script>

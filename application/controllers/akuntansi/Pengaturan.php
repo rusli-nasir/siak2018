@@ -8,17 +8,19 @@ class Pengaturan extends MY_Controller {
     }
 
 	public function ganti_password(){
+        $this->data['menu99']=true;
+        
 		$temp_data['content'] = $this->load->view('akuntansi/ganti_password',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
     
     public function ganti_password_proses(){
-		//$this->load->model('akuntansi/User_model', 'User_model');
+		$this->load->model('akuntansi/User_akuntansi_model', 'User_akuntansi_model');
 
         if($this->input->post('password_baru') != $this->input->post('password_confirm')){
             $this->session->set_flashdata('error', 'Password Baru dan Ulangi Password Baru tidak sama.');
-//        } else if($this->User_model->ganti_password()){
-//            $this->session->set_flashdata('success', 'Ganti password berhasil.');
+        } else if($this->User_akuntansi_model->ganti_password()){
+            $this->session->set_flashdata('success', 'Ganti password berhasil.');
         } else {
             $this->session->set_flashdata('error', 'Password lama salah.');
         }

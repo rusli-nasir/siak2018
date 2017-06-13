@@ -3,6 +3,13 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+<script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#jumlah_akun_debet").number(true,2);
+    $("#jumlah_akun_kredit").number(true,2);
+  })
+</script>
 
 <div class="row">
   <ol class="breadcrumb">
@@ -234,16 +241,8 @@
       selectize5.setValue('<?=$akun_kredit_akrual?>');
   <?php endif ?>
 
-  $('#jumlah_akun_kredit').keyup(function () {
-    $('#jumlah_akun_debet').val(this.value)
-  })
-
   $('#jumlah_akun_debet').keyup(function () {
-    $('#jumlah_akun_kredit').val(this.value)
+    var current_val = $(this).val();
+    $('#jumlah_akun_kredit').val(current_val);
   })
-
-
-
-
-
 </script>
