@@ -185,7 +185,7 @@ $pdf->cell(210,$cell_height,'',0,0,'C');
 $pdf->cell(60,$cell_height,get_nama_unit($unit),0,0,'L');
 $pdf->ln($cell_height+20); 
 $pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,$pejabat['nama'],0,0,'L');
+$pdf->MultiCell(60,$cell_height,$pejabat['nama'],0,0,'L');
 $pdf->ln(0); 
 $pdf->cell(210,$cell_height,'',0,0,'C');
 $pdf->cell(60,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
