@@ -782,7 +782,7 @@ table.MsoTableGrid
 <div class=WordSection1>
 
 <p class=MsoNormal align=center style='text-align:center'><b><span
-style='font-size:20.0pt;line-height:106%;font-family:"Arial",sans-serif'>DETAIL
+style='font-size:20.0pt;line-height:106%;font-family:"Arial",sans-serif'>BUKTI
 MEMORIAL</span></b></p>
 
 <p class=MsoNormal style='text-align:justify;text-justify:inter-ideograph'><span
@@ -1244,17 +1244,17 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
  <![endif]>
 </table>
 
-<div align="right" style="width:100%;margin-top:40px;">
-    <div style="width:70%;float:left;margin-left:5%" align="left">
+<div align="right" style="width:900px;margin-top:40px;font-family:sans-serif">
+    <div style="width:600px;float:left;border:0px solid black" align="left">
       <?php 
       echo 'Penyusun Laporan<br/><br/><br/><br/><br/><br/>';
       $pejabat = get_pejabat($kode_unit, 'operator'); 
       echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
       ?>
     </div>
-    <div style="width:25%;float:right" align="left">
+    <div style="width:245px;float:right;border:0px solid black" align="left">
       <?php 
-      echo 'Semarang, '.date("d-m-Y", strtotime($tgl_kuitansi)).'<br/>Pengguna Anggaran<br/>';
+      echo 'Semarang, '.$konversi_tanggal.'<br/>Pengguna Anggaran<br/>';
       echo get_nama_unit($kode_unit).'<br/><br/><br/><br/>';
       $pejabat = get_pejabat($kode_unit, 'ppk'); 
       echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];

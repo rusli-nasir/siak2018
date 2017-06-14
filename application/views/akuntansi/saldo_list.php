@@ -44,9 +44,9 @@ $(document).ready(function(){
 					<th>Kode Akun</th>
 					<th>Nama</th>
 					<th>Saldo Debet Awal</th>
-					<th>Saldo Debet Sekarang</th>
+					<!-- <th>Saldo Debet Sekarang</th>
 					<th>Saldo Kredit Awal</th>
-					<th>Saldo Kredit Sekarang</th>
+					<th>Saldo Kredit Sekarang</th> -->
 					<th>Aksi</th>
 				</tr>
 			</thead>
@@ -57,9 +57,9 @@ $(document).ready(function(){
 					<td><?php echo $result->akun; ?></td>
 					<td><?php echo get_nama($result->akun); ?></td>
 					<td><?php echo number_format($result->saldo_awal); ?></td>
-					<td><?php echo number_format($result->saldo_sekarang); ?></td>
+					<!-- <td><?php echo number_format($result->saldo_sekarang); ?></td>
 					<td><?php echo number_format($result->saldo_kredit_awal); ?></td>
-					<td><?php echo number_format($result->saldo_kredit_sekarang); ?></td>
+					<td><?php echo number_format($result->saldo_kredit_sekarang); ?></td> -->
 					<td>						
 						<a href="<?php echo site_url('akuntansi/saldo/edit/'.$result->id); ?>"><button type="button" class="btn btn-sm btn-default">Edit</button></a>
 						<a href="<?php echo site_url('akuntansi/saldo/delete/'.$result->id); ?>" onclick="return confirm('Hapus saldo akun <?php echo $result->akun; ?>?')"><button type="button" class="btn btn-sm btn-danger">Delete</button></a>

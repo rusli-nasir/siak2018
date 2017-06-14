@@ -1,7 +1,13 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
+<script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
 <style type="text/css">
 .form-control{border:1px solid #bdbdbd;}
 </style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#saldo_awal").number(true,2);
+})
+</script>
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
@@ -57,30 +63,29 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-6 col-sm-offset-3">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
-							Saldo Debet
+							Saldo Awal
 						</div>
 						<div class="panel-body">
 							<div class="form-group">
 								<label class="control-label col-sm-3">Saldo Awal</label>
 								<div class="col-sm-6">
-									<input type="text" name="saldo_awal" value="<?php echo $query['saldo_awal']; ?>" maxlength="30" class="form-control" placeholder="4500000" pattern="[0-9]{1,30}" required>
-									Isi dengan angka saja tanpa spasi, ex : 12500000
+									<input type="text" id="saldo_awal" name="saldo_awal" value="<?php echo $query['saldo_awal']; ?>" maxlength="30" class="form-control" placeholder="4.500.000" required>
 								</div>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label class="control-label col-sm-3">Saldo Sekarang</label>
 								<div class="col-sm-6">
 									<input type="text" name="saldo_sekarang" value="<?php echo $query['saldo_sekarang']; ?>" maxlength="30" class="form-control" placeholder="4500000" pattern="[0-9]{1,30}" required>
 									Isi dengan angka saja tanpa spasi, ex : 12500000
 								</div>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-6">
+				<!-- <div class="col-sm-6">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
 							Saldo Kredit
@@ -102,7 +107,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 			<div class="form-group">
 				<label class="control-label col-sm-3"></label>

@@ -455,6 +455,8 @@ class Memorial extends MY_Controller {
         $this->data['akrual_debet']= $this->get_detail_transaksi($id_kuitansi_jadi, 'debet', 'akrual');
         $this->data['akrual_kredit']= $this->get_detail_transaksi($id_kuitansi_jadi, 'kredit', 'akrual');
 
+        $this->data['konversi_tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($this->data['tgl_kuitansi']);
+
         $this->load->view('akuntansi/memorial_print',$this->data);
 	}
 

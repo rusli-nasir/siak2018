@@ -41,7 +41,7 @@ class Saldo extends MY_Controller {
 		$kode_akun = $this->input->post('kode_akun');
 		$tahun = $this->input->post('tahun');
 		$saldo_awal = $this->input->post('saldo_awal');
-		$saldo_kredit_awal = $this->input->post('saldo_kredit_awal');
+		//$saldo_kredit_awal = $this->input->post('saldo_kredit_awal');
 
 		//cek
 		$query_cek = $this->Saldo_model->read(array('akun'=>$kode_akun, 'tahun'=>$tahun));
@@ -49,10 +49,10 @@ class Saldo extends MY_Controller {
 			$data = array(
 				'akun'=>$kode_akun,
 				'tahun'=>$tahun,
-				'saldo_awal'=>$saldo_awal,
+				'saldo_awal'=>$this->normal_number($saldo_awal)/*,
 				'saldo_sekarang'=>$saldo_awal,
 				'saldo_kredit_awal'=>$saldo_kredit_awal,
-				'saldo_kredit_sekarang'=>$saldo_kredit_awal
+				'saldo_kredit_sekarang'=>$saldo_kredit_awal*/
 			);
 
 			$insert = $this->Saldo_model->create($data);
@@ -83,18 +83,18 @@ class Saldo extends MY_Controller {
 		$kode_akun = $this->input->post('kode_akun');
 		$tahun = $this->input->post('tahun');
 		$saldo_awal = $this->input->post('saldo_awal');
-		$saldo_sekarang = $this->input->post('saldo_sekarang');
+		/*$saldo_sekarang = $this->input->post('saldo_sekarang');
 		$saldo_kredit_awal = $this->input->post('saldo_kredit_awal');
-		$saldo_kredit_sekarang = $this->input->post('saldo_kredit_sekarang');
+		$saldo_kredit_sekarang = $this->input->post('saldo_kredit_sekarang');*/
 		$query = $this->Saldo_model->read(array('id'=>$id))->row_array();
 
 		$data = array(
 				'akun'=>$kode_akun,
 				'tahun'=>$tahun,
-				'saldo_awal'=>$saldo_awal,
+				'saldo_awal'=>$this->normal_number($saldo_awal)/*,
 				'saldo_sekarang'=>$saldo_sekarang,
 				'saldo_kredit_awal'=>$saldo_kredit_awal,
-				'saldo_kredit_sekarang'=>$saldo_kredit_sekarang
+				'saldo_kredit_sekarang'=>$saldo_kredit_sekarang*/
 			);
 
 		//cek

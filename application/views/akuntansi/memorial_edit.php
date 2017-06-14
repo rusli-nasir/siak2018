@@ -43,7 +43,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_kredit").clone();
+        var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_kas').append(template);
@@ -76,7 +76,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_debet").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_kas').append(template);
@@ -132,7 +132,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_kredit").clone();
+        var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_akrual').append(template);
@@ -164,7 +164,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_debet").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_akrual').append(template);
