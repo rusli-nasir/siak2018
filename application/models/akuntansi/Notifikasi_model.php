@@ -11,6 +11,7 @@ class Notifikasi_model extends CI_Model {
     function get_jumlah_notifikasi(){
         $level = $this->session->userdata('level') - 1;
         $kode_unit = $this->session->userdata('kode_unit');
+        $result = array();
         if($kode_unit) {
             $unit = 'AND kode_unit="'.$kode_unit.'"';
             $unit_jadi = 'AND unit_kerja="'.$kode_unit.'"';
@@ -32,7 +33,7 @@ class Notifikasi_model extends CI_Model {
             $filter_unit = "substr(nomor,7,3)='".$alias."'";
         }
         
-        $condstr="1"; $condstr2="";
+        $condstr="1";
         switch($level){
             case 0: //operator
                 $condstr = "((flag=1 AND status='revisi') OR (flag=2 AND status='proses'))";
@@ -43,7 +44,31 @@ class Notifikasi_model extends CI_Model {
                 //break;
                 
             case 2: //posting
-                $condstr2 = ",(SELECT COUNT(*) FROM kepeg_tr_spmls) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe<>'pajak' AND flag=2 AND status='proses' $unit_jadi) AS gup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gu_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='UP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS up_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS tup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP_NIHIL' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS tup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='PUP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS pup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND tipe<>'pajak' AND (flag=2 AND status='proses')) AS ls_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND tipe<>'pajak' AND (flag=2 AND status='proses')) AS spm_posting";
+                $query2 = $this->db->query("SELECT jenis, COUNT(jenis) as c FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND flag=2 AND status='proses' $unit_jadi GROUP BY jenis");
+                                
+                $result['gup_posting'] = 0;
+                $result['gu_posting'] = 0;
+                $result['ls_posting'] = 0;
+                $result['spm_posting'] = 0;
+                $result['tup_posting'] = 0;
+                $result['up_posting'] = 0;
+                $result['tup_nihil_posting'] = 0;
+                $result['gup_nihil_posting'] = 0;
+                $result['pup_posting'] = 0;
+                
+                foreach($query2->result_array() as $sub_query){
+                    $key = $sub_query['jenis'];
+                    if($key == 'GP') $result['gup_posting'] = $sub_query['c'];
+                    else if($key == 'GUP') $result['gu_posting'] = $sub_query['c'];
+                    else if($key == 'UP') $result['up_posting'] = $sub_query['c'];
+                    else if($key == 'PUP') $result['pup_posting'] = $sub_query['c'];
+                    else if($key == 'TUP') $result['tup_posting'] = $sub_query['c'];
+                    else if($key == 'TUP_NIHIL') $result['tup_nihil_posting'] = $sub_query['c'];
+                    else if($key == 'GUP_NIHIL') $result['gup_nihil_posting'] = $sub_query['c'];
+                    else if($key == 'L3') $result['ls_posting'] = $sub_query['c'];
+                    else if($key == 'NK') $result['spm_posting'] = $sub_query['c'];
+                }
+                
                 break;
         }
 		$query = $this->db->query("SELECT
@@ -55,19 +80,36 @@ class Notifikasi_model extends CI_Model {
             (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS gup,
             (SELECT 0) AS gup_nihil,
             (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=$level) AS ls,
-            (SELECT COUNT(*) FROM `kepeg_tr_spmls` WHERE `flag_proses_akuntansi` =$level AND `proses` = 5 AND substr(unitsukpa,1,2) $subunit) AS spm,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS gup_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS tup_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='UP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS up_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP_NIHIL' AND tipe<>'pajak' AND $condstr $unit_jadi) AS tup_nihil_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='PUP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS pup_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS gu_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND tipe<>'pajak' AND $condstr $unit_jadi) AS gup_nihil_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND tipe<>'pajak' AND $condstr $unit_jadi) AS ls_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND tipe<>'pajak' AND $condstr $unit_jadi) AS spm_jadi $condstr2");
-        $result =  $query->row_array();
+            (SELECT COUNT(*) FROM `kepeg_tr_spmls` WHERE `flag_proses_akuntansi` =$level AND `proses` = 5 AND substr(unitsukpa,1,2) $subunit) AS spm");
+        $result =  array_merge($result, $query->row_array());
         
         $result['kuitansi'] = $result['up'] +$result['pup'] + $result['gup'] + $result['gu'] + $result['gup_nihil']  +$result['tup'] +$result['tup_nihil'] + $result['ls'] + $result['spm'];
+        
+        $query2 = $this->db->query("SELECT jenis, COUNT(jenis) as c FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND $condstr $unit_jadi GROUP BY jenis");
+                                
+        $result['gup_jadi'] = 0;
+        $result['gu_jadi'] = 0;
+        $result['ls_jadi'] = 0;
+        $result['spm_jadi'] = 0;
+        $result['tup_jadi'] = 0;
+        $result['up_jadi'] = 0;
+        $result['tup_nihil_jadi'] = 0;
+        $result['gup_nihil_jadi'] = 0;
+        $result['pup_jadi'] = 0;
+
+        foreach($query2->result_array() as $sub_query){
+            $key = $sub_query['jenis'];
+            if($key == 'GP') $result['gup_jadi'] = $sub_query['c'];
+            else if($key == 'GUP') $result['gu_jadi'] = $sub_query['c'];
+            else if($key == 'UP') $result['up_jadi'] = $sub_query['c'];
+            else if($key == 'PUP') $result['pup_jadi'] = $sub_query['c'];
+            else if($key == 'TUP') $result['tup_jadi'] = $sub_query['c'];
+            else if($key == 'TUP_NIHIL') $result['tup_nihil_jadi'] = $sub_query['c'];
+            else if($key == 'GUP_NIHIL') $result['gup_nihil_jadi'] = $sub_query['c'];
+            else if($key == 'L3') $result['ls_jadi'] = $sub_query['c'];
+            else if($key == 'NK') $result['spm_jadi'] = $sub_query['c'];
+        }
+        
         $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['gu_jadi'] + $result['ls_jadi'] + $result['spm_jadi'] + $result['tup_jadi'] + $result['up_jadi'] + $result['tup_nihil_jadi'] + $result['gup_nihil_jadi'] + $result['pup_jadi'];
         return (object)$result;
 	}
