@@ -43,7 +43,7 @@ class Notifikasi_model extends CI_Model {
                 //break;
                 
             case 2: //posting
-                $condstr2 = ",(SELECT COUNT(*) FROM kepeg_tr_spmls) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gu_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='UP' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS up_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS tup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP_NIHIL' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS tup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='PUP' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS pup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND jenis<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND jenis<>'pajak' AND (flag=2 AND status='proses')) AS ls_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND jenis<>'pajak' AND (flag=2 AND status='proses')) AS spm_posting";
+                $condstr2 = ",(SELECT COUNT(*) FROM kepeg_tr_spmls) AS spm, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe<>'pajak' AND flag=2 AND status='proses' $unit_jadi) AS gup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gu_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='UP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS up_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS tup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP_NIHIL' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS tup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='PUP' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS pup_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND tipe<>'pajak' AND (flag=2 AND status='proses') $unit_jadi) AS gup_nihil_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND tipe<>'pajak' AND (flag=2 AND status='proses')) AS ls_posting, (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND tipe<>'pajak' AND (flag=2 AND status='proses')) AS spm_posting";
                 break;
         }
 		$query = $this->db->query("SELECT
@@ -56,15 +56,15 @@ class Notifikasi_model extends CI_Model {
             (SELECT 0) AS gup_nihil,
             (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=$level) AS ls,
             (SELECT COUNT(*) FROM `kepeg_tr_spmls` WHERE `flag_proses_akuntansi` =$level AND `proses` = 5 AND substr(unitsukpa,1,2) $subunit) AS spm,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND jenis<>'pajak' AND $condstr $unit_jadi) AS gup_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP' AND jenis<>'pajak' AND $condstr $unit_jadi) AS tup_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='UP' AND jenis<>'pajak' AND $condstr $unit_jadi) AS up_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP_NIHIL' AND jenis<>'pajak' AND $condstr $unit_jadi) AS tup_nihil_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='PUP' AND jenis<>'pajak' AND $condstr $unit_jadi) AS pup_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP' AND jenis<>'pajak' AND $condstr $unit_jadi) AS gu_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND jenis<>'pajak' AND $condstr $unit_jadi) AS gup_nihil_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND jenis<>'pajak' AND $condstr $unit_jadi) AS ls_jadi,
-            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND jenis<>'pajak' AND $condstr $unit_jadi) AS spm_jadi $condstr2");
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS gup_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS tup_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='UP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS up_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='TUP_NIHIL' AND tipe<>'pajak' AND $condstr $unit_jadi) AS tup_nihil_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='PUP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS pup_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP' AND tipe<>'pajak' AND $condstr $unit_jadi) AS gu_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='GUP_NIHIL' AND tipe<>'pajak' AND $condstr $unit_jadi) AS gup_nihil_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='L3' AND tipe<>'pajak' AND $condstr $unit_jadi) AS ls_jadi,
+            (SELECT COUNT(*) FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND tipe<>'pajak' AND $condstr $unit_jadi) AS spm_jadi $condstr2");
         $result =  $query->row_array();
         
         $result['kuitansi'] = $result['up'] +$result['pup'] + $result['gup'] + $result['gu'] + $result['gup_nihil']  +$result['tup'] +$result['tup_nihil'] + $result['ls'] + $result['spm'];

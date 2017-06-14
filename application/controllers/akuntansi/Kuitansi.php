@@ -845,6 +845,9 @@ class Kuitansi extends MY_Controller {
 		}
 
 		$total_data = $this->Kuitansi_model->read_kuitansi_posting(null, null, $keyword, $kode_unit, $jenis);
+        
+        $this->data['all_query'] = $total_data->result();
+        
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
