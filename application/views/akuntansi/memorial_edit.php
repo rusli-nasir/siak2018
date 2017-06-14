@@ -83,7 +83,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_akrual").clone();
+        var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_kas').append(template);
@@ -140,7 +140,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_kas").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_akrual').append(template);
@@ -274,6 +274,7 @@ $(document).ready(function(){
   <div class="col-md-4">
   <select id="jenis" name="jenis" class="form-control" required="">
       <option value="">Pilih Jenis</option>
+      <option <?php if ($jenis == 'MEMORIAL'): ?> selected <?php endif ?> value="MEMORIAL" >Memorial</option>
       <option <?php if ($jenis == 'GP'): ?> selected <?php endif ?> value="GP" >GUP</option>
       <option <?php if ($jenis == 'LS-Gaji'): ?> selected <?php endif ?> value="LS-Gaji">LS-Gaji</option>
       <option <?php if ($jenis == 'TUP'): ?> selected <?php endif ?> value="TUP">TUP</option>
