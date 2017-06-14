@@ -41,13 +41,13 @@
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Rekap Jurnal</li>
+		<li class="active">Buku Jurnal</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Rekap Jurnal</h1>
+		<h1 class="page-header">Buku Jurnal</h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
