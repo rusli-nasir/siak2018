@@ -86,9 +86,10 @@ $(document).ready(function(){
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-2 control-label">Nama Kegiatan</label>  
-  <div class="col-md-6">
-      <textarea class="form-control" id="kegiatan" name="kegiatan"></textarea>    
+  <label class="col-md-2 control-label" for="tanggal">Kode Kegiatan</label>  
+  <div class="col-md-4">
+  <input id="kode_kegiatan" name="kode_kegiatan" type="text" placeholder="Kode Kegiatan" class="form-control input-md" required="">
+    
   </div>
 </div>
 

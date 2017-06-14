@@ -159,7 +159,7 @@ class Jurnal_umum extends MY_Controller {
             $entry['status'] = 4;
             $entry['tipe'] = 'jurnal_umum';
             $entry['kode_user'] = $this->session->userdata('kode_user');
-            $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            // $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
             $entry['tanggal_posting'] = date('Y-m-d H:i:s');
             $entry['tanggal_verifikasi'] = date('Y-m-d H:i:s');
             $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
@@ -178,15 +178,18 @@ class Jurnal_umum extends MY_Controller {
             
             $entry_pajak = array();
             $array_pajak = array();
-            for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
-                $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
-                $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
-                $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
-                $entry_pajak['jenis'] = 'pajak';
-                $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+            if ($akun['jenis_pajak'][0] != null) {
+                for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+                    $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
+                    $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                    // $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
+                    $entry_pajak['jenis'] = 'pajak';
+                    $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
 
-                $array_pajak[] = $entry_pajak;
+                    $array_pajak[] = $entry_pajak;
+                }
             }
+
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
@@ -216,26 +219,30 @@ class Jurnal_umum extends MY_Controller {
                 $entry_relasi[] = $relasi;
             }
 
-            for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
-            	$relasi['akun'] = $akun['akun_debet_kas'][$i];
-            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
-            	$relasi['tipe'] = 'debet';
-            	$relasi['no_bukti'] = $entry['no_bukti'];
-            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
-                $relasi['jenis'] = 'kas';
+            if ($akun['akun_debet_kas'][0] != null) {
+                for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
+                    $relasi['akun'] = $akun['akun_debet_kas'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
+                    $relasi['tipe'] = 'debet';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
 
-            	$entry_relasi[] = $relasi;
+                    $entry_relasi[] = $relasi;
+                }
             }
 
-            for ($i=0; $i < count($akun['akun_kredit_kas']); $i++) { 
-            	$relasi['akun'] = $akun['akun_kredit_kas'][$i];
-            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
-            	$relasi['tipe'] = 'kredit';
-            	$relasi['no_bukti'] = $entry['no_bukti'];
-            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
-                $relasi['jenis'] = 'kas';
+            if ($akun['akun_kredit_kas'][0] != null) {
+                for ($i=0; $i < count($akun['akun_kredit_kas']); $i++) { 
+                	$relasi['akun'] = $akun['akun_kredit_kas'][$i];
+                	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
+                	$relasi['tipe'] = 'kredit';
+                	$relasi['no_bukti'] = $entry['no_bukti'];
+                	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
 
-            	$entry_relasi[] = $relasi;
+                	$entry_relasi[] = $relasi;
+                }
             }
 
             
