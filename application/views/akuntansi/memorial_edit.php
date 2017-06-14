@@ -660,6 +660,8 @@ $(".jumlah_akun_kredit_kas").number(true,2);
   $(".jumlah_akun_debet_akrual").number(true,2);
   
 
+    var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
+  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
   selectize3.setValue('<?=$kode_unit?>');
 
   $('#add-akunKredit_kas').click(function () {
@@ -768,7 +770,4 @@ $(".jumlah_akun_kredit_kas").number(true,2);
           }
       }
   }
-    
-    var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
-  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 </script>

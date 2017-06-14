@@ -19,7 +19,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_kredit").clone();
+        var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_kas').append(template);
@@ -51,7 +51,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_debet").clone();
+        var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_kas').append(template);
@@ -106,7 +106,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_kredit").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_akrual').append(template);
@@ -138,7 +138,7 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_debet").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_akrual').append(template);
@@ -176,7 +176,7 @@ $(document).ready(function(){
 
 
 <?php
-    echo form_open('akuntansi/memorial/edit_memorial/'.$id_kuitansi_jadi.'/'.$mode,array("class"=>"form-horizontal"));
+    echo form_open('akuntansi/jurnal_umum/edit_jurnal_umum/'.$id_kuitansi_jadi.'/'.$mode,array("class"=>"form-horizontal"));
 ?>
 
 <fieldset>
@@ -257,7 +257,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label" for="tanggal">Kode Kegiatan</label>  
   <div class="col-md-4">
-  <input id="kode_kegiatan" name="kode_kegiatan" type="text" placeholder="Kode Kegiatan" class="form-control input-md" required="">
+  <input id="kode_kegiatan" name="kode_kegiatan" type="text" placeholder="Kode Kegiatan" class="form-control input-md" value="<?= $kode_kegiatan ?>" required="">
     
   </div>
 </div>
@@ -295,48 +295,12 @@ $(document).ready(function(){
       
       <div class="col-md-12 control-label" style="text-align: left"><h4>Debet<button id="add-akunDebet_kas" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunDebet_kas">
-        <div class="form-group"> 
-          <div class="col-md-5">
-            <select name="akun_debet_kas[]" class="form-control akun_debet_kas">
-                <option value="">Pilih Akun</option>
-                <option value="">
-                 <?php foreach ($akun_kas as $akun) {
-                  ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                }
-                ?> 
-            </select> 
-          </div>
-
-          <div class="col-md-6">
-          <input name="jumlah_akun_debet_kas[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet_kas" >
-          </div>
-
-        </div>
+        
       </div>
       
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_kas" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_kas">
-        <div class="form-group"> 
-          <div class="col-md-5">
-            <select name="akun_kredit_kas[]" class="form-control akun_kredit_kas">
-                <option value="">Pilih Akun</option>
-                <option value="">
-                 <?php foreach ($akun_kas as $akun) {
-                  ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                }
-                ?> 
-            </select> 
-          </div>
-
-          <div class="col-md-6">
-          <input name="jumlah_akun_kredit_kas[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit_kas">
-          </div>
-
-        </div>
+        
       </div>
       
       <hr>
@@ -350,48 +314,12 @@ $(document).ready(function(){
       
       <div class="col-md-12 control-label" style="text-align: left"><h4>Debet<button id="add-akunDebet_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunDebet_akrual">
-        <div class="form-group"> 
-          <div class="col-md-5">
-            <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual" required="">
-                <option value="">Pilih Akun</option>
-                <option value="">
-                 <?php foreach ($akun_akrual as $akun) {
-                  ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                }
-                ?> 
-            </select> 
-          </div>
-
-          <div class="col-md-6">
-          <input name="jumlah_akun_debet_akrual[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet_akrual" required="">
-          </div>
-
-        </div>
+        
       </div>
       
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Kredit<button id="add-akunKredit_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_akrual">
-        <div class="form-group"> 
-          <div class="col-md-5">
-            <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual" required="">
-                <option value="">Pilih Akun</option>
-                <option value="">
-                 <?php foreach ($akun_akrual as $akun) {
-                  ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-                  <?php
-                }
-                ?> 
-            </select> 
-          </div>
-
-          <div class="col-md-6">
-          <input name="jumlah_akun_kredit_akrual[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit_akrual" required="">
-          </div>
-
-        </div>
+        
       </div>
       
       <hr>
@@ -563,18 +491,13 @@ $(document).ready(function(){
       format: "yyyy-mm-dd"
   });
 
-  var $select1 = $('.akun_debet_kas').selectize();  // This initializes the selectize control
-  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
-
-  var $select2 = $('.akun_kredit_kas').selectize();  // This initializes the selectize control
-  var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
-    
-  var $select1 = $('.akun_debet_akrual').selectize();  // This initializes the selectize control
-  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
-
-  var $select2 = $('.akun_kredit_akrual').selectize();  // This initializes the selectize control
-  var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
-
+//  var $select1 = $('.akun_debet_kas').selectize();  // This initializes the selectize control
+//
+//  var $select2 = $('.akun_kredit_kas').selectize();  // This initializes the selectize control
+//    
+//  var $select1 = $('.akun_debet_akrual').selectize();  // This initializes the selectize control
+//
+//  var $select2 = $('.akun_kredit_akrual').selectize();  // This initializes the selectize control
   
 
 
@@ -698,14 +621,16 @@ $(document).ready(function(){
   $(document).on('click', '.del_pajak', function(){
       $(this).parents('tr').remove();
   });
+    
+    var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
+  var selectize3 = $select3[0].selectize; // This sores the selectize object to a variable (with name 'selectize')
 
 
   <?php if (isset($kode_unit)): ?>
       selectize3.setValue('<?=$kode_unit?>');
   <?php endif ?>
     
-    var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
-  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+    
 
 
 </script>

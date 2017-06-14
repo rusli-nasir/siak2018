@@ -88,6 +88,7 @@ $(document).ready(function(){
   <!-- <input name="jenis" type="text" placeholder="Jenis Transaksi" class="form-control input-md" required=""> -->
   <select id="jenis" name="jenis" class="form-control" required="">
       <option value="">Pilih Jenis</option>
+      <option value="MEMORIAL" selected>Memorial</option>
       <option value="GP" >GUP</option>
       <option value="LS-Gaji">LS-Gaji</option>
       <option value="TUP">TUP</option>
@@ -610,13 +611,15 @@ $(document).ready(function(){
           }
       }
   }
+    
+    var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
+  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($unit_kerja)): ?>
       selectize3.setValue('<?=$unit_kerja?>');
   <?php endif ?>
     
-    var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
-  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+    
 
 
 </script>
