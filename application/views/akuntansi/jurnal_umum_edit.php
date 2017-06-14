@@ -111,6 +111,16 @@ $(document).ready(function(){
           }
         });
       });
+    },
+    error: function (request, status, error) {
+       $.ajax({
+        url:host+'akuntansi/memorial/add_pajak',
+        data:{},
+        success:function(data){
+          $("#field_pajak").append(data);
+          $(".number_pajak").number(true,2);
+        }
+      })
     }
   })
 
