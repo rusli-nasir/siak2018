@@ -108,7 +108,6 @@
 				<li class="<?php if(isset($menu4)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Penerimaan</a></li>
 				<li class="<?php if(isset($menu5)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/memorial/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Memorial</a></li>
 				<li class="<?php if(isset($menu6)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/jurnal_umum/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Jurnal-APBN</a></li>
-				<hr/>
 				<li class="dropdown">
 			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
 			        <span class="caret"></span></a>
@@ -118,7 +117,6 @@
 						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>
 			        </ul>
 			      </li>
-				<hr/>
 				<li class="dropdown">
 			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Adminsitrasi
 			        <span class="caret"></span></a>

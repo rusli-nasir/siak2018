@@ -115,6 +115,7 @@ tbody td, thead th {
 	    <?php } ?>
 	</div>
 	<div class="col-sm-4">
+		<?php if(isset($tab1)){ ?>
 		<form action="<?php echo site_url('akuntansi/kuitansi/index'); ?>" method="post">
 			<div class="input-group">
 	      		<select name="keyword" class="form-control">
@@ -138,6 +139,7 @@ tbody td, thead th {
 	      		</span>
 	    	</div>		
 		</form>
+		<?php } ?>
 	</div>
 </div>
 <br/>
