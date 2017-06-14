@@ -403,82 +403,166 @@ class Jurnal_umum extends MY_Controller {
 		$this->load->library('form_validation');
 
 		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
-		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
-		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
+		// $this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
+		// $this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
 		$this->form_validation->set_rules('no_bukti','No. Bukti','required');
-		$this->form_validation->set_rules('no_spm','No. SPM','required');
+		// $this->form_validation->set_rules('no_spm','No. SPM','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
 		$this->form_validation->set_rules('jenis','Jenis','required');
 		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
-		$this->form_validation->set_rules('uraian','uraian','required');
-		$this->form_validation->set_rules('tipe','Tipe','required');
-		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
-		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
-		$this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
-		$this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required|matches[jumlah_akun_debet]');
+        $this->form_validation->set_rules('uraian','uraian','required');
+		$this->form_validation->set_rules('kode_kegiatan','kode_kegiatan','required');
+		// $this->form_validation->set_rules('tipe','Tipe','required');
+		// $this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
+		// $this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
+		// $this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
+		// $this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required|matches[jumlah_akun_debet]');
 
 		if($this->form_validation->run())     
         {   
             $delete_relasi_lama = $this->db->query("DELETE FROM akuntansi_relasi_kuitansi_akun WHERE id_kuitansi_jadi='".$id_kuitansi_jadi."'");
             
-            $entry = $this->input->post();
+             $entry = $this->input->post();
             unset($entry['simpan']);
             $entry['id_kuitansi'] = null;
-            $entry['akun_debet'] = $entry['kas_akun_debet'][0];
-            unset($entry['kas_akun_debet']);
-            $entry['jumlah_debet'] = $entry['jumlah_akun_debet'][0];
-            unset($entry['jumlah_akun_debet']);
-            $entry['jumlah_kredit'] = $entry['jumlah_akun_kredit'][0];
-            unset($entry['jumlah_akun_kredit']);
+            //$entry['no_bukti'] = $this->Memorial_model->generate_nomor_bukti();
+            $entry['akun_debet'] = $entry['akun_debet_kas'][0];
+            $entry['akun_kredit_akrual'] = $entry['akun_kredit_akrual'][0];
+            $entry['akun_debet_akrual'] = $entry['akun_debet_akrual'][0];
+            $entry['akun_kredit'] = $entry['akun_kredit_kas'][0];
+            unset($entry['akun_kredit_kas']);
+            unset($entry['akun_debet_kas']);
+            unset($entry['akun_kredit_akrual']);
+            unset($entry['akun_debet_akrual']);
+            $entry['jumlah_debet'] = array_sum($entry['jumlah_akun_debet_kas']);
+            unset($entry['jumlah_akun_debet_akrual']);
+            unset($entry['jumlah_akun_debet_kas']);
+            $entry['jumlah_kredit'] = array_sum($entry['jumlah_akun_kredit_akrual']);
+            unset($entry['jumlah_akun_kredit_akrual']);
+            unset($entry['jumlah_akun_kredit_kas']);
+            $entry['tipe'] = 'jurnal_umum';
+            $entry['flag'] = 3;
+            $entry['status'] = 4;
+            $entry['kode_user'] = $this->session->userdata('kode_user');
+            // $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+
+            unset($entry['kegiatan']);
+            unset($entry['output']);
+            unset($entry['program']);
+
+            unset($entry['jumlah']);
+            unset($entry['jenis_pajak']);
+            unset($entry['persen_pajak']);
+
 
             $akun = $this->input->post();
 
-            $relasi_debet = array();
-            $entry_relasi = array();
-            $relasi = array();
-            for ($i=0; $i < count($akun['kas_akun_debet']); $i++) { 
-            	$relasi['akun'] = $akun['kas_akun_debet'][$i];
-            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet'][$i]);
-            	$relasi['tipe'] = 'debet';
-            	$relasi['no_bukti'] = $entry['no_bukti'];
-            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+            // print_r($akun);die();
 
-            	$entry_relasi[] = $relasi;
+            $entry_pajak = array();
+            $array_pajak = array();
+            if ($akun['jenis_pajak'][0] != null and isset($akun['jenis_pajak'])) {
+                for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+                    $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
+                    $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                    $entry_pajak['jenis'] = 'pajak';
+                    $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+
+                    $array_pajak[] = $entry_pajak;
+                }
             }
 
-            $relasi_kredit = array();
-            for ($i=0; $i < count($akun['kas_akun_kredit']); $i++) { 
-            	$relasi['akun'] = $akun['kas_akun_kredit'][$i];
-            	$relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit'][$i]);
-            	$relasi['tipe'] = 'kredit';
-            	$relasi['no_bukti'] = $entry['no_bukti'];
-            	$relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+            $q1 = $this->Kuitansi_model->edit_kuitansi_jadi($entry, $id_kuitansi_jadi);
 
-            	$entry_relasi[] = $relasi;
+
+            $entry_relasi = array();
+            $relasi = array();
+
+            for ($i=0; $i < count($akun['akun_debet_akrual']); $i++) { 
+                $relasi['akun'] = $akun['akun_debet_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_akrual'][$i]);
+                $relasi['tipe'] = 'debet';
+                $relasi['no_bukti'] = $entry['no_bukti'];
+                $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['jenis'] = 'akrual';
+
+                $entry_relasi[] = $relasi;
+            }
+
+            for ($i=0; $i < count($akun['akun_kredit_akrual']); $i++) { 
+                $relasi['akun'] = $akun['akun_kredit_akrual'][$i];
+                $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_akrual'][$i]);
+                $relasi['tipe'] = 'kredit';
+                $relasi['no_bukti'] = $entry['no_bukti'];
+                $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                $relasi['jenis'] = 'akrual';
+
+                $entry_relasi[] = $relasi;
+            }
+
+            if ($akun['akun_debet_kas'][0] != null) {
+                for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
+                    $relasi['akun'] = $akun['akun_debet_kas'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
+                    $relasi['tipe'] = 'debet';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
+
+                    $entry_relasi[] = $relasi;
+                }
+            }
+
+            if ($akun['akun_kredit_kas'][0] != null) {
+                for ($i=0; $i < count($akun['akun_kredit_kas']); $i++) { 
+                    $relasi['akun'] = $akun['akun_kredit_kas'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
+                    $relasi['tipe'] = 'kredit';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
+
+                    $entry_relasi[] = $relasi;
+                }
+            }
+
+            // print_r($entry_relasi);die();
+
+            $temp_kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
+
+            if ($temp_kuitansi['id_pajak'] != 0) {
+                $this->Pajak_model->hapus_pajak($temp_kuitansi['id_pajak']);
+            }
+
+            if ($array_pajak != null) {
+                $updater = array();
+                $q4 = $this->Pajak_model->insert_pajak($id_kuitansi_jadi,$array_pajak);
+                $updater['id_pajak'] = $q4;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+
+                $q6 = $this->Posting_model->posting_kuitansi_full($q4);
+            } else {
+                $updater['id_pajak'] = 0;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
             }
 
             
-            if ($mode == 'revisi'){
-                $riwayat = array();
-                $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
-                $riwayat['flag'] = $kuitansi['flag'];
-                $riwayat['status'] = 5;
-                $riwayat['id_kuitansi_jadi'] = $id_kuitansi_jadi;
-                $riwayat['komentar'] ='';
+            $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
 
-                $entry['status'] = 5;
-                $this->Riwayat_model->add_riwayat($riwayat);
+            $this->Posting_model->hapus_posting_full($id_kuitansi_jadi);
+            $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+         
 
-            }
+            // $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
 
-            $q1 = $this->Relasi_kuitansi_akun_model->update_relasi_kuitansi_akun($id_kuitansi_jadi,$entry_relasi);
+            // $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
 
-            $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
+            // if ($q1 and $q2)
+            //     $this->session->set_flashdata('success','Berhasil menyimpan !');
+            // else
+            //     $this->session->set_flashdata('warning','Gagal menyimpan !');
 
-            if ($q1 and $q2)
-                $this->session->set_flashdata('success','Berhasil menyimpan !');
-            else
-                $this->session->set_flashdata('warning','Gagal menyimpan !');
+            // die('selesai');
 
             redirect('akuntansi/jurnal_umum');
 
