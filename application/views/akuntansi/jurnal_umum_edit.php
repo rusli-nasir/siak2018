@@ -6,7 +6,7 @@
 
 <script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
 <script type="text/javascript">
-  var host = location.protocol + '//' + location.host + '/rsa/index.php/';
+  var host = "<?=site_url('/')?>";
     
 $(document).ready(function(){
 

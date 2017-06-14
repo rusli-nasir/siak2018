@@ -8,7 +8,7 @@
 <!-- javascript -->
 <script type="text/javascript">
 	$(document).ready(function(){
-		var host = location.protocol + '//' + location.host + '/rsa/index.php/';
+		var host = "<?=site_url('/')?>";
 
 		$("#filter_tahun").change(function(){
 			$("#form_filter_tahun").submit();

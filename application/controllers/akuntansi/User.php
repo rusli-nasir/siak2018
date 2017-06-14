@@ -8,6 +8,7 @@ class User extends MY_Controller {
         $this->load->library('grocery_CRUD');       
         $this->db2 = $this->db2 = $this->load->database('rba',TRUE);
         $this->load->model('akuntansi/User_akuntansi_model', 'User_akuntansi_model');
+        $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
     }
 
 	public function manage(){
@@ -121,5 +122,40 @@ class User extends MY_Controller {
 			// $this->db->insert('akuntansi_user',$user);
 		}
 
+	}
+
+	public function print_akun()
+	{
+		$hasil = $this->db->get('akuntansi_user')->result_array();
+
+		$array_user = array();
+		foreach ($hasil as $entry) {
+			if ($entry['kode_unit'] != null) {
+				$array_user[$this->Unit_kerja_model->get_nama_unit($entry['kode_unit'])][] = $entry;
+			} else {
+				$array_user['lainnya'][] = $entry;
+			}
+		}
+
+
+		$level = array ( 
+			'1' => 'Operator',
+			'2' => 'Verifikator',
+			'3' => 'LK Akuntansi',
+			'4' => 'Monitoring universitas',
+			'5' => 'Rupiah Murni',
+			'6' => 'Monitoring unit',
+			'7' => 'Audit',
+			'9' => 'admin',
+		);
+
+
+		foreach ($array_user as $unit => $users) {
+			foreach ($users as $user) {
+				echo $user['username'].";".$user['username'].";".$level[$user['level']] . ";" .$unit."\n";
+			}
+		}
+
+		// print_r($array_user);
 	}
 }

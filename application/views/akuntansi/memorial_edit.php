@@ -8,7 +8,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-  var host = location.protocol + '//' + location.host + '/rsa/index.php/';
+  var host = "<?=site_url('/')?>";
   $("#kegiatan").change(function(){
     var kode_kegiatan = $(this).val();
     $.ajax({
