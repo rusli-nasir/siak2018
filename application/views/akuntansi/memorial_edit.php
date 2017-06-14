@@ -41,8 +41,14 @@ $(document).ready(function(){
   $.ajax({
     url:host+'akuntansi/memorial/get_kas_debet/'+id_kuitansi_jadi+'/kredit/kas',
     data:{},
-    success:function(data){
+    success:function(data){    
       $.each(data['hasil'], function(index, val){
+        if(data['hasil'][index]['akun']==""){
+          $('#group-kas').attr('style', 'display:none');
+          $('#group-akrual').attr('class', 'col-md-12');
+          no_kas = true;
+          $("#no-kas").prop('checked', true);
+        }
         var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
         template.removeAttr("style");
