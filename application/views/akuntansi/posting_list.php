@@ -71,7 +71,7 @@
             
                 echo form_open('akuntansi/rest_kuitansi/posting_kuitansi_batch/',array("id"=>"form-posting-all"));
                 foreach($all_query as $r)
-                    echo "<input style='display:none' type='checkbox' name='id_kuitansi_jadi[]' value='{$r->id_kuitansi_jadi}' />";
+                    echo "<input style='display:none' type='checkbox' name='id_kuitansi_jadi[]' value='{$r->id_kuitansi_jadi}' checked=''/>";
                 echo form_close();
             ?>
 			<thead>
