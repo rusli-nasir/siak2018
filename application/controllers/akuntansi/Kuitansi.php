@@ -612,19 +612,20 @@ class Kuitansi extends MY_Controller {
 
 		$total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword, $kode_unit, $jenis);
 		$total = $total_data->num_rows();
+		$this->data['total_a'] = $total_data->num_rows();
 
 		//pagination
 		if($this->uri->segment('4')==null){
 			$id = 0;
 			$this->data['no'] = $id+1;
 		}else{
-			$id = ($id-1)*2;
+			$id = ($id-1)*20;
 			$this->data['no'] = $id+1;
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
 		$config['base_url'] = site_url('akuntansi/kuitansi/jadi');
-	 	$config['per_page'] = '2';
+	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
 		$config['next_link'] = 'Lanjut';
@@ -782,6 +783,10 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi_spm($config['per_page'], $id, $keyword);
+
+		$this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/spm_non_kuitansi_list_jadi',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);

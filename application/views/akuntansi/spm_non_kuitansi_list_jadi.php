@@ -34,6 +34,23 @@
 <div class="row">
 	<div class="col-sm-9">
 		<h1 class="page-header">SPM Non-Kuitansi</h1>
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="box-t">
+					<?php echo 'Total SPM Diverifikasi: <br/><span style="color:green;font-size:16pt;">'.$kuitansi_ok.'</span>'; ?>
+				</div>			
+			</div>
+			<div class="col-sm-4">
+				<div class="box-t">
+					<?php echo 'Total SPM Direvisi: <br/><span style="color:orange;font-size:16pt;">'.$kuitansi_revisi.'</span>'; ?>
+				</div>				
+			</div>
+			<div class="col-sm-4">
+				<div class="box-t">
+					<?php echo 'Total SPM Belum di Verifikasi: <br/><span style="color:#000;font-size:16pt;">'.$kuitansi_pasif.'</span>'; ?>
+				</div>
+			</div>
+		</div>	
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>

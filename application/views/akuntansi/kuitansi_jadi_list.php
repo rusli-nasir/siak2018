@@ -203,7 +203,7 @@ tbody td, thead th {
 							<button class="btn btn-xs btn-default disabled">Proses verifikasi</button>
 							<?php } ?>
 						<?php }else if($result->flag==2){ ?>
-						<button class="btn btn-xs btn-success disabled">Disetujui</button>
+						<button class="btn btn-xs btn-success disabled">Diverifikasi</button>
 						<?php } ?>
 					</td>					
 				</tr>
