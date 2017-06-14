@@ -202,7 +202,7 @@ $(document).ready(function(){
 
 
 <?php
-    echo form_open('akuntansi/jurnal_umum/edit_jurnal_umum/'.$id_kuitansi_jadi.'/'.$mode,array("class"=>"form-horizontal"));
+    echo form_open('akuntansi/jurnal_umum/edit_jurnal_umum/'.$id_kuitansi_jadi.'/'.$mode,array("class"=>"form-horizontal", "onsubmit"=>"return validateForm()"));
 ?>
 
 <fieldset>

@@ -24,7 +24,7 @@ $(document).ready(function(){
 <legend><center>INPUT JURNAL UMUM</center></legend>
 
 <!-- Text input-->
-<?php echo form_open('akuntansi/jurnal_umum/input_jurnal_umum',array("class"=>"form-horizontal")); ?>
+<?php echo form_open('akuntansi/jurnal_umum/input_jurnal_umum',array("class"=>"form-horizontal", "onsubmit"=>"return validateForm()")); ?>
 
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  

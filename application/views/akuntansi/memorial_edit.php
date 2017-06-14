@@ -241,7 +241,7 @@ $(document).ready(function(){
   </ol>
 </div><!--/.row-->
 
-<form action="<?php echo site_url('akuntansi/memorial/edit_memorial/'.$id_kuitansi_jadi.'/'.$mode); ?>" method="post" class="form-horizontal">
+<form action="<?php echo site_url('akuntansi/memorial/edit_memorial/'.$id_kuitansi_jadi.'/'.$mode); ?>" method="post" class="form-horizontal" onsubmit="return validateForm()">
 
 <fieldset>
 
