@@ -157,7 +157,6 @@ class Memorial extends MY_Controller {
                 for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
                     $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
                     $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
-                    $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
                     $entry_pajak['jenis'] = 'pajak';
                     $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
 
@@ -219,6 +218,9 @@ class Memorial extends MY_Controller {
                     $entry_relasi[] = $relasi;
                 }
             }
+
+
+
 
 
             $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
@@ -322,7 +324,6 @@ class Memorial extends MY_Controller {
                 for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
                     $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
                     $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
-                    $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
                     $entry_pajak['jenis'] = 'pajak';
                     $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
 
@@ -357,7 +358,7 @@ class Memorial extends MY_Controller {
                 $entry_relasi[] = $relasi;
             }
 
-            if ($akun['akun_debet_kas'][0] != null) {
+            if ($akun['akun_debet_kas'][1] != null) {
                 for ($i=1; $i < count($akun['akun_debet_kas']); $i++) { 
                     $relasi['akun'] = $akun['akun_debet_kas'][$i];
                     $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
@@ -370,7 +371,7 @@ class Memorial extends MY_Controller {
                 }
             }
 
-            if ($akun['akun_kredit_kas'][0] != null) {
+            if ($akun['akun_kredit_kas'][1] != null) {
                 for ($i=1; $i < count($akun['akun_kredit_kas']); $i++) { 
                     $relasi['akun'] = $akun['akun_kredit_kas'][$i];
                     $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
@@ -383,9 +384,11 @@ class Memorial extends MY_Controller {
                 }
             }
 
+            // print_r($entry_relasi);die();
+
             $temp_kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
 
-            if ($temp_kuitansi['id_pajak'] != null) {
+            if ($temp_kuitansi['id_pajak'] != 0) {
                 $this->Pajak_model->hapus_pajak($temp_kuitansi['id_pajak']);
             }
 
@@ -396,6 +399,9 @@ class Memorial extends MY_Controller {
                 $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
 
                 $q6 = $this->Posting_model->posting_kuitansi_full($q4);
+            } else {
+                $updater['id_pajak'] = 0;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
             }
 
 
