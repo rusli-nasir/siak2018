@@ -39,7 +39,7 @@
 					<tbody>		
 				<?php $no=0;foreach($query_unit->result() as $result){ ?>
 					<tr style="font-size:12pt;">
-						<td style="width:40px !important" align="center"><?php echo $no; ?></td>
+						<td style="width:40px !important" align="center"><?php echo $no+1; ?></td>
 						<td style="width:200px !important"><?php echo $result->nama_unit; ?></td>
 						<td style="width:100px !important;font-weight:bold;" align="center"><?php echo $total_kuitansi[$no]; ?></td>
 						<td style="width:100px !important;font-weight:bold;" align="center"><?php echo $non_verif[$no]; ?></td>
