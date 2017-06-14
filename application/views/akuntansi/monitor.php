@@ -62,8 +62,11 @@ th,td
 	    <div class="col-md-6">
 	    	<input class="form-control" type="text" name="daterange">
 	    </div>
-	    <div class="col-md-2">
+	    <div class="col-md-1">
 	    	<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Cari</button>
+	    </div>
+	    <div class="col-md-1">
+	    	<a href="<?php echo site_url('akuntansi/kuitansi/monitor/print'); ?>" target="_blank"><button type="button" class="btn btn-success"><span class="glyphicon glyphicon-print"></span> Print</button></a>
 	    </div>
 	</div>
 </form>

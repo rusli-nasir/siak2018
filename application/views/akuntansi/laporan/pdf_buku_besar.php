@@ -105,10 +105,10 @@ $html = '';
 	    	$jumlah_debet = 0;
 	    	$jumlah_kredit = 0;
 
-	    	$html.= '<table border="1" style="font-size:10pt;width:800px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
+	    	$html.= '<table border="1" style="font-size:10pt;width:840px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
 	    			<thead>
 	    				<tr style="background-color:#ECF379">
-	    					<th>No</th>
+	    					<th width="40px">No</th>
 	    					<th>Tanggal</th>
 	    					<th>No. Bukti</th>
 	    					<th>Uraian</th>
@@ -130,11 +130,11 @@ $html = '';
     					<td align="right">'.number_format($saldo).'</td>
     				</tr>';
     				$baris += 2;*/
-    		$iter = 1;
+    		$iter = 0;
 	    	foreach ($entry as $transaksi) {	
 	    		$iter++;
 				$html.= '<tr>
-					<td>'.$iter.'</td>
+					<td width="40px">'.$iter.'</td>
 					<td>'.$transaksi['tanggal'].'</td>
 					<td>'.$transaksi['no_bukti'].'</td>
 					<td>'.$transaksi['uraian'].'</td>
@@ -295,7 +295,7 @@ function eliminasi_negatif($value)
     if ($value < 0) 
         return "(". number_format(abs($value)) .")";
     else
-        return $value;
+        return number_format($value);
 }
 
 function format_nip($value)

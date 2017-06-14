@@ -334,7 +334,7 @@ $(document).ready(function(){
               <?php } ?>
             </select>
           </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak"></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" class="form-control number_pajak"></td>
         </tr>
       </tbody>
       <tfoot>

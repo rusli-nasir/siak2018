@@ -1039,7 +1039,7 @@ class Kuitansi extends MY_Controller {
     /*=================================== MONITORING =========================================*/
     /*=================================== MONITORING =========================================*/
 
-    public function monitor(){
+    public function monitor($print = false){
     	$this->db2 = $this->load->database('rba', true);
     	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
 
@@ -1072,8 +1072,13 @@ class Kuitansi extends MY_Controller {
         foreach($this->data['tmp']->result_array() as $token){
             $this->data['jumlah_posting'][$token['unit_kerja']] = $token['jumlah'];
         }*/
-    	$temp_data['content'] = $this->load->view('akuntansi/monitor',$this->data,true);
-		$this->load->view('akuntansi/content_template',$temp_data,false);
+
+        if($print==true){
+        	$this->load->view('akuntansi/monitor_print',$this->data,false);
+        }else{
+    		$temp_data['content'] = $this->load->view('akuntansi/monitor',$this->data,true);
+			$this->load->view('akuntansi/content_template',$temp_data,false);
+		}
     }
 
     function get_total_data($kode_unit, $jenis, $periode_awal, $periode_akhir){

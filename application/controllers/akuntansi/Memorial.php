@@ -704,7 +704,7 @@ class Memorial extends MY_Controller {
               }
         echo '</select>
           </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak"></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" class="form-control number_pajak"></td>
           <td><button type="button" class="del_pajak btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>';
     }
