@@ -66,6 +66,7 @@ $(document).ready(function(){
 
         var inputan = template.find('.input-md');
         $(inputan).number(true,2);
+          updateSelisih_kas();
       });
     }
   })
@@ -100,6 +101,7 @@ $(document).ready(function(){
 
         var inputan = template.find('.input-md');
         $(inputan).number(true,2);
+          updateSelisih_kas();
       });
     }
   })
@@ -154,6 +156,7 @@ $(document).ready(function(){
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
         var inputan = template.find('.input-md');
         $(inputan).number(true,2);
+          updateSelisih_akrual();
       });
     }
   })
@@ -187,6 +190,7 @@ $(document).ready(function(){
         template.find('.input-md').val(data['hasil'][index]['jumlah']);
         var inputan = template.find('.input-md');
         $(inputan).number(true,2);
+          updateSelisih_akrual();
       });
     }
   })
