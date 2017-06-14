@@ -95,9 +95,11 @@ $html = '';
 					</tr>
 				</table>';
 			$baris += 4;
+			$case_hutang = in_array(substr($key,0,1),[2,3]);
+
 			$saldo = $this->Akun_model->get_saldo_awal($key);
 			if ($saldo != null) {
-				$saldo = $saldo['saldo_awal'] - $saldo['saldo_kredit_awal'];
+				$saldo = $saldo['saldo_awal'];
 			}
 			// print_r($entry);die();
 	    	$jumlah_debet = 0;
@@ -117,7 +119,7 @@ $html = '';
 	    				</tr>
 	    			</thead>
 	    			<tbody>';
-	    			$html.= '<tr>
+	    			/*$html.= '<tr>
     					<td>1</td>
     					<td>1 Januari 2017</td>
     					<td></td>
@@ -127,7 +129,7 @@ $html = '';
     					<td></td>
     					<td align="right">'.number_format($saldo).'</td>
     				</tr>';
-    				$baris += 2;
+    				$baris += 2;*/
     		$iter = 1;
 	    	foreach ($entry as $transaksi) {	
 	    		$iter++;
@@ -138,17 +140,25 @@ $html = '';
 					<td>'.$transaksi['uraian'].'</td>
 					<td>'.$transaksi['kode_user'].'</td>';
 					if ($transaksi['tipe'] == 'debet'){
-	    				$html.= '<td align="right">'.$transaksi['jumlah'].'</td>';
+	    				$html.= '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
 	    				$html.= '<td align="right">0</td>';
-	    				$saldo += $transaksi['jumlah'];
+	    				if ($case_hutang) {
+	                        $saldo -= $transaksi['jumlah'];
+	                    } else {
+	    				    $saldo += $transaksi['jumlah'];
+	                    }
 	    				$jumlah_debet += $transaksi['jumlah'];
 	    			} else if ($transaksi['tipe'] == 'kredit'){
 	    				$html.= '<td align="right">0</td>';
-						$html.= '<td align="right">'.$transaksi['jumlah'].'</td>';
-						$saldo -= $transaksi['jumlah'];
+						$html.= '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
+						if ($case_hutang) {
+	                        $saldo += $transaksi['jumlah'];
+	                    } else {
+	                        $saldo -= $transaksi['jumlah'];
+	                    }
 						$jumlah_kredit += $transaksi['jumlah'];
 	    			}
-				$html.= '<td align="right">'.number_format($saldo).'</td>
+				$html.= '<td align="right">'.eliminasi_negatif($saldo).'</td>
 				</tr>';
 				$baris+=1;
     		}
@@ -156,9 +166,9 @@ $html = '';
     			<tfoot>
     				<tr>
     					<td align="right" colspan="5" style="background-color:#B1E9F2">Jumlah Total</td>
-    					<td align="right">'.number_format($jumlah_debet).'</td>
-    					<td align="right">'.number_format($jumlah_kredit).'</td>
-    					<td align="right">'.number_format($saldo).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_debet).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_kredit).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($saldo).'</td>
     				</tr>
     			</tfoot>
     			</table><br/><br/>';
@@ -278,4 +288,17 @@ function get_pejabat($unit, $jabatan){
 	$ci->db->where('unit', $unit);
 	$ci->db->where('jabatan', $jabatan);
 	return $ci->db->get('akuntansi_pejabat')->row_array();
+}
+
+function eliminasi_negatif($value)
+{
+    if ($value < 0) 
+        return "(". number_format(abs($value)) .")";
+    else
+        return $value;
+}
+
+function format_nip($value)
+{
+    return str_replace("'",'',$value);
 }

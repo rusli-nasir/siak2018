@@ -868,15 +868,24 @@ class Laporan extends MY_Controller {
         $periode_akhir = strtodate($date_t[1]);
         
         $sumber_dana = $this->input->post('sumber_dana');
-        $unit = $this->input->post('sumber_dana');
+        $unit = $this->input->post('unit');
+
+        $teks_unit = null;
+
 
         if ($unit == 'all') {
             $unit = null;
+            $mode = 'neraca';
+            $teks_unit = "UNIVERSITAS DIPONEGORO";
+        } else {
+            $teks_unit = $this->Unit_kerja_model->get_nama_unit($unit);
+            $teks_unit = strtoupper(str_replace('Fak.', "Fakultas ", $teks_unit));
         }
 
         // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
-
+        ksort($data['query']);
+        
         $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";
 

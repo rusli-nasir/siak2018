@@ -76,14 +76,14 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 							<td>2017</td>
 						</tr>
 				</table>';
-			$html .= '<table style="width:870px;font-size:10pt;" border="1">
+			$html .= '<table style="font-size:10pt;" border="1">
 					<thead>
 						<tr style="background-color:#ECF379;height:45px">
 							<th rowspan="2" width="40px">No</th>
-							<th rowspan="2">Kode</th>
-							<th rowspan="2">Uraian</th>
-							<th align="center" colspan="2">Mutasi</th>
-							<th align="center" colspan="2">Neraca Saldo</th>
+							<th rowspan="2" width="70px">Kode</th>
+							<th rowspan="2" width="250px">Uraian</th>
+							<th align="center" colspan="2" width="200px">Mutasi</th>
+							<th align="center" colspan="2" width="200px">Neraca Saldo</th>
 						</tr>
 						<tr style="background-color:#ECF379;height:45px">
 							<th>DEBIT</th>
@@ -103,19 +103,32 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 
 			foreach ($query as $key => $entry) {
 				$saldo = get_saldo_awal($key);
+	            if ($saldo != null) {
+	                $saldo = $saldo['saldo_awal'];
+	            }
 		    	$debet = 0;
 		    	$kredit = 0;
 
+		    	$case_hutang = in_array(substr($key,0,1),[2,3]);
+
 				$html .= '<tr>
 						<td width="40px">'.$i.'</td>
-						<td>'.$key.'</td>
-						<td>'.get_nama_akun_v((string)$key).'</td>';
+						<td width="70px">'.$key.'</td>
+						<td width="250px">'.get_nama_akun_v((string)$key).'</td>';
 					foreach ($entry as $transaksi) {
 		    			if ($transaksi['tipe'] == 'debet'){
-		    				$saldo += $transaksi['jumlah'];
+		    				if ($case_hutang) {
+		                        $saldo -= $transaksi['jumlah'];
+		                    } else {
+		                        $saldo += $transaksi['jumlah'];
+		                    }
 		    				$debet += $transaksi['jumlah'];
 		    			} else if ($transaksi['tipe'] == 'kredit'){
-							$saldo -= $transaksi['jumlah'];
+							if ($case_hutang) {
+		                        $saldo += $transaksi['jumlah'];
+		                    } else {
+		                        $saldo -= $transaksi['jumlah'];
+		                    }
 							$kredit += $transaksi['jumlah'];
 		    			}
 		    		}
@@ -123,22 +136,26 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 
 		    		$jumlah_debet += $debet;
 		    		$jumlah_kredit += $kredit;
-		    		$saldo_neraca = $debet - $kredit;
+		    		if ($case_hutang) {
+		                $saldo_neraca = $kredit - $debet;
+		            } else {
+		                $saldo_neraca = $debet - $kredit;
+		            }
 
-				$html .= '<td align="right">'.number_format($debet,2).'</td>
-						<td align="right">'.number_format($kredit,2).'</td>';
+				$html .= '<td align="right" width="100px">'.eliminasi_negatif($debet).'</td>
+						<td align="right" width="100px">'.eliminasi_negatif($kredit).'</td>';
 					if ($saldo_neraca > 0) {
 		                $jumlah_neraca_debet += $saldo_neraca;
-		                $html .= '<td align="right">0.00</td>';
-		                $html .= '<td align="right">'.number_format($saldo_neraca,2).'</td>';
+		                $html .= '<td align="right" width="100px">0.00</td>';
+		                $html .= '<td align="right" width="100px">'.eliminasi_negatif($saldo_neraca).'</td>';
 		            } elseif ($saldo_neraca < 0) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_kredit += $saldo_neraca;
-		                $html .= '<td align="right">0.00</td>';
-		                $html .= '<td align="right">'.number_format($saldo_neraca,2).'</td>';
+		                $html .= '<td align="right" width="100px">0.00</td>';
+		                $html .= '<td align="right" width="100px">'.eliminasi_negatif($saldo_neraca).'</td>';
 		            }else{
-		            	$html .= '<td align="right">0.00</td>';
-		            	$html .= '<td align="right">0.00</td>';
+		            	$html .= '<td align="right" width="100px">0.00</td>';
+		            	$html .= '<td align="right" width="100px">0.00</td>';
 		            }
 
 				$html .= '</tr>';
@@ -149,10 +166,10 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 	    			<tfoot>
 					 	<tr>
 		    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-		    				<td align="right">'.number_format($jumlah_debet,2).'</td>
-		    				<td align="right">'.number_format($jumlah_kredit,2).'</td>
-		    				<td align="right">'.number_format($jumlah_neraca_debet,2).'</td>
-		    				<td align="right">'.number_format($jumlah_neraca_kredit,2).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
 		    			</tr>
 	    			</tfoot>
 				</table></body>';
@@ -266,4 +283,17 @@ function get_pejabat($unit, $jabatan){
 	$ci->db->where('unit', $unit);
 	$ci->db->where('jabatan', $jabatan);
 	return $ci->db->get('akuntansi_pejabat')->row_array();
+}
+
+function eliminasi_negatif($value)
+{
+    if ($value < 0) 
+        return "(". number_format(abs($value)) .")";
+    else
+        return number_format($value);
+}
+
+function format_nip($value)
+{
+    return str_replace("'",'',$value);
 }
