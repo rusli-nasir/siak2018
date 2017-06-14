@@ -71,4 +71,55 @@ class User extends MY_Controller {
 		$temp_data['content'] = $this->load->view('akuntansi/akun_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
+
+	public function generate_akun()
+	{
+		$unit = $this->db2->get('unit')->result_array();
+		$array_level = array ( 
+			'1' => 'operator',
+			'2' => 'verifikator',
+			'6' => 'kasubbag',
+		);
+		$array_user = array();
+		foreach ($unit as $entry) {
+			$alias = strtolower($entry['alias']);
+
+			foreach ($array_level as $key => $username) {
+				$user = array(
+					'username' => $username.'_'.$alias,
+					'kode_unit' => $entry['kode_unit'],
+					'level' => $key,
+					'aktif' => 1,
+				);
+				$user['password'] = sha1($user['username']);
+				$array_user[]=$user;
+				# code...
+			}
+		}
+		$array_level = array ( 
+			'6' => 'wd'
+		);
+		foreach ($unit as $entry) {
+			$alias = strtolower($entry['alias']);
+
+			foreach ($array_level as $key => $username) {
+				$user = array(
+					'username' => $username.'_'.$alias,
+					'kode_unit' => $entry['kode_unit'],
+					'level' => $key,
+					'aktif' => 1,
+				);
+				$user['password'] = sha1($user['username']);
+				$array_user[]=$user;
+				# code...
+			}
+		}
+
+		foreach ($array_user as $user) {
+			$user['kode_user'] = $this->User_akuntansi_model->generate_kode_user($user['kode_unit']);
+
+			// $this->db->insert('akuntansi_user',$user);
+		}
+
+	}
 }

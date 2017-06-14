@@ -449,11 +449,11 @@ class Laporan extends MY_Controller {
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_unit);
         $row += 4;
-        $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
+        $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+2,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$kpa['nama']);
         $row ++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Nip. " . $kpa['nip']);
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"NIP. " . $kpa['nip']);
 
 
 
@@ -683,11 +683,11 @@ class Laporan extends MY_Controller {
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_unit);
         $row += 4;
-        $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
+        $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+2,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$kpa['nama']);
         $row ++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Nip. " . $kpa['nip']);
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"NIP. " . $kpa['nip']);
 
 
         // $penyusun = $this->Pejabat_model->get_pejabat($unit,'operator');
@@ -707,8 +707,8 @@ class Laporan extends MY_Controller {
         // $objWorksheet->setCellValueByColumnAndRow($kolom_penyusun,$row,$penyusun['nama']);
         // $objWorksheet->setCellValueByColumnAndRow($kolom_ppk,$row,$ppk['nama']);
         // $row ++;
-        // $objWorksheet->setCellValueByColumnAndRow($kolom_penyusun,$row,"Nip. " . $penyusun['nip']);
-        // $objWorksheet->setCellValueByColumnAndRow($kolom_ppk,$row,"Nip. " . $ppk['nip']);
+        // $objWorksheet->setCellValueByColumnAndRow($kolom_penyusun,$row,"NIP. " . $penyusun['nip']);
+        // $objWorksheet->setCellValueByColumnAndRow($kolom_ppk,$row,"NIP. " . $ppk['nip']);
 
         if ($mode == 'excel'){
             $objWorksheet->getPageSetup()->setFitToPage(true);
@@ -1058,11 +1058,11 @@ class Laporan extends MY_Controller {
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$teks_unit);
         $row += 4;
-        $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
+        $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+2,$row);
         $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,$kpa['nama']);
         $row ++;
         $objWorksheet->mergeCellsByColumnAndRow($kolom_kpa,$row,$kolom_kpa+1,$row);
-        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"Nip. " . $kpa['nip']);
+        $objWorksheet->setCellValueByColumnAndRow($kolom_kpa,$row,"NIP. " . $kpa['nip']);
 
         if ($mode == 'excel'){
             $objWorksheet->getPageSetup()->setFitToPage(true);

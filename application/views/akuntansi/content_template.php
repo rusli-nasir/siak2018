@@ -117,10 +117,20 @@
 						<li class="<?php if(isset($menu10)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_jurnal'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap Jurnal</a></li>
 						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>
 			        </ul>
+			      </li>
+				<hr/>
+				<li class="dropdown">
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Adminsitrasi
+			        <span class="caret"></span></a>
+			        <ul class="dropdown-menu">
+			          	<li class="<?php if(isset($menu13)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/user/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. User</a></li>	
+					     <li class="<?php if(isset($menu14)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/pejabat/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. Pejabat</a></li>	
+					     <li class="<?php if(isset($menu15)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/akun/list_akun'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. Akun</a></li>	
+						<li class="<?php if(isset($menu7)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/rekening/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>Manj. Rekening</a></li>
+						<li class="<?php if(isset($menu8)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/saldo/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Man. Saldo</a></li>
+						<li class="<?php if(isset($menu12)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/pejabat/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>Manj. Pejabat</a></li>
+			        </ul>
 			      </li>				
-				<li class="<?php if(isset($menu7)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/rekening/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekening</a></li>
-				<li class="<?php if(isset($menu8)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/saldo/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Saldo</a></li>
-				<li class="<?php if(isset($menu12)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/pejabat/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Pejabat</a></li>
 			<?php }else if($this->session->userdata('level')==4){ ?>
 				<li class="<?php if(isset($menu5)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/monitor'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Monitoring</a></li>	
 				<li class="dropdown">
@@ -134,6 +144,27 @@
 			      </li>	
 			<?php } else if($this->session->userdata('level')==5){ ?>
 			     <li class="<?php if(isset($menu6)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/jurnal_umum/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Jurnal-APBN</a></li>
+                <li class="dropdown">
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
+			        <span class="caret"></span></a>
+			        <ul class="dropdown-menu">
+			          	<li class="<?php if(isset($menu9)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/buku_besar'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Buku Besar</a></li>
+			          	<li class="<?php if(isset($menu10)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_jurnal'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap Jurnal</a></li>
+						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>
+			        </ul>
+			      </li>	
+			<?php } else if($this->session->userdata('level')==6){ ?>
+			     <li class="<?php if(isset($menu6)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/monitor'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Monitoring</a></li>
+                <li class="dropdown">
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
+			        <span class="caret"></span></a>
+			        <ul class="dropdown-menu">
+			          	<li class="<?php if(isset($menu9)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/buku_besar'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Buku Besar</a></li>
+			          	<li class="<?php if(isset($menu10)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_jurnal'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap Jurnal</a></li>
+						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>
+			        </ul>
+			      </li>	
+			<?php } else if($this->session->userdata('level')==7){ ?>
                 <li class="dropdown">
 			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
 			        <span class="caret"></span></a>

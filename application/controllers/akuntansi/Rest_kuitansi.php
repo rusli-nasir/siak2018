@@ -113,7 +113,7 @@ class Rest_kuitansi extends MY_Controller {
             $this->session->set_flashdata('warning','Gagal menyimpan !');
      	}
 
-		redirect('akuntansi/kuitansi/jadi');
+		redirect('akuntansi/kuitansi/posting');
      	// echo 'selesai';
 
 	}
