@@ -18,6 +18,12 @@ $(document).ready(function(){
     url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_kuitansi_jadi+'/kredit/kas',
     data:{},
     success:function(data){
+      if(data['hasil'][0]['akun']==""){
+        $('#group-kas').attr('style', 'display:none');
+        $('#group-akrual').attr('class', 'col-md-12');
+        no_kas = true;
+        $("#no-kas").prop('checked', true);
+      }
       $.each(data['hasil'], function(index, val){
         var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
