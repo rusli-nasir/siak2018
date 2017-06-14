@@ -113,4 +113,12 @@ class Pajak_model extends CI_Model {
     {
         return $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $jenis_pajak))->row_array();
     }
+
+    public function hapus_pajak($id_pajak)
+    {
+        $this->db->where('id_kuitansi_jadi',$id_pajak);
+        $this->db->delete('akuntansi_kuitansi_jadi');
+
+        $this->Posting_model->hapus_posting_full($id_pajak);
+    }
 }

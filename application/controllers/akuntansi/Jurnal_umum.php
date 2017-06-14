@@ -419,6 +419,8 @@ class Jurnal_umum extends MY_Controller {
 
 		if($this->form_validation->run())     
         {   
+            $delete_relasi_lama = $this->db->query("DELETE FROM akuntansi_relasi_kuitansi_akun WHERE id_kuitansi_jadi='".$id_kuitansi_jadi."'");
+            
             $entry = $this->input->post();
             unset($entry['simpan']);
             $entry['id_kuitansi'] = null;
