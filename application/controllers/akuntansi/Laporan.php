@@ -88,9 +88,6 @@ class Laporan extends MY_Controller {
             if($i==0){
                 $data[$i]['akun_6'] = 'all';
                 $data[$i]['nama'] = 'Semua Akun';
-                ++$i;
-                $data[$i]['akun_6'] = '911101';
-                $data[$i]['nama'] = 'SAL';
             }else{
                 $data[$i]['akun_6'] = $result->akun_6;
                 $data[$i]['nama'] = $result->nama;
@@ -166,9 +163,6 @@ class Laporan extends MY_Controller {
             if($i==0){
                 $data[$i]['akun_6'] = 'all';
                 $data[$i]['nama'] = 'Semua Akun';
-                ++$i;
-                $data[$i]['akun_6'] = '911101';
-                $data[$i]['nama'] = 'SAL';
             }else{
                 $data[$i]['akun_6'] = $result->akun_6;
                 $data[$i]['nama'] = $result->nama;

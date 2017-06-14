@@ -96,7 +96,7 @@
     <div class="form-group">
       <label class="col-md-2 control-label">Unit</label>  
       <div class="col-md-6">
-          <?php if($this->session->userdata('level')==1 or $this->session->userdata('level')==2){ ?>
+          <?php if($this->session->userdata('level')==1 or $this->session->userdata('level')==2 or $this->session->userdata('level')==5){ ?>
           <?php foreach($query_unit->result() as $unit){
             if($unit->kode_unit==$this->session->userdata('kode_unit')){
               $nama_unit = $unit->nama_unit;
