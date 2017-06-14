@@ -19,12 +19,6 @@ $(document).ready(function(){
     data:{},
     success:function(data){
       $.each(data['hasil'], function(index, val){
-        if(data['hasil'][index]['akun']==""){
-          $('#group-kas').attr('style', 'display:none');
-          $('#group-akrual').attr('class', 'col-md-12');
-          no_kas = true;
-          $("#no-kas").prop('checked', true);
-        }
         var template = $("#template_akun_kas").clone();
         template.removeAttr("id");
         template.removeAttr("style");
@@ -49,6 +43,12 @@ $(document).ready(function(){
         $(inputan).number(true,2);
           updateSelisih_kas();
       });
+    },
+    error: function (request, status, error) {
+        $('#group-kas').attr('style', 'display:none');
+        $('#group-akrual').attr('class', 'col-md-12');
+        no_kas = true;
+        $("#no-kas").prop('checked', true);
     }
   })
 
