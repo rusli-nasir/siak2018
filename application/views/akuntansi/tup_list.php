@@ -145,7 +145,7 @@ tbody td, thead th {
 							<?php if(isset($tab1)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php }else{ ?>
-							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/TUP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
