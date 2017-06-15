@@ -976,7 +976,7 @@ class Kuitansi extends MY_Controller {
     
     public function posting_spm(){
 		$this->data['menu3'] = true;
-		$this->data['tab3'] = true;
+		$this->data['tab8'] = true;
 		//search
 		if(isset($_POST['keyword_spm_jadi'])){
 			$keyword = $this->input->post('keyword_spm_jadi');

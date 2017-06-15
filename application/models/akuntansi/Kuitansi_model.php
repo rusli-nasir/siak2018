@@ -253,10 +253,10 @@ class Kuitansi_model extends CI_Model {
 
     function read_kuitansi_posting_spm($limit = null, $start = null, $keyword = null){
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND jenis<>'pajak' AND 
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND jenis<>'pajak' AND tipe<>'pajak' AND 
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND jenis<>'pajak' AND
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='NK' AND jenis<>'pajak' AND tipe<>'pajak' AND
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%')");
         }
         return $query;
