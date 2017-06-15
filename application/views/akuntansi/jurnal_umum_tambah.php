@@ -29,7 +29,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" type="text" placeholder="No.Bukti" class="form-control input-md" required="">
+  <input id="no_bukti" name="no_bukti" type="text" class="form-control input-md" required="">
     
   </div>
 </div>
@@ -37,7 +37,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. SPM</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_spm" type="text" placeholder="No. SPM" class="form-control input-md" required="">
+  <input id="no_bukti" name="no_spm" type="text" class="form-control input-md" required="">
     
   </div>
 </div>
@@ -46,7 +46,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label" for="tanggal">Tanggal</label>  
   <div class="col-md-4">
-  <input id="tanggal" name="tanggal" type="text" placeholder="Tanggal" class="form-control input-md" required="">
+  <input id="tanggal" name="tanggal" type="text" class="form-control input-md" required="">
     
   </div>
 </div>
@@ -71,7 +71,7 @@ $(document).ready(function(){
   <label class="col-md-2 control-label" for="unit_kerja">Unit Kerja</label>  
   <div class="col-md-4">
   <!-- <input id="unit_kerja" name="unit_kerja" type="text" placeholder="Unit Kerja" class="form-control input-md" required=""> -->
-        <?php if($this->session->userdata('level')==1 or $this->session->userdata('level')==2 or $this->session->userdata('level')==5){ ?>
+        <?php if($this->session->userdata('level')==1 or $this->session->userdata('level')==2 or $this->session->userdata('level')==6){ ?>
           <?php foreach($all_unit_kerja as $unit){
             if($unit['kode_unit']==$this->session->userdata('kode_unit')){
               $nama_unit = $unit['nama_unit'];
@@ -98,7 +98,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label" for="tanggal">Kode Kegiatan</label>  
   <div class="col-md-4">
-  <input id="kode_kegiatan" name="kode_kegiatan" type="text" placeholder="Kode Kegiatan" class="form-control input-md" required="">
+  <input id="kode_kegiatan" name="kode_kegiatan" type="text" class="form-control input-md" required="">
     
   </div>
 </div>
@@ -151,7 +151,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_debet_kas[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet_kas">
+          <input name="jumlah_akun_debet_kas[]" type="text" class="form-control input-md jumlah_akun_debet_kas">
           </div>
 
         </div>
@@ -174,7 +174,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_kredit_kas[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit_kas">
+          <input name="jumlah_akun_kredit_kas[]" type="text" class="form-control input-md jumlah_akun_kredit_kas">
           </div>
 
         </div>
@@ -206,7 +206,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_debet_akrual[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet_akrual" required="">
+          <input name="jumlah_akun_debet_akrual[]" type="text" class="form-control input-md jumlah_akun_debet_akrual" required="">
           </div>
 
         </div>
@@ -229,7 +229,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_kredit_akrual[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit_akrual" required="">
+          <input name="jumlah_akun_kredit_akrual[]" type="text" class="form-control input-md jumlah_akun_kredit_akrual" required="">
           </div>
 
         </div>
@@ -265,7 +265,7 @@ $(document).ready(function(){
               <?php } ?>
             </select>
           </td>
-          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" placeholder="450000" class="form-control number_pajak"></td>
+          <td><input type="text" name="jumlah[]" pattern="[0-9.,]{1,20}" maxlength="20" class="form-control number_pajak"></td>
         </tr>
       </tbody>
       <tfoot>
@@ -311,7 +311,7 @@ $(document).ready(function(){
   </div>
 
   <div class="col-md-6">
-  <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md">
+  <input type="text" class="form-control input-md">
   </div>
     
   <div class="col-md-1">
@@ -336,7 +336,7 @@ $(document).ready(function(){
   </div>
 
   <div class="col-md-6">
-  <input type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md" required="">
+  <input type="text" class="form-control input-md" required="">
   </div>
     
   <div class="col-md-1">
@@ -446,7 +446,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_kredit_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_kas');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Kredit');
         template.find('select').selectize();
             registerEvents();
             var inputan = template.find('.input-md');
@@ -462,7 +461,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_debet_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_kas');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Debet');
         template.find('select').selectize();
             registerEvents();
             var inputan = template.find('.input-md');
@@ -478,7 +476,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_kredit_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Kredit');
         template.find('select').selectize();
       registerEvents();
       var inputan = template.find('.input-md');
@@ -494,7 +491,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_debet_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Debet');
         template.find('select').selectize();
             registerEvents();
             var inputan = template.find('.input-md');

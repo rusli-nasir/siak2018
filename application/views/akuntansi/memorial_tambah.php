@@ -67,7 +67,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" value="<?= $no_bukti; ?>" type="text" placeholder="No.Bukti" class="form-control input-md" required="" readonly>
+  <input id="no_bukti" name="no_bukti" value="<?= $no_bukti; ?>" type="text" class="form-control input-md" required="" readonly>
     
   </div>
 </div>
@@ -76,7 +76,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label" for="tanggal">Tanggal</label>  
   <div class="col-md-4">
-  <input id="tanggal" name="tanggal" type="text" placeholder="Tanggal" class="form-control input-md" required="">
+  <input id="tanggal" name="tanggal" type="text" class="form-control input-md" required="">
     
   </div>
 </div>
@@ -220,7 +220,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_debet_kas[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet_kas">
+          <input name="jumlah_akun_debet_kas[]" type="text" class="form-control input-md jumlah_akun_debet_kas">
           </div>
 
         </div>
@@ -243,7 +243,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_kredit_kas[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit_kas">
+          <input name="jumlah_akun_kredit_kas[]" type="text" class="form-control input-md jumlah_akun_kredit_kas">
           </div>
 
         </div>
@@ -275,7 +275,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_debet_akrual[]" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md jumlah_akun_debet_akrual" required="">
+          <input name="jumlah_akun_debet_akrual[]" type="text" class="form-control input-md jumlah_akun_debet_akrual" required="">
           </div>
 
         </div>
@@ -298,7 +298,7 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_kredit_akrual[]" type="text"  placeholder="Jumlah Akun Kredit" class="form-control input-md jumlah_akun_kredit_akrual" required="">
+          <input name="jumlah_akun_kredit_akrual[]" type="text" class="form-control input-md jumlah_akun_kredit_akrual" required="">
           </div>
 
         </div>
@@ -380,7 +380,7 @@ $(document).ready(function(){
   </div>
 
   <div class="col-md-6">
-  <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md">
+  <input type="text" class="form-control input-md">
   </div>
     
   <div class="col-md-1">
@@ -405,7 +405,7 @@ $(document).ready(function(){
   </div>
 
   <div class="col-md-6">
-  <input type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md" required="">
+  <input type="text" class="form-control input-md" required="">
   </div>
     
   <div class="col-md-1">
@@ -514,7 +514,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_kredit_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_kas');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_kas[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Kredit');
         template.find('select').selectize();
             registerEvents();
 
@@ -531,7 +530,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_debet_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_kas');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_kas[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Debet');
         template.find('select').selectize();
             registerEvents();
 
@@ -548,7 +546,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_kredit_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_akrual[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Kredit');
         template.find('select').selectize();
       registerEvents();
         var inputan = template.find('.input-md');
@@ -564,7 +561,6 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_debet_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_akrual[]');
-      template.find('.input-md').attr('placeholder', 'Jumlah Akun Debet');
         template.find('select').selectize();
             registerEvents();
         var inputan = template.find('.input-md');

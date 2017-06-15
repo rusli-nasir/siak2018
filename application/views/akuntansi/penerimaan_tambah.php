@@ -30,7 +30,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="no_bukti">No. Bukti</label>  
   <div class="col-md-4">
-  <input id="no_bukti" name="no_bukti" type="text" value="<?php echo $no_bukti ?>" placeholder="No.Bukti" class="form-control input-md" required="" readonly="">
+  <input id="no_bukti" name="no_bukti" type="text" value="<?php echo $no_bukti ?>" class="form-control input-md" required="" readonly="">
     
   </div>
 </div>
@@ -39,7 +39,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="tanggal">Tanggal</label>  
   <div class="col-md-4">
-  <input id="tanggal" name="tanggal" type="text" placeholder="Tanggal" class="form-control input-md" required="">
+  <input id="tanggal" name="tanggal" type="text" class="form-control input-md" required="">
     
   </div>
 </div>
@@ -124,7 +124,7 @@
 
 
     <div class="col-md-3">
-    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text"  placeholder="Jumlah Akun Debet" class="form-control input-md" required="">
+    <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="text" class="form-control input-md" required="">
       
     </div>
 
@@ -167,7 +167,7 @@
       </select>
     </div>
     <div class="col-md-3">
-    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" style="background-color:#e6e6e6 !important" readonly>
+    <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="text" class="form-control input-md" style="background-color:#e6e6e6 !important" readonly>
       <div style="font-size:9pt;color:#1c1c1c">
         Masukan Jumlah pada kolom <b>Akun Debet</b>
       </div>
