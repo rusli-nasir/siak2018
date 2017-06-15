@@ -112,12 +112,12 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
             					<td>'.$in_akun['akun'].'</td>
             					<td>'.get_nama_akun_v($in_akun['akun']).'</td>';
             					if ($in_akun['tipe'] == 'debet'){
-				                    $html .= '<td align="right">'.number_format($in_akun['jumlah'],2).'</td>';
+				                    $html .= '<td align="right">'.eliminasi_negatif($in_akun['jumlah']).'</td>';
 				                    $html .= '<td align="right">0.00</td>';
 				                    $jumlah_debet += $in_akun['jumlah'];
 				                }elseif ($in_akun['tipe'] == 'kredit') {
 				                    $html .= '<td align="right">0.00</td>';
-				                    $html .= '<td align="right">'.number_format($in_akun['jumlah'],2).'</td>';
+				                    $html .= '<td align="right">'.eliminasi_negatif($in_akun['jumlah']).'</td>';
 				                    $jumlah_kredit += $in_akun['jumlah'];
 				                }
             			$html .= '</tr>';
@@ -133,8 +133,8 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 			$html .= '</tbody>';
 			$html .= '<tr>
     				<td align="right" colspan="7" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-    				<td align="right">'.number_format($jumlah_debet,2).'</td>
-    				<td align="right">'.number_format($jumlah_kredit,2).'</td>
+    				<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
+    				<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
     			</tr>';
 		$html .= '</table>';
 
@@ -254,4 +254,12 @@ function get_pejabat($unit, $jabatan){
 	$ci->db->where('unit', $unit);
 	$ci->db->where('jabatan', $jabatan);
 	return $ci->db->get('akuntansi_pejabat')->row_array();
+}
+
+function eliminasi_negatif($value)
+{
+    if ($value < 0) 
+        return "(". number_format(abs($value),2,',','.') .")";
+    else
+        return number_format($value,2,',','.');
 }

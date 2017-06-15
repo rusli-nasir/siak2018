@@ -298,9 +298,9 @@ function get_pejabat($unit, $jabatan){
 function eliminasi_negatif($value)
 {
     if ($value < 0) 
-        return "(". number_format(abs($value)) .")";
+        return "(". number_format(abs($value),2,',','.') .")";
     else
-        return number_format($value);
+        return number_format($value,2,',','.');
 }
 
 function format_nip($value)
