@@ -753,7 +753,7 @@ class Laporan extends MY_Controller {
         $daterange = $this->input->post('daterange');
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
-        $periode_akhir = strtodate($date_t[1]) or null;
+        $periode_akhir = strtodate($date_t[1]) or null;    
 
         $mode = null;
 
@@ -799,7 +799,7 @@ class Laporan extends MY_Controller {
 
         $data['periode_text'] = $teks_periode;
         $data['unit'] = $unit;
-        $data['periode_akhir'] = $periode_akhir;
+        $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
 
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
         $this->load->view('akuntansi/laporan/pdf_buku_besar',$data);
@@ -841,7 +841,7 @@ class Laporan extends MY_Controller {
         $data['teks_tahun_anggaran'] = $teks_tahun_anggaran;
 
         $data['unit'] = $unit;
-        $data['periode_akhir'] = $periode_akhir;
+        $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
 
         // print_r($this->input->post());die();
         // $akun = array(1,2,3,4,5,6,7,8,9);
@@ -902,7 +902,7 @@ class Laporan extends MY_Controller {
         $data['teks_periode'] = $teks_periode;
         $data['teks_tahun_anggaran'] = $teks_tahun_anggaran;
         $data['unit'] = $unit;
-        $data['periode_akhir'] = $periode_akhir;
+        $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
 
 
         $this->load->view('akuntansi/laporan/pdf_neraca_saldo',$data);

@@ -54,12 +54,13 @@ $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
 // set font
 $pdf->SetFont('dejavusans', '', 10);
+$pdf->SetMargins(10, 10, 0, true); // set the margins 
 
 // add a page
 $pdf->AddPage('L');
 
 $html_head = 
-	'<body style="font-family:arial;margin:20px 20px 20px 20px;">
+	'<body style="font-family:arial;">
 		<div align="center" style="font-weight:bold">
 			UNIVERSITAS DIPONEGORO<br/>
 			NERACA SALDO<br/>
@@ -162,6 +163,7 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 				
 				$i++;
 			}
+
     		$html .= '</tbody>
 	    			<tfoot>
 					 	<tr>
@@ -191,18 +193,26 @@ $pdf->SetFillColor(255, 255, 255);
 $pdf->SetTextColor(0, 0, 0);
 
 $cell_height = 5;
-$pejabat = get_pejabat($unit, 'kpa');
+if ($unit == null) {
+    $pejabat = get_pejabat('all','rektor');
+    $teks_kpa = "Rektor";
+    $teks_unit = "UNIVERSITAS DIPONEGORO";
+} else {
+    $pejabat = get_pejabat($unit,'kpa');
+    $teks_kpa = "Pengguna Anggaran";
+    $teks_unit = get_nama_unit($unit);
+}
 $pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,'Semarang, '.date("d-m-Y", strtotime($periode_akhir)),0,0,'L');
+$pdf->cell(60,$cell_height,'Semarang, '.$periode_akhir,0,0,'L');
 $pdf->ln($cell_height); 
 $pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,'Pengguna Anggaran',0,0,'L');
+$pdf->cell(60,$cell_height,$teks_kpa,0,0,'L');
 $pdf->ln($cell_height); 
 $pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,get_nama_unit($unit),0,0,'L');
+$pdf->cell(60,$cell_height,$teks_unit,0,0,'L');
 $pdf->ln($cell_height+20); 
-$pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->MultiCell(60,$cell_height,$pejabat['nama'],0,0,'L');
+$pdf->cell(210,$cell_height,'',0,0,'L');
+$pdf->MultiCell(60,$cell_height,$pejabat['nama'],0,'L');
 $pdf->ln(0); 
 $pdf->cell(210,$cell_height,'',0,0,'C');
 $pdf->cell(60,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
