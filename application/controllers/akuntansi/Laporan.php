@@ -393,6 +393,7 @@ class Laporan extends MY_Controller {
                 $objWorksheet->getStyle('A'.$row.':I'.$row)->applyFromArray($RowStyle);
                 $objWorksheet->setCellValueByColumnAndRow(1,$row,$this->Jurnal_rsa_model->reKonversiTanggal($transaksi['tanggal']));
                 $objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_spm']);
+                $objWorksheet->getStyleByColumnAndRow(3,$row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
                 $objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['no_bukti']);
                 $objWorksheet->getStyleByColumnAndRow(4,$row)->getNumberFormat()->setFormatCode('0000');
                 $objWorksheet->setCellValueByColumnAndRow(4,$row,"".substr($transaksi['kode_kegiatan'],6,4));
@@ -624,6 +625,7 @@ class Laporan extends MY_Controller {
     			$objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
     			$objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
                 $objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['tanggal']);
+                $objWorksheet->getStyleByColumnAndRow(2,$row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
     			$objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_bukti']);
     			$objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['uraian']);
     			$objWorksheet->setCellValueByColumnAndRow(4,$row,$transaksi['kode_user']);
