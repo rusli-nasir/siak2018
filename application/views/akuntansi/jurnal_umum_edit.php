@@ -390,7 +390,7 @@ $(document).ready(function(){
   </div>
   <div class="col-md-12" style="text-align:center;">
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
-    <a href="<?php echo site_url('akuntansi/penerimaan/index'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
+    <a href="<?php echo site_url('akuntansi/jurnal_umum/index'); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
 

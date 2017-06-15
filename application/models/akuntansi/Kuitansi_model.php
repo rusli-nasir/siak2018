@@ -352,7 +352,7 @@ class Kuitansi_model extends CI_Model {
     	$hasil['str_nomor_trx_spm'] = $hasil['nomor'];
     	$hasil['tgl_kuitansi'] = $hasil['tanggal'];
     	$hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
-    	$hasil['uraian'] = '';
+    	$hasil['uraian'] = $this->db->get_where('kepeg_tr_sppls',array('id_sppls' => $hasil['id_tr_sppls']))->row_array()['untuk_bayar'];
     	$hasil['akun_debet'] = substr($hasil['detail_belanja'],18,6);
         $hasil['kode_akun'] = $hasil['akun_debet'];
     	$hasil['akun_debet_kas'] = $hasil['akun_debet'] . " - ". $this->Akun_model->get_nama_akun($hasil['akun_debet']);
@@ -372,6 +372,7 @@ class Kuitansi_model extends CI_Model {
         $hasil['tanggal_bukti'] = $hasil['tanggal'];
     	$hasil['no_spm'] = $hasil['str_nomor_trx_spm'];
     	$hasil['kode_kegiatan'] = $hasil['kode_usulan_belanja'];
+        $hasil['uraian'] = $this->db->get_where('kepeg_tr_sppls',array('id_sppls' => $hasil['id_tr_sppls']))->row_array()['untuk_bayar'];
     	$hasil['unit_kerja'] = '';
 
     	$field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');

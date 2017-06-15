@@ -129,7 +129,7 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['id_kuitansi'] = $id_kuitansi;
                 $isian['akun_debet_akrual'] = substr_replace($isian['kode_akun'], 7, 0,1);
                 $isian['jenis_pembatasan_dana'] = '';
-                $isian['jenis_isian'] = 'nk';
+                // $isian['jenis_isian'] = 'nk';
                 $isian['tanggal_bukti'] = $isian['tanggal'];
 
                 if ($isian['pajak'] == 0) {

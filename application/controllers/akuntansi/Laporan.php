@@ -1154,7 +1154,7 @@ class Laporan extends MY_Controller {
         if ($value < 0) 
             return "(". number_format(abs($value),2,',','.') .")";
         else
-            return $value;
+            return number_format($value,2,',','.');
     }
 
     public function format_nip($value)
