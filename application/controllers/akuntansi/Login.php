@@ -26,7 +26,7 @@ class Login extends MY_Controller {
 			if ($query->num_rows()!=0){
 				$row = $query->row();
 
-				if($row->level==1){
+				if($row->level==1 or $row->level==5){
 					$data_unit = $this->get_unit($row->kode_unit);
 					$set_username = $data_unit['nama'];
 					$alias = $data_unit['alias'];
