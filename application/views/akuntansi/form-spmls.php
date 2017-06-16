@@ -84,6 +84,20 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+    $('#spm_tab a').click(function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+
+      // store the currently selected tab in the hash value
+      $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
+        var id = $(e.target).attr("href").substr(1);
+        window.location.hash = id;
+      });
+
+      // on load of the page: switch to the currently selected tab
+      var hash = window.location.hash;
+      $('#spm_tab a[href="' + hash + '"]').tab('show');
     $('#back').on('click',function(e){
         e.preventDefault();
         window.history.back();
@@ -132,43 +146,21 @@ function b64toBlob(b64Data, contentType, sliceSize) {
     .edit{border-bottom: 1px solid #f00;}
 </style>
 
-<div id="page-wrapper" >
-    <div id="page-inner">
+<div >
+    <div class="row">
+<div id="temp" style="display:none"></div> 
 
-        <div>
-            <h4 class="page-header" style="margin-top:0;">SPM LS-PGW Nomor : <span><?php echo $detail_up->nomor; ?></span></h4>
-<!--            <div class="alert<?php echo $_alert; ?> small text-center" style="padding:3px;"><strong>Status saat ini</strong> : <?php echo $detail_up->status; ?></div>-->
-        </div>
-<!--
-        <div class="progress-round">
-            <div class="circle done">
-                <span class="label">1</span>
-                <span class="title">Bendahara</span>
-            </div>
-            <span class="bar done"></span>
-            <div class="circle done">
-                <span class="label">2</span>
-                <span class="title">PPK</span>
-            </div>
-            <span class="bar done"></span>
-            <div class="circle<?php echo $ac[1]; ?>">
-                <span class="label">3</span>
-                <span class="title">KPA</span>
-            </div>
-            <span class="bar<?php echo $ac[1]; ?>"></span>
-            <div class="circle<?php echo $ac[2]; ?>">
-                <span class="label">4</span>
-                <span class="title">Verifikator</span>
-            </div>
-            <span class="bar<?php echo $ac[2]; ?>"></span>
-            <div class="circle<?php echo $ac[3]; ?>">
-                <span class="label">5</span>
-                <span class="title">KBUU</span>
-            </div>
-        </div>
--->
+<div> 
+<!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="spm_tab">
+<!--        <li role="presentation"><a href="#spp" aria-controls="home" role="tab" data-toggle="tab">SPP</a></li>-->
+        <li role="presentation" class="active"><a href="#spm" aria-controls="profile" role="tab" data-toggle="tab">SPM</a></li>
+  </ul>
+        
         <div style="background-color: #EEE; padding: 10px;">
             <?php //print_r($detail_up); ?>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="spm">
             <div id="table_spp_up">
                 <style type="text/css">
                     .kotak_cetak{
@@ -283,16 +275,8 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                             <li>Nama Penerima : <?php echo $detail_up->penerima; ?></li>
                             <li>Alamat : <?php echo $detail_up->alamat; ?></li>
                             <li>Nama Bank : <?php echo $detail_up->nama_bank; ?></li>
-                            <li>No. Rekening Bank : <?php echo $detail_up->rekening; ?></span></li>
+                            <li>No. Rekening Bank : <?php echo $detail_up->rekening; ?></li>
                             <li>No. NPWP : <?php echo $detail_up->npwp; ?></li>
-                            <!-- <li>Sumber dana dari Selain PNBP : <?php echo number_format($detail_up->total_sumberdana, 0, ",", "."); ?>,-</li> -->
-                            <?php /*
-                            <li>Nama Penerima : <span contenteditable="true" rel="penerima" class="edit"><?php echo $detail_up->penerima; ?></span></li>
-                            <li>Alamat : <span contenteditable="true" rel="alamat" class="edit"><?php echo $detail_up->alamat; ?></span></li>
-                            <li>No. Rekening Bank : <span contenteditable="true" rel="rekening" class="edit"><?php echo $detail_up->rekening; ?></span></li>
-                            <li>No. NPWP : <span contenteditable="true" rel="npwp" class="edit"><?php echo $detail_up->npwp; ?></span></li>
-                            <li>Sumber dana dari Selain PNBP : <?php echo number_format($detail_up->total_sumberdana, 0, ",", "."); ?>,-</li>
-                            */ ?>
                         </ol>
                         <p>
                             Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :
@@ -464,8 +448,8 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                     </div>
                     <div style="border-top:1px solid #000;padding-top:0;padding-bottom:0;">
                     <?php
-                        $_ver = $this->db->query("SELECT b.nm_lengkap, b.nomor_induk FROM rsa_verifikator_unit a LEFT JOIN rsa_user b ON a.id_user_verifikator = b.id WHERE a.kode_unit_subunit LIKE '".substr($_SESSION['rsa_kode_unit_subunit'], 0, 2)."'")->row();
-                        // echo "SELECT b.nm_lengkap, b.nomor_induk FROM rsa_verifikator_unit a LEFT JOIN rsa_user b ON a.id_user_verifikator = b.id WHERE kode_unit_subunit LIKE '".substr($_SESSION['rsa_kode_unit_subunit'], 0, 2)."'";
+                        $_ver = $this->db->query("SELECT b.nm_lengkap, b.nomor_induk FROM rsa_verifikator_unit a LEFT JOIN rsa_user b ON a.id_user_verifikator = b.id WHERE a.kode_unit_subunit LIKE '".substr($this->session->userdata('kode_unit'), 0, 2)."'")->row();
+                        // echo "SELECT b.nm_lengkap, b.nomor_induk FROM rsa_verifikator_unit a LEFT JOIN rsa_user b ON a.id_user_verifikator = b.id WHERE kode_unit_subunit LIKE '".substr($this->session->userdata('kode_unit'), 0, 2)."'";
                 	//print_r($bver);
 			//echo $_SESSION['rsa_level'];
                         // strftime("%d %B %Y");    
@@ -522,31 +506,12 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                           </td>
                         </tr>
                       </table>
-                      <!-- <div style="float:left;width:33%;background:#none;">
-
-                      </div>
-                      <div style="float:left;width:33%;border-left:1pt solid #000;background:#none;">
-
-                      </div>
-                      <div style="float:right;width:150pt;border-left:1pt solid #000;background:#none;">
-                        <br/><br/>
-                      </div> -->
                     </div>
                 </div>
             </div>
+            </div>
+    </div>
         </div>
-
-
-        <form action="<?php echo site_url("tor/spmLScetak"); ?>/id/<?php echo $detail_up->id_spmls; ?>" id="form_spp" method="post" style="display: none" target="_blank">
-            <input type="text" name="dtable" id="dtable" value="" />
-        </form>
-<!--
-        <div class="alert alert-warning" style="text-align:center">
-            <a href="#" class="btn btn-default btn-sm btn-flat" id="down"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span></span> Download</a>
-            <a href="javascript:void(0);" class="btn btn-default btn-sm btn-flat" id="list"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></span> Daftar SPM LS-Peg</a>
-             <a href="javascript:void(0);" class="btn btn-default btn-sm btn-flat" id="back"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></span> Kembali ke Daftar</a> 
-        </div>
--->
     </div>
 </div>
 
