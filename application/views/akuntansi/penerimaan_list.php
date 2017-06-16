@@ -86,7 +86,7 @@
 							<?php }else{ ?>
 								<a href="<?php echo site_url('akuntansi/penerimaan/detail_penerimaan/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Lihat</button></a>
 							<?php } ?>
-						<?php }else if($this->session->userdata('level')==3){ ?>
+						<?php }else if($this->session->userdata('level')==3 or $this->session->userdata('level')==8){ ?>
 							<a href="<?php echo site_url('akuntansi/penerimaan/edit_penerimaan/'.$result->id_kuitansi_jadi); ?>"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-cog"></span> Edit</button></a>
 						<?php } ?>
 					</td>

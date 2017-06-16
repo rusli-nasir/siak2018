@@ -71,6 +71,8 @@ class Login extends MY_Controller {
 				redirect(site_url('akuntansi/kuitansi/monitor'));
 			} else if($this->session->userdata('level')==7){
 				redirect(site_url('akuntansi/laporan/buku_besar'));
+			} else if($this->session->userdata('level')==8){
+				redirect(site_url('akuntansi/penerimaan/index'));
 			} else if($this->session->userdata('level')==5){
 				redirect(site_url('akuntansi/jurnal_umum'));
 			} else if($this->session->userdata('level')==9){
