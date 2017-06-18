@@ -63,19 +63,19 @@ class Kuitansi_model extends CI_Model {
 
     function read_gup($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND trx_spm_gup_data.kode_unit_subunit="'.$kode_unit.'"';
+            $unit = 'AND substr(trx_gup.kode_unit_subunit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
 
-        if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
-            (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
-        }else{
-            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
-            (str_nomor_trx LIKE '%$keyword%') $unit");
-        }
-        return $query;
+		if($limit!=null OR $start!=null){
+			$query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND
+			(str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
+		}else{
+			$query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND
+			(str_nomor_trx LIKE '%$keyword%') $unit");
+		}
+		return $query;
     }
     
     function read_pup($limit = null, $start = null, $keyword = null, $kode_unit = null){
@@ -513,14 +513,15 @@ class Kuitansi_model extends CI_Model {
     }
     
     public function total_gup($posisi, $flag){
+        
         if($this->session->userdata('kode_unit')!=null){
-            $unit = 'AND trx_spm_gup_data.kode_unit_subunit="'.$this->session->userdata('kode_unit').'"';
+            $unit = 'AND substr(trx_gup.kode_unit_subunit,1,2)="'.$this->session->userdata('kode_unit').'"';
         }else{
             $unit = '';
         }
 
         
-            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE id_trx_spm_gup_data = id_trx_nomor_gup AND posisi='$posisi' AND flag_proses_akuntansi='$flag' AND no_spm = str_nomor_trx $unit");
+            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='$posisi' AND flag_proses_akuntansi='$flag' AND no_spm = str_nomor_trx $unit AND kredit=0");
         return $query;
     }
 }
