@@ -135,7 +135,7 @@ tbody td, thead th {
 					<th>JUMLAH</th>
 				</tr>
 			</thead>
-			<tbody style="font-size:8pt;">
+			<tbody style="font-size:12pt;">
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
 					<td style="width:4% !important"><?php echo $no; ?></td>
