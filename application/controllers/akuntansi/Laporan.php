@@ -266,7 +266,12 @@ class Laporan extends MY_Controller {
         //public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
         $data = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
 
-        // print_r($data);die();
+
+        // print_r($data == null);die();
+        if ($data == null){
+            $this->load->view('akuntansi/no_data',true);
+            return 0;
+        }
 
         // print_r($data);die();
 
@@ -392,9 +397,10 @@ class Laporan extends MY_Controller {
 
                 $objWorksheet->getStyle('A'.$row.':I'.$row)->applyFromArray($RowStyle);
                 $objWorksheet->setCellValueByColumnAndRow(1,$row,$this->Jurnal_rsa_model->reKonversiTanggal($transaksi['tanggal']));
-                $objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_spm']);
-                $objWorksheet->getStyleByColumnAndRow(3,$row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-                $objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['no_bukti']);
+                // $objWorksheet->getStyleByColumnAndRow(2,$row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                // $objWorksheet->getStyleByColumnAndRow(3,$row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                $objWorksheet->setCellValueExplicitByColumnAndRow(2,$row,$transaksi['no_spm'],PHPExcel_Cell_DataType::TYPE_STRING);
+                $objWorksheet->setCellValueExplicitByColumnAndRow(3,$row,$transaksi['no_bukti'],PHPExcel_Cell_DataType::TYPE_STRING);
                 $objWorksheet->getStyleByColumnAndRow(4,$row)->getNumberFormat()->setFormatCode('0000');
                 $objWorksheet->setCellValueByColumnAndRow(4,$row,"".substr($transaksi['kode_kegiatan'],6,4));
                 // echo substr($transaksi['kode_kegiatan'],6,4);die();
@@ -539,6 +545,11 @@ class Laporan extends MY_Controller {
 
     	$data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
 
+        if ($data == null){
+            $this->load->view('akuntansi/no_data',true);
+            return 0;
+        }
+
 
     	$n_akun = count($data);
 
@@ -594,10 +605,10 @@ class Laporan extends MY_Controller {
             $tahun_row = $row-7;
             $unit_row = $row-8;
 
-	    	$objWorksheet->setCellValueByColumnAndRow(2,$nama_row,$this->Akun_model->get_nama_akun((string)$key));
-            $objWorksheet->setCellValueByColumnAndRow(2,$kode_row,$key);
-            $objWorksheet->setCellValueByColumnAndRow(2,$tahun_row,$teks_tahun_anggaran);
-	    	$objWorksheet->setCellValueByColumnAndRow(2,$unit_row,$teks_unit);
+	    	$objWorksheet->setCellValueByColumnAndRow(2,$nama_row,":".$this->Akun_model->get_nama_akun((string)$key));
+            $objWorksheet->setCellValueByColumnAndRow(2,$kode_row,":".$key);
+            $objWorksheet->setCellValueByColumnAndRow(2,$tahun_row,":".$teks_tahun_anggaran);
+	    	$objWorksheet->setCellValueByColumnAndRow(2,$unit_row,":".$teks_unit);
 
 	    	$saldo = $this->Akun_model->get_saldo_awal($key);
             // print_r($saldo);die();
@@ -625,8 +636,8 @@ class Laporan extends MY_Controller {
     			$objPHPExcel->getActiveSheet()->insertNewRowBefore($row+1,1); 
     			$objWorksheet->setCellValueByColumnAndRow(0,$row,$iter);
                 $objWorksheet->setCellValueByColumnAndRow(1,$row,$transaksi['tanggal']);
-                $objWorksheet->getStyleByColumnAndRow(2,$row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-    			$objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_bukti']);
+                $objWorksheet->setCellValueExplicitByColumnAndRow(2,$row,$transaksi['no_bukti'],PHPExcel_Cell_DataType::TYPE_STRING);
+    			// $objWorksheet->setCellValueByColumnAndRow(2,$row,$transaksi['no_bukti']);
     			$objWorksheet->setCellValueByColumnAndRow(3,$row,$transaksi['uraian']);
     			$objWorksheet->setCellValueByColumnAndRow(4,$row,$transaksi['kode_user']);
     			if ($transaksi['tipe'] == 'debet'){
@@ -947,6 +958,11 @@ class Laporan extends MY_Controller {
     	// $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
 
+        if ($data == null){
+            $this->load->view('akuntansi/no_data',true);
+            return 0;
+        }
+
         $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";
 
@@ -975,8 +991,8 @@ class Laporan extends MY_Controller {
         $objWorksheet->setCellValueByColumnAndRow(0,1,$teks_unit);
         $objWorksheet->setCellValueByColumnAndRow(0,2,$teks_sumber_dana);
         $objWorksheet->setCellValueByColumnAndRow(0,3,$teks_periode);
-        $objWorksheet->setCellValueByColumnAndRow(2,6,$teks_tahun_anggaran);
-        $objWorksheet->setCellValueByColumnAndRow(2,5,$teks_unit);
+        $objWorksheet->setCellValueByColumnAndRow(2,6,":".$teks_tahun_anggaran);
+        $objWorksheet->setCellValueByColumnAndRow(2,5,":".$teks_unit);
 
         $jumlah_debet = 0;
 	    $jumlah_kredit = 0;
