@@ -86,7 +86,11 @@ class Jurnal_rsa extends MY_Controller {
                 unset($pajak['id_akun_pajak']);
                 unset($pajak['nama_akun']);
 
-                $array_pajak = array($pajak);
+                if ($pajak['jumlah'] != 0) {
+                    $array_pajak = array($pajak);
+                } else {
+                    $array_pajak = null;
+                }
 
                 // print_r($array_pajak);die();
 
@@ -100,6 +104,8 @@ class Jurnal_rsa extends MY_Controller {
             	$this->session->set_flashdata('warning','Gagal menyimpan !');
 
             echo $jenis;
+
+            $direct_url = 'akuntansi/kuitansi/index';
             if($jenis=='NK'){
                 $direct_url = 'akuntansi/kuitansi/index_spm';
             }else if($jenis=='UP'){
@@ -110,6 +116,8 @@ class Jurnal_rsa extends MY_Controller {
                 $direct_url = 'akuntansi/kuitansi/index';
             }else if($jenis=='GUP'){
                 $direct_url = 'akuntansi/kuitansi/index_gup';
+            }else if($jenis=='TUP'){
+                $direct_url = 'akuntansi/kuitansi/index_tup';
             }
             redirect($direct_url);
 
