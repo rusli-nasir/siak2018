@@ -204,20 +204,20 @@ if ($unit == null) {
     $teks_kpa = "Pengguna Anggaran";
     $teks_unit = get_nama_unit($unit);
 }
-$pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,'Semarang, '.$periode_akhir,0,0,'L');
+$pdf->cell(180,$cell_height,'',0,0,'C');
+$pdf->cell(90,$cell_height,'Semarang, '.$periode_akhir,0,0,'L');
 $pdf->ln($cell_height); 
-$pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,$teks_kpa,0,0,'L');
+$pdf->cell(180,$cell_height,'',0,0,'C');
+$pdf->cell(90,$cell_height,$teks_kpa,0,0,'L');
 $pdf->ln($cell_height); 
-$pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,$teks_unit,0,0,'L');
+$pdf->cell(180,$cell_height,'',0,0,'C');
+$pdf->cell(90,$cell_height,$teks_unit,0,0,'L');
 $pdf->ln($cell_height+20); 
-$pdf->cell(210,$cell_height,'',0,0,'L');
-$pdf->MultiCell(60,$cell_height,$pejabat['nama'],0,'L');
+$pdf->cell(180,$cell_height,'',0,0,'L');
+$pdf->MultiCell(90,$cell_height,$pejabat['nama'],0,'L');
 $pdf->ln(0); 
-$pdf->cell(210,$cell_height,'',0,0,'C');
-$pdf->cell(60,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
+$pdf->cell(180,$cell_height,'',0,0,'C');
+$pdf->cell(90,$cell_height,'NIP. '.$pejabat['nip'],0,0,'L');
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // reset pointer to the last page
@@ -268,7 +268,7 @@ function get_nama_akun_v($kode_akun){
 			}
 			return $hasil;
 		} else if (substr($kode_akun,0,1) == 9){
-			return 'SAL';
+			return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 		} else if (substr($kode_akun,0,1) == 1){
 			$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
 			if ($hasil == null){

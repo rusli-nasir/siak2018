@@ -135,12 +135,17 @@ tbody td, thead th {
 					<th>JUMLAH</th>
 				</tr>
 			</thead>
-			<tbody style="font-size:8pt;">
+			<tbody style="font-size:12pt;">
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							
+                        <?php if(isset($tab1)){ ?>
+                        <a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <?php }else{ ?>
+                        <a href="<?php echo site_url('akuntansi/rsa_gup/tup/'.$this->session->userdata('kode_unit').'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>

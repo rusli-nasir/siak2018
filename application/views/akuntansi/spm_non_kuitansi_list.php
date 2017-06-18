@@ -87,7 +87,7 @@
 				<tr>
 					<td><?php echo $no; ?></td>
 					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/spmls/id/'.$result->id_spmls);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/lspg/id/'.$result->id_spmls);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_spmls.'/NK'); ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 						<?php }else if($this->session->userdata('level')==2){ ?>

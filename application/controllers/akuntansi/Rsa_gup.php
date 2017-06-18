@@ -382,17 +382,59 @@ class rsa_gup extends MY_Controller{
 //        if(intval($_SESSION['rsa_level'])==3){
 //          $subdata['bver'] = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
 //        }
-        $this->data['user_menu']  = $this->load->view('user_menu','',TRUE);
-        $this->data['main_menu']  = $this->load->view('main_menu','',TRUE);
-        $this->data['content'] = $this->load->view("akuntansi/form-spmls",$subdata,TRUE);
+        return $this->load->view("akuntansi/form-spmls",$subdata,TRUE);
+    }
+    
+    function sppls($garbage, $id){
+        $this->load->model("user_model");
+        $this->load->model("cantik_model");
+        $d['id'] = $id;
+        $sql = "SELECT * FROM kepeg_tr_sppls WHERE nomor ='".$d['id']."'";
+        $sub = $this->db->query($sql)->result();
+        $akun = explode(",",$sub[0]->detail_belanja);
+        $sql = "SELECT * FROM rsa_detail_belanja_ WHERE id_rsa_detail!=0 AND";
+        $i=0;
+        foreach ($akun as $k => $v) {
+            $vSQL2[$i]="kode_usulan_belanja LIKE '".substr($v, 0, -3)."' AND kode_akun_tambah LIKE '".substr($v, -3)."'";
+            $i++;
+        }
+        $vSQL2 = implode(" OR ", $vSQL2);
+        $sql = $sql."(".$vSQL2.") ORDER BY kode_akun_tambah ASC";
+        $akun = $this->db->query($sql)->result();
+        $subdata['cur_tahun'] = $sub[0]->tahun;
+        $subdata['cur_bulan'] = $this->wordMonthShort($this->getMonth($sub['0']->tanggal));
+        $subdata['tgl_spp'] = $sub[0]->tanggal;
+        $subdata['unit_kerja'] = $this->session->userdata('username');
+        $subdata['unit_id'] = $this->session->userdata('kode_unit');
+        $subdata['alias'] = $this->session->userdata('alias');
+        $subdata['detail_up'] = $sub[0];
+        $subdata['akun_detail'] = $akun;
+        $jm = strlen($sub[0]->id_sppls);
+        $subdata['id_sppls'] = "";
+        for($i=0;$i<(5-$jm);$i++){
+            $subdata['id_sppls'] .= "0";
+        }
+//                $subdata['detail_pic'] = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
+        $subdata['id_sppls'] .= $sub[0]->id_sppls;
+        return $this->load->view("akuntansi/form-sppls",$subdata,TRUE);
+    }
+    
+    function lspg($garbage, $id){
+        $this->load->helper('lspg');
+        
+        $sql = "SELECT nomor FROM kepeg_tr_spmls WHERE id_spmls =".$id;
+        $nomor_sppls = str_replace('SPM', 'SPP', $this->db->query($sql)->row()->nomor);
+        
+        
+        $subdata['spm'] = $this->spmls($garbage, $id);
+        $subdata['spp'] = $this->sppls($garbage, $nomor_sppls);
+        
+        $this->data['content'] = $this->load->view("akuntansi/bukti_lspg",$subdata,TRUE);
         $this->load->view('akuntansi/content_template',$this->data);
     }
     
     function up($kd_unit,$tahun){
-        $this->load->model('rsa_up_model');
-        //set data for main template
-        $data['user_menu']	= $this->load->view('user_menu','',TRUE);
-        $data['main_menu']	= $this->load->view('main_menu','',TRUE);		
+        $this->load->model('rsa_up_model');		
                                 
         $this->load->model('unit_model');
         $subdata['cur_tahun'] = $tahun;
@@ -504,7 +546,135 @@ class rsa_gup extends MY_Controller{
         $subdata['ket'] = $this->rsa_up_model->lihat_ket($kd_unit,$tahun);
         $this->load->model('akun_kas6_model');
         $subdata['kas_undip'] = $this->akun_kas6_model->get_akun_kas6_saldo();
-        $data['content'] = $this->load->view("akuntansi/bukti_up",$subdata,TRUE);
+        $this->data['content'] = $this->load->view("akuntansi/bukti_up",$subdata,TRUE);
+        $this->load->view('akuntansi/content_template',$this->data);
+    }
+    
+    function tup($kd_unit,$tahun){
+        $this->load->model('unit_model');
+        $this->load->model('Rsa_tambah_tup_model', 'rsa_tambah_tup_model');
+        $subdata['cur_tahun'] = $tahun;
+        if(strlen($kd_unit)==2){
+            $subdata['unit_kerja'] = $this->unit_model->get_nama($kd_unit);
+            $subdata['unit_id'] = $kd_unit ;
+            $subdata['kd_unit'] = $kd_unit ;
+            $subdata['alias'] = $this->unit_model->get_alias($kd_unit);
+        }
+        elseif(strlen($kd_unit)==4){
+            $subdata['unit_kerja'] = $this->unit_model->get_nama($kd_unit) . ' - ' . $this->unit_model->get_real_nama($kd_unit);
+            $subdata['unit_id'] = $kd_unit;
+            $subdata['kd_unit'] = $kd_unit ;
+            $subdata['alias'] = $this->unit_model->get_alias($kd_unit);
+        }
+
+
+        $dokumen_tup = $this->rsa_tambah_tup_model->check_dokumen_tambah_tup($kd_unit,$tahun);
+
+        $subdata['doc_tup'] = $dokumen_tup;
+
+        $nomor_trx_spp = $this->rsa_tambah_tup_model->get_nomor_spp($kd_unit,$tahun); 
+
+
+        $data_spp = (object)array(
+            'jumlah_bayar' => '',
+            'terbilang' => '',
+            'untuk_bayar' => '',
+            'penerima' => '',
+            'alamat' => '',
+            'nmbank' => '',
+            'rekening' => '',
+            'npwp' => '',
+            'nmbendahara' => '',
+            'nipbendahara' => '',
+            'tgl_spp' => ''
+        );
+        // SPP
+
+        if(($dokumen_tup == 'SPP-FINAL') || ($dokumen_tup == 'SPP-DRAFT') || ($dokumen_tup == 'SPM-DRAFT-PPK') || ($dokumen_tup == 'SPM-DRAFT-KPA') || ($dokumen_tup == 'SPM-FINAL-VERIFIKATOR')  || ($dokumen_tup == 'SPM-FINAL-KBUU')){
+            $data_spp = $this->rsa_tambah_tup_model->get_data_spp($nomor_trx_spp);
+            $subdata['detail_tup']   = array(
+                'nom' => $data_spp->jumlah_bayar,
+                'terbilang' => $data_spp->terbilang, 
+            );
+            $subdata['detail_pic']  = (object) array(
+                'untuk_bayar' => $data_spp->untuk_bayar,
+                'penerima' => $data_spp->penerima,
+                'alamat_penerima' => $data_spp->alamat,
+                'nama_bank_penerima' => $data_spp->nmbank,
+                'no_rek_penerima' => $data_spp->rekening,
+                'npwp_penerima' => $data_spp->npwp,
+                'nmbendahara' => $data_spp->nmbendahara,
+                'nipbendahara' => $data_spp->nipbendahara,
+            );
+            $subdata['tgl_spp'] = $data_spp->tgl_spp;
+            $subdata['cur_tahun_spp'] = $data_spp->tahun;
+        }else{
+            $subdata['cur_tahun_spp'] = '';
+        }
+        $nomor_trx_spm = '';
+
+        if(($dokumen_tup == 'SPM-DRAFT-PPK') || ($dokumen_tup == 'SPM-DRAFT-KPA') || ($dokumen_tup == 'SPM-FINAL-VERIFIKATOR')  || ($dokumen_tup == 'SPM-FINAL-KBUU')){
+            $nomor_trx_spm = $this->rsa_tambah_tup_model->get_nomor_spm($kd_unit,$tahun);
+
+            $data_spm = $this->rsa_tambah_tup_model->get_data_spm($nomor_trx_spm);
+            $subdata['detail_tup'] 	= array(
+                'nom' => $data_spm->jumlah_bayar,
+                'terbilang' => $data_spm->terbilang, 
+            );
+
+            $subdata['detail_ppk']  = (object)array(
+                'nm_lengkap' => $data_spm->nmppk,
+                'nomor_induk' => $data_spm->nipppk
+            );
+            $subdata['detail_kpa']  = (object)array(
+                'nm_lengkap' => $data_spm->nmkpa,
+                'nomor_induk' => $data_spm->nipkpa
+            );
+            $subdata['detail_verifikator']  = (object)array(
+                'nm_lengkap' => $data_spm->nmverifikator,
+                'nomor_induk' => $data_spm->nipverifikator
+            );
+            $subdata['detail_kuasa_buu']  = (object)array(
+                'nm_lengkap' => $data_spm->nmkbuu,
+                'nomor_induk' => $data_spm->nipkbuu
+            );
+            $subdata['detail_buu']  = (object)array(
+                'nm_lengkap' => $data_spm->nmbuu,
+                'nomor_induk' => $data_spm->nipbuu
+            );
+
+            $subdata['detail_pic_spm']  = (object) array(
+                'untuk_bayar' => $data_spm->untuk_bayar,
+                'penerima' => $data_spm->penerima,
+                'alamat_penerima' => $data_spm->alamat,
+                'nama_bank_penerima' => $data_spm->nmbank,
+                'no_rek_penerima' => $data_spm->rekening,
+                'npwp_penerima' => $data_spm->npwp,
+            );
+            $subdata['tgl_spm'] = $data_spm->tgl_spm;
+            $subdata['cur_tahun_spm'] = $data_spm->tahun;
+        }else{
+            $subdata['cur_tahun_spm'] = '';
+            $subdata['tgl_spm'] = '' ;
+        }
+
+        $subdata['nomor_spp'] = $nomor_trx_spp;
+
+        $subdata['nomor_spm'] = $nomor_trx_spm;
+
+
+        $subdata['tgl_spm_kpa'] = $this->rsa_tambah_tup_model->get_tgl_spm_kpa($kd_unit,$tahun,$nomor_trx_spm);
+
+        $subdata['tgl_spm_verifikator'] = $this->rsa_tambah_tup_model->get_tgl_spm_verifikator($kd_unit,$tahun,$nomor_trx_spm);
+
+        $subdata['tgl_spm_kbuu'] = $this->rsa_tambah_tup_model->get_tgl_spm_kbuu($kd_unit,$tahun,$nomor_trx_spm);
+
+        $subdata['ket'] = $this->rsa_tambah_tup_model->lihat_ket($kd_unit,$tahun);
+
+        $this->load->model('akun_kas6_model');
+
+        $subdata['kas_undip'] = $this->akun_kas6_model->get_akun_kas6_saldo();
+        $data['content'] 			= $this->load->view("akuntansi/bukti_tup",$subdata,TRUE);
         $this->load->view('akuntansi/content_template',$data);
     }
 }

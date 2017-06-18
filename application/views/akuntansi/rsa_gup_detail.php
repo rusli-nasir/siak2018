@@ -226,7 +226,6 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
             url :"<?=site_url("akuntansi/rsa_gup/get_data_kuitansi")?>",
             data:'id=' + rel + "&t="+tahun,
             success:function(data){
-//                                    console.log(data);
                     var obj = jQuery.parseJSON(data);
                     var kuitansi = obj.kuitansi ;
                     if($("#"+kuitansi.no_bukti).length != 0){$("#spm_tab").find("."+kuitansi.no_bukti).click(); return;} 
