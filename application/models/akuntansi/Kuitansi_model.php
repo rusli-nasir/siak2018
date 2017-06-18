@@ -240,7 +240,7 @@ class Kuitansi_model extends CI_Model {
         return $query;
     }
 
-    function read_kuitansi_posting_ls($limit = null, $start = null, $kode_unit = null, $keyword = null){
+    function read_kuitansi_posting_ls($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
             $unit = 'AND unit_kerja="'.$kode_unit.'"';
         }else{
@@ -257,7 +257,7 @@ class Kuitansi_model extends CI_Model {
         return $query;
     }
 
-    function read_kuitansi_posting_spm($limit = null, $start = null, $kode_unit = null, $keyword = null){
+    function read_kuitansi_posting_spm($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
             $unit = 'AND unit_kerja="'.$kode_unit.'"';
         }else{
