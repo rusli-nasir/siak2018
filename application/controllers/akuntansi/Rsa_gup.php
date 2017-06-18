@@ -382,17 +382,58 @@ class rsa_gup extends MY_Controller{
 //        if(intval($_SESSION['rsa_level'])==3){
 //          $subdata['bver'] = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
 //        }
-        $this->data['user_menu']  = $this->load->view('user_menu','',TRUE);
-        $this->data['main_menu']  = $this->load->view('main_menu','',TRUE);
-        $this->data['content'] = $this->load->view("akuntansi/form-spmls",$subdata,TRUE);
+        return $this->load->view("akuntansi/form-spmls",$subdata,TRUE);
+    }
+    
+    function sppls($garbage, $id){
+        $this->load->model("user_model");
+        $this->load->model("cantik_model");
+        $d['id'] = $id;
+        $sql = "SELECT * FROM kepeg_tr_sppls WHERE nomor ='".$d['id']."'";
+        $sub = $this->db->query($sql)->result();
+        $akun = explode(",",$sub[0]->detail_belanja);
+        $sql = "SELECT * FROM rsa_detail_belanja_ WHERE id_rsa_detail!=0 AND";
+        $i=0;
+        foreach ($akun as $k => $v) {
+            $vSQL2[$i]="kode_usulan_belanja LIKE '".substr($v, 0, -3)."' AND kode_akun_tambah LIKE '".substr($v, -3)."'";
+            $i++;
+        }
+        $vSQL2 = implode(" OR ", $vSQL2);
+        $sql = $sql."(".$vSQL2.") ORDER BY kode_akun_tambah ASC";
+        $akun = $this->db->query($sql)->result();
+        $subdata['cur_tahun'] = $sub[0]->tahun;
+        $subdata['cur_bulan'] = $this->wordMonthShort($this->getMonth($sub['0']->tanggal));
+        $subdata['tgl_spp'] = $sub[0]->tanggal;
+        $subdata['unit_kerja'] = $this->session->userdata('username');
+        $subdata['unit_id'] = $this->session->userdata('kode_unit');
+        $subdata['alias'] = $this->session->userdata('alias');
+        $subdata['detail_up'] = $sub[0];
+        $subdata['akun_detail'] = $akun;
+        $jm = strlen($sub[0]->id_sppls);
+        $subdata['id_sppls'] = "";
+        for($i=0;$i<(5-$jm);$i++){
+            $subdata['id_sppls'] .= "0";
+        }
+        $subdata['id_sppls'] .= $sub[0]->id_sppls;
+        return $this->load->view("akuntansi/form-sppls",$subdata,TRUE);
+    }
+    
+    function lspg($garbage, $id){
+        $this->load->helper('lspg');
+        
+        $sql = "SELECT nomor FROM kepeg_tr_spmls WHERE id_spmls =".$id;
+        $nomor_sppls = str_replace('SPM', 'SPP', $this->db->query($sql)->row()->nomor);
+        
+        
+        $subdata['spm'] = $this->spmls($garbage, $id);
+        $subdata['spp'] = $this->sppls($garbage, $nomor_sppls);
+        
+        $this->data['content'] = $this->load->view("akuntansi/bukti_lspg",$subdata,TRUE);
         $this->load->view('akuntansi/content_template',$this->data);
     }
     
     function up($kd_unit,$tahun){
-        $this->load->model('rsa_up_model');
-        //set data for main template
-        $data['user_menu']	= $this->load->view('user_menu','',TRUE);
-        $data['main_menu']	= $this->load->view('main_menu','',TRUE);		
+        $this->load->model('rsa_up_model');		
                                 
         $this->load->model('unit_model');
         $subdata['cur_tahun'] = $tahun;
@@ -504,7 +545,7 @@ class rsa_gup extends MY_Controller{
         $subdata['ket'] = $this->rsa_up_model->lihat_ket($kd_unit,$tahun);
         $this->load->model('akun_kas6_model');
         $subdata['kas_undip'] = $this->akun_kas6_model->get_akun_kas6_saldo();
-        $data['content'] = $this->load->view("akuntansi/bukti_up",$subdata,TRUE);
-        $this->load->view('akuntansi/content_template',$data);
+        $this->data['content'] = $this->load->view("akuntansi/bukti_up",$subdata,TRUE);
+        $this->load->view('akuntansi/content_template',$this->data);
     }
 }
