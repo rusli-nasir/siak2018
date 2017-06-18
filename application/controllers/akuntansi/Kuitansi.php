@@ -916,6 +916,14 @@ class Kuitansi extends MY_Controller {
     public function posting_ls(){
 		$this->data['menu3'] = true;
 		$this->data['tab2'] = true;
+        
+        if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+			$kode_unit = null;
+		}
+        
 		//search
 		if(isset($_POST['keyword_jadi_ls'])){
 			$keyword = $this->input->post('keyword_jadi_ls');
@@ -928,7 +936,10 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi_posting_ls(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_kuitansi_posting_ls(null, null, $keyword, $kode_unit);
+        $this->data['all_query'] = $total_data->result();
+
+        
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -959,7 +970,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_ls($config['per_page'], $id, $keyword);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_ls($config['per_page'], $id, $keyword, $kode_unit);
         $this->data['query'] = $this->data['query']->result_array();
         $this->load->model('akuntansi/Akun_model');
         foreach($this->data['query'] as $key=>$value){
@@ -977,6 +988,14 @@ class Kuitansi extends MY_Controller {
     public function posting_spm(){
 		$this->data['menu3'] = true;
 		$this->data['tab8'] = true;
+        
+        if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+			$kode_unit = null;
+		}
+        
 		//search
 		if(isset($_POST['keyword_spm_jadi'])){
 			$keyword = $this->input->post('keyword_spm_jadi');
@@ -989,7 +1008,9 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi_posting_spm(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_kuitansi_posting_spm(null, null, $keyword, $kode_unit);
+        $this->data['all_query'] = $total_data->result();
+        
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -1020,7 +1041,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_spm($config['per_page'], $id, $keyword);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_spm($config['per_page'], $id, $keyword, $kode_unit);
         $this->data['query'] = $this->data['query']->result_array();
         $this->load->model('akuntansi/Akun_model');
         foreach($this->data['query'] as $key=>$value){

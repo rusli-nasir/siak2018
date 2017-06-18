@@ -63,6 +63,11 @@
             <?php
                 echo form_open('akuntansi/rest_kuitansi/posting_kuitansi_batch/',array("id"=>"form-posting"));
                 echo form_close();
+            
+                echo form_open('akuntansi/rest_kuitansi/posting_kuitansi_batch/',array("id"=>"form-posting-all"));
+                foreach($all_query as $r)
+                    echo "<input style='display:none' type='checkbox' name='id_kuitansi_jadi[]' value='{$r->id_kuitansi_jadi}' checked=''/>";
+                echo form_close();
             ?>
 			<thead>
 				<tr>
@@ -74,7 +79,7 @@
 					<th>KREDIT</th>
 					<th>STATUS</th>
 					<th>AKSI</th>
-					<th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting"><input type="checkbox" id="select-all" form="form-posting">  Check All</th>
+					<th><input type="submit" class="btn btn-primary" value="Batch Post" form="form-posting">&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" class="btn btn-warning" value="Post Semua Data" form="form-posting-all"><br><div class="checkbox"><label><input type="checkbox" id="select-all" form="form-posting">  Check All</label></th>
 				</tr>
 			</thead>
 			<tbody>
