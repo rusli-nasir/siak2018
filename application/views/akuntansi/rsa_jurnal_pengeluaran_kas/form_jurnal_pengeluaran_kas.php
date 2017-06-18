@@ -63,7 +63,7 @@ if($jenis=='NK'){
 <div class="form-group">
   <label class="col-md-2 control-label" for="jenis_transaksi">Jenis Transaksi</label>  
   <div class="col-md-4">
-  <input id="jenis_transaksi" name="jenis_transaksi" value="<?=$jenis?>" type="text" placeholder="Jenis Transaksi" class="form-control input-md" required="" disabled>
+  <input id="jenis_transaksi" name="jenis_transaksi" value="<?=$this->Jurnal_rsa_model->get_view_jenis($jenis)?>" type="text" placeholder="Jenis Transaksi" class="form-control input-md" required="" disabled>
     
   </div>
 </div>
@@ -183,7 +183,7 @@ if($jenis=='NK'){
     }
     ?>
     <input id="jumlah_akun_debet" name="jumlah_akun_debet" type="hidden" value="<?=$pengeluaran?>" placeholder="Jumlah Akun Debet" class="form-control input-md" required="" disabled>
-    <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?php if(strpos($pengeluaran, '.')!== false){ echo $pengeluaran; }else{ echo number_format($pengeluaran); } ?>" disabled>  
+    <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?php if(strpos($pengeluaran, '.')!== false){ echo $pengeluaran; }else{ echo number_format($pengeluaran,2,',','.'); } ?>" disabled>  
     </div>
 
   </div>
@@ -231,7 +231,7 @@ if($jenis=='NK'){
     }
     ?>
     <input id="jumlah_akun_kredit" name="jumlah_akun_kredit" type="hidden" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?=$pengeluaran?>" disabled required="">
-    <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?php if(strpos($pengeluaran, '.')!== false){ echo $pengeluaran; }else{ echo number_format($pengeluaran); } ?>" disabled>
+    <input type="text" placeholder="Jumlah Akun Kredit" class="form-control input-md" value="<?php if(strpos($pengeluaran, '.')!== false){ echo $pengeluaran; }else{ echo number_format($pengeluaran,2,',','.'); } ?>" disabled>
       
     </div>
   </div>
@@ -248,14 +248,12 @@ if($jenis=='NK'){
       <table class="table">
         <thead>
           <td width="50%">Keterangan</td>
-          <td width="20%">Persentase Pajak</td>
           <td width="30%">Jumlah</td>
         </thead>
         <tbody>
           <?php foreach ($pajak as $entry_pajak): ?>
             <tr>
               <td><?php echo $entry_pajak['nama_akun'] ?></td>
-              <td><?php echo $entry_pajak['persen_pajak'] ?> % </td>
               <td><?php echo "Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.') ?> </td>
             </tr>
           <?php endforeach ?>

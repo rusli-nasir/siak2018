@@ -31,6 +31,11 @@ class Coba extends MY_Controller {
         print_r($pajak);
 	}
 
+    public function pajak2()
+    {
+        print_r($this->Pajak_model->get_detail_pajak('FTE00010','GP'));
+    }
+
     public function spm()
     {
         print_r($this->Spm_model->get_spm_input(24,'up'));

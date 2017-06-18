@@ -14,6 +14,8 @@ class Jurnal_rsa extends MY_Controller {
         $this->load->model('akuntansi/Akun_kas_rsa_model', 'Akun_kas_rsa_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
         $this->load->model('Rsa_unit_model');
+
+        setlocale(LC_NUMERIC, 'Indonesian');
     }
 
 	public function input_jurnal($id_kuitansi,$jenis){

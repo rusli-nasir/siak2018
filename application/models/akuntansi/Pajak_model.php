@@ -21,14 +21,34 @@ class Pajak_model extends CI_Model {
 
     public function get_detail_pajak($no_bukti,$jenis)
     {
-    	$hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
-    	
+    	// $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+
+        $hasil = $this->db
+                    ->select('*')
+                    ->select_sum('rupiah_pajak')
+                    ->group_by('jenis_pajak')
+                    ->where('no_bukti',$no_bukti)
+                    ->get($this->get_tabel_by_jenis($jenis))
+                    ->result_array()
+                    ;
+
     	$data = array();
+
+        $data_2 = array();
 
     	foreach ($hasil as $entry) {
     		$detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
     		$data[] = array_merge($entry,$detail);
     	}
+
+
+
+        // foreach ($data as $entry) {
+        //     $jumlah_pajak = $entry['rupiah_pajak'];
+        //     $unset($entry['rupiah_pajak']);
+        //     $data_2[$entry['jenis_pajak']] = $entry;
+        //     $data_2[$entry['jenis_pajak']['rupiah_pajak']] += $jumlah_pajak;
+        // }
 
     	return $data;
     }
@@ -39,7 +59,9 @@ class Pajak_model extends CI_Model {
 
     	$hasil = $this->db->select('jenis_pajak')
     					  ->select('persen_pajak')
-    					  ->select('rupiah_pajak as jumlah',false)
+                          ->select_sum('rupiah_pajak','jumlah')
+                          ->group_by('jenis_pajak')
+    					  // ->select('rupiah_pajak as jumlah',false)
     					  ->get_where($this->get_tabel_by_jenis($kuitansi['jenis']),array('no_bukti' => $kuitansi['no_bukti']))
     					  ->result_array();
 

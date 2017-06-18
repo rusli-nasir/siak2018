@@ -74,7 +74,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="jenis_transaksi">Jenis Transaksi</label>  
   <div class="col-md-4">
-  <input id="jenis_transaksi" name="jenis_transaksi" value="<?=$jenis?>" type="text" placeholder="Jenis Transaksi" class="form-control input-md" required="" disabled>
+  <input id="jenis_transaksi" name="jenis_transaksi" value="<?=$this->Jurnal_rsa_model->get_view_jenis($jenis)?>" type="text" placeholder="Jenis Transaksi" class="form-control input-md" required="" disabled>
     
   </div>
 </div>
@@ -215,14 +215,12 @@
       <table class="table">
         <thead>
           <td width="50%">Keterangan</td>
-          <td width="20%">Persentase Pajak</td>
           <td width="30%">Jumlah</td>
         </thead>
         <tbody>
           <?php foreach ($pajak as $entry_pajak): ?>
             <tr>
               <td><?php echo $entry_pajak['nama_akun'] ?></td>
-              <td><?php echo $entry_pajak['persen_pajak'] ?> % </td>
               <td><?php echo "Rp. ".number_format($entry_pajak['jumlah'],2,',','.') ?> </td>
             </tr>
           <?php endforeach ?>

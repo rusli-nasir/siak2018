@@ -78,6 +78,22 @@ class Jurnal_rsa_model extends CI_Model {
 		return $perkata[2]." ".$daftar[$perkata[1]]." ".$perkata[0];
 	}
 
+    public function get_view_jenis($value)
+    {
+        $array_tampil = array(
+                            'NK' => 'LS-PGW',
+                            'GP' => 'GUP',
+                            'GUP' => 'GU'
+                        );
+
+        foreach ($array_tampil as $key => $tampil) {
+            if ($value == $key)
+                return $tampil;
+        }
+        return $value;
+
+    }
+
 	
 	function get_data_kuitansi($id_kuitansi){
         $str = "SELECT rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.tahun,rsa.rsa_kuitansi.no_bukti,"
