@@ -99,7 +99,19 @@ class Jurnal_rsa extends MY_Controller {
             else
             	$this->session->set_flashdata('warning','Gagal menyimpan !');
 
-            redirect('akuntansi/kuitansi');
+            echo $jenis;
+            if($jenis=='NK'){
+                $direct_url = 'akuntansi/kuitansi/index_spm';
+            }else if($jenis=='UP'){
+                $direct_url = 'akuntansi/kuitansi/index_up';
+            }else if($jenis=='PUP'){
+                $direct_url = 'akuntansi/kuitansi/index_pup';
+            }else if($jenis=='GP'){
+                $direct_url = 'akuntansi/kuitansi/index';
+            }else if($jenis=='GUP'){
+                $direct_url = 'akuntansi/kuitansi/index_gup';
+            }
+            redirect($direct_url);
 
         }
         else

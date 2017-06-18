@@ -270,7 +270,7 @@ if($jenis=='NK'){
   <label class="col-md-4 control-label" for="simpan"></label>
   <div class="col-md-8">
     <button id="simpan" name="simpan" class="btn btn-success" type="submit">Simpan</button>
-    <button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button>
+    <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
 

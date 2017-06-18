@@ -47,7 +47,7 @@
 			</div>
 			<div class="col-sm-4">
 				<div class="box-t">
-					<?php echo 'Total SPM Belum di Verifikasi: <br/><span style="color:#000;font-size:16pt;">'.$kuitansi_pasif.'</span>'; ?>
+					<?php echo 'Total SPM di Verifikasi: <br/><span style="color:#000;font-size:16pt;">'.$kuitansi_pasif.'</span>'; ?>
 				</div>
 			</div>
 		</div>	
