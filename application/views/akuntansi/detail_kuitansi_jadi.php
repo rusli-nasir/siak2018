@@ -196,13 +196,13 @@
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="" disabled>
         <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
+        <?php foreach ($akun_sal as $akun) {
           ?>
-          <option <?php if ($akun['kd_kas_6'] == $akun_kredit): ?> selected <?php endif ?> value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+          <option <?php if ($akun['akun_6'] == $akun_kredit): ?> selected <?php endif ?> value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
         ?>
-        <?php if(!$selected): ?><option value="911101" selected>911101 - SAL KBUU</option><?php endif; ?>
+        
       </select>
     </div>
     <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->

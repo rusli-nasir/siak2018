@@ -179,7 +179,14 @@
     <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
-          <option value="911101">911101 - SAL KBUU</option>
+          <!-- <option value="">Pilih Akun</option> -->
+          <?php foreach ($akun_sal as $akun) {
+            ?>
+            <option <?php if ($akun['akun_6'] == $akun_kredit): ?> selected <?php endif ?> value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?>
+          
       </select>
     </div>
     <!-- <label class="col-md-1 control-label" for="akrual_akun_kredit">Akun Kredit</label>   -->
