@@ -198,6 +198,8 @@ class Spm_model extends CI_Model {
 
             $inti = $this->db->get()->row_array();
 
+            $inti['kode_unit_subunit'] = substr($inti['kode_unit_subunit'],0,2);
+
             $unit = $this->db2->get_where('unit',array('kode_unit' => $inti['kode_unit_subunit']))->row_array()['nama_unit'];
 
             $inti['id_kuitansi'] = $nomor_trx_spm;
