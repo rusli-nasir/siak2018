@@ -34,6 +34,7 @@ class rsa_gup extends MY_Controller{
         $no_spm = urldecode($this->input->get('spm'));
         $this->load->model('akuntansi/rsa_gup2_model');
         $_spm = $this->rsa_gup2_model->get_spm_detail($no_spm, array('tahun', 'kode_unit', 'str_nomor_trx'));
+//        print_r($_spm);die();
         
         if(!$_spm){
             $this->data['tab'] = 'rsa_gup';
@@ -156,7 +157,8 @@ class rsa_gup extends MY_Controller{
 
         if(($dokumen_gup == 'SPM-DRAFT-PPK') || ($dokumen_gup == 'SPM-DRAFT-KPA') || ($dokumen_gup == 'SPM-FINAL-VERIFIKATOR')  || ($dokumen_gup == 'SPM-FINAL-KBUU')){
 
-            $nomor_trx_spm = $this->rsa_gup_model->get_nomor_spm($kd_unit,$tahun);  
+            //$nomor_trx_spm = $this->rsa_gup_model->get_nomor_spm($kd_unit,$tahun);  
+            $nomor_trx_spm = $no_spm;  
 
             $this->data_spm = $this->rsa_gup_model->get_data_spm($nomor_trx_spm);
             $this->data['detail_gup_spm']   = array(
