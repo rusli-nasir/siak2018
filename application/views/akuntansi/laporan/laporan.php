@@ -125,6 +125,9 @@ ul
     tr    { page-break-inside:avoid; page-break-after:auto }
     thead { display:table-header-group }
     tfoot { display:table-footer-group }
+    .btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
+    .excel{background-color:#A3A33E;color:#fff;}
+    .pdf{background-color:#588097;color:#fff;}
 </style>
 
 <div class="col-lg-12">
@@ -150,7 +153,7 @@ ul
 					<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 					<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
 					<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-					<input type="submit" name="Download excel" value="Download Excel">
+					<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
 				</form>
 				<?php 
 				$arr_sumber = explode('_', $sumber);
@@ -162,7 +165,7 @@ ul
 					<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 					<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
 					<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-					<input type="submit" name="Cetak PDF" value="Cetak PDF">
+					<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
 				</form>
 			</div>
 		</div>
