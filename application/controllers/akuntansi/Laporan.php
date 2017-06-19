@@ -576,7 +576,7 @@ class Laporan extends MY_Controller {
         $teks_tahun = substr($periode_akhir,0,4);
         $teks_tahun_anggaran = "TAHUN ANGGARAN $teks_tahun";
 
-        $teks_unit = "UNIVERSITAS DIPONEGORO";
+        // $teks_unit = "UNIVERSITAS DIPONEGORO";
 
         if ($periode_awal != null and $periode_akhir != null){
             $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
