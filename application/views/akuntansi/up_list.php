@@ -89,24 +89,24 @@ tbody td, thead th {
 <div class="row">
 	<div class="col-sm-4">
 		<?php if(isset($tab1)){ ?>
-		<form action="<?php echo site_url('akuntansi/kuitansi/index'); ?>" method="post">
+		<form action="<?php echo site_url('akuntansi/kuitansi/index_up'); ?>" method="post">
 			<div class="input-group">
 				<span class="input-group-btn">
 	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
 	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword" value="<?php if($this->session->userdata('keyword')) echo $this->session->userdata('keyword'); ?>">
+	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_up" value="<?php if($this->session->userdata('keyword_up')) echo $this->session->userdata('keyword_up'); ?>">
 	      		<span class="input-group-btn">
 	        		<button class="btn btn-default" type="submit">Cari</button>
 	      		</span>
 	    	</div>
 	    </form>
-	    <?php }else{ ?>
-	    <form action="<?php echo site_url('akuntansi/kuitansi/index_ls'); ?>" method="post">
+	    <?php }else if(isset($tab9)){ ?>
+	    <form action="<?php echo site_url('akuntansi/kuitansi/index_gup'); ?>" method="post">
 			<div class="input-group">
 				<span class="input-group-btn">
-	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_ls'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
+	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
 	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_ls" value="<?php if($this->session->userdata('keyword_ls')) echo $this->session->userdata('keyword_ls'); ?>">
+	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_gu" value="<?php if($this->session->userdata('keyword_gu')) echo $this->session->userdata('keyword_gu'); ?>">
 	      		<span class="input-group-btn">
 	        		<button class="btn btn-default" type="submit">Cari</button>
 	      		</span>

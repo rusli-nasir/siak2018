@@ -266,7 +266,8 @@ function get_detail_pajak($no_bukti,$jenis)
 
 	foreach ($hasil as $entry) {
 		$detail = $ci->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
-		$data[] = array_merge($entry,$detail);
+		if ($detail != null)
+			$data[] = array_merge($entry,$detail);
 	}
 
 	return $data;

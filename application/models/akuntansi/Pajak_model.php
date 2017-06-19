@@ -38,7 +38,9 @@ class Pajak_model extends CI_Model {
 
     	foreach ($hasil as $entry) {
     		$detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
-    		$data[] = array_merge($entry,$detail);
+            if ($detail != null) {
+    		  $data[] = array_merge($entry,$detail);  
+            }
     	}
 
 
@@ -69,8 +71,10 @@ class Pajak_model extends CI_Model {
 
     	foreach ($hasil as $entry) {
     		$detail = $this->db->select('kode_akun as akun',false)->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
-    		$detail['jenis'] = 'pajak';
-    		$data[] = array_merge($entry,$detail);
+            if ($detail != null ){
+    		  $detail['jenis'] = 'pajak';
+    		  $data[] = array_merge($entry,$detail);
+            }
     	}
     	return $data;
     }

@@ -40,7 +40,7 @@ class Akun extends MY_Controller {
 			$crud->field_type('kode_unit','dropdown',$array_unit);
         }
 
-        if ($this->session->userdata('level')!= 9) {
+        if ($this->session->userdata('level')!= 9 and $this->session->userdata('level')!= 3) {
         	$crud->unset_add()->unset_edit()->unset_delete();
 		}
 

@@ -108,12 +108,12 @@ class Kuitansi extends MY_Controller {
 		}
 
 		//search
-		if(isset($_POST['keyword'])){
-			$keyword = $this->input->post('keyword');
-			$this->session->set_userdata('keyword', $keyword);		
+		if(isset($_POST['keyword_gu'])){
+			$keyword = $this->input->post('keyword_gu');
+			$this->session->set_userdata('keyword_gu', $keyword);		
 		}else{
-			if($this->session->userdata('keyword')!=null){
-				$keyword = $this->session->userdata('keyword');
+			if($this->session->userdata('keyword_gu')!=null){
+				$keyword = $this->session->userdata('keyword_gu');
 			}else{
 				$keyword = '';
 			}
@@ -230,12 +230,12 @@ class Kuitansi extends MY_Controller {
 		}
 
 		//search
-		if(isset($_POST['keyword'])){
-			$keyword = $this->input->post('keyword');
-			$this->session->set_userdata('keyword', $keyword);		
+		if(isset($_POST['keyword_up'])){
+			$keyword = $this->input->post('keyword_up');
+			$this->session->set_userdata('keyword_up', $keyword);		
 		}else{
-			if($this->session->userdata('keyword')!=null){
-				$keyword = $this->session->userdata('keyword');
+			if($this->session->userdata('keyword_up')!=null){
+				$keyword = $this->session->userdata('keyword_up');
 			}else{
 				$keyword = '';
 			}
@@ -794,6 +794,9 @@ class Kuitansi extends MY_Controller {
 
 	public function reset_search(){
 		$this->session->unset_userdata('keyword');
+		$this->session->unset_userdata('keyword_up');
+		$this->session->unset_userdata('keyword_pup');
+		$this->session->unset_userdata('keyword_gu');
 		redirect($_SERVER['HTTP_REFERER']);
 	}
 
@@ -1062,7 +1065,12 @@ class Kuitansi extends MY_Controller {
 
     public function monitor($print = false){
     	$this->db2 = $this->load->database('rba', true);
-    	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit ORDER BY nama_unit ASC");
+    	if($this->session->userdata('kode_unit')!=null){
+    		$filter = 'WHERE kode_unit="'.$this->session->userdata('kode_unit').'"';
+    	}else{
+    		$filter = '';
+    	}
+    	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit $filter ORDER BY nama_unit ASC");
 
     	if($this->input->post('daterange')!=null){
 	    	$daterange = $this->input->post('daterange');

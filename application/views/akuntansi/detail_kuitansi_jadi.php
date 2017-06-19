@@ -148,6 +148,7 @@
 
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
+      <?php if ($jenis == 'GP'): ?>
       <?php $akun_debet_akrual = $akun_debet_kas;
             $akun_debet_akrual[0] = 7;
             $kode_akun_akrual = $akun_debet;
@@ -160,7 +161,10 @@
             $hasil_uraian = implode(' ', $uraian_akun);
             echo $hasil_uraian;
             ?>" type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
-      <input type="hidden" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>" disabled>
+      <input type="hidden" name="akun_debet_akrual" value="<?=$kode_akun_akrual?>" disabled>        
+      <?php else: ?>
+        <input class="form-control input-md" name="akun_debet_akrual" value="<?=$akun_debet_akrual.' - '.$this->Akun_model->get_nama_akun($akun_debet_akrual)?>" disabled>
+      <?php endif ?>
         
 <!--       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
         <option value="">Pilih Akun</option>

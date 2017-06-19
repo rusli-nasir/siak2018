@@ -88,13 +88,13 @@ tbody td, thead th {
 </div><!--/.row-->
 <div class="row">
 	<div class="col-sm-4">
-		<?php if(isset($tab1)){ ?>
+		<?php if(isset($tab5)){ ?>
 		<form action="<?php echo site_url('akuntansi/kuitansi/index'); ?>" method="post">
 			<div class="input-group">
 				<span class="input-group-btn">
 	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
 	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword" value="<?php if($this->session->userdata('keyword')) echo $this->session->userdata('keyword'); ?>">
+	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_pup" value="<?php if($this->session->userdata('keyword_pup')) echo $this->session->userdata('keyword_pup'); ?>">
 	      		<span class="input-group-btn">
 	        		<button class="btn btn-default" type="submit">Cari</button>
 	      		</span>
