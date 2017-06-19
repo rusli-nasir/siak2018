@@ -447,10 +447,10 @@ class rsa_gup extends MY_Controller{
             $subdata['alias'] = $this->unit_model->get_alias($kd_unit);
         }
         elseif(strlen($kd_unit)==4){
-                $subdata['unit_kerja'] = $this->unit_model->get_nama($kd_unit) . ' - ' . $this->unit_model->get_real_nama($kd_unit);//$this->check_session->get_nama_unit();
-                $subdata['unit_id'] = $kd_unit;
-                $subdata['kd_unit'] = $kd_unit ;
-                $subdata['alias'] = $this->unit_model->get_alias($kd_unit);
+            $subdata['unit_kerja'] = $this->unit_model->get_nama($kd_unit) . ' - ' . $this->unit_model->get_real_nama($kd_unit);//$this->check_session->get_nama_unit();
+            $subdata['unit_id'] = $kd_unit;
+            $subdata['kd_unit'] = $kd_unit ;
+            $subdata['alias'] = $this->unit_model->get_alias($kd_unit);
         }
                                 
 

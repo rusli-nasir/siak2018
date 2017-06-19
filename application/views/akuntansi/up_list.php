@@ -143,7 +143,7 @@ tbody td, thead th {
                         <?php if(isset($tab1)){ ?>
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab4)){ ?>
-                        <a href="<?php echo site_url('akuntansi/rsa_gup/up/'.$this->session->userdata('kode_unit').'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <a href="<?php echo site_url('akuntansi/rsa_gup/up/'.$result->kode_unit_subunit.'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab9)){ ?>
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php } ?>
@@ -200,6 +200,7 @@ function get_unit($unit){
 	foreach($q as $result){
 		return $result->alias;
 	}
+    return $unit;
 }
 function get_nama_unit($unit){
 	$ci =& get_instance();

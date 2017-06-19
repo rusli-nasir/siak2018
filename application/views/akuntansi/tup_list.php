@@ -144,7 +144,7 @@ tbody td, thead th {
                         <?php if(isset($tab1)){ ?>
                         <a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }else{ ?>
-                        <a href="<?php echo site_url('akuntansi/rsa_gup/tup/'.$this->session->userdata('kode_unit').'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <a href="<?php echo site_url('akuntansi/rsa_gup/tup/'.$result->kode_unit_subunit.'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1)){ ?>
@@ -196,6 +196,7 @@ function get_unit($unit){
 	foreach($q as $result){
 		return $result->alias;
 	}
+    return $unit;
 }
 function get_nama_unit($unit){
 	$ci =& get_instance();
