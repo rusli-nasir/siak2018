@@ -12,7 +12,7 @@ class Kuitansi_model extends CI_Model {
 	
 	function read_kuitansi($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND kode_unit="'.$kode_unit.'"';
+            $unit = 'AND substr(kode_unit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
@@ -29,7 +29,7 @@ class Kuitansi_model extends CI_Model {
 
     function read_kuitansi_spm($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND kode_unit="'.$kode_unit.'"';
+            $unit = 'AND substr(kode_unit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }

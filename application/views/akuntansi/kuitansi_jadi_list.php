@@ -157,7 +157,14 @@ tbody td, thead th {
 				<tr>
 					<td style="width:2% !important;"><?php echo $no; ?></td>
 					<td style="width:110px;">						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							
+                            <?php if(isset($tab1)){ ?>
+								<a href="<?php $r=up_get_details($result->no_spm); echo site_url('akuntansi/rsa_gup/up/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } else if(isset($tab5)){ ?>
+								<a href="<?php $r=tup_get_details($result->no_spm); echo site_url('akuntansi/rsa_gup/tup/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php }else{ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
 								<a href="<?php echo site_url('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
@@ -224,6 +231,21 @@ function get_pengeluaran($id_kuitansi){
 		return number_format($result->pengeluaran);
 	}
 }
+
+function up_get_details($no_spm){
+    $ci =& get_instance();
+    $ci->load->model('Rsa_up_model', 'up_model');
+    
+    return $ci->up_model->get_data_spm($no_spm);
+}
+
+function tup_get_details($no_spm){
+    $ci =& get_instance();
+    $ci->load->model('Rsa_tambah_tup_model', 'tup_model');
+    
+    return $ci->tup_model->get_data_spm($no_spm);
+}
+
 function get_unit($unit){
 	$ci =& get_instance();
 	$ci->db2 = $ci->load->database('rba', true);

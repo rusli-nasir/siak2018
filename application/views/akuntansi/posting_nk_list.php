@@ -104,7 +104,7 @@
 						<?php } ?>
 					</td>
 					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/lspg/id/'.get_id_spm($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
 								<a href="<?php echo site_url('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
@@ -139,5 +139,13 @@ function get_pengeluaran($id_kuitansi){
 	foreach($q as $result){
 		return number_format($result->pengeluaran);
 	}
+}
+
+function get_id_spm($no_spm){
+    $ci =& get_instance();
+
+	$query = "SELECT id_spmls FROM kepeg_tr_spmls WHERE nomor='$no_spm'";
+	$q = $ci->db->query($query)->row();
+	return $q->id_spmls;
 }
 ?>

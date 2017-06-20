@@ -274,7 +274,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                         str_isi = str_isi + '<td style="text-align:center">' + v.volume + '</td>' ;
                         str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
                         str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
-                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_ sub_tot_bruto_'+i+'">' + angka_to_string(v.bruto) + '</td>' ;
+                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_ sub_tot_bruto_'+i+'">' + angka_to_string(Math.round(v.bruto)) + '</td>' ;
                         var str_pajak = '' ;
                         var str_pajak_nom = '' ;
                         $.each(kuitansi_detail_pajak,function(ii,vv){
@@ -305,13 +305,13 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
 
                             var sum_tot_bruto = 0 ;
                             template.find('.sub_tot_bruto_').each(function(){
-                                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
+                                sum_tot_bruto = parseInt(sum_tot_bruto) + parseInt(string_to_angka($(this).html()));
                             });
                             template.find('.sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
 
                             var sub_tot_pajak = 0 ;
                             template.find('.sub_tot_pajak_').each(function(){
-                                sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
+                                sub_tot_pajak = parseInt(sub_tot_pajak) + parseInt(string_to_angka($(this).text())) ;
                             });
                             template.find('.sum_tot_pajak').html(angka_to_string(sub_tot_pajak));
 
@@ -320,15 +320,15 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                 var sub_tot_pajak__  = 0 ;
 //                                                console.log(prel + ' ' + sub_tot_pajak__);
                                 template.find('.sub_tot_pajak_' + prel).each(function(){
-                                    sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
+                                    sub_tot_pajak__ = parseInt(sub_tot_pajak__) + parseInt(string_to_angka($(this).text())) ;
                                 });
                                 var sub_tot_bruto_ = parseInt(string_to_angka(template.find('.sub_tot_bruto_' + prel ).text())) ;
-                                template.find('.sub_tot_netto_' + prel).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                                template.find('.sub_tot_netto_' + prel).html(angka_to_string(parseInt(sub_tot_bruto_) - parseInt(sub_tot_pajak__)));
                             });
 
                             var sum_tot_netto = 0 ;
                             template.find('.sub_tot_netto_').each(function(){
-                                sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
+                                sum_tot_netto = parseInt(sum_tot_netto) + parseInt(string_to_angka($(this).html()));
                             });
 
                             template.find('.sum_tot_netto').html(angka_to_string(sum_tot_netto));
