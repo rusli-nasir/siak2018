@@ -13,7 +13,7 @@ class Notifikasi_model extends CI_Model {
         $kode_unit = $this->session->userdata('kode_unit');
         $result = array();
         if($kode_unit) {
-            $unit = 'AND kode_unit="'.$kode_unit.'"';
+            $unit = 'AND substr(kode_unit,1,2)="'.$kode_unit.'"';
             $unit_jadi = 'AND unit_kerja="'.$kode_unit.'"';
             $subunit = '='.$kode_unit;
         } else {
