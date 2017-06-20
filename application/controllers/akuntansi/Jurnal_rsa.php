@@ -198,9 +198,11 @@ class Jurnal_rsa extends MY_Controller {
 
         
         $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit')));
+        $isian['akun_sal'][] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
         $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
         $isian['pajak'] = $this->Pajak_model->get_detail_pajak_jadi($id_kuitansi_jadi);
 
+        // print_r($isian);
         // print_r($isian['akun_sal']);die();
 
         $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
@@ -319,6 +321,7 @@ class Jurnal_rsa extends MY_Controller {
             $isian['komentar'] = $query_riwayat['komentar'];
             $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
             $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit')));
+            $isian['akun_sal'][] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
             $this->data['content'] = $this->load->view('akuntansi/edit_kuitansi_jadi',$isian,true);
