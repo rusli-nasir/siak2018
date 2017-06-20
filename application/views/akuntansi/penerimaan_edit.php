@@ -129,9 +129,9 @@
     <div class="col-md-3">
       <!-- <input id="akun_debet_akrual" name="akun_debet_akrual" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
-          <?php foreach ($akun_kas_rsa as $akun) {
+          <?php foreach ($akun_kas_akrual as $akun) {
             ?>
-            <option value="<?=$akun['kd_kas_6']?>"><?=$akun['kd_kas_6'].' - '.$akun['nm_kas_6']?></option>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
             <?php
           }
           ?>
