@@ -292,6 +292,7 @@ class Kuitansi_model extends CI_Model {
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  
             (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') AND tanggal LIKE '%".$date_now."%' $filter_unit");
         }
+
         return $query;
     }
 
@@ -308,6 +309,8 @@ class Kuitansi_model extends CI_Model {
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
 
     	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
+
+        $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);
 
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
     	$hasil['akun_debet'] = $hasil['kode_akun'];
@@ -359,6 +362,7 @@ class Kuitansi_model extends CI_Model {
     	$hasil['no_bukti'] = '';
     	$hasil['kode_usulan_belanja'] =  $hasil['detail_belanja'];
     	$hasil['unit_kerja'] = '';
+        $hasil['unit_kerja'] = substr($hasil['unit_kerja'], 0,2);
     	$hasil['jenis'] = 'NK';
     	$hasil['pengeluaran'] = $hasil['jumlah_bayar'];
     	$hasil['str_nomor_trx_spm'] = $hasil['nomor'];

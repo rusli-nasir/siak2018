@@ -164,7 +164,7 @@ class Jurnal_rsa extends MY_Controller {
                     $isian['pajak'][0]['persen_pajak'] = null;
                 }
 
-                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
 
 
                 // print_r($isian);die();

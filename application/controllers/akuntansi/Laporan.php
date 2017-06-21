@@ -250,7 +250,7 @@ class Laporan extends MY_Controller {
 
         $teks_unit = null;
 
-        if ($unit == 'all') {
+        if ($unit == 'all' or $unit == 9999) {
             $unit = null;
             $teks_unit = "UNIVERSITAS DIPONEGORO";
         } else {
@@ -429,7 +429,7 @@ class Laporan extends MY_Controller {
         $objWorksheet->setCellValueByColumnAndRow(7,$row,$this->eliminasi_negatif($jumlah_debet));
         $objWorksheet->setCellValueByColumnAndRow(8,$row,$this->eliminasi_negatif($jumlah_kredit));
 
-        if ($unit == null) {
+        if ($unit == null or $unit == 9999) {
             $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
             $teks_kpa = "Rektor";
         } else {
@@ -515,7 +515,7 @@ class Laporan extends MY_Controller {
         $teks_unit = null;
 
 
-        if ($unit == 'all') {
+        if ($unit == 'all' or $unit == 9999) {
             $unit = null;
             // $mode = 'neraca';
             $teks_unit = "UNIVERSITAS DIPONEGORO";
@@ -678,7 +678,7 @@ class Laporan extends MY_Controller {
         // ============================================
 
 
-        if ($unit == null) {
+        if ($unit == null or $unit == 9999) {
             $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
             $teks_kpa = "Rektor";
         } else {
@@ -945,7 +945,7 @@ class Laporan extends MY_Controller {
         $teks_unit = null;
 
 
-        if ($unit == 'all') {
+        if ($unit == 'all' or $unit == 9999) {
             $unit = null;
             $mode = 'neraca';
             $teks_unit = "UNIVERSITAS DIPONEGORO";
@@ -1083,7 +1083,7 @@ class Laporan extends MY_Controller {
 
         //===========================
 
-        if ($unit == null) {
+        if ($unit == null or $unit == 9999) {
             $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
             $teks_kpa = "Rektor";
         } else {

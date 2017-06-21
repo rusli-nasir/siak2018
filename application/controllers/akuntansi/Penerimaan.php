@@ -16,7 +16,118 @@ class Penerimaan extends MY_Controller {
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
         $this->load->model('akuntansi/Penerimaan_model', 'Penerimaan_model');
         $this->load->model('akuntansi/Posting_model', 'Posting_model');
+        $this->load->library('excel');
     }
+
+    public function import_penerimaan()
+    {
+        $this->load->library('excel');
+        $temp_data['content'] = $this->load->view('akuntansi/form_upload_penerimaan',null,true);
+        $this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+    public function do_upload($alert = null,$notice = null)
+    {
+        
+        $config['upload_path'] = './assets/akuntansi/upload';
+        $config['allowed_types'] = 'xlsx|xls';
+        $config['max_size'] = '20000';
+        // $config['max_width']  = '1024';
+        // $config['max_height']  = '768';
+
+        $this->load->library('upload', $config);
+        // die('aaa');
+        
+
+        if ( ! $this->upload->do_upload())
+        {
+            echo $this->upload->display_errors('<p>', '</p>');
+            die('gagal mengupload');
+        }
+        else
+        {
+            $data = $this->upload->data();
+            $this->import_penerimaan_backend($data['full_path']);
+        }
+    }
+
+    public function import_penerimaan_backend($file)
+    {
+        
+        $inputFileType = PHPExcel_IOFactory::identify($file);
+
+        $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+        $objReader->setReadDataOnly(true);
+        $objPHPExcel = $objReader->load($file);
+
+        $sal_penerimaan = $this->Akun_model->get_kode_sal_penerimaan();
+        $waktu_penerimaan = date('Y-m-d H:i:s');
+
+        $i = 0;
+
+        $data = array();
+
+        while ($objPHPExcel->setActiveSheetIndex($i)){
+
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+            
+            $title = explode('-',$objWorksheet->getTitle());
+
+            $akun_debet_akrual = $title[0];
+            $akun_kredit_kas = $title[1];
+
+            $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+            $highestColumnIndex = 4; // e.g. 5
+
+            $index = 0;
+
+            for ($row=2; $row <= $highestRow; $row++) { 
+                $entry = array();
+                $tanggal = $objWorksheet->getCellByColumnAndRow(1,$row)->getCalculatedValue();
+                $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
+                $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
+                $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
+                $entry['akun_debet'] = $sal_penerimaan;
+                $entry['akun_kredit'] = $akun_kredit_kas;
+                $entry['akun_debet_akrual'] = $akun_debet_akrual;
+                $entry['akun_kredit_akrual'] = substr_replace($akun_kredit_kas,'6',0,1);
+                $entry['jumlah_debet'] = $objWorksheet->getCellByColumnAndRow(4,$row)->getValue();
+                $entry['jumlah_kredit'] = $entry['jumlah_debet'];
+                $entry['unit_kerja'] = 9999;
+                $entry['tipe'] = 'penerimaan';
+                $entry['jenis'] = 'penerimaan';
+                $entry['jenis_pembatasan_dana'] = 'tidak_terikat';
+
+                $entry['flag'] =3;
+                $entry['status'] = 4;
+
+                $entry['tanggal_posting'] = $waktu_penerimaan;
+                $entry['tanggal_verifikasi'] = $waktu_penerimaan;
+                $entry['tanggal_jurnal'] = $waktu_penerimaan;
+
+
+
+
+                $data[] = $entry;
+            }
+
+            if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
+
+        }
+
+        $array_no = $this->Penerimaan_model->generate_nomor_bukti_batch(count($data));
+        for ($i=0; $i < count($data); $i++) { 
+            $data[$i]['no_bukti'] = $array_no[$i];
+        }
+
+        if ($this->Penerimaan_model->insert_penerimaan_batch($data)) {
+            redirect('akuntansi/penerimaan');
+        } else {
+            die('gagal menginput');
+        }
+
+    }
+
 
     public function coba($value='')
     {
@@ -88,7 +199,7 @@ class Penerimaan extends MY_Controller {
 		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
 		// $this->form_validation->set_rules('no_bukti','No. Bukti','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
-		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
+		// $this->form_validation->set_rules('unit_kerja','unit_kerja','required');
 		$this->form_validation->set_rules('uraian','uraian','required');
 		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
 		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
@@ -114,6 +225,7 @@ class Penerimaan extends MY_Controller {
             $entry['tipe'] = 'penerimaan';
             $entry['flag'] =3;
             $entry['status'] = 4;
+            $entry['unit_kerja'] = 9999;
             
             $entry['tanggal_posting'] = date('Y-m-d H:i:s');
             $entry['tanggal_verifikasi'] = date('Y-m-d H:i:s');
@@ -153,7 +265,7 @@ class Penerimaan extends MY_Controller {
 		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
 		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
 		$this->form_validation->set_rules('tanggal','Tanggal','required');
-		$this->form_validation->set_rules('unit_kerja','unit_kerja','required');
+		// $this->form_validation->set_rules('unit_kerja','unit_kerja','required');
 		$this->form_validation->set_rules('uraian','uraian','required');
 		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
 		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
@@ -176,6 +288,7 @@ class Penerimaan extends MY_Controller {
             $entry['jumlah_kredit'] = $this->normal_number($entry['jumlah_akun_kredit']);
             unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'penerimaan';
+            $entry['unit_kerja'] = 9999;
 
             
             if ($mode == 'revisi'){

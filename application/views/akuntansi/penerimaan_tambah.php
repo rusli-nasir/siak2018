@@ -45,21 +45,6 @@
 </div>
 
 <!-- Text input-->
-<div class="form-group">
-  <label class="col-md-2 control-label" for="unit_kerja">Unit Kerja</label>  
-  <div class="col-md-4">
-  <!-- <input id="unit_kerja" name="unit_kerja" type="text" placeholder="Unit Kerja" class="form-control input-md" required=""> -->
-      <select id="unit_kerja" name="unit_kerja" class="form-control" required="">
-        <option value="">Pilih Unit</option>
-        <?php foreach ($all_unit_kerja as $unit) {
-          ?>
-          <option value="<?=$unit['kode_unit']?>"><?=$unit['kode_unit'].' - '.$unit['nama_unit']?></option>
-          <?php
-        }
-        ?>
-      </select>
-  </div>
-</div>
 
 <!-- Textarea -->
 <div class="form-group">
@@ -95,6 +80,12 @@
 
       <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
           <option value="911101">911101 - SAL</option>
+          <?php foreach ($akun_kas_akrual as $akun) {
+            ?>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?> 
       </select> 
     <!-- <input id="kas_akun_debet" name="kas_akun_debet"  type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       
@@ -211,8 +202,8 @@
       selectize2.setValue('<?=$kas_akun_debet?>');
   <?php endif ?>
 
-  var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
-  var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  // var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
+  // var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
   <?php if (isset($unit_kerja)): ?>
       selectize3.setValue('<?=$unit_kerja?>');

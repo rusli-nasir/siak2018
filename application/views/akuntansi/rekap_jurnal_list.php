@@ -74,6 +74,7 @@
             <?php foreach($query_unit->result() as $unit): ?>
               <option value="<?php echo $unit->kode_unit ?>"><?= $unit->alias." - ".$unit->nama_unit ?></option>
             <?php endforeach; ?>
+            <option value="9999">Penerimaan</option>
           </select>
           <?php } ?>
       </div>

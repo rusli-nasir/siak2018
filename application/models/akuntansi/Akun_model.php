@@ -56,8 +56,14 @@ class Akun_model extends CI_Model {
 	}
 
 	public function get_akun_penerimaan()
-        {
-            $this->db->not_like('nama', 'Operasional');
-            return $this->db->get('akuntansi_aset_6')->result_array();
-        }
+    {
+        $this->db->not_like('nama', 'Operasional');
+        return $this->db->get('akuntansi_aset_6')->result_array();
+    }
+
+	public function get_kode_sal_penerimaan()
+    {
+        $this->db->where('kode_unit',9999);
+        return $this->db->get('akuntansi_sal_6')->row_array()['akun_6'];
+    }
 }
