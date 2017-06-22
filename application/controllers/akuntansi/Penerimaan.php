@@ -155,13 +155,13 @@ class Penerimaan extends MY_Controller {
 			$id = 0;
 			$this->data['no'] = $id+1;
 		}else{
-			$id = ($id-1)*2;
+			$id = ($id-1)*20;
 			$this->data['no'] = $id+1;
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
 		$config['base_url'] = site_url('akuntansi/penerimaan/index');
-	 	$config['per_page'] = '2';
+	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
 		$config['next_link'] = 'Lanjut';
