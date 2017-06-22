@@ -205,9 +205,9 @@
   // var $select3 = $('#unit_kerja').selectize();  // This initializes the selectize control
   // var selectize3 = $select3[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  <?php if (isset($unit_kerja)): ?>
-      selectize3.setValue('<?=$unit_kerja?>');
-  <?php endif ?>
+  // <?php if (isset($unit_kerja)): ?>
+  //     selectize3.setValue('<?=$unit_kerja?>');
+  // <?php endif ?>
 
 
   var $select4 = $('#akun_kredit').selectize();  // This initializes the selectize control
