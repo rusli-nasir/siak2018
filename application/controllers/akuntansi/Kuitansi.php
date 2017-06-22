@@ -599,12 +599,13 @@ class Kuitansi extends MY_Controller {
 		}
 
 		//search
-		if(isset($_POST['keyword_jadi'])){
-			$keyword = $this->input->post('keyword_jadi');
-			$this->session->set_userdata('keyword_jadi', $keyword);		
+		$keyword = '';
+		if(isset($_POST['keyword_jadi_'.$jenis])){
+			$keyword = $this->input->post('keyword_jadi_'.$jenis);
+			$this->session->set_userdata('keyword_jadi_'.$jenis, $keyword);		
 		}else{
-			if($this->session->userdata('keyword_jadi')!=null){
-				$keyword = $this->session->userdata('keyword_jadi');
+			if($this->session->userdata('keyword_jadi_'.$jenis)!=null){
+				$keyword = $this->session->userdata('keyword_jadi_'.$jenis);
 			}else{
 				$keyword = '';
 			}
@@ -665,6 +666,7 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='GUP'){
         	$this->data['tab9'] = true;
         }else if($jenis=='GP'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab3'] = true;
         }else if($jenis=='GP_NIHIL'){
         	$this->data['tab4'] = true;
@@ -673,6 +675,8 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='TUP_NIHIL'){
         	$this->data['tab6'] = true;
         }
+
+        $this->data['jenis'] = $jenis;
 
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -812,6 +816,11 @@ class Kuitansi extends MY_Controller {
 
 	public function reset_search_jadi(){
 		$this->session->unset_userdata('keyword_jadi');
+		$this->session->unset_userdata('keyword_jadi_UP');
+		$this->session->unset_userdata('keyword_jadi_PUP');
+		$this->session->unset_userdata('keyword_jadi_GP');
+		$this->session->unset_userdata('keyword_jadi_GUP');
+		$this->session->unset_userdata('keyword_jadi_TUP');
 		redirect($_SERVER['HTTP_REFERER']);
 	}
 

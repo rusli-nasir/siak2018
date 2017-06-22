@@ -93,37 +93,50 @@ tbody td, thead th {
 </div><!--/.row-->
 <div class="row">
 	<div class="col-sm-4">
-		<?php if(isset($tab1)){ ?>
-		<form action="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>" method="post">
+	    <form action="<?php echo site_url('akuntansi/kuitansi/jadi/1/'.$jenis); ?>" method="post">
 			<div class="input-group">
 				<span class="input-group-btn">
 	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_jadi'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
 	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_jadi" value="<?php if($this->session->userdata('keyword_jadi')) echo $this->session->userdata('keyword_jadi'); ?>">
+	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM" name="keyword_jadi_<?php echo $jenis; ?>" value="<?php if($this->session->userdata('keyword_jadi_'.$jenis)) echo $this->session->userdata('keyword_jadi_'.$jenis); ?>">
 	      		<span class="input-group-btn">
 	        		<button class="btn btn-default" type="submit">Cari</button>
 	      		</span>
 	    	</div>
 	    </form>
-	    <?php }else{ ?>
-	    <form action="<?php echo site_url('akuntansi/kuitansi/index_ls'); ?>" method="post">
-			<div class="input-group">
-				<span class="input-group-btn">
-	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_jadi_ls'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
-	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_ls" value="<?php if($this->session->userdata('keyword_ls')) echo $this->session->userdata('keyword_ls'); ?>">
-	      		<span class="input-group-btn">
-	        		<button class="btn btn-default" type="submit">Cari</button>
-	      		</span>
-	    	</div>
-	    </form>
-	    <?php } ?>
 	</div>
 	<?php if($this->session->userdata('level')=='2' AND $this->session->userdata('username')=='verifikator'){ ?>
 	<div class="col-sm-4">	
 		<a href="<?php echo site_url('akuntansi/kuitansi/pilih_unit'); ?>"><button type="button" class="btn btn-primary">Pilih Unit</button></a>
 	</div>
 	<?php } ?>
+	<div class="col-sm-4">
+		<?php if(isset($tab3)){ ?>
+		<form action="<?php echo site_url('akuntansi/kuitansi/jadi'); ?>" method="post">
+			<div class="input-group">
+	      		<select name="keyword_jadi_GP" class="form-control">
+					<option value="">Tampil Semua SPM</option>
+					<?php 
+					foreach($query_spm->result_array() as $result){ 
+					?>
+					<option value="<?php echo $result['no_spm']; ?>"
+						<?php 
+						if($this->session->userdata('keyword_jadi_GP')){
+							if($result['no_spm']==$this->session->userdata('keyword_jadi_GP')){
+								echo 'selected';
+							} 
+						}
+						?>
+						><?php echo $result['no_spm']; ?></option>
+					<?php } ?>
+				</select>
+	      		<span class="input-group-btn">
+	        		<button class="btn btn-default" type="submit">Filter</button>
+	      		</span>
+	    	</div>		
+		</form>
+		<?php } ?>
+	</div>
 </div>
 <br/>
 <div class="row">
@@ -188,7 +201,15 @@ tbody td, thead th {
 					<td style="width:70px;"><?php echo substr($result->kode_kegiatan,6,2); ?></td>
 					<td style="width:70px;"><?php echo get_unit($result->unit_kerja); ?></td>
 					<td style="width:110px;"><?php echo $result->uraian; ?></td>
-					<td style="width:500px !important" nowrap><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
+					<td style="width:500px !important" nowrap>
+						<?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - ';
+					 	$uraian_akun = explode(' ', $result->nama_akun_debet_akrual);
+			            if($uraian_akun[0]!='Beban' OR $uraian_akun[0]!='beban'){
+			              $uraian_akun[0] = 'Beban';
+			            }
+			            $hasil_uraian = implode(' ', $uraian_akun);
+			            echo $hasil_uraian;
+            			echo '<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td style="width:110px;"><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
 					<td style="width:110px;"><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
 					<?php 
