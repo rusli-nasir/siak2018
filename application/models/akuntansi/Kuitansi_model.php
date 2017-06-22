@@ -157,9 +157,9 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($this->session->userdata('level')==1){
-            $verifikasi = "";
+            $verifikasi = "AND ((status='revisi' AND flag=1) OR (status='proses' AND flag=1))";
         }else{
-            $verifikasi = "AND (status<>'proses' OR flag<>2)";
+            $verifikasi = "AND (status='proses' AND flag=1)";
         }
 
         if($limit!=null OR $start!=null){

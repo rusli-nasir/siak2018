@@ -94,6 +94,7 @@
 				<?php $no++; } ?>
 			</tbody>
 		</table>
+		<center><?php echo $halaman; ?></center>
 	</div>
 </div>
 

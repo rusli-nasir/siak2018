@@ -620,13 +620,13 @@ class Kuitansi extends MY_Controller {
 			$id = 0;
 			$this->data['no'] = $id+1;
 		}else{
-			$id = ($id-1)*20;
+			$id = ($id-1)*3;
 			$this->data['no'] = $id+1;
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
 		$config['base_url'] = site_url('akuntansi/kuitansi/jadi');
-	 	$config['per_page'] = '20';
+	 	$config['per_page'] = '3';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
 		$config['next_link'] = 'Lanjut';

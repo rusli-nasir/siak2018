@@ -164,7 +164,7 @@ tbody td, thead th {
 				<?php foreach($query as $result){ ?>
                 <?php 
                     if($this->session->userdata('level') == 2){
-                        if(!($result->flag==1 && ($result->status=="direvisi" || $result->status=="proses"))) continue;
+                        //if(!($result->flag==1 && ($result->status=="direvisi" || $result->status=="proses"))) continue;
                     }
                 ?>
 				<tr>
