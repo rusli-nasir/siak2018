@@ -158,16 +158,18 @@ class Kuitansi_model extends CI_Model {
 
         if($this->session->userdata('level')==1){
             $verifikasi = "AND ((status='revisi' AND flag=1) OR (status='proses' AND flag=1))";
+            $order = "ORDER BY FIELD(status, 'revisi', 'proses', 'terima', 'posted')";
         }else{
             $verifikasi = "AND (status='proses' AND flag=1)";
+            $order = "ORDER BY FIELD(status, 'proses', 'revisi', 'terima', 'posted')";
         }
 
         if($limit!=null OR $start!=null){
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND status<>'posted' $verifikasi AND
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit $order LIMIT $start, $limit");
         }else{
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND status<>'posted' $verifikasi AND 
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit $order");
         }
         return $query;
     }
@@ -211,40 +213,6 @@ class Kuitansi_model extends CI_Model {
 		}
 		return $query;
 	}
-
-    function read_kuitansi_jadi_ls($limit = null, $start = null, $keyword = null){
-        if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='LSPHK3' AND (status<>'proses' OR flag<>2) AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
-        }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='LSPHK3' AND (status<>'proses' OR flag<>2) AND
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
-        }
-        return $query;
-    }
-
-    function read_kuitansi_jadi_spm($limit = null, $start = null, $keyword = null){
-        if($this->session->userdata('kode_unit')!=null){
-            $unit = 'AND unit_kerja="'.$this->session->userdata('kode_unit').'"';
-        }else{
-            $unit = '';
-        }
-
-        if($this->session->userdata('level')==1){
-            $verifikasi = "";
-        }else{
-            $verifikasi = "AND (status<>'proses' OR flag<>2)";
-        }
-
-        if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND tipe<>'pajak' $verifikasi $unit AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
-        }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='NK' AND tipe<>'pajak' $verifikasi $unit AND
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
-        }
-        return $query;
-    }
     
     function read_kuitansi_posting($limit = null, $start = null, $keyword = null, $kode_unit = null,  $jenis = 'GP'){
         if($kode_unit!=null){
