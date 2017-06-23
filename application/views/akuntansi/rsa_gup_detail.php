@@ -59,37 +59,13 @@ $(document).ready(function(){
         }
     });
     
-    
-    $("#cetak").click(function(){
-                    var mode = 'iframe'; //popup
-                    var close = mode == "popup";
-                    var options = { mode : mode, popClose : close};
-//                    console.log($("#" + id_cetak).html());
-                    $("#" + id_cetak).printArea( options );
-                });
-                
-    $("#cetak-spm").click(function(){
-                    var mode = 'iframe'; //popup
-                    var close = mode == "popup";
-                    var options = { mode : mode, popClose : close};
-//                    console.log($("#" + id_cetak_2).html());
-                    $("#" + id_cetak_2).printArea( options );
-                });
-    
-    $("#cetak-lampiran").click(function(){
-                    var mode = 'iframe'; //popup
-                    var close = mode == "popup";
-                    var options = { mode : mode, popClose : close};
-//                    console.log($("#" + id_cetak).html());
-                    $("#" + id_cetak_3).printArea( options );
-                });
                 
     $("#cetak-kuitansi").click(function(){
                     var mode = 'iframe'; //popup
                     var close = mode == "popup";
                     var options = { mode : mode, popClose : close};
 //                    console.log($("#" + id_cetak).html());
-                    $("#div-cetak-kuitansi").printArea( options );
+                    $("#kuitansi-print").printArea( options );
                 });
     
     var pos = $('.ttd').position();
@@ -529,7 +505,7 @@ function terbilang(bilangan) {
       <div role="tabpanel" class="tab-pane" id="kuitansi">
           
           <div style="background-color: #EEE; padding: 10px;">
-              	<div class="row">
+              	<div class="row" id="kuitansi-print">
 			<div class="col-md-12 table-responsive">
                             <div style="background-color: #FFF;">
 				<table class="table table-bordered table-striped table-hover small">
@@ -605,6 +581,7 @@ function terbilang(bilangan) {
 					</tr>
                                         </tbody>
 				</table>
+                                <button id="cetak-kuitansi">Cetak</button>
                             </div>
 			</div>
 		</div>
