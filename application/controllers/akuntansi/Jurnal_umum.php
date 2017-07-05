@@ -76,6 +76,44 @@ class Jurnal_umum extends MY_Controller {
 
 
         $objWorksheet = $objPHPExcel->getActiveSheet();
+
+        //verifikasi akun dulu, batal upload kalau ada akun yang tidak terdeteksi
+
+        $start_akun = $end_akun = 6;
+
+        $akun = $objWorksheet->getCellByColumnAndRow($end_akun,9)->getValue();
+        $array_akun = array();
+
+        while ($akun != null and $akun != 'TOTAL NILAI MAK') {
+            if (strpos($akun, '-') == -1) {
+                $array_akun[] = $akun;
+            } else {
+                $array_akun = array_merge($array_akun,explode('-', $akun));
+            }
+            $end_akun++;
+            $akun = $objWorksheet->getCellByColumnAndRow($end_akun,9)->getValue();
+        }
+
+        $array_non_akun = array();
+        foreach ($array_akun as $entry) {
+            $nama = $this->Akun_model->get_nama_akun($entry);
+            if ($nama == '-' or $nama == null) {
+                $array_non_akun[] = $entry;
+            }
+        }
+
+        if (count($array_non_akun) > 0) {
+            echo "Akun di bawah ini tidak terdeteksi : <br/>";
+            foreach ($array_non_akun as $entry) {
+                echo "$entry<br/>";
+            }
+            echo "<a href='".$_SERVER['HTTP_REFERER']."''>kembali</a>";
+            die();
+        }
+
+        die('masuk ke proses');
+
+        // print_r($array_akun);
     
 
         // Cari mulai kolom debet mulai dari berapa sampai berapa

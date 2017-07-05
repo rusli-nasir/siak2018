@@ -30,6 +30,12 @@ class Akun_model extends CI_Model {
 					$hasil = $this->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
 				}
 				return $hasil;
+			}else if (substr($kode_akun,0,1) == 8){
+				$hasil =  $this->db->get_where('akuntansi_pembiayaan_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+				if ($hasil == null) {
+					$hasil = $this->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+				}
+				return $hasil;
 			} else if (substr($kode_akun,0,1) == 9){
 				return $this->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 			} else if (substr($kode_akun,0,1) == 1){

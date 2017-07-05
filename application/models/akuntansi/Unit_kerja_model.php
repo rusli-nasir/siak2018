@@ -22,6 +22,9 @@ class Unit_kerja_model extends CI_Model {
 
     public function get_nama_unit($kode_unit)
     {
+        if ($kode_unit == '9999') {
+            return 'Penerimaan';
+        }
 
         $hasil = $this->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
         if ($hasil == null) {
