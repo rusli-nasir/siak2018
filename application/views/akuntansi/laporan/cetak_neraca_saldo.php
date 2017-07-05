@@ -88,8 +88,12 @@
 
 			foreach ($query as $key => $entry) {
 				$saldo = get_saldo_awal($key);
+	            if ($saldo != null) {
+	                $saldo = $saldo['saldo_awal'];
+	            }
 		    	$debet = 0;
 		    	$kredit = 0;
+		    	$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
 
 				echo '<tr>
 						<td>'.$i.'</td>
@@ -97,13 +101,30 @@
 						<td>'.get_nama_akun_v((string)$key).'</td>';
 					foreach ($entry as $transaksi) {
 		    			if ($transaksi['tipe'] == 'debet'){
-		    				$saldo += $transaksi['jumlah'];
+		    				if ($case_hutang) {
+		                        $saldo -= $transaksi['jumlah'];
+		                    } else {
+		                        $saldo += $transaksi['jumlah'];
+		                    }
 		    				$debet += $transaksi['jumlah'];
 		    			} else if ($transaksi['tipe'] == 'kredit'){
-							$saldo -= $transaksi['jumlah'];
+							if ($case_hutang) {
+		                        $saldo += $transaksi['jumlah'];
+		                    } else {
+		                        $saldo -= $transaksi['jumlah'];
+		                    }
 							$kredit += $transaksi['jumlah'];
 		    			}
 		    		}
+
+
+		    		$jumlah_debet += $debet;
+		    		$jumlah_kredit += $kredit;
+		    		if ($case_hutang) {
+		                $saldo_neraca = $kredit - $debet;
+		            } else {
+		                $saldo_neraca = $debet - $kredit;
+		            }
 
 
 		    		$jumlah_debet += $debet;

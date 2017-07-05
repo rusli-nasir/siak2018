@@ -15,8 +15,8 @@
 		    border: 1px solid black;
 		}
 		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
-    .excel{background-color:#A3A33E;color:#fff;}
-    .pdf{background-color:#588097;color:#fff;}
+    	.excel{background-color:#A3A33E;color:#fff;}
+    	.pdf{background-color:#588097;color:#fff;}
 		</style>
 		<script type="text/javascript">
 		</script>
