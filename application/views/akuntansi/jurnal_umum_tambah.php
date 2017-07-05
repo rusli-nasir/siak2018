@@ -278,8 +278,60 @@ $(document).ready(function(){
 </fieldset>
 
 <div class="row">
-  <div class="col-sm-6 col-sm-offset-3" style="border-right:1px solid #eee" id="group-kas">
-    <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Pengembalian</strong></h3></div>
+  <div class="col-sm-6" style="border-right:1px solid #eee" id="group-kas">
+    <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Pengembalian Kas</strong></h3></div>
+      <div class="col-md-12 control-label" style="text-align: left;"><h4>Debit<button id="add-akunKredit_pengembalian" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
+      <div class="col-md-12" id="group-akunKredit_pengembalian">
+        <div class="form-group"> 
+          <div class="col-md-5">
+            <select name="akun_kredit_pengembalian[]" class="form-control akun_kredit_pengembalian">
+                <option value="">Pilih Akun</option>
+                <option value="">
+                 <?php foreach ($akun_kas as $akun) {
+                  ?>
+              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?> 
+            </select> 
+          </div>
+
+          <div class="col-md-6">
+          <input name="jumlah_akun_kredit_pengembalian[]" type="text" class="form-control input-md jumlah_akun_kredit_pengembalian">
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-12 control-label" style="text-align: left"><h4>Kredit<button id="add-akunDebet_pengembalian" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
+        <div class="col-md-12" id="group-akunDebet_pengembalian">
+        <div class="form-group"> 
+          <div class="col-md-5">
+            <select name="akun_debet_kas[]" class="form-control akun_debet_pengembalian">
+                <option value="">Pilih Akun</option>
+                <option value="">
+                 <?php foreach ($akun_kas as $akun) {
+                  ?>
+              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?> 
+            </select> 
+          </div>
+
+          <div class="col-md-6">
+          <input name="jumlah_akun_debet_pengembalian[]" type="text" class="form-control input-md jumlah_akun_debet_pengembalian">
+          </div>
+
+        </div>
+      </div>
+      
+      <hr>
+      <div class="col-md-12 control-label">Jumlah kredit : <span id="total_kredit_pengembalian">0</span></div>
+      <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_pengembalian">0</span></div>
+      <div class="col-md-12 control-label">Selisih : <span id="selisih_pengembalian">0</span></div>
+  </div>
+  <div class="col-sm-6" style="border-right:1px solid #eee" id="group-kas">
+    <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Pengembalian Akrual</strong></h3></div>
       <div class="col-md-12 control-label" style="text-align: left;"><h4>Debit<button id="add-akunKredit_pengembalian" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
       <div class="col-md-12" id="group-akunKredit_pengembalian">
         <div class="form-group"> 

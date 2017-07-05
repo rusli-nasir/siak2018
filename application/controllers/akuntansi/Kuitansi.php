@@ -1155,13 +1155,45 @@ class Kuitansi extends MY_Controller {
 	}
 
 	function get_total_kuitansi($kode_unit, $periode_awal, $periode_akhir){
-		$this->db->where(array('kode_unit'=>$kode_unit, 'cair'=>1));
 		if($periode_awal!=null AND $periode_akhir!=null){
-    		$this->db->where("(tgl_kuitansi BETWEEN '$periode_awal' AND '$periode_akhir')");
+    		$filter_periode = "(tgl_kuitansi BETWEEN '$periode_awal' AND '$periode_akhir')";
     	}
-		$query = $this->db->get('rsa_kuitansi');
-		$q = $query->num_rows();
-		return $q;
+		
+		//gu
+		$gu = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 
+			AND substr(trx_gup.kode_unit_subunit,1,2)='".$kode_unit."'");
+		$gu = $gu->num_rows();
+
+		//up
+		$up = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx 
+			AND substr(trx_up.kode_unit_subunit,1,2)='".$kode_unit."'");
+		$up = $up->num_rows();
+
+		//gup
+		$gup = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+			substr(kode_unit,1,2)='".$kode_unit."' ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
+		$gup = $gup->num_rows();
+
+		//pup
+		$pup = $this->db->query("SELECT * FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx 
+			AND substr(trx_tambah_up.kode_unit_subunit,1,2)='".$kode_unit."'");
+		$pup = $pup->num_rows();
+
+		//tup
+		$tup = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx
+			AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'");
+		$tup = $tup->num_rows();
+
+		//ls3
+		$ls3 = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1
+			AND substr(trx_lsphk3.kode_unit_subunit,1,2)='".$kode_unit."'");
+		$ls3 = $ls3->num_rows();
+
+		//lspg
+		$lspg = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.flag_proses_akuntansi=0 AND S.proses=5 AND P.unitsukpa=".$kode_unit."");
+		$lspg = $lspg->num_rows();
+
+		return $up+$gup+$gu+$pup+$tup+$ls3+$lspg;
 	}
     
     /****************** RUPIAH MURNI ************************/
