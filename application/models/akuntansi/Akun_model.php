@@ -50,7 +50,9 @@ class Akun_model extends CI_Model {
 
 	public function get_saldo_awal($kode_akun)
 	{
-		$hasil = $this->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+		$tahun = gmdate('Y');
+
+		$hasil = $this->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
 		return $hasil;
 	}
