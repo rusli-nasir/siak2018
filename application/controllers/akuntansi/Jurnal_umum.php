@@ -15,14 +15,128 @@ class Jurnal_umum extends MY_Controller {
         $this->load->model('akuntansi/Jurnal_umum_model', 'Jurnal_umum_model');
         $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
         $this->load->model('akuntansi/Akun_lra_model', 'Akun_lra_model');
+        $this->load->model('akuntansi/Akun_model', 'Akun_model');
         $this->load->model('akuntansi/Posting_model', 'Posting_model');
         $this->load->model('akuntansi/Memorial_model', 'Memorial_model');
         $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
+        $this->load->library('excel');
     }
 
     public function coba()
     {
         $this->Posting_model->posting_kuitansi_full(16);
+    }
+
+    public function import_jurnal_umum()
+    {
+        $this->load->library('excel');
+        $temp_data['content'] = $this->load->view('akuntansi/form_upload_jurnal_umum',null,true);
+        $this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+    public function do_upload($alert = null,$notice = null)
+    {
+        
+        $config['upload_path'] = './assets/akuntansi/upload';
+        $config['allowed_types'] = 'xlsx|xls';
+        $config['max_size'] = '20000';
+        // $config['max_width']  = '1024';
+        // $config['max_height']  = '768';
+
+        $this->load->library('upload', $config);
+        // die('aaa');
+        
+
+        if ( ! $this->upload->do_upload())
+        {
+            echo $this->upload->display_errors('<p>', '</p>');
+            die('gagal mengupload');
+        }
+        else
+        {
+            $data = $this->upload->data();
+            $this->import_jurnal_umum_backend($data['full_path']);
+        }
+    }
+
+    public function import_jurnal_umum_backend($file)
+    {
+        $inputFileType = PHPExcel_IOFactory::identify($file);
+
+        $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+        $objReader->setReadDataOnly(true);
+        $objPHPExcel = $objReader->load($file);
+
+        $sal_jurnal_umum = $this->Akun_model->get_kode_sal_jurnal_umum();
+        $waktu_jurnal_umum = date('Y-m-d H:i:s');
+
+        $i = 0;
+
+        $data = array();
+
+
+        $objWorksheet = $objPHPExcel->getActiveSheet();
+    
+
+        // Cari mulai kolom debet mulai dari berapa sampai berapa
+
+        $start_akun = $end_akun = 6;
+
+        $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        while ($val == '' or $val == 'DEBET') {
+            $end_akun++;
+            $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        } 
+
+        $end_akun = $end_akun - 1;
+
+        //end Cari mulai kolom debet...
+
+        // print_r($end_akun);die('aa');
+
+        $highestRow = $objWorksheet->getHighestRow() - 4; // e.g. 10
+        $highestColumnIndex = $end_akun; // e.g. 5
+
+        $index = 0;
+
+        for ($row=10; $row <= $highestRow; $row++) { 
+            $entry = array();
+            $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getCalculatedValue();
+            $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
+            $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
+            $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(5,$row)->getValue();
+            $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
+            $entry['unit_kerja'] = 92;
+            $entry['tipe'] = 'jurnal_umum';
+            $entry['jenis'] = 'jurnal_umum';
+            $entry['jenis_pembatasan_dana'] = 'tidak_terikat';
+
+            $entry['flag'] =3;
+            $entry['status'] = 4;
+
+            $entry['tanggal_posting'] = $waktu_jurnal_umum;
+            $entry['tanggal_verifikasi'] = $waktu_jurnal_umum;
+            $entry['tanggal_jurnal'] = $waktu_jurnal_umum;
+            
+            for ($kolom=$start_akun; $kolom <= $end_akun; $kolom++) { 
+                $entry['jumlah_debet'] = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
+                $entry['jumlah_kredit'] = $entry['jumlah_debet'];
+
+                if ($entry['jumlah_debet'] != 0){
+                    $data[] = $entry;
+                }
+
+            }
+        }
+        print_r($data);
+        die();
+
+        if ($this->Jurnal_umum_model->insert_penerimaan_batch($data)) {
+            redirect('akuntansi/penerimaan');
+        } else {
+            die('gagal menginput');
+        }
+
     }
 
 	public function index($id = 0){

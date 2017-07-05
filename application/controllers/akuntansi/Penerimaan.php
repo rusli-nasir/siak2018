@@ -87,6 +87,7 @@ class Penerimaan extends MY_Controller {
                 $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
                 $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
                 $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
+                $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
                 $entry['akun_debet'] = $sal_penerimaan;
                 $entry['akun_kredit'] = $akun_kredit_kas;
                 $entry['akun_debet_akrual'] = $akun_debet_akrual;
@@ -113,11 +114,6 @@ class Penerimaan extends MY_Controller {
 
             if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
 
-        }
-
-        $array_no = $this->Penerimaan_model->generate_nomor_bukti_batch(count($data));
-        for ($i=0; $i < count($data); $i++) { 
-            $data[$i]['no_bukti'] = $array_no[$i];
         }
 
         if ($this->Penerimaan_model->insert_penerimaan_batch($data)) {

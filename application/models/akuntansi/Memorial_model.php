@@ -11,6 +11,7 @@ class Memorial_model extends CI_Model {
 	
 	public function generate_nomor_bukti()
 	{
+		$this->db->like('no_bukti', 'M', 'after');
 		$latest = $this->db->order_by('id_kuitansi_jadi','DESC')->get_where('akuntansi_kuitansi_jadi',array('tipe' => 'memorial'))->row_array();
 
 		if ($latest != null){

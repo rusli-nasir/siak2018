@@ -12,6 +12,7 @@ class Penerimaan_model extends CI_Model {
 	
 	public function generate_nomor_bukti()
 	{
+		$this->db->like('no_bukti', 'P', 'after'); 
 		$latest = $this->db->order_by('id_kuitansi_jadi','DESC')->get_where('akuntansi_kuitansi_jadi',array('tipe' => 'penerimaan'))->row_array();
 
 		if ($latest != null){
