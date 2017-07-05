@@ -686,6 +686,14 @@ class Kuitansi extends MY_Controller {
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
 		$this->data['tab7'] = true;
+        //level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+			$kode_unit = null;
+		}
+        
 		//search
 		if(isset($_POST['keyword_jadi_ls'])){
 			$keyword = $this->input->post('keyword_jadi_ls');
@@ -698,7 +706,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi_jadi_ls(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword, $kode_unit, 'LSPHK3');
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -729,7 +737,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi_ls($config['per_page'], $id, $keyword);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit, 'LSPHK3');
 
 		$this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>'LSPHK3', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
         $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'jenis'=>'LSPHK3', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
@@ -743,6 +751,14 @@ class Kuitansi extends MY_Controller {
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
 		$this->data['tab8'] = true;
+        //level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+			$kode_unit = null;
+		}
+        
 		//search
 		if(isset($_POST['keyword_spm_jadi'])){
 			$keyword = $this->input->post('keyword_spm_jadi');
@@ -755,7 +771,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi_jadi_spm(null, null, $keyword);
+		$total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword, $kode_unit, 'NK');
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -786,7 +802,7 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi_spm($config['per_page'], $id, $keyword);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit, 'NK');
 
 		$this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
         $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();

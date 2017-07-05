@@ -62,7 +62,7 @@ $pdf->AddPage('L');
 $html_head = 
 	'<body style="font-family:arial;">
 		<div align="center" style="font-weight:bold">
-			UNIVERSITAS DIPONEGORO<br/>
+			'.$teks_unit.'<br/>
 			NERACA SALDO<br/>
 			'.$teks_periode.'<br/><br/>
 		</div>';
@@ -70,11 +70,11 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 			$html = '<table style="font-size:10pt;">
 						<tr>
 							<td width="130px"><b>Unit Kerja</b></td>
-							<td>UNIVERSITAS DIPONEGORO</td>
+							<td>'.$teks_unit.'</td>
 						</tr>
 						<tr>
 							<td><b>Tahun Anggaran</b></td>
-							<td>2017</td>
+							<td>'.$teks_tahun_anggaran.'</td>
 						</tr>
 				</table>';
 			$html .= '<table style="font-size:10pt;" border="1">
@@ -285,7 +285,10 @@ function get_nama_akun_v($kode_akun){
 }
 
 function get_saldo_awal($kode_akun){
-	return 1000000000;
+	$ci =& get_instance();
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+
+	return $hasil;
 }
 
 function get_pejabat($unit, $jabatan){

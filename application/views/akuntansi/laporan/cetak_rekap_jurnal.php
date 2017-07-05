@@ -14,14 +14,38 @@
 		.border th{
 		    border: 1px solid black;
 		}
+		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
+    .excel{background-color:#A3A33E;color:#fff;}
+    .pdf{background-color:#588097;color:#fff;}
 		</style>
 		<script type="text/javascript">
-		window.print();
 		</script>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
+		&nbsp;&nbsp;
+		<?php echo form_open("akuntansi/laporan/$sumber/excel",array("class"=>"form-horizontal")); ?>
+			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+			<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
+		</form>
+		<?php 
+		$arr_sumber = explode('_', $sumber);
+		$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
+		?>
+		<?php echo form_open("akuntansi/laporan/$link_cetak",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
+			<input type="hidden" name="tipe" value="pdf">
+			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+			<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
+		</form>
 		<div align="center" style="font-weight:bold">
-			UNIVERSITAS DIPONEGORO<br/>
+			<?php echo $teks_unit; ?><br/>
 			JURNAL UMUM<br/>
 			<?php echo $teks_periode; ?><br/>
 			<?php echo $teks_tahun_anggaran; ?><br/><br/>
@@ -58,12 +82,11 @@
             		echo '<tr>
             				<td align="center" style="background-color:#D0FCEE">'.$iter.'</td>
             				<td align="center" colspan="5" style="background-color:#D0FCEE" align="right">Keterangan</td>
-            				<td colspan="3">'.$nama_unit.':<br/>'.$transaksi['uraian'].'</td>
+            				<td colspan="3" width="200px" style="background-color:#D0FCEE">'.$nama_unit.':<br/>'.$transaksi['uraian'].'</td>
             			</tr>';
-            		$baris+=1;
             		foreach ($akun as $in_akun) {			
             			echo '<tr>
-            					<td>'.$baris.'</td>
+            					<td></td>
             					<td>'.date("d M Y", strtotime($transaksi['tanggal'])).'</td>
             					<td>'.$transaksi['no_spm'].'</td>
             					<td>'.$transaksi['no_bukti'].'</td>
@@ -79,26 +102,8 @@
 				                    echo '<td align="right">'.number_format($in_akun['jumlah'],2).'</td>';
 				                    $jumlah_kredit += $in_akun['jumlah'];
 				                }
-            			echo '</tr>';
-            			$baris+=1;            			
+            			echo '</tr>';         			
             		}
-            		if(($baris%35)>=25){
-            			$baris = 1;
-						echo '</tbody></table><div style="margin-bottom:1800px"></div><table style="width:1300px;font-size:10pt;" class="border">
-						<thead>
-							<tr style="background-color:#ECF379;height:45px">
-								<th>'.$iter.'</th>
-								<th>Tanggal</th>
-								<th>NO. SPM</th>
-								<th>NO. BUKTI</th>
-								<th>OUTPUT</th>
-								<th>Kode Akun</th>
-								<th width="350px">URAIAN</th>
-								<th>DEBET</th>
-								<th>KREDIT</th>
-							</tr>
-						</thead>';
-					}
 		        	$iter++;
 		        }
 				?>
@@ -111,10 +116,10 @@
     			</tr>';
 			?>
 		</table>
-		<div align="right" style="width:1300px;margin-top:40px;">
-			<div style="width:200px" align="left">
+		<div align="right" style="width:1200px;margin-top:40px;">
+			<div style="width:400px" align="left">
 				<?php 
-				echo 'Semarang, '.date("d-m-Y", strtotime($periode_akhir)).'<br/>Pengguna Anggaran<br/>';
+				echo 'Semarang, '.$periode_akhir.'<br/>Pengguna Anggaran<br/>';
 				echo get_nama_unit($unit).'<br/><br/><br/><br/>';
 				$pejabat = get_pejabat($unit, 'kpa'); 
 				echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
@@ -134,13 +139,6 @@ function get_nama_unit($kode_unit)
     }
     return $hasil['nama_unit'];
 
-}
-
-function get_pejabat($unit, $jabatan){
-	$ci =& get_instance();
-	$ci->db->where('unit', $unit);
-	$ci->db->where('jabatan', $jabatan);
-	return $ci->db->get('akuntansi_pejabat')->row_array();
 }
 
 function get_nama_akun_v($kode_akun){
@@ -167,7 +165,7 @@ function get_nama_akun_v($kode_akun){
 			}
 			return $hasil;
 		} else if (substr($kode_akun,0,1) == 9){
-			return 'SAL';
+			return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 		} else if (substr($kode_akun,0,1) == 1){
 			$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
 			if ($hasil == null){
@@ -185,6 +183,24 @@ function get_nama_akun_v($kode_akun){
 }
 
 function get_saldo_awal($kode_akun){
-	return 1000000000;
+	$ci =& get_instance();
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+
+	return $hasil;
+}
+
+function get_pejabat($unit, $jabatan){
+	$ci =& get_instance();
+	$ci->db->where('unit', $unit);
+	$ci->db->where('jabatan', $jabatan);
+	return $ci->db->get('akuntansi_pejabat')->row_array();
+}
+
+function eliminasi_negatif($value)
+{
+    if ($value < 0) 
+        return "(". number_format(abs($value),2,',','.') .")";
+    else
+        return number_format($value,2,',','.');
 }
 ?>
