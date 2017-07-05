@@ -99,6 +99,7 @@ class Pajak_model extends CI_Model {
 
 
     		unset($kuitansi['id_kuitansi_jadi']);
+            unset($kuitansi['id_pengembalian']);
 
     		$this->db->insert('akuntansi_kuitansi_jadi',$kuitansi);
             $id_kuitansi = $this->db->insert_id();
