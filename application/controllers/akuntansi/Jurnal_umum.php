@@ -304,12 +304,34 @@ class Jurnal_umum extends MY_Controller {
             $entry['akun_kredit_akrual'] = $entry['akun_kredit_akrual'][0];
             unset($entry['akun_kredit_akrual']);
 
+            //pengembalian
+            $entry['akun_debet_pengembalian'] = $entry['akun_debet_pengembalian'][0];
+            unset($entry['akun_debet_pengembalian']);
+            $entry['akun_kredit_pengembalian'] = $entry['akun_kredit_pengembalian'][0];
+            unset($entry['akun_kredit_pengembalian']);
+            $entry['akun_debet_pengembalian_akrual'] = $entry['akun_debet_pengembalian_akrual'][0];
+            unset($entry['akun_debet_pengembalian_akrual']);
+            $entry['akun_kredit_pengembalian_akrual'] = $entry['akun_kredit_pengembalian_akrual'][0];
+            unset($entry['akun_kredit_pengembalian_akrual']);
+
             $entry['jumlah_debet'] = array_sum($entry['jumlah_akun_debet_akrual']);
             unset($entry['jumlah_akun_debet_akrual']);
             $entry['jumlah_kredit'] = array_sum($entry['jumlah_akun_kredit_akrual']);
             unset($entry['jumlah_akun_kredit_akrual']);
             unset($entry['jumlah_akun_kredit_kas']);
             unset($entry['jumlah_akun_debet_kas']);
+
+            //pengembalian
+            $entry['jumlah_debet_pengembalian'] = array_sum($entry['jumlah_akun_debet_pengembalian']);
+            unset($entry['jumlah_akun_debet_pengembalian']);
+            unset($entry['jumlah_debet_pengembalian']);          
+            $entry['jumlah_kredit_pengembalian'] = array_sum($entry['jumlah_akun_kredit_pengembalian']);
+            unset($entry['jumlah_akun_kredit_pengembalian']);
+            unset($entry['jumlah_kredit_pengembalian']);
+            $entry['jumlah_akun_debet_pengembalian_akrual'] = array_sum($entry['jumlah_akun_debet_pengembalian_akrual']);
+            unset($entry['jumlah_akun_debet_pengembalian_akrual']);
+            $entry['jumlah_akun_kredit_pengembalian_akrual'] = array_sum($entry['jumlah_akun_kredit_pengembalian_akrual']);
+            unset($entry['jumlah_akun_kredit_pengembalian_akrual']);
 
             $entry['flag'] = 3;
             $entry['status'] = 4;
@@ -353,6 +375,7 @@ class Jurnal_umum extends MY_Controller {
 
             $entry_relasi = array();
             $relasi = array();
+            $pengembalian = array();
             for ($i=0; $i < count($akun['akun_debet_akrual']); $i++) { 
                 $relasi['akun'] = $akun['akun_debet_akrual'][$i];
                 $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_akrual'][$i]);
@@ -401,10 +424,71 @@ class Jurnal_umum extends MY_Controller {
                 }
             }
 
+            if ($akun['akun_kredit_pengembalian'][0] != null) {
+                for ($i=0; $i < count($akun['akun_kredit_pengembalian']); $i++) { 
+                    $relasi['akun'] = $akun['akun_kredit_pengembalian'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_pengembalian'][$i]);
+                    $relasi['tipe'] = 'debit';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
+
+                    $entry_relasi_pengembalian[] = $pengembalian;
+                }
+            }
+
+            if ($akun['akun_debet_pengembalian'][0] != null) {
+                for ($i=0; $i < count($akun['akun_debet_pengembalian']); $i++) { 
+                    $relasi['akun'] = $akun['akun_debet_pengembalian'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_pengembalian'][$i]);
+                    $relasi['tipe'] = 'kredit';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
+
+                    $entry_relasi_pengembalian[] = $pengembalian;
+                }
+            }
+
+            if ($akun['akun_kredit_pengembalian_akrual'][0] != null) {
+                for ($i=0; $i < count($akun['akun_kredit_pengembalian_akrual']); $i++) { 
+                    $relasi['akun'] = $akun['akun_kredit_pengembalian_akrual'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_pengembalian_akrual'][$i]);
+                    $relasi['tipe'] = 'debit';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'akrual';
+
+                    $entry_relasi_pengembalian[] = $pengembalian;
+                }
+            }
+
+            if ($akun['akun_debet_pengembalian_akrual'][0] != null) {
+                for ($i=0; $i < count($akun['akun_debet_pengembalian_akrual']); $i++) { 
+                    $relasi['akun'] = $akun['akun_debet_pengembalian_akrual'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_pengembalian_akrual'][$i]);
+                    $relasi['tipe'] = 'kredit';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'akrual';
+
+                    $entry_relasi_pengembalian[] = $pengembalian;
+                }
+            }
+
             
             $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
             
             //  input pajak
+
+            if ($array_pajak != null) {
+                $updater = array();
+                $q4 = $this->Pajak_model->insert_pajak($id_kuitansi_jadi,$array_pajak);
+                $updater['id_pajak'] = $q4;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+
+                $q6 = $this->Posting_model->posting_kuitansi_full($q4);
+            }
 
             if ($array_pajak != null) {
                 $updater = array();

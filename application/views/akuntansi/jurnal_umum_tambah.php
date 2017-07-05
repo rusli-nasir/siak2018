@@ -306,7 +306,7 @@ $(document).ready(function(){
         <div class="col-md-12" id="group-akunDebet_pengembalian">
         <div class="form-group"> 
           <div class="col-md-5">
-            <select name="akun_debet_kas[]" class="form-control akun_debet_pengembalian">
+            <select name="akun_debet_pengembalian[]" class="form-control akun_debet_pengembalian">
                 <option value="">Pilih Akun</option>
                 <option value="">
                  <?php foreach ($akun_kas as $akun) {
@@ -332,11 +332,11 @@ $(document).ready(function(){
   </div>
   <div class="col-sm-6" style="border-right:1px solid #eee" id="group-kas">
     <div class="col-md-12 control-label" style="text-align: center;"><h3><strong>Pengembalian Akrual</strong></h3></div>
-      <div class="col-md-12 control-label" style="text-align: left;"><h4>Debit<button id="add-akunKredit_pengembalian" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
-      <div class="col-md-12" id="group-akunKredit_pengembalian">
+      <div class="col-md-12 control-label" style="text-align: left;"><h4>Debit<button id="add-akunKredit_pengembalian_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
+      <div class="col-md-12" id="group-akunKredit_pengembalian_akrual">
         <div class="form-group"> 
           <div class="col-md-5">
-            <select name="akun_kredit_pengembalian[]" class="form-control akun_kredit_pengembalian">
+            <select name="akun_kredit_pengembalian_akrual[]" class="form-control akun_kredit_pengembalian_akrual">
                 <option value="">Pilih Akun</option>
                 <option value="">
                  <?php foreach ($akun_kas as $akun) {
@@ -349,16 +349,16 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_kredit_pengembalian[]" type="text" class="form-control input-md jumlah_akun_kredit_pengembalian">
+          <input name="jumlah_akun_kredit_pengembalian_akrual[]" type="text" class="form-control input-md jumlah_akun_kredit_pengembalian_akrual">
           </div>
 
         </div>
       </div>
-      <div class="col-md-12 control-label" style="text-align: left"><h4>Kredit<button id="add-akunDebet_pengembalian" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
-        <div class="col-md-12" id="group-akunDebet_pengembalian">
+      <div class="col-md-12 control-label" style="text-align: left"><h4>Kredit<button id="add-akunDebet_pengembalian_akrual" class="close" style="background:#1B5E20; padding: 0px 4px; color:white; opacity:1" type="button">+</button></h4></div>
+        <div class="col-md-12" id="group-akunDebet_pengembalian_akrual">
         <div class="form-group"> 
           <div class="col-md-5">
-            <select name="akun_debet_kas[]" class="form-control akun_debet_pengembalian">
+            <select name="akun_debet_pengembalian_akrual[]" class="form-control akun_debet_pengembalian_akrual">
                 <option value="">Pilih Akun</option>
                 <option value="">
                  <?php foreach ($akun_kas as $akun) {
@@ -371,16 +371,16 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_debet_pengembalian[]" type="text" class="form-control input-md jumlah_akun_debet_pengembalian">
+          <input name="jumlah_akun_debet_pengembalian_akrual[]" type="text" class="form-control input-md jumlah_akun_debet_pengembalian_akrual">
           </div>
 
         </div>
       </div>
       
       <hr>
-      <div class="col-md-12 control-label">Jumlah kredit : <span id="total_kredit_pengembalian">0</span></div>
-      <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_pengembalian">0</span></div>
-      <div class="col-md-12 control-label">Selisih : <span id="selisih_pengembalian">0</span></div>
+      <div class="col-md-12 control-label">Jumlah kredit : <span id="total_kredit_pengembalian_akrual">0</span></div>
+      <div class="col-md-12 control-label">Jumlah debet : <span id="total_debet_pengembalian_akrual">0</span></div>
+      <div class="col-md-12 control-label">Selisih : <span id="selisih_pengembalian_akrual">0</span></div>
   </div>
 </div>
 
@@ -464,6 +464,9 @@ $(document).ready(function(){
   var jml_kredit_pengembalian = 0;
   var jml_debet_pengembalian = 0;
   var jml_total_pengembalian = 0;
+  var jml_kredit_pengembalian_akrual = 0;
+  var jml_debet_pengembalian_akrual = 0;
+  var jml_total_pengembalian_akrual = 0;
     
   function registerEvents(){
       $(".remove-entry").click(function(){
@@ -489,6 +492,12 @@ $(document).ready(function(){
       });
       $(".jumlah_akun_kredit_pengembalian").on('input', function(){
           updateSelisih_pengembalian();
+      });
+      $(".jumlah_akun_debet_pengembalian_akrual").on('input', function(){
+          updateSelisih_pengembalian_akrual();
+      });
+      $(".jumlah_akun_kredit_pengembalian_akrual").on('input', function(){
+          updateSelisih_pengembalian_akrual();
       });
   }
     
@@ -546,6 +555,24 @@ $(document).ready(function(){
       if(jml_total_kas==0) $('#selisih_pengembalian').removeAttr('style');
       else $('#selisih_pengembalian').attr('style', 'color:red');
   }
+  function updateSelisih_pengembalian_akrual(){
+      jml_debet_pengembalian_akrual = 0;
+      $(".jumlah_akun_debet_pengembalian_akrual").each(function(){
+          jml_debet_pengembalian_akrual += $(this).val()*1;
+      });
+      $('#total_debet_pengembalian_akrual').text(jml_debet_pengembalian_akrual);
+      
+      jml_kredit_pengembalian_akrual = 0;
+      $(".jumlah_akun_kredit_pengembalian_akrual").each(function(){
+          jml_kredit_pengembalian_akrual += $(this).val()*1;
+      });
+      jml_total_kas = jml_kredit_pengembalian_akrual-jml_debet_pengembalian_akrual;
+      $('#total_kredit_pengembalian_akrual').text(jml_kredit_pengembalian_akrual);
+      
+      $('#selisih_pengembalian_akrual').text(jml_total_kas);
+      if(jml_total_kas==0) $('#selisih_pengembalian').removeAttr('style');
+      else $('#selisih_pengembalian_akrual').attr('style', 'color:red');
+  }
   registerEvents();
   $('#tanggal').datepicker({
       format: "yyyy-mm-dd"
@@ -569,6 +596,12 @@ $(document).ready(function(){
   var $select2 = $('.akun_kredit_pengembalian').selectize();  // This initializes the selectize control
   var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
 
+  var $select1 = $('.akun_debet_pengembalian_akrual').selectize();  // This initializes the selectize control
+  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  var $select2 = $('.akun_kredit_pengembalian_akrual').selectize();  // This initializes the selectize control
+  var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
+
 
   $(".jumlah_akun_kredit_kas").number(true,2);
   $(".jumlah_akun_debet_kas").number(true,2);
@@ -576,6 +609,8 @@ $(document).ready(function(){
   $(".jumlah_akun_debet_akrual").number(true,2);
   $(".jumlah_akun_kredit_pengembalian").number(true,2);
   $(".jumlah_akun_debet_pengembalian").number(true,2);
+  $(".jumlah_akun_kredit_pengembalian_akrual").number(true,2);
+  $(".jumlah_akun_debet_pengembalian_akrual").number(true,2);
   $(".number_pajak").number(true,2);
 
 
@@ -663,6 +698,36 @@ $(document).ready(function(){
         template.find('select').attr('name', 'akun_debet_kas[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_pengembalian');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_pengembalian[]');
+        template.find('select').selectize();
+            registerEvents();
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
+  });
+
+  $('#add-akunKredit_pengembalian_akrual').click(function () {
+        var template = $("#template_akun_kas").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunKredit_pengembalian_akrual').append(template);
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_pengembalian_akrual');
+        template.find('select').attr('name', 'akun_kredit_kas[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_pengembalian_akrual');
+        template.find('.input-md').attr('name', 'jumlah_akun_kredit_pengembalian_akrual[]');
+        template.find('select').selectize();
+            registerEvents();
+            var inputan = template.find('.input-md');
+        $(inputan).number(true,2);
+  });
+    
+  $('#add-akunDebet_pengembalian_akrual').click(function () {
+        var template = $("#template_akun_kas").clone();
+        template.removeAttr("id");
+        template.removeAttr("style");
+        $('#group-akunDebet_pengembalian_akrual').append(template);
+        template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_pengembalian_akrual');
+        template.find('select').attr('name', 'akun_debet_kas[]');
+        template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_pengembalian_akrual');
+        template.find('.input-md').attr('name', 'jumlah_akun_debet_pengembalian_akrual[]');
         template.find('select').selectize();
             registerEvents();
             var inputan = template.find('.input-md');
