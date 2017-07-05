@@ -119,6 +119,10 @@ class Jurnal_umum extends MY_Controller {
             $entry['tanggal_jurnal'] = $waktu_jurnal_umum;
             
             for ($kolom=$start_akun; $kolom <= $end_akun; $kolom++) { 
+                $entry['akun_kredit'] = $sal_jurnal_umum;
+                $entry['akun_debet'] = $objWorksheet->getCellByColumnAndRow($kolom,7)->getCalculatedValue();
+                $entry['akun_kredit_akrual'] = '911101';
+                $entry['akun_debet_akrual'] = substr_replace($entry['akun_kredit'],'7',0,1);
                 $entry['jumlah_debet'] = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
                 $entry['jumlah_kredit'] = $entry['jumlah_debet'];
 
