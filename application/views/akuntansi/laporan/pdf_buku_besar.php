@@ -286,7 +286,10 @@ function get_nama_akun_v($kode_akun){
 }
 
 function get_saldo_awal($kode_akun){
-	return 1000000000;
+	$ci =& get_instance();
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+
+	return $hasil;
 }
 
 function get_pejabat($unit, $jabatan){

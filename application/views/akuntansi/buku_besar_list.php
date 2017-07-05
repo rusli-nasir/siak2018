@@ -91,7 +91,7 @@
 </div><!--/.row-->
 <br />
 <div class="container">
-    <?php echo form_open('akuntansi/laporan/get_buku_besar',array("class"=>"form-horizontal","id" => "form_pop")); ?>
+    <?php echo form_open('akuntansi/laporan/cetak_buku_besar',array("class"=>"form-horizontal","id" => "form_pop")); ?>
 	<!-- Text input-->
     <div class="form-group">
       <label class="col-md-2 control-label">Unit</label>  

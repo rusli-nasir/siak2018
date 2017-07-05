@@ -14,26 +14,51 @@
 		.border th{
 		    border: 1px solid black;
 		}
+		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
+    	.excel{background-color:#A3A33E;color:#fff;}
+    	.pdf{background-color:#588097;color:#fff;}
 		</style>
 		<script type="text/javascript">
 		//window.print();
 		</script>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
+		&nbsp;&nbsp;
+		<?php echo form_open("akuntansi/laporan/$sumber/excel",array("class"=>"form-horizontal")); ?>
+			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+			<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
+		</form>
+		<?php 
+		$arr_sumber = explode('_', $sumber);
+		$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
+		?>
+		<?php echo form_open("akuntansi/laporan/$link_cetak",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
+			<input type="hidden" name="tipe" value="pdf">
+			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+			<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
+		</form>
 		<div align="center" style="font-weight:bold">
-			UNIVERSITAS DIPONEGORO<br/>
+			<?php echo $teks_unit; ?><br/>
 			NERACA SALDO<br/>
 			<?php echo $teks_periode; ?><br/><br/>
 		</div>
 		<?php 
 			echo '<table style="font-size:10pt;">
 						<tr>
-							<td width="250px"><b>Unit Kerja</b></td>
-							<td>UNIVERSITAS DIPONEGORO</td>
+							<td width="150px"><b>Unit Kerja</b></td>
+							<td>:'.$teks_unit.'</td>
 						</tr>
 						<tr>
 							<td><b>Tahun Anggaran</b></td>
-							<td>2017</td>
+							<td>:'.$teks_tahun_anggaran.'</td>
 						</tr>
 				</table>';
 			echo '<table style="width:1300px;font-size:10pt;" class="border">
@@ -85,17 +110,17 @@
 		    		$jumlah_kredit += $kredit;
 		    		$saldo_neraca = $debet - $kredit;
 
-				echo '<td align="right">'.number_format($debet,2).'</td>
-						<td align="right">'.number_format($kredit,2).'</td>';
+				echo '<td align="right">'.eliminasi_negatif($debet).'</td>
+						<td align="right">'.eliminasi_negatif($kredit).'</td>';
 					if ($saldo_neraca > 0) {
 		                $jumlah_neraca_debet += $saldo_neraca;
 		                echo '<td align="right">0.00</td>';
-		                echo '<td align="right">'.number_format($saldo_neraca,2).'</td>';
+		                echo '<td align="right">'.eliminasi_negatif($saldo_neraca).'</td>';
 		            } elseif ($saldo_neraca < 0) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_kredit += $saldo_neraca;
 		                echo '<td align="right">0.00</td>';
-		                echo '<td align="right">'.number_format($saldo_neraca,2).'</td>';
+		                echo '<td align="right">'.eliminasi_negatif($saldo_neraca).'</td>';
 		            }else{
 		            	echo '<td align="right">0.00</td>';
 		            	echo '<td align="right">0.00</td>';
@@ -109,18 +134,18 @@
 	    			<tfoot>
 					 	<tr>
 		    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-		    				<td align="right">'.number_format($jumlah_debet,2).'</td>
-		    				<td align="right">'.number_format($jumlah_kredit,2).'</td>
-		    				<td align="right">'.number_format($jumlah_neraca_debet,2).'</td>
-		    				<td align="right">'.number_format($jumlah_neraca_kredit,2).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
+		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
 		    			</tr>
 	    			</tfoot>
 				</table>';
 		?>
 		<div align="right" style="width:1300px;margin-top:40px;">
-			<div style="width:200px" align="left">
+			<div style="width:350px" align="left">
 				<?php 
-				echo 'Semarang, '.date("d-m-Y", strtotime($periode_akhir)).'<br/>Pengguna Anggaran<br/>';
+				echo 'Semarang, '.$periode_akhir.'<br/>Pengguna Anggaran<br/>';
 				echo get_nama_unit($unit).'<br/><br/><br/><br/>';
 				$pejabat = get_pejabat($unit, 'kpa'); 
 				echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
@@ -140,13 +165,6 @@ function get_nama_unit($kode_unit)
     }
     return $hasil['nama_unit'];
 
-}
-
-function get_pejabat($unit, $jabatan){
-	$ci =& get_instance();
-	$ci->db->where('unit', $unit);
-	$ci->db->where('jabatan', $jabatan);
-	return $ci->db->get('akuntansi_pejabat')->row_array();
 }
 
 function get_nama_akun_v($kode_akun){
@@ -173,7 +191,7 @@ function get_nama_akun_v($kode_akun){
 			}
 			return $hasil;
 		} else if (substr($kode_akun,0,1) == 9){
-			return 'SAL';
+			return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 		} else if (substr($kode_akun,0,1) == 1){
 			$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
 			if ($hasil == null){
@@ -191,6 +209,29 @@ function get_nama_akun_v($kode_akun){
 }
 
 function get_saldo_awal($kode_akun){
-	return 1000000000;
+	$ci =& get_instance();
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+
+	return $hasil;
+}
+
+function get_pejabat($unit, $jabatan){
+	$ci =& get_instance();
+	$ci->db->where('unit', $unit);
+	$ci->db->where('jabatan', $jabatan);
+	return $ci->db->get('akuntansi_pejabat')->row_array();
+}
+
+function eliminasi_negatif($value)
+{
+    if ($value < 0) 
+        return "(". number_format(abs($value),2,',','.') .")";
+    else
+        return number_format($value,2,',','.');
+}
+
+function format_nip($value)
+{
+    return str_replace("'",'',$value);
 }
 ?>
