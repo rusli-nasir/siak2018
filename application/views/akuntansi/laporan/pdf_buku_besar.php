@@ -93,7 +93,7 @@ $html = '';
 					</tr>
 				</table>';
 			$baris += 4;
-			$case_hutang = in_array(substr($key,0,1),[2,3]);
+			$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
 
 			$saldo = $this->Akun_model->get_saldo_awal($key);
 			if ($saldo != null) {

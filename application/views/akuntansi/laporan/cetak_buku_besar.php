@@ -77,6 +77,7 @@
 			$saldo = $this->Akun_model->get_saldo_awal($key);
 	    	$jumlah_debet = 0;
 	    	$jumlah_kredit = 0;
+	    	$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
 
 	    	echo '<table style="font-size:10pt;width:1100px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
 	    			<thead>
@@ -104,12 +105,20 @@
 					if ($transaksi['tipe'] == 'debet'){
 	    				echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
 	    				echo '<td align="right">0</td>';
-	    				$saldo += $transaksi['jumlah'];
+	    				if ($case_hutang) {
+	                        $saldo -= $transaksi['jumlah'];
+	                    } else {
+	    				    $saldo += $transaksi['jumlah'];
+	                    }
 	    				$jumlah_debet += $transaksi['jumlah'];
 	    			} else if ($transaksi['tipe'] == 'kredit'){
 	    				echo '<td align="right">0</td>';
 						echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
-						$saldo -= $transaksi['jumlah'];
+						if ($case_hutang) {
+	                        $saldo += $transaksi['jumlah'];
+	                    } else {
+	                        $saldo -= $transaksi['jumlah'];
+	                    }
 						$jumlah_kredit += $transaksi['jumlah'];
 	    			}
 				echo '<td align="right">'.eliminasi_negatif($saldo).'</td>

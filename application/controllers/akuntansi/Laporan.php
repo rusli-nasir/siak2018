@@ -598,7 +598,7 @@ class Laporan extends MY_Controller {
     		$i = 1;
     		$next_row = 11;
 
-            $case_hutang = in_array(substr($key,0,1),[2,3]);
+            $case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
 
 	    	$kode_row = $row-6;
 	    	$nama_row = $row-5;
@@ -1028,7 +1028,7 @@ class Laporan extends MY_Controller {
             $debet = 0;
             $kredit = 0;
 
-            $case_hutang = in_array(substr($key,0,1),[2,3]);
+            $case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
 
 	    	$saldo = $this->Akun_model->get_saldo_awal($key);
             if ($saldo != null) {
