@@ -84,14 +84,12 @@ class Laporan extends MY_Controller {
         $query_8 = $this->Memorial_model->read_akun('akuntansi_sal_6');
 
         $i = 0;
+        $data[$i]['akun_6'] = 'all';
+        $data[$i]['nama'] = 'Semua Akun';
+        $i++;
         foreach($query_1->result() as $result){
-            if($i==0){
-                $data[$i]['akun_6'] = 'all';
-                $data[$i]['nama'] = 'Semua Akun';
-            }else{
-                $data[$i]['akun_6'] = $result->akun_6;
-                $data[$i]['nama'] = $result->nama;
-            }
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
             $i++;
         }
         foreach($query_2->result() as $result){
@@ -159,14 +157,12 @@ class Laporan extends MY_Controller {
         $query_8 = $this->Memorial_model->read_akun('akuntansi_sal_6');
 
         $i = 0;
+        $data[$i]['akun_6'] = 'all';
+        $data[$i]['nama'] = 'Semua Akun';
+        $i++;
         foreach($query_1->result() as $result){
-            if($i==0){
-                $data[$i]['akun_6'] = 'all';
-                $data[$i]['nama'] = 'Semua Akun';
-            }else{
-                $data[$i]['akun_6'] = $result->akun_6;
-                $data[$i]['nama'] = $result->nama;
-            }
+            $data[$i]['akun_6'] = $result->akun_6;
+            $data[$i]['nama'] = $result->nama;
             $i++;
         }
         foreach($query_2->result() as $result){
