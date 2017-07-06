@@ -74,7 +74,7 @@
 						<td>:'.get_nama_akun_v((string)$key).'</td>
 					</tr>
 				</table>';
-			$saldo = $this->Akun_model->get_saldo_awal($key);
+			$saldo = get_saldo_awal($key);
 	    	$jumlah_debet = 0;
 	    	$jumlah_kredit = 0;
 	    	$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
@@ -105,43 +105,28 @@
 					if ($transaksi['tipe'] == 'debet'){
 	    				echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
 	    				echo '<td align="right">0</td>';
-	    				if ($case_hutang) {
-	                        $saldo -= $transaksi['jumlah'];
-	                    } else {
-	    				    $saldo += $transaksi['jumlah'];
-	                    }
+	    				if(!is_array($saldo)){
+		    				if ($case_hutang) {
+		                        $saldo -= $transaksi['jumlah'];
+		                    } else {
+		    				    $saldo += $transaksi['jumlah'];
+		                    }
+		                }
 	    				$jumlah_debet += $transaksi['jumlah'];
 	    			} else if ($transaksi['tipe'] == 'kredit'){
 	    				echo '<td align="right">0</td>';
 						echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
-						if ($case_hutang) {
-	                        $saldo += $transaksi['jumlah'];
-	                    } else {
-	                        $saldo -= $transaksi['jumlah'];
-	                    }
+						if(!is_array($saldo)){
+							if ($case_hutang) {
+		                        $saldo += $transaksi['jumlah'];
+		                    } else {
+		                        $saldo -= $transaksi['jumlah'];
+		                    }
+		                }
 						$jumlah_kredit += $transaksi['jumlah'];
 	    			}
 				echo '<td align="right">'.eliminasi_negatif($saldo).'</td>
 				</tr>';
-				$baris+=1;
-
-				if($total_data==1 AND $baris>=30 AND $break=='on'){
-					$break = 'off';
-					echo '</tbody></table><div style="margin-bottom:1800px"></div><table style="font-size:10pt;width:1000px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
-	    			<thead>
-	    				<tr style="background-color:#ECF379">
-	    					<th>No</th>
-	    					<th>Tanggal</th>
-	    					<th>No. Bukti</th>
-	    					<th>Uraian</th>
-	    					<th>Ref</th>
-	    					<th>Debet<br/>(Rp)</th>
-	    					<th>Kredit<br/>(Rp)</th>
-	    					<th>Saldo<br/>(Rp)</th>
-	    				</tr>
-	    			</thead>
-	    			<tbody>';
-				}
     		}
     		echo '</tbody>
     			<tfoot>
@@ -153,7 +138,6 @@
     				</tr>
     			</tfoot>
     			</table>';
-    		$baris+=1;
 		$item++;
 		}
 		?>
@@ -239,10 +223,12 @@ function get_pejabat($unit, $jabatan){
 
 function eliminasi_negatif($value)
 {
-    if ($value < 0) 
-        return "(". number_format(abs($value),2,',','.') .")";
-    else
-        return number_format($value,2,',','.');
+	if(!is_array($value)){
+	    if ($value < 0) 
+	        return "(". number_format(abs($value),2,',','.') .")";
+	    else
+	        return number_format($value,2,',','.');
+	}
 }
 
 function format_nip($value)
