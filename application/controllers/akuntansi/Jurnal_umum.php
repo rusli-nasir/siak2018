@@ -84,8 +84,10 @@ class Jurnal_umum extends MY_Controller {
 
         $akun = $objWorksheet->getCellByColumnAndRow($end_akun,9)->getValue();
         $array_akun = array();
+        $highestColumn = $objWorksheet->getHighestColumn();
+        $highestColumn = PHPExcel_Cell::columnIndexFromString($highestColumn);
 
-        while ($akun != null and $akun != 'TOTAL NILAI MAK') {
+        while ($akun != null and $end_akun < $highestColumn ) {
             if (strpos($akun, '-') == -1) {
                 $array_akun[] = $akun;
             } else {
@@ -102,6 +104,7 @@ class Jurnal_umum extends MY_Controller {
                 $array_non_akun[] = $entry;
             }
         }
+        // print_r($array_akun);
 
         if (count($array_non_akun) > 0) {
             echo "Akun di bawah ini tidak terdeteksi : <br/>";
@@ -112,25 +115,51 @@ class Jurnal_umum extends MY_Controller {
             die();
         }
 
-        die('masuk ke proses');
+        // die('masuk ke proses');
 
-        // print_r($array_akun);
     
 
-        // Cari mulai kolom debet mulai dari berapa sampai berapa
+        // Cari mulai kolom debet-kredit mulai dari berapa sampai berapa
 
         $start_akun = $end_akun = 6;
 
         $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
-        while ($val == '' or $val == 'DEBET') {
+        while ($val == '' or $val == 'DEBET-KREDIT') {
             $end_akun++;
             $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
         } 
 
-        $end_akun = $end_akun - 1;
+        $start_debet = $start_akun;
+        $end_debet = $end_akun - 1;
 
-        //end Cari mulai kolom debet...
+        //end Cari mulai kolom debet-kredit...
 
+        // Cari kolom potongan dan pajak 
+
+        $start_potongan = $end_akun;
+        $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        while ($val == '' or $val == 'POTONGAN') {
+            $end_akun++;
+            $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        } 
+
+        $end_potongan = $end_akun - 1;
+
+        // Cari kolom pengembalian
+
+        $start_pengembalian = $end_akun;
+        $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        while ($val == '' or $val == 'PENGEMBALIAN') {
+            $end_akun++;
+            $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        } 
+
+        $end_pengembalian = $end_akun - 1;
+
+        // echo $objWorksheet->getCellByColumnAndRow($end_debet,9)->getValue()."<br/>";
+        // echo $objWorksheet->getCellByColumnAndRow($end_potongan,9)->getValue()."<br/>";
+        // echo $objWorksheet->getCellByColumnAndRow($end_pengembalian,9)->getValue()."<br/>";
+        // die();
         // print_r($end_akun);die('aa');
 
         $highestRow = $objWorksheet->getHighestRow() - 4; // e.g. 10
@@ -138,10 +167,17 @@ class Jurnal_umum extends MY_Controller {
 
         $index = 0;
 
-        for ($row=10; $row <= $highestRow; $row++) { 
+        $data = array();
+
+        for ($row=11; $row <= $highestRow; $row++) { 
             $entry = array();
-            $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getCalculatedValue();
-            $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
+            $array_relasi = array();
+            $array_pajak = array();
+            $array_pengembalian = array();
+            $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
+            $date = DateTime::createFromFormat('d-m-Y', $tanggal);
+            $tanggal = $date->format('Y-m-d');
+
             $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
             $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(5,$row)->getValue();
             $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
@@ -157,25 +193,190 @@ class Jurnal_umum extends MY_Controller {
             $entry['tanggal_verifikasi'] = $waktu_jurnal_umum;
             $entry['tanggal_jurnal'] = $waktu_jurnal_umum;
             
-            for ($kolom=$start_akun; $kolom <= $end_akun; $kolom++) { 
-                $entry['akun_kredit'] = $sal_jurnal_umum;
-                $entry['akun_debet'] = $objWorksheet->getCellByColumnAndRow($kolom,7)->getCalculatedValue();
-                $entry['akun_kredit_akrual'] = '911101';
-                $entry['akun_debet_akrual'] = substr_replace($entry['akun_kredit'],'7',0,1);
-                $entry['jumlah_debet'] = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
-                $entry['jumlah_kredit'] = $entry['jumlah_debet'];
+            for ($kolom=$start_debet; $kolom <= $end_debet; $kolom++) { 
+                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
+                $akun = explode('-',$akun);
+                $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
+                //sebagai debet-kas
+                if ($jumlah != 0 and $jumlah != '-') {
 
-                if ($entry['jumlah_debet'] != 0){
-                    $data[] = $entry;
+                    // ISI ARRAY RELASI
+
+                    $entry_relasi['tipe'] = 'debet';
+                    $entry_relasi['jenis'] = 'kas';
+                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                    $entry_relasi['akun'] = $akun[0];
+                    $entry_relasi['jumlah'] = $jumlah;
+
+                    $array_relasi[] = $entry_relasi;
+
+                    //sebagai debet-akrual
+                    $entry_relasi['tipe'] = 'debet';
+                    $entry_relasi['jenis'] = 'akrual';
+                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                    $entry_relasi['akun'] = substr_replace($akun[0],'7',0,1);
+                    $entry_relasi['jumlah'] = $jumlah;
+
+                    $array_relasi[] = $entry_relasi;
+
+                    //sebagai kredit-kas
+                    $entry_relasi['tipe'] = 'kredit';
+                    $entry_relasi['jenis'] = 'kas';
+                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                    $entry_relasi['akun'] = $akun[1];
+                    $entry_relasi['jumlah'] = $jumlah;
+
+                    $array_relasi[] = $entry_relasi;
+
+                    //sebagai kredit-akrual
+                    $entry_relasi['tipe'] = 'kredit';
+                    $entry_relasi['jenis'] = 'akrual';
+                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                    $entry_relasi['akun'] = substr_replace($akun[1],'6',0,1);
+                    $entry_relasi['jumlah'] = $jumlah;
+
+                    $array_relasi[] = $entry_relasi;
+
                 }
 
             }
-        }
-        print_r($data);
-        die();
 
-        if ($this->Jurnal_umum_model->insert_penerimaan_batch($data)) {
-            redirect('akuntansi/penerimaan');
+            //SUSUN RELASI POTONGAN
+            $entry_pajak = array();
+
+
+            for ($kolom=$start_potongan; $kolom <= $end_potongan; $kolom++) { 
+                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
+                $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
+                // echo $akun. "-";
+                // echo $jumlah. "-<br/>";
+                //sebagai debet-kas
+                if ($jumlah != 0 and $jumlah != '-') {
+
+                    // ISI ARRAY PAJAK
+
+                    $entry_pajak['jenis'] = 'pajak';
+                    $entry_pajak['no_bukti'] = $entry['no_bukti'];
+                    $entry_pajak['akun'] = $akun;
+                    // print_r($entry_pajak);die();                    
+                    $entry_pajak['jumlah'] = $jumlah;
+
+                    // echo $entry_pajak['jenis'].":";
+                    // echo $akun.":";
+                    // echo $entry['no_bukti'].":";
+                    // echo $jumlah.":";
+
+                    $array_pajak[] = $entry_pajak;
+                }
+
+            }
+
+
+            $entry_pengembalian = array();
+            for ($kolom=$start_pengembalian; $kolom <= $end_pengembalian; $kolom++) { 
+                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
+                $akun = explode('-',$akun);
+                $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
+                //sebagai debet-kas
+                if ($jumlah != 0 and $jumlah != '-') {
+
+                    // ISI ARRAY RELASI
+
+                    $entry_pengembalian['tipe'] = 'kredit';
+                    $entry_pengembalian['jenis'] = 'kas';
+                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $entry_pengembalian['akun'] = $akun[0];
+                    $entry_pengembalian['jumlah'] = $jumlah;
+
+                    $array_pengembalian[] = $entry_pengembalian;
+
+                    //sebagai kredit-akrual
+                    $entry_pengembalian['tipe'] = 'kredit';
+                    $entry_pengembalian['jenis'] = 'akrual';
+                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $entry_pengembalian['akun'] = substr_replace($akun[0],'7',0,1);
+                    $entry_pengembalian['jumlah'] = $jumlah;
+
+                    $array_pengembalian[] = $entry_pengembalian;
+
+                    //sebagai debet-kas
+                    $entry_pengembalian['tipe'] = 'debet';
+                    $entry_pengembalian['jenis'] = 'kas';
+                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $entry_pengembalian['akun'] = $akun[1];
+                    $entry_pengembalian['jumlah'] = $jumlah;
+
+                    $array_pengembalian[] = $entry_pengembalian;
+
+                    //sebagai debet-akrual
+                    $entry_pengembalian['tipe'] = 'debet';
+                    $entry_pengembalian['jenis'] = 'akrual';
+                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $entry_pengembalian['akun'] = substr_replace($akun[1],'6',0,1);
+                    $entry_pengembalian['jumlah'] = $jumlah;
+
+                    $array_pengembalian[] = $entry_pengembalian;
+
+                }
+
+            }
+        $data[$row]['entry'] = $entry;
+        $data[$row]['relasi'] = $array_relasi;
+        $data[$row]['pajak'] = $array_pajak;
+        $data[$row]['pengembalian'] = $array_pengembalian;
+        // print_r($array_pajak);
+        // echo (count($array_pajak));
+        
+        // echo $start_potongan .'-'.$end_potongan;
+
+        // print_r($data);die();
+
+        }
+
+        foreach ($data as $entry_data) {
+
+            $entry = $entry_data['entry'];
+            $array_relasi = $entry_data['relasi'];
+            $array_pajak = $entry_data['pajak'];
+            $array_pengembalian = $entry_data['pengembalian'];
+
+            $id_kuitansi_jadi = $this->Kuitansi_model->add_kuitansi_jadi($entry);
+
+            if ($array_relasi != null) {
+                for ($i=0;$i<count($array_relasi);$i++) {
+                    $array_relasi[$i]['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                }
+                $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($array_relasi);  
+            }
+
+            if ($array_pajak != null) {
+                $updater = array();
+                $q4 = $this->Pajak_model->insert_pajak($id_kuitansi_jadi,$array_pajak);
+                $updater['id_pajak'] = $q4;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+
+                $q6 = $this->Posting_model->posting_kuitansi_full($q4);
+            }
+
+            if ($array_pengembalian != null) {
+                $id_kuitansi_pengembalian = $this->Pengembalian_model->insert_pengembalian($id_kuitansi_jadi);
+                for ($i=0;$i<count($array_pengembalian);$i++) {
+                    $array_pengembalian[$i]['id_kuitansi_jadi'] = $id_kuitansi_pengembalian;
+                }
+                $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($array_pengembalian);  
+                $q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_pengembalian);
+            }
+
+            $q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+
+
+
+
+        }
+
+
+        if ($id_kuitansi_jadi) {
+            redirect('akuntansi/jurnal_umum');
         } else {
             die('gagal menginput');
         }
