@@ -203,11 +203,15 @@ tbody td, thead th {
 					<td style="width:110px;"><?php echo $result->uraian; ?></td>
 					<td style="width:500px !important" nowrap>
 						<?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - ';
-					 	$uraian_akun = explode(' ', $result->nama_akun_debet_akrual);
-			            if($uraian_akun[0]!='Beban' OR $uraian_akun[0]!='beban'){
-			              $uraian_akun[0] = 'Beban';
-			            }
-			            $hasil_uraian = implode(' ', $uraian_akun);
+					 	if(substr($result->akun_debet_akrual,0,1)=='7'){
+						 	$uraian_akun = explode(' ', $result->nama_akun_debet_akrual);
+				            if($uraian_akun[0]!='Beban' OR $uraian_akun[0]!='beban'){
+				              $uraian_akun[0] = 'Beban';
+				            }
+				            $hasil_uraian = implode(' ', $uraian_akun);
+				        }else{
+				        	$hasil_uraian = $result->nama_akun_debet_akrual;
+				        }
 			            echo $hasil_uraian;
             			echo '<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td style="width:110px;"><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>

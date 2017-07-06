@@ -74,7 +74,7 @@
 						<td>:'.get_nama_akun_v((string)$key).'</td>
 					</tr>
 				</table>';
-			$saldo = $this->Akun_model->get_saldo_awal($key);
+			$saldo = get_saldo_awal($key);
 	    	$jumlah_debet = 0;
 	    	$jumlah_kredit = 0;
 	    	$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
@@ -96,6 +96,10 @@
     		$iter = 0;
 	    	foreach ($entry as $transaksi) {	
 	    		$iter++;
+	    		if ($iter == 1 and $saldo != null) {
+	    			$saldo = $saldo['saldo_awal'];
+	    			$iter++;
+	    		}
 				echo '<tr>
 					<td>'.$iter.'</td>
 					<td>'.$transaksi['tanggal'].'</td>
@@ -123,37 +127,17 @@
 	    			}
 				echo '<td align="right">'.eliminasi_negatif($saldo).'</td>
 				</tr>';
-				$baris+=1;
-
-				if($total_data==1 AND $baris>=30 AND $break=='on'){
-					$break = 'off';
-					echo '</tbody></table><div style="margin-bottom:1800px"></div><table style="font-size:10pt;width:1000px;border:1px solid #bdbdbd;margin-bottom:20px;" class="border">
-	    			<thead>
-	    				<tr style="background-color:#ECF379">
-	    					<th>No</th>
-	    					<th>Tanggal</th>
-	    					<th>No. Bukti</th>
-	    					<th>Uraian</th>
-	    					<th>Ref</th>
-	    					<th>Debet<br/>(Rp)</th>
-	    					<th>Kredit<br/>(Rp)</th>
-	    					<th>Saldo<br/>(Rp)</th>
-	    				</tr>
-	    			</thead>
-	    			<tbody>';
-				}
     		}
     		echo '</tbody>
     			<tfoot>
     				<tr>
     					<td align="right" colspan="5" style="background-color:#B1E9F2">Jumlah Total</td>
-    					<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
-    					<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
-    					<td align="right">'.eliminasi_negatif($saldo).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_debet).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_kredit).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($saldo).'</td>
     				</tr>
     			</tfoot>
     			</table>';
-    		$baris+=1;
 		$item++;
 		}
 		?>
@@ -225,7 +209,8 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+	$tahun = gmdate('Y');
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
 	return $hasil;
 }
@@ -239,10 +224,12 @@ function get_pejabat($unit, $jabatan){
 
 function eliminasi_negatif($value)
 {
-    if ($value < 0) 
-        return "(". number_format(abs($value),2,',','.') .")";
-    else
-        return number_format($value,2,',','.');
+	if(!is_array($value)){
+	    if ($value < 0) 
+	        return "(". number_format(abs($value),2,',','.') .")";
+	    else
+	        return number_format($value,2,',','.');
+	}
 }
 
 function format_nip($value)

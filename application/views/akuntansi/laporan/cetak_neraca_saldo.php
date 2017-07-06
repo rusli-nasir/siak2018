@@ -86,14 +86,14 @@
 	        $jumlah_neraca_debet = 0;
 	        $jumlah_neraca_kredit = 0;
 
-			foreach ($query as $key => $entry) {
-				$saldo = get_saldo_awal($key);
-	            if ($saldo != null) {
-	                $saldo = $saldo['saldo_awal'];
-	            }
+			foreach ($query as $key => $entry) {			
 		    	$debet = 0;
 		    	$kredit = 0;
 		    	$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
+		    	$saldo = get_saldo_awal($key);
+	            if ($saldo != null) {
+	                $saldo = $saldo['saldo_awal'];
+	            }
 
 				echo '<tr>
 						<td>'.$i.'</td>
@@ -120,19 +120,17 @@
 
 		    		$jumlah_debet += $debet;
 		    		$jumlah_kredit += $kredit;
+
+		    		echo '<td align="right">'.eliminasi_negatif($debet).'</td>
+						<td align="right">'.eliminasi_negatif($kredit).'</td>';
+
 		    		if ($case_hutang) {
 		                $saldo_neraca = $kredit - $debet;
 		            } else {
 		                $saldo_neraca = $debet - $kredit;
 		            }
 
-
-		    		$jumlah_debet += $debet;
-		    		$jumlah_kredit += $kredit;
-		    		$saldo_neraca = $debet - $kredit;
-
-				echo '<td align="right">'.eliminasi_negatif($debet).'</td>
-						<td align="right">'.eliminasi_negatif($kredit).'</td>';
+				
 					if ($saldo_neraca > 0) {
 		                $jumlah_neraca_debet += $saldo_neraca;
 		                echo '<td align="right">0.00</td>';
@@ -231,7 +229,8 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+	$tahun = gmdate('Y');
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
 	return $hasil;
 }
