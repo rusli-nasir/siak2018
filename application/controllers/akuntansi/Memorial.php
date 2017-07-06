@@ -57,7 +57,7 @@ class Memorial extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/memorial/index');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
