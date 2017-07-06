@@ -30,8 +30,36 @@ class User_akuntansi_model extends CI_Model {
         if($id_user->num_rows()){
             $this->db->set('password', sha1($this->input->post('password_baru')));
             $this->db->where('id', $this->session->userdata('id'));
-            $this->db->update('akuntansi_user'); // gives UPDATE `mytable` SET `field` = 'field+1' WHERE `id` = 2
+            $this->db->update('akuntansi_user');
             return true;
+        } else {
+            return false;
+        }
+	}
+  
+    // Reset password. Jika $password tidak diberikan, dirandom password 5 karakter. Return $password saat berhasil. Return false saat $id_user tidak ditemukan.
+    public function reset_password($user_id, $password = null){
+        if($password == null){
+          $charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+          $base = strlen($charset);
+          $result = '';
+
+          $now = explode(' ', microtime())[1];
+          while ($now >= $base){
+            $i = $now % $base;
+            $result = $charset[$i] . $result;
+            $now /= $base;
+          }
+          $password = substr($result, -5);
+        }
+      
+		$id_user = $this->db->get_where('akuntansi_user',array('id'=>$user_id));
+        
+        if($id_user->num_rows()){
+            $this->db->set('password', sha1($password)));
+            $this->db->where('id', $user_id);
+            $this->db->update('akuntansi_user');
+            return $password;
         } else {
             return false;
         }
