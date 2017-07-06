@@ -258,10 +258,10 @@ class Jurnal_umum extends MY_Controller {
         $akun_pajak = $this->Pajak_model->get_pajak();
         echo ' <tr>
           <td>
-            <select class="form-control" name="jenis_pajak[]">
+            <select class="form-control" name="id_pajak[]">
               <option value="">Pilih Jenis</option>';
               foreach($akun_pajak->result() as $result){ 
-              echo '<option value="'.$result->jenis_pajak.'" '.($result->jenis_pajak==$selected ? "selected":"").'>'.$result->jenis_pajak.'</option>';
+              echo '<option value="'.$result->id_akun_pajak.'" '.($result->jenis_pajak==$selected ? "selected":"").'>'.$result->jenis_pajak.'</option>';
               }
         echo '</select>
           </td>
@@ -346,6 +346,7 @@ class Jurnal_umum extends MY_Controller {
             
             unset($entry['jumlah']);
             unset($entry['jenis_pajak']);
+            unset($entry['id_pajak']);
             unset($entry['persen_pajak']);
 
             unset($entry['kegiatan']);
@@ -359,13 +360,14 @@ class Jurnal_umum extends MY_Controller {
             
             $entry_pajak = array();
             $array_pajak = array();
-            if ($akun['jenis_pajak'][0] != null) {
-                for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+            if ($akun['id_pajak'][0] != null) {
+                for ($i=0;$i < count($akun['id_pajak']);$i++) {
                     $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
-                    $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                    $get_jenis_pajak = $this->db->query("SELECT * FROM akuntansi_pajak WHERE id_akun_pajak=".$akun['id_pajak'][$i]."")->row_array();
+                    $entry_pajak['jenis_pajak'] = $get_jenis_pajak['jenis_pajak'];
                     // $entry_pajak['persen_pajak'] = $akun['persen_pajak'][$i];
                     $entry_pajak['jenis'] = 'pajak';
-                    $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+                    $entry_pajak['akun'] = $get_jenis_pajak['kode_akun'];
 
                     $array_pajak[] = $entry_pajak;
                 }
@@ -442,7 +444,7 @@ class Jurnal_umum extends MY_Controller {
             }
 
             //insert pengembalian di akuntansi kuitansi jadi
-            if ($akun['akun_kredit_pengembalian'] != null) {
+            if ($akun['akun_kredit_pengembalian'][0] != null) {
                $id_kuitansi_pengembalian = $this->Pengembalian_model->insert_pengembalian($id_kuitansi_jadi);
 
                if ($akun['akun_kredit_pengembalian'][0] != null) {
