@@ -126,7 +126,7 @@ $(document).ready(function(){
       $.each(data['hasil'], function(index, val){
         var d = data['hasil'][index];
         $.ajax({
-          url:host+'akuntansi/jurnal_umum/add_pajak/'+d['akun'],
+          url:host+'akuntansi/jurnal_umum/add_pajak/'+d['kode_akun'],
           data:{},
           success:function(data){
             $("#field_pajak").append(data);

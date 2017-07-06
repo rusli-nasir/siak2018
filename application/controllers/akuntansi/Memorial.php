@@ -692,7 +692,7 @@ class Memorial extends MY_Controller {
             <select class="form-control" name="id_pajak[]" required>
               <option value="">Pilih Jenis</option>';
               foreach($akun_pajak->result() as $result){ 
-              echo '<option value='.$result->id_akun_pajak.'>'.$result->jenis_pajak.'</option>';
+              echo '<option value='.$result->id_akun_pajak.'>'.$result->nama_akun.'</option>';
               }
         echo '</select>
           </td>

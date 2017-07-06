@@ -261,7 +261,7 @@ class Jurnal_umum extends MY_Controller {
             <select class="form-control" name="id_pajak[]">
               <option value="">Pilih Jenis</option>';
               foreach($akun_pajak->result() as $result){ 
-              echo '<option value="'.$result->id_akun_pajak.'" '.($result->jenis_pajak==$selected ? "selected":"").'>'.$result->jenis_pajak.'</option>';
+              echo '<option value="'.$result->id_akun_pajak.'" '.($result->kode_akun==$selected ? "selected":"").'>'.$result->nama_akun.'</option>';
               }
         echo '</select>
           </td>
@@ -878,6 +878,7 @@ class Jurnal_umum extends MY_Controller {
             foreach($result as $result){
                 $result = (object) $result;
                 $data['hasil'][$i]['akun'] = $result->jenis_pajak;
+                $data['hasil'][$i]['kode_akun'] = $result->akun;
                 $data['hasil'][$i]['persen_pajak'] = $result->persen_pajak;
                 $data['hasil'][$i]['jumlah'] = $result->jumlah;
                 $i++;

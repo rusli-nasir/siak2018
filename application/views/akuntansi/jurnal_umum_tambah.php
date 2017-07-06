@@ -261,7 +261,7 @@ $(document).ready(function(){
             <select class="form-control" name="id_pajak[]">
               <option value="">Pilih Jenis</option>
               <?php foreach($akun_pajak->result() as $result){ ?>
-              <option value="<?php echo $result->id_akun_pajak; ?>"><?php echo $result->jenis_pajak; ?></option>
+              <option value="<?php echo $result->id_akun_pajak; ?>"><?php echo $result->nama_akun; ?></option>
               <?php } ?>
             </select>
           </td>
