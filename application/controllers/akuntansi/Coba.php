@@ -53,7 +53,7 @@ class Coba extends MY_Controller {
 
     public function akun()
     {
-        print_r($this->Akun_model->get_nama_akun('911103'));
+        print_r($this->Akun_model->get_nama_akun('423951'));
     }
 
     public function tgl_spm()

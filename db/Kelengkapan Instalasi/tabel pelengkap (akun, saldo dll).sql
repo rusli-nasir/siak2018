@@ -6955,7 +6955,7 @@ INSERT INTO `akuntansi_sal_6` (`id_akuntansi_sal_6`, `akun_1`, `akun_2`, `akun_3
 (29, '9', '91', '911', '9112', '911202', 'Koreksi Belanja Tahun Anggaran yang Lalu', ''),
 (30, '9', '91', '911', '9112', '911203', 'Surplus/Defisit', ''),
 (31, '9', '91', '911', '9112', '911204', 'Pembiayaan Netto', ''),
-(32, '9', '91', '911', '9111', '911125', 'SAL BP Penerimaan', '9999');
+(32, '9', '91', '911', '9111', '911128', 'SAL BP Penerimaan', '9999');
 
 -- --------------------------------------------------------
 
