@@ -316,18 +316,20 @@ class Memorial extends MY_Controller {
 
             unset($entry['jumlah']);
             unset($entry['jenis_pajak']);
+            unset($entry['id_pajak']);
             unset($entry['persen_pajak']);
 
             $akun = $this->input->post();
 
             $entry_pajak = array();
             $array_pajak = array();
-            if ($akun['jenis_pajak'][0] != null) {
-                for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+            if ($akun['id_pajak'][0] != null) {
+                for ($i=0;$i < count($akun['id_pajak']);$i++) {
                     $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
-                    $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                    $get_jenis_pajak = $this->db->query("SELECT * FROM akuntansi_pajak WHERE id_akun_pajak=".$akun['id_pajak'][$i]."")->row_array();
+                    $entry_pajak['jenis_pajak'] = $get_jenis_pajak['jenis_pajak'];
                     $entry_pajak['jenis'] = 'pajak';
-                    $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+                    $entry_pajak['akun'] = $get_jenis_pajak['kode_akun'];
 
                     $array_pajak[] = $entry_pajak;
                 }
