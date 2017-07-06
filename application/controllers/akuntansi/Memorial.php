@@ -57,7 +57,7 @@ class Memorial extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/memorial/index');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -142,6 +142,7 @@ class Memorial extends MY_Controller {
             $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
 
             unset($entry['jumlah']);
+            unset($entry['id_pajak']);
             unset($entry['jenis_pajak']);
             unset($entry['persen_pajak']);
             
@@ -153,12 +154,13 @@ class Memorial extends MY_Controller {
 
             $entry_pajak = array();
             $array_pajak = array();
-            if ($akun['jenis_pajak'][0] != null) {
-                for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+            if ($akun['id_pajak'][0] != null) {
+                for ($i=0;$i < count($akun['id_pajak']);$i++) {
                     $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
-                    $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                    $get_jenis_pajak = $this->db->query("SELECT * FROM akuntansi_pajak WHERE id_akun_pajak=".$akun['id_pajak'][$i]."")->row_array();
+                    $entry_pajak['jenis_pajak'] = $get_jenis_pajak['jenis_pajak'];
                     $entry_pajak['jenis'] = 'pajak';
-                    $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+                    $entry_pajak['akun'] = $get_jenis_pajak['kode_akun'];
 
                     $array_pajak[] = $entry_pajak;
                 }
@@ -314,18 +316,20 @@ class Memorial extends MY_Controller {
 
             unset($entry['jumlah']);
             unset($entry['jenis_pajak']);
+            unset($entry['id_pajak']);
             unset($entry['persen_pajak']);
 
             $akun = $this->input->post();
 
             $entry_pajak = array();
             $array_pajak = array();
-            if ($akun['jenis_pajak'][0] != null) {
-                for ($i=0;$i < count($akun['jenis_pajak']);$i++) {
+            if ($akun['id_pajak'][0] != null) {
+                for ($i=0;$i < count($akun['id_pajak']);$i++) {
                     $entry_pajak['jumlah'] = $this->normal_number($akun['jumlah'][$i]);
-                    $entry_pajak['jenis_pajak'] = $akun['jenis_pajak'][$i];
+                    $get_jenis_pajak = $this->db->query("SELECT * FROM akuntansi_pajak WHERE id_akun_pajak=".$akun['id_pajak'][$i]."")->row_array();
+                    $entry_pajak['jenis_pajak'] = $get_jenis_pajak['jenis_pajak'];
                     $entry_pajak['jenis'] = 'pajak';
-                    $entry_pajak['akun'] = $this->Pajak_model->get_akun_by_jenis($entry_pajak['jenis_pajak'])['kode_akun'];
+                    $entry_pajak['akun'] = $get_jenis_pajak['kode_akun'];
 
                     $array_pajak[] = $entry_pajak;
                 }
@@ -685,10 +689,10 @@ class Memorial extends MY_Controller {
         $akun_pajak = $this->Pajak_model->get_pajak();
         echo ' <tr>
           <td>
-            <select class="form-control" name="jenis_pajak[]" required>
+            <select class="form-control" name="id_pajak[]" required>
               <option value="">Pilih Jenis</option>';
               foreach($akun_pajak->result() as $result){ 
-              echo '<option value='.$result->jenis_pajak.'>'.$result->jenis_pajak.'</option>';
+              echo '<option value='.$result->id_akun_pajak.'>'.$result->nama_akun.'</option>';
               }
         echo '</select>
           </td>

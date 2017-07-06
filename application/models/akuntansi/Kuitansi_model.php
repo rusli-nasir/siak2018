@@ -278,10 +278,10 @@ class Kuitansi_model extends CI_Model {
 
         if($limit!=null OR $start!=null){
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') AND tanggal LIKE '%".$date_now."%' $filter_unit LIMIT $start, $limit");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') AND tanggal LIKE '%".$date_now."%' $filter_unit ORDER BY id_kuitansi_jadi DESC LIMIT $start, $limit");
         }else{
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') AND tanggal LIKE '%".$date_now."%' $filter_unit");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') AND tanggal LIKE '%".$date_now."%' $filter_unit ORDER BY id_kuitansi_jadi DESC");
         }
 
         return $query;

@@ -17,6 +17,7 @@ class Pengembalian_model extends CI_Model {
 		$kuitansi['akun_debet_akrual'] = 0;
 		$kuitansi['jumlah_debet'] = 0;
 		$kuitansi['akun_kredit'] = 0;
+		$kuitansi['id_pajak'] = 0;
 		$kuitansi['akun_kredit_akrual'] = 0;
 		$kuitansi['jumlah_kredit'] = 0;
         $kuitansi['uraian'] = "Pengembalian " . $kuitansi['uraian'];
