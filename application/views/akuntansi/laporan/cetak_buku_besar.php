@@ -96,6 +96,10 @@
     		$iter = 0;
 	    	foreach ($entry as $transaksi) {	
 	    		$iter++;
+	    		if ($iter == 1 and $saldo != null) {
+	    			$saldo = $saldo['saldo_awal'];
+	    			$iter++;
+	    		}
 				echo '<tr>
 					<td>'.$iter.'</td>
 					<td>'.$transaksi['tanggal'].'</td>
@@ -105,24 +109,20 @@
 					if ($transaksi['tipe'] == 'debet'){
 	    				echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
 	    				echo '<td align="right">0</td>';
-	    				if(!is_array($saldo)){
-		    				if ($case_hutang) {
-		                        $saldo -= $transaksi['jumlah'];
-		                    } else {
-		    				    $saldo += $transaksi['jumlah'];
-		                    }
-		                }
+	    				if ($case_hutang) {
+	                        $saldo -= $transaksi['jumlah'];
+	                    } else {
+	    				    $saldo += $transaksi['jumlah'];
+	                    }
 	    				$jumlah_debet += $transaksi['jumlah'];
 	    			} else if ($transaksi['tipe'] == 'kredit'){
 	    				echo '<td align="right">0</td>';
 						echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
-						if(!is_array($saldo)){
-							if ($case_hutang) {
-		                        $saldo += $transaksi['jumlah'];
-		                    } else {
-		                        $saldo -= $transaksi['jumlah'];
-		                    }
-		                }
+						if ($case_hutang) {
+	                        $saldo += $transaksi['jumlah'];
+	                    } else {
+	                        $saldo -= $transaksi['jumlah'];
+	                    }
 						$jumlah_kredit += $transaksi['jumlah'];
 	    			}
 				echo '<td align="right">'.eliminasi_negatif($saldo).'</td>
@@ -132,9 +132,9 @@
     			<tfoot>
     				<tr>
     					<td align="right" colspan="5" style="background-color:#B1E9F2">Jumlah Total</td>
-    					<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
-    					<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
-    					<td align="right">'.eliminasi_negatif($saldo).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_debet).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_kredit).'</td>
+    					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($saldo).'</td>
     				</tr>
     			</tfoot>
     			</table>';
@@ -209,7 +209,8 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+	$tahun = gmdate('Y');
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
 	return $hasil;
 }
