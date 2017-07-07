@@ -131,7 +131,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_gup');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -192,7 +192,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_nihil');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -253,7 +253,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_up');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -315,7 +315,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_pup');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -376,7 +376,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_tup');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
