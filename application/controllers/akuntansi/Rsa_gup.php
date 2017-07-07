@@ -34,7 +34,6 @@ class rsa_gup extends MY_Controller{
         $no_spm = urldecode($this->input->get('spm'));
         $this->load->model('akuntansi/rsa_gup2_model');
         $_spm = $this->rsa_gup2_model->get_spm_detail($no_spm, array('tahun', 'kode_unit', 'str_nomor_trx'));
-//        print_r($_spm);die();
         
         if(!$_spm){
             $this->data['tab'] = 'rsa_gup';
@@ -44,6 +43,7 @@ class rsa_gup extends MY_Controller{
         }
         
         $kd_unit = $_spm->kode_unit;
+        if(strlen($kd_unit)>4){$kd_unit = substr($kd_unit, 0, 4);}
         $tahun = $_spm->tahun;
                                 
         $this->load->model('unit_model');

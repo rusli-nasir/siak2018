@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sistem Informasi Rencana Pengambangan Sarana dan Prasarana UNDIP</title>
+<title>Program Akuntansi UNDIP</title>
 
 <link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet">
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker3.css" rel="stylesheet">
