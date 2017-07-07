@@ -256,7 +256,7 @@ class Jurnal_rsa extends MY_Controller {
             $this->Kuitansi_model->update_kuitansi_jadi($kuitansi['id_pajak'],$updater);    
         }
 
-        $direct_url = 'akuntansi/kuitansi/index';
+        $direct_url = 'akuntansi/kuitansi/jadi';
         if($jenis=='NK'){
             $direct_url = 'akuntansi/kuitansi/jadi_spm';
         }else if($jenis=='UP'){
@@ -265,6 +265,8 @@ class Jurnal_rsa extends MY_Controller {
             $direct_url = 'akuntansi/kuitansi/jadi/1/PUP';
         }else if($jenis=='GP'){
             $direct_url = 'akuntansi/kuitansi/jadi/1/GP';
+        }else if($jenis=='GUP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/GUP';
         }else if($jenis=='GP_NIHIL'){
             $direct_url = 'akuntansi/kuitansi/jadi/1/GP_NIHIL';
         }else if($jenis=='TUP'){
