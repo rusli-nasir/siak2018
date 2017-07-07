@@ -162,7 +162,7 @@ class Jurnal_umum extends MY_Controller {
         // die();
         // print_r($end_akun);die('aa');
 
-        $highestRow = $objWorksheet->getHighestRow() - 4; // e.g. 10
+        $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
         $highestColumnIndex = $end_akun; // e.g. 5
 
         $index = 0;
