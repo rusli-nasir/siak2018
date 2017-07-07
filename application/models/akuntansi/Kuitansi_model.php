@@ -355,7 +355,7 @@ class Kuitansi_model extends CI_Model {
     	$hasil['unit_kerja'] = '';
         $hasil['unit_kerja'] = substr($hasil['unit_kerja'], 0,2);
     	$hasil['jenis'] = 'NK';
-    	$hasil['pengeluaran'] = $hasil['jumlah_bayar'];
+    	$hasil['pengeluaran'] = $hasil['total_sumberdana'];
     	$hasil['str_nomor_trx_spm'] = $hasil['nomor'];
     	$hasil['tgl_kuitansi'] = $hasil['tanggal'];
     	$hasil['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal($hasil['tanggal']);
