@@ -145,9 +145,15 @@
 	<div align="right" style="width:1100px">
 		<div style="width:350px" align="left">
 			<?php 
-			echo 'Semarang, '.$periode_akhir.'<br/>Pengguna Anggaran<br/>';
-			echo get_nama_unit($unit).'<br/><br/><br/><br/>';
-			$pejabat = get_pejabat($unit, 'kpa'); 
+			if ($unit == null or $unit == 9999) {
+	            $pejabat = get_pejabat('all','rektor');
+	            $teks_kpa = "Rektor";
+	        } else {
+	            $pejabat = get_pejabat($unit,'kpa');
+	            $teks_kpa = "Pengguna Anggaran";
+	        }
+			echo 'Semarang, '.$periode_akhir.'<br/>'.$teks_kpa.'<br/>';
+			echo $teks_unit.'<br/><br/><br/><br/>';
 			echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
 			?>
 		</div>

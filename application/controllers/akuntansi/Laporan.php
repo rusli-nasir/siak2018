@@ -938,6 +938,10 @@ class Laporan extends MY_Controller {
         }
     }
 
+    public function cetak_laporan_aktifitas(){
+        $this->load->view('akuntansi/laporan/cetak_laporan_aktifitas');
+    }
+
     public function get_neraca_saldo($mode = null)
     {
     // 	if ($tipe == 'sak'){
