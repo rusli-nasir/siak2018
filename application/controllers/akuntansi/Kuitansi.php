@@ -131,7 +131,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_gup');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -192,7 +192,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_nihil');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -253,7 +253,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_up');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -315,7 +315,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_pup');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -376,7 +376,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_tup');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -587,7 +587,7 @@ class Kuitansi extends MY_Controller {
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}	
 
-	public function jadi($id = 0, $jenis = 'GP'){
+	public function jadi($jenis = 'GP', $id = 0){
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
 		//level unit
@@ -616,7 +616,7 @@ class Kuitansi extends MY_Controller {
 		$this->data['total_a'] = $total_data->num_rows();
 
 		//pagination
-		if($this->uri->segment('4')==null){
+		if($this->uri->segment('5')==null){
 			$id = 0;
 			$this->data['no'] = $id+1;
 		}else{
@@ -625,7 +625,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/jadi');
+		$config['base_url'] = site_url('akuntansi/kuitansi/jadi/'.$jenis);
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -656,7 +656,9 @@ class Kuitansi extends MY_Controller {
         }
 
         $this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
-        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif_1'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif_2'] = $this->Kuitansi_model->read_total(array('status'=>'direvisi', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->data['kuitansi_pasif_2'] + $this->data['kuitansi_pasif_1'];
         $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 
         if($jenis=='UP'){
@@ -837,6 +839,11 @@ class Kuitansi extends MY_Controller {
 		$this->session->unset_userdata('keyword_jadi_GP');
 		$this->session->unset_userdata('keyword_jadi_GUP');
 		$this->session->unset_userdata('keyword_jadi_TUP');
+		$this->session->unset_userdata('keyword_jadi_UP_posting');
+		$this->session->unset_userdata('keyword_jadi_PUP_posting');
+		$this->session->unset_userdata('keyword_jadi_GP_posting');
+		$this->session->unset_userdata('keyword_jadi_GUP_posting');
+		$this->session->unset_userdata('keyword_jadi_TUP_posting');
 		redirect($_SERVER['HTTP_REFERER']);
 	}
 
@@ -856,7 +863,7 @@ class Kuitansi extends MY_Controller {
 		echo json_encode($query);
 	}
     
-    public function posting($id=0, $jenis = 'GP'){
+    public function posting($jenis = 'GP', $id=0){
 		$this->data['menu3'] = true;
 		//level unit
 		if($this->session->userdata('kode_unit')!=null){
@@ -867,12 +874,13 @@ class Kuitansi extends MY_Controller {
 		}
 
 		//search
-		if(isset($_POST['keyword_jadi'])){
-			$keyword = $this->input->post('keyword_jadi');
-			$this->session->set_userdata('keyword_jadi', $keyword);		
+		$keyword = '';
+		if(isset($_POST['keyword_jadi_'.$jenis.'_posting'])){
+			$keyword = $this->input->post('keyword_jadi_'.$jenis.'_posting');
+			$this->session->set_userdata('keyword_jadi_'.$jenis.'_posting', $keyword);		
 		}else{
-			if($this->session->userdata('keyword_jadi')!=null){
-				$keyword = $this->session->userdata('keyword_jadi');
+			if($this->session->userdata('keyword_jadi_'.$jenis.'_posting')!=null){
+				$keyword = $this->session->userdata('keyword_jadi_'.$jenis.'_posting');
 			}else{
 				$keyword = '';
 			}
@@ -884,7 +892,7 @@ class Kuitansi extends MY_Controller {
         
 		$total = $total_data->num_rows();
 		//pagination
-		if($this->uri->segment('4')==null){
+		if($this->uri->segment('5')==null){
 			$id = 0;
 			$this->data['no'] = $id+1;
 		}else{
@@ -893,7 +901,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/jadi');
+		$config['base_url'] = site_url('akuntansi/kuitansi/posting/'.$jenis);
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -927,7 +935,10 @@ class Kuitansi extends MY_Controller {
         	$this->data['tab1'] = true;
         }else if($jenis=='PUP'){
         	$this->data['tab2'] = true;
+        }else if($jenis=='GUP'){
+        	$this->data['tab9'] = true;
         }else if($jenis=='GP'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab3'] = true;
         }else if($jenis=='GP_NIHIL'){
         	$this->data['tab4'] = true;
@@ -936,6 +947,8 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='TUP_NIHIL'){
         	$this->data['tab6'] = true;
         }
+
+        $this->data['jenis'] = $jenis;
         
 		$temp_data['content'] = $this->load->view('akuntansi/posting_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);

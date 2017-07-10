@@ -162,7 +162,7 @@ class Jurnal_umum extends MY_Controller {
         // die();
         // print_r($end_akun);die('aa');
 
-        $highestRow = $objWorksheet->getHighestRow() - 4; // e.g. 10
+        $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
         $highestColumnIndex = $end_akun; // e.g. 5
 
         $index = 0;
@@ -194,7 +194,7 @@ class Jurnal_umum extends MY_Controller {
             $entry['tanggal_jurnal'] = $waktu_jurnal_umum;
             
             for ($kolom=$start_debet; $kolom <= $end_debet; $kolom++) { 
-                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
+                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();
                 $akun = explode('-',$akun);
                 $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
                 //sebagai debet-kas
@@ -368,9 +368,6 @@ class Jurnal_umum extends MY_Controller {
             }
 
             $q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
-
-
-
 
         }
 

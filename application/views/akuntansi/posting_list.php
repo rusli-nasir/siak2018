@@ -24,13 +24,13 @@
 </div><!--/.row-->
 <hr/>
 <ul class="nav nav-tabs">
-  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/UP'); ?>">UP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->up_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->up_posting; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/PUP'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup_posting; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/GP'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_posting; ?></span></a></li>
-    <li role="presentation" class="<?php if(isset($tab9)){ if($tab9==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/GUP'); ?>">GU&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gu_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gu_posting; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/GP_NIHIL'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_posting; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/TUP'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_posting; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/1/TUP_NIHIL'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/UP/1'); ?>">UP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->up_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->up_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/PUP/1'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/GP/1'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_posting; ?></span></a></li>
+    <li role="presentation" class="<?php if(isset($tab9)){ if($tab9==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/GUP/1'); ?>">GU&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gu_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gu_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/GP_NIHIL/1'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/TUP/1'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/TUP_NIHIL/1'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_posting; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab7)){ if($tab7==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_ls'); ?>">LS- 3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls_posting; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_posting; ?></span></a></li>
 </ul>
@@ -48,18 +48,40 @@
 				<span class="input-group-btn">
 	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_jadi'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
 	      		</span>
-	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_jadi" value="<?php if($this->session->userdata('keyword_jadi')) echo $this->session->userdata('keyword_jadi'); ?>">
+	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword_jadi_<?php echo $jenis; ?>_posting" value="<?php if($this->session->userdata('keyword_jadi_'.$jenis.'_posting')) echo $this->session->userdata('keyword_jadi_'.$jenis.'_posting'); ?>">
 	      		<span class="input-group-btn">
 	        		<button class="btn btn-default" type="submit">Cari</button>
 	      		</span>
 	    	</div>
 	    </form>
 	</div>
-	<?php if($this->session->userdata('level')!='1'){ ?>
-	<div class="col-sm-4">	
-		<a href="<?php echo site_url('akuntansi/kuitansi/pilih_unit'); ?>"><button type="button" class="btn btn-primary">Pilih Unit</button></a>
+	<div class="col-sm-4">
+		<?php if(isset($tab3)){ ?>
+		<form action="<?php echo site_url('akuntansi/kuitansi/posting'); ?>" method="post">
+			<div class="input-group">
+	      		<select name="keyword_jadi_GP_posting" class="form-control">
+					<option value="">Tampil Semua SPM</option>
+					<?php 
+					foreach($query_spm->result_array() as $result){ 
+					?>
+					<option value="<?php echo $result['no_spm']; ?>"
+						<?php 
+						if($this->session->userdata('keyword_jadi_GP_posting')){
+							if($result['no_spm']==$this->session->userdata('keyword_jadi_GP_posting')){
+								echo 'selected';
+							} 
+						}
+						?>
+						><?php echo $result['no_spm']; ?></option>
+					<?php } ?>
+				</select>
+	      		<span class="input-group-btn">
+	        		<button class="btn btn-default" type="submit">Filter</button>
+	      		</span>
+	    	</div>		
+		</form>
+		<?php } ?>
 	</div>
-	<?php } ?>
 </div>
 <br/>
 <div class="row">
@@ -79,6 +101,7 @@
 					<th>NO</th>
 					<th>TANGGAL</th>
 					<th>NO.BUKTI</th>
+					<th>NO.SPM</th>
 					<th>NO. AKUN <br/><span style="color:blue;">KAS</span><br/>AKRUAL</th>
 					<th>DEBET</th>
 					<th>KREDIT</th>
@@ -94,6 +117,7 @@
 					<td><?php echo $no; ?></td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
+					<td><?php echo $result->no_spm; ?></td>
 					<td><?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - '.$result->nama_akun_debet_akrual.'<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
 					<td><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
 					<td><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>

@@ -56,7 +56,7 @@ class User_akuntansi_model extends CI_Model {
 		$id_user = $this->db->get_where('akuntansi_user',array('id'=>$user_id));
         
         if($id_user->num_rows()){
-            $this->db->set('password', sha1($password)));
+            $this->db->set('password', sha1($password));
             $this->db->where('id', $user_id);
             $this->db->update('akuntansi_user');
             return $password;

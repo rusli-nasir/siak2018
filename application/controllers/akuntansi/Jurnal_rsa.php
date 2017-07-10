@@ -218,14 +218,21 @@ class Jurnal_rsa extends MY_Controller {
         $this->load->view('akuntansi/content_template',$this->data,false);
     }
 
-    public function ganti_status($id_kuitansi_jadi)
+    public function ganti_status($id_kuitansi_jadi,$from = null)
     {
-        $post = $this->input->post();
+        if ($from == 'list') {
+            $post = null;
+            $status = 2;
+        } else {
+            $post = $this->input->post();
+            $status = $this->input->post('status');
+        }
+
         $updater = array();
-        $status = $this->input->post('status');
 
         $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         $flag = $kuitansi['flag'];
+        $jenis = $kuitansi['jenis'];
 
         $riwayat['status'] = $status;
         $riwayat['id_kuitansi_jadi'] = $id_kuitansi_jadi;
@@ -255,7 +262,27 @@ class Jurnal_rsa extends MY_Controller {
             $this->Kuitansi_model->update_kuitansi_jadi($kuitansi['id_pajak'],$updater);    
         }
 
-        redirect('akuntansi/kuitansi/jadi/');
+        $direct_url = 'akuntansi/kuitansi/jadi';
+        if($jenis=='NK'){
+            $direct_url = 'akuntansi/kuitansi/jadi_spm';
+        }else if($jenis=='UP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/UP';
+        }else if($jenis=='PUP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/PUP';
+        }else if($jenis=='GP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/GP';
+        }else if($jenis=='GUP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/GUP';
+        }else if($jenis=='GP_NIHIL'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/GP_NIHIL';
+        }else if($jenis=='TUP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/TUP';
+        }else if($jenis=='TUP_NIHIL'){
+            $direct_url = 'akuntansi/kuitansi/jadi/1/TUP_NIHIL';
+        }else if($jenis=='TUP'){
+            $direct_url = 'akuntansi/kuitansi/index_tup';
+        }
+        redirect($direct_url);
 
     }
 
