@@ -146,6 +146,10 @@ tbody td, thead th {
                         <a href="<?php echo site_url('akuntansi/rsa_gup/up/'.$result->kode_unit_subunit.'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab9)){ ?>
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <?php }elseif(isset($tab6)){ ?>
+							<a href="<?php echo site_url('akuntansi/rsa_pup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <?php }elseif(isset($tab5)){ ?>
+							<a href="<?php echo site_url('akuntansi/rsa_tup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php } ?>
                         
 						<?php if($this->session->userdata('level')==1){ ?>
@@ -155,6 +159,10 @@ tbody td, thead th {
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/UP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php }elseif(isset($tab9)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/GUP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+							<?php }elseif(isset($tab6)){ ?>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/PUP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+							<?php }elseif(isset($tab5)){ ?>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/TUP'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<a href="#"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
