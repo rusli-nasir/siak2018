@@ -205,9 +205,9 @@ function get_nama_akun_v($kode_akun){
 				return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 			} else if (substr($kode_akun,0,1) == 1){
 				$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
-				if ($hasil == null){
+				/*if ($hasil == null){
 					$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
-				}
+				}*/
 				if ($hasil == null){
 					$hasil = $ci->db->get_where('akuntansi_aset_6',array('akun_6' => $kode_akun))->row_array()['nama'];
 				}
