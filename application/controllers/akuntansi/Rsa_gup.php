@@ -391,7 +391,7 @@ class rsa_gup extends MY_Controller{
         $this->load->model("user_model");
         $this->load->model("cantik_model");
         $d['id'] = $id;
-        $sql = "SELECT * FROM kepeg_tr_sppls WHERE nomor ='".$d['id']."'";
+        $sql = "SELECT * FROM kepeg_tr_sppls WHERE id_sppls =".$d['id'];
         $sub = $this->db->query($sql)->result();
         $akun = explode(",",$sub[0]->detail_belanja);
         $sql = "SELECT * FROM rsa_detail_belanja_ WHERE id_rsa_detail!=0 AND";
@@ -424,8 +424,8 @@ class rsa_gup extends MY_Controller{
     function lspg($garbage, $id){
         $this->load->helper('lspg');
         
-        $sql = "SELECT nomor FROM kepeg_tr_spmls WHERE id_spmls =".$id;
-        $nomor_sppls = str_replace('SPM', 'SPP', $this->db->query($sql)->row()->nomor);
+        $sql = "SELECT id_tr_sppls FROM kepeg_tr_spmls WHERE id_spmls =".$id;
+        $nomor_sppls = $this->db->query($sql)->row()->id_tr_sppls;
         
         
         $subdata['spm'] = $this->spmls($garbage, $id);
