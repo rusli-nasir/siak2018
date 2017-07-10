@@ -7,6 +7,13 @@
 <script src="<?php echo base_url();?>/assets/akuntansi/js/easynumber/jquery.number.js"></script>
 <script type="text/javascript">
   var host = "<?=site_url('/')?>";
+
+  Number.prototype.format = function(n, x, s, c) {
+      var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+          num = this.toFixed(Math.max(0, ~~n));
+
+      return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+  };
     
 $(document).ready(function(){
 
@@ -481,16 +488,16 @@ $(document).ready(function(){
       $(".jumlah_akun_debet_kas").each(function(){
           jml_debet_kas += $(this).val()*1;
       });
-      $('#total_debet_kas').text(jml_debet_kas);
+      $('#total_debet_kas').text(jml_debet_kas.format(0, 3, '.', ''));
       
       jml_kredit_kas = 0;
       $(".jumlah_akun_kredit_kas").each(function(){
           jml_kredit_kas += $(this).val()*1;
       });
       jml_total_kas = jml_kredit_kas-jml_debet_kas;
-      $('#total_kredit_kas').text(jml_kredit_kas);
+      $('#total_kredit_kas').text(jml_kredit_kas.format(0, 3, '.', ''));
       
-      $('#selisih_kas').text(jml_total_kas);
+      $('#selisih_kas').text(jml_total_kas.format(0, 3, '.', ''));
       if(jml_total_kas==0) $('#selisih_kas').removeAttr('style');
       else $('#selisih_kas').attr('style', 'color:red');
   }
@@ -499,16 +506,16 @@ $(document).ready(function(){
       $(".jumlah_akun_debet_akrual").each(function(){
           jml_debet_akrual += $(this).val()*1;
       });
-      $('#total_debet_akrual').text(jml_debet_akrual);
+      $('#total_debet_akrual').text(jml_debet_akrual.format(0, 3, '.', ''));
       
       jml_kredit_akrual = 0;
       $(".jumlah_akun_kredit_akrual").each(function(){
           jml_kredit_akrual += $(this).val()*1;
       });
-      $('#total_kredit_akrual').text(jml_kredit_akrual);
+      $('#total_kredit_akrual').text(jml_kredit_akrual.format(0, 3, '.', ''));
       jml_total_akrual = jml_kredit_akrual-jml_debet_akrual;
       
-      $('#selisih_akrual').text(jml_total_akrual);
+      $('#selisih_akrual').text(jml_total_akrual.format(0, 3, '.', ''));
       if(jml_total_akrual==0) $('#selisih_akrual').removeAttr('style');
       else $('#selisih_akrual').attr('style', 'color:red');
   }
