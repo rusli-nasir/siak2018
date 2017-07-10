@@ -56,9 +56,6 @@
 					<th>NO.BUKTI</th>
 					<th>UNIT</th>
 					<th>URAIAN</th>
-					<th>AKUN DEBET</th>
-					<th>AKUN KREDIT</th>
-					<th>JUMLAH</th>
 					<th>AKSI</th>
 				</tr>
 			</thead>
@@ -70,9 +67,6 @@
 					<td><?php echo $result->no_bukti; ?></td>
 					<td><?php echo get_unit($result->unit_kerja); ?></td>
 					<td><?php echo $result->uraian; ?></td>
-					<td><?php echo $result->akun_debet; ?></td>
-					<td><?php echo $result->akun_kredit; ?></td>
-					<td><?php echo number_format($result->jumlah_debet); ?></td>
 					<td>						
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
