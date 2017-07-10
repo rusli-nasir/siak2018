@@ -66,38 +66,119 @@ class Penerimaan extends MY_Controller {
         $i = 0;
 
         $data = array();
+        $array_akun = array();
+
+        $start_akun = $end_akun = 4;
+        while ($objPHPExcel->setActiveSheetIndex($i)){
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+
+            $array_akun[] = $objWorksheet->getTitle();
+            $val = $objWorksheet->getCellByColumnAndRow($end_akun,1)->getValue();
+            while ($val != '') {
+                $array_akun[] = $val;
+                $end_akun++;
+                $val = $objWorksheet->getCellByColumnAndRow($end_akun,1)->getValue();
+            }
+
+            if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
+        }
+
+        $array_non_akun = array();
+        foreach ($array_akun as $entry) {
+            // print_r($entry);die();
+            $entry = (string)$entry;
+            $nama = $this->Akun_model->get_nama_akun($entry);
+            if ($nama == '-' or $nama == null) {
+                $array_non_akun[] = $entry;
+            }
+        }
+        // print_r($array_akun);
+
+        if (count($array_non_akun) > 0) {
+            echo "Akun di bawah ini tidak terdeteksi : <br/>";
+            foreach ($array_non_akun as $entry) {
+                echo "$entry<br/>";
+            }
+            echo "<a href='".$_SERVER['HTTP_REFERER']."''>kembali</a>";
+            die();
+        }
+
+
+        $i = 0;
 
         while ($objPHPExcel->setActiveSheetIndex($i)){
 
             $objWorksheet = $objPHPExcel->getActiveSheet();
             
-            $title = explode('-',$objWorksheet->getTitle());
-
-            $akun_debet_akrual = $title[0];
-            $akun_kredit_kas = $title[1];
+            $akun_debet_akrual = $objWorksheet->getTitle();
 
             $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
-            $highestColumnIndex = 4; // e.g. 5
+            // $highestColumnIndex = 4; // e.g. 5
 
             $index = 0;
 
+
             for ($row=2; $row <= $highestRow; $row++) { 
                 $entry = array();
+                $entry_relasi = array();
+                $array_relasi = array();
+                $array_data = array();
                 $tanggal = $objWorksheet->getCellByColumnAndRow(1,$row)->getCalculatedValue();
                 $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
                 $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
                 $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
                 $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
-                $entry['akun_debet'] = $sal_penerimaan;
-                $entry['akun_kredit'] = $akun_kredit_kas;
-                $entry['akun_debet_akrual'] = $akun_debet_akrual;
-                $entry['akun_kredit_akrual'] = substr_replace($akun_kredit_kas,'6',0,1);
-                $entry['jumlah_debet'] = $objWorksheet->getCellByColumnAndRow(4,$row)->getValue();
-                $entry['jumlah_kredit'] = $entry['jumlah_debet'];
+                // $entry['akun_debet'] = $sal_penerimaan;
+                // $entry['akun_kredit'] = $akun_kredit_kas;
+                // $entry['akun_debet_akrual'] = $akun_debet_akrual;
+                // $entry['akun_kredit_akrual'] = substr_replace($akun_kredit_kas,'6',0,1);
+                // $entry['jumlah_debet'] = $objWorksheet->getCellByColumnAndRow(4,$row)->getValue();
+                // $entry['jumlah_kredit'] = $entry['jumlah_debet'];
                 $entry['unit_kerja'] = 9999;
                 $entry['tipe'] = 'penerimaan';
                 $entry['jenis'] = 'penerimaan';
                 $entry['jenis_pembatasan_dana'] = 'tidak_terikat';
+
+                for ($kolom=$start_akun; $kolom <= $end_akun; $kolom++) { 
+                    $akun = $objWorksheet->getCellByColumnAndRow($kolom,1)->getValue();
+                    $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
+                    if ($jumlah != 0 and $jumlah != '-') {
+                        $entry_relasi['tipe'] = 'debet';
+                        $entry_relasi['jenis'] = 'kas';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = $sal_penerimaan;
+                        $entry_relasi['jumlah'] = $jumlah;
+
+                        $array_relasi[] = $entry_relasi;
+
+                        //sebagai debet-akrual
+                        $entry_relasi['tipe'] = 'debet';
+                        $entry_relasi['jenis'] = 'akrual';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = $akun_debet_akrual;
+                        $entry_relasi['jumlah'] = $jumlah;
+
+                        $array_relasi[] = $entry_relasi;
+
+                        //sebagai kredit-kas
+                        $entry_relasi['tipe'] = 'kredit';
+                        $entry_relasi['jenis'] = 'kas';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = $akun;
+                        $entry_relasi['jumlah'] = $jumlah;
+
+                        $array_relasi[] = $entry_relasi;
+
+                        //sebagai kredit-akrual
+                        $entry_relasi['tipe'] = 'kredit';
+                        $entry_relasi['jenis'] = 'akrual';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = substr_replace($akun,'6',0,1);
+                        $entry_relasi['jumlah'] = $jumlah;
+
+                        $array_relasi[] = $entry_relasi;
+                    }
+                }
 
                 $entry['flag'] =3;
                 $entry['status'] = 4;
@@ -106,17 +187,35 @@ class Penerimaan extends MY_Controller {
                 $entry['tanggal_verifikasi'] = $waktu_penerimaan;
                 $entry['tanggal_jurnal'] = $waktu_penerimaan;
 
+                $entry_data['entry'] = $entry;
+                $entry_data['relasi'] = $array_relasi;
 
-
-
-                $data[] = $entry;
+                $data[] = $entry_data;
             }
 
             if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
 
         }
 
-        if ($this->Penerimaan_model->insert_penerimaan_batch($data)) {
+        foreach ($data as $entry_data) {
+
+            $entry = $entry_data['entry'];
+            $array_relasi = $entry_data['relasi'];
+
+            $id_kuitansi_jadi = $this->Kuitansi_model->add_kuitansi_jadi($entry);
+
+            if ($array_relasi != null) {
+                for ($i=0;$i<count($array_relasi);$i++) {
+                    $array_relasi[$i]['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                }
+                $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($array_relasi);  
+            }
+
+            $q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+
+        }
+
+        if ($id_kuitansi_jadi) {
             redirect('akuntansi/penerimaan');
         } else {
             die('gagal menginput');
