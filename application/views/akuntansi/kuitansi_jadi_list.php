@@ -187,7 +187,7 @@ tbody td, thead th {
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<?php if($result->flag==1 AND ($result->status=='proses' OR $result->status=='direvisi')){ ?>
 								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
-								<a href="<?php echo site_url('akuntansi/jurnal_rsa/ganti_status/'.$result->id_kuitansi_jadi.'/list'); ?>"><button type="button" class="btn btn-sm btn-success" onclick="return confirm('Terima kuitansi?')"><span class="glyphicon glyphicon-ok"></span> Terima</button></a>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/ganti_status/'.$result->id_kuitansi_jadi.'/list'); ?>"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span> Terima</button></a>
 							<?php }else{ ?>
 								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
 							<?php } ?>
