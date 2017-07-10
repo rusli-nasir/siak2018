@@ -936,7 +936,7 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='GUP'){
         	$this->data['tab9'] = true;
         }else if($jenis=='GP'){
-        	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab3'] = true;
         }else if($jenis=='GP_NIHIL'){
         	$this->data['tab4'] = true;

@@ -197,6 +197,23 @@ class Kuitansi_model extends CI_Model {
         return $query;
     }
 
+    function read_posting_group_spm($limit = null, $start = null, $keyword = null, $kode_unit = null, $jenis = 'GP'){
+        if($kode_unit!=null){
+            $unit = 'AND unit_kerja="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='$jenis' AND tipe<>'pajak' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit GROUP BY no_spm LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='$jenis' AND tipe<>'pajak' AND  
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit GROUP BY no_spm");
+        }
+        return $query;
+    }
+
 	function read_kuitansi_ls($limit = null, $start = null, $keyword = null, $kode_unit=null){
 		if($kode_unit!=null){
             $unit = 'AND substr(trx_lsphk3.kode_unit_subunit,1,2)="'.$kode_unit.'"';

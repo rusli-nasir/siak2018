@@ -55,11 +55,6 @@
 	    	</div>
 	    </form>
 	</div>
-	<?php if($this->session->userdata('level')!='1'){ ?>
-	<div class="col-sm-4">	
-		<a href="<?php echo site_url('akuntansi/kuitansi/pilih_unit'); ?>"><button type="button" class="btn btn-primary">Pilih Unit</button></a>
-	</div>
-	<?php } ?>
 	<div class="col-sm-4">
 		<?php if(isset($tab3)){ ?>
 		<form action="<?php echo site_url('akuntansi/kuitansi/posting'); ?>" method="post">
