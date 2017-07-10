@@ -11,6 +11,7 @@ class Coba extends MY_Controller {
         $this->load->model("unit_model");
         $this->load->model('menu_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
+        $this->load->model('akuntansi/Coba_model', 'Coba_model');
         $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
         $this->load->model('akuntansi/Laporan_model', 'Laporan_model');
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
@@ -36,6 +37,11 @@ class Coba extends MY_Controller {
         print_r($this->Pajak_model->get_detail_pajak('FTE00010','GP'));
     }
 
+    public function fixing()
+    {
+        print_r($this->Coba_model->fixing_nk());
+    }
+
     public function spm()
     {
         print_r($this->Spm_model->get_spm_input(24,'up'));
@@ -53,7 +59,7 @@ class Coba extends MY_Controller {
 
     public function akun()
     {
-        print_r($this->Akun_model->get_nama_akun('423951'));
+        print_r($this->Akun_model->get_nama_akun('111112'));
     }
 
     public function tgl_spm()
