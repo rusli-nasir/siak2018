@@ -218,11 +218,17 @@ class Jurnal_rsa extends MY_Controller {
         $this->load->view('akuntansi/content_template',$this->data,false);
     }
 
-    public function ganti_status($id_kuitansi_jadi)
+    public function ganti_status($id_kuitansi_jadi,$from = null)
     {
-        $post = $this->input->post();
+        if ($from == 'list') {
+            $post = null;
+            $status = 2;
+        } else {
+            $post = $this->input->post();
+            $status = $this->input->post('status');
+        }
+
         $updater = array();
-        $status = $this->input->post('status');
 
         $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
         $flag = $kuitansi['flag'];
