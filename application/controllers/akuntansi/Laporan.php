@@ -532,7 +532,9 @@ class Laporan extends MY_Controller {
 
 
         if ($unit == 'all' or $unit == 9999) {
-            $unit = null;
+            if ($unit == 'all') {
+                $unit = null;
+            }
             // $mode = 'neraca';
             $teks_unit = "UNIVERSITAS DIPONEGORO";
         } else {
@@ -786,7 +788,6 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]) or null;    
 
-        $mode = null;
 
         if ($unit == 'all') {
             $unit = null;
@@ -817,6 +818,7 @@ class Laporan extends MY_Controller {
         
         $teks_tahun = substr($periode_akhir,0,4);
         $data['teks_tahun_anggaran'] = "TAHUN ANGGARAN $teks_tahun";
+        $mode = null;
 
 
         if ($periode_awal != null and $periode_akhir != null){
@@ -831,6 +833,7 @@ class Laporan extends MY_Controller {
         $data['periode_text'] = $teks_periode;
         $data['unit'] = $unit;
         $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        // die($mode);
 
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
         if($tipe=='pdf'){
@@ -854,7 +857,10 @@ class Laporan extends MY_Controller {
         $periode_akhir = strtodate($date_t[1]);
 
          if ($unit == 'all' or $unit == 9999) {
-            $unit = null;
+            if ($unit == 'all') {
+                $unit = null;
+            }
+            // $unit = null;
             $data['teks_unit'] = "UNIVERSITAS DIPONEGORO";
         } else {
             $data['teks_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);

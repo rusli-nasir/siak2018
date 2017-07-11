@@ -143,15 +143,17 @@
 		?>
 	</body>
 	<div align="right" style="width:1100px">
-		<div style="width:350px" align="left">
+		<div style="width:400px" align="left">
 			<?php 
-			if ($unit == null or $unit == 9999) {
-	            $pejabat = get_pejabat('all','rektor');
-	            $teks_kpa = "Rektor";
-	        } else {
-	            $pejabat = get_pejabat($unit,'kpa');
-	            $teks_kpa = "Pengguna Anggaran";
-	        }
+			if ($unit == null or $unit == 9999 or $unit == 52) {
+			    $pejabat = get_pejabat('all','rektor');
+			    $teks_kpa = "Rektor";
+			    $teks_unit = "UNIVERSITAS DIPONEGORO";
+			} else {
+			    $pejabat = get_pejabat($unit,'kpa');
+			    $teks_kpa = "Pengguna Anggaran";
+			    $teks_unit = get_nama_unit($unit);
+			}
 			echo 'Semarang, '.$periode_akhir.'<br/>'.$teks_kpa.'<br/>';
 			echo $teks_unit.'<br/><br/><br/><br/>';
 			echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
@@ -162,6 +164,9 @@
 <?php
 function get_nama_unit($kode_unit)
 {
+	if ($kode_unit == 9999) {
+		return 'Penerimaan';
+	}
 	$ci =& get_instance();
 	$ci->db2 = $ci->load->database('rba', true);
     $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();

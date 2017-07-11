@@ -75,6 +75,12 @@ class Akun_model extends CI_Model {
         return $this->db->get('akuntansi_sal_6')->row_array()['akun_6'];
     }
 
+	public function get_akun_sal_penerimaan()
+    {
+        $this->db->where('kode_unit',9999);
+        return $this->db->get('akuntansi_sal_6')->row_array();
+    }
+
 	public function get_kode_sal_jurnal_umum()
     {
         $this->db->where('kode_unit',92);

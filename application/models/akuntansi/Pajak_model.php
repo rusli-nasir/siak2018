@@ -37,6 +37,9 @@ class Pajak_model extends CI_Model {
         $data_2 = array();
 
     	foreach ($hasil as $entry) {
+            if ($entry['jenis_pajak'] == 'Lainnya' or $entry['jenis_pajak'] == 'PPh_Ps_4(2)') {
+                $entry['jenis_pajak'] = 'PPh_final';
+            }
     		$detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
             if ($detail != null) {
     		  $data[] = array_merge($entry,$detail);  

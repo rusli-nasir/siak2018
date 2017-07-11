@@ -175,8 +175,8 @@ class Jurnal_umum extends MY_Controller {
             $array_pajak = array();
             $array_pengembalian = array();
             $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
-            $date = DateTime::createFromFormat('d-m-Y', $tanggal);
-            $tanggal = $date->format('Y-m-d');
+            // $date = DateTime::createFromFormat('d-m-Y', $tanggal);
+            $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
 
             $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
             $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(5,$row)->getValue();

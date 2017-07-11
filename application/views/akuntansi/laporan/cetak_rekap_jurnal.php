@@ -94,12 +94,12 @@
             					<td>'.$in_akun['akun'].'</td>
             					<td>'.get_nama_akun_v($in_akun['akun']).'</td>';
             					if ($in_akun['tipe'] == 'debet'){
-				                    echo '<td align="right">'.number_format($in_akun['jumlah'],2).'</td>';
+				                    echo '<td align="right">'.eliminasi_negatif($in_akun['jumlah']).'</td>';
 				                    echo '<td align="right">0.00</td>';
 				                    $jumlah_debet += $in_akun['jumlah'];
 				                }elseif ($in_akun['tipe'] == 'kredit') {
 				                    echo '<td align="right">0.00</td>';
-				                    echo '<td align="right">'.number_format($in_akun['jumlah'],2).'</td>';
+				                    echo '<td align="right">'.eliminasi_negatif($in_akun['jumlah']).'</td>';
 				                    $jumlah_kredit += $in_akun['jumlah'];
 				                }
             			echo '</tr>';         			
@@ -111,17 +111,25 @@
 			<?php
 			echo '<tr>
     				<td align="right" colspan="7" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-    				<td align="right">'.number_format($jumlah_debet,2).'</td>
-    				<td align="right">'.number_format($jumlah_kredit,2).'</td>
+    				<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
+    				<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
     			</tr>';
 			?>
 		</table>
 		<div align="right" style="width:1200px;margin-top:40px;">
 			<div style="width:400px" align="left">
 				<?php 
-				echo 'Semarang, '.$periode_akhir.'<br/>Pengguna Anggaran<br/>';
-				echo get_nama_unit($unit).'<br/><br/><br/><br/>';
-				$pejabat = get_pejabat($unit, 'kpa'); 
+				if ($unit == null or $unit == 9999) {
+				    $pejabat = get_pejabat('all','rektor');
+				    $teks_kpa = "Rektor";
+				    $teks_unit = "UNIVERSITAS DIPONEGORO";
+				} else {
+				    $pejabat = get_pejabat($unit,'kpa');
+				    $teks_kpa = "Pengguna Anggaran";
+				    $teks_unit = get_nama_unit($unit);
+				}
+				echo 'Semarang, '.$periode_akhir.'<br/>'.$teks_kpa.'<br/>';
+				echo $teks_unit.'<br/><br/><br/><br/>';
 				echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
 				?>
 			</div>
@@ -131,6 +139,9 @@
 <?php
 function get_nama_unit($kode_unit)
 {
+	if ($kode_unit == 9999) {
+		return 'Penerimaan';
+	}
 	$ci =& get_instance();
 	$ci->db2 = $ci->load->database('rba', true);
     $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
@@ -190,7 +201,8 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+	$tahun = gmdate('Y');
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
 	return $hasil;
 }

@@ -22,8 +22,9 @@ class Laporan_model extends CI_Model {
         $query = $this->db->get('akuntansi_pajak')->result_array();
         $array_hasil = array();
         foreach($query as $entry) {
-            $array_hasil[$entry['akun']] = $entry;
+            $array_hasil[$entry['kode_akun']] = $entry;
         }
+        return $array_hasil;
     }
 
     function read_buku_besar_akun_group($group = null,$akun = null,$unit = null,$sumber_dana=null,$start_date=null,$end_date=null){
@@ -139,8 +140,9 @@ class Laporan_model extends CI_Model {
                 }
             }
 
-
+            // $this->db_laporan->from('akuntansi_relasi_kuitansi_akun');
             $query = $this->db_laporan->get('akuntansi_relasi_kuitansi_akun')->result_array();
+
 
 
             $data2 = array();
@@ -150,11 +152,7 @@ class Laporan_model extends CI_Model {
                     if ($entry2['persen_pajak'] != null) {
                         $entry2['persen_pajak'] .= " %";
                     }
-                    if ($data_pajak[$entry2['akun']]['jenis'] == 'potongan' or $data_pajak[$entry2['akun']]['jenis'] == 'null') {
-                        $entry2['uraian'] = $data_pajak[$entry2['akun']]['nama_akun'];
-                    } else {
-                        $entry2['uraian'] = ucwords(str_replace("_", " ", $entry2['jenis_pajak'])) . " " . $entry2['persen_pajak'];
-                    }
+                    $entry2['uraian'] = $data_pajak[$entry2['akun']]['nama_akun'];
                     $entry2['tipe'] = 'debet';
                     $data2[] = $entry2;
                     $entry2['tipe'] = 'kredit';
@@ -166,6 +164,8 @@ class Laporan_model extends CI_Model {
             }
 
             $query = $data2;
+
+            // print_r($data2);die();
 
             foreach ($query as $hasil) {
                 $entry = array();
@@ -213,8 +213,8 @@ class Laporan_model extends CI_Model {
             //     }
             //     $data =array_merge($data,$data2);
             // }
-            return ($data);
         }
+        return ($data);
 
         // echo "aaa";
         
@@ -230,13 +230,13 @@ class Laporan_model extends CI_Model {
 
         // print_r($array_akun);die();
 
-        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date,$mode);         
+        $tabel_relasi = $this->Laporan_model->get_akun_tabel_relasi($array_akun,$jenis,$unit,$sumber_dana,$start_date,$end_date,$mode);  
         $tabel_relasi_pajak = $this->Laporan_model->get_akun_tabel_relasi($array_akun,'pajak',$unit,$sumber_dana,$start_date,$end_date);         
 
         $hasil = array_merge($tabel_utama,$tabel_relasi,$tabel_relasi_pajak);
 
         // print_r($jenis);die();
-        // print_r($hasil);die();
+        // print_r($tabel_relasi);die();
 
 
         $data = array();
@@ -294,9 +294,16 @@ class Laporan_model extends CI_Model {
             $this->db_laporan->where('unit_kerja',$unit);
         }
 
+        // if ($unit == '9999') {
+        //    $this->db_laporan->where('tipe','penerimaan');  
+        // }
+
         // $this->db_laporan->where("tipe <> 'pajak'");
 
         $this->db_laporan->order_by('tanggal')->order_by('no_bukti');
+
+        // die($unit);
+        // die($this->db_laporan->get_compiled_select());
 
         $query = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
@@ -306,7 +313,7 @@ class Laporan_model extends CI_Model {
         $data = array();
         foreach ($query as $entry) {
             $data[$i]['transaksi'] = $entry;
-            if ($entry['tipe'] == 'memorial' or $entry['tipe'] == 'jurnal_umum' or $entry['tipe'] == 'pajak' or $entry['tipe'] == 'pengembalian'or $entry['tipe'] == 'penerimaan') {
+            if ($entry['tipe'] == 'memorial' or $entry['tipe'] == 'jurnal_umum' or $entry['tipe'] == 'pajak' or $entry['tipe'] == 'pengembalian' or $entry['tipe'] == 'penerimaan') {
                 $this->db_laporan->where('id_kuitansi_jadi',$entry['id_kuitansi_jadi']);
 
                 $in_query = $this->db_laporan->get('akuntansi_relasi_kuitansi_akun')->result_array();
@@ -315,10 +322,8 @@ class Laporan_model extends CI_Model {
                     $data2 = array();
                     foreach ($in_query as $entry2) {
                         // karena pajak dihitung sebagai pemasukan dan pengeluaran jadi diisi debet kredit
-                        if ($entry2['persen_pajak'] != null) {
-                            $entry2['persen_pajak'] .= " %";
-                        }
-                        $entry2['uraian'] = ucwords(str_replace("_", " ", $entry2['jenis_pajak'])) . " " . $entry2['persen_pajak'];
+                        $entry2['uraian'] = $data_pajak[$entry2['akun']]['nama_akun'];
+                        // $entry2['uraian'] = ucwords(str_replace("_", " ", $entry2['jenis_pajak'])) . " " . $entry2['persen_pajak'];
                         $entry2['tipe'] = 'debet';
                         $data2[] = $entry2;
                         $entry2['tipe'] = 'kredit';
