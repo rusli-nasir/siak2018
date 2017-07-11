@@ -223,9 +223,12 @@ class Jurnal_rsa extends MY_Controller {
         if ($from == 'list') {
             $post = null;
             $status = 2;
+            $riwayat['komentar'] = '';
+
         } else {
             $post = $this->input->post();
             $status = $this->input->post('status');
+            $riwayat['komentar'] = $this->input->post('komentar');
         }
 
         $updater = array();
@@ -237,7 +240,6 @@ class Jurnal_rsa extends MY_Controller {
         $riwayat['status'] = $status;
         $riwayat['id_kuitansi_jadi'] = $id_kuitansi_jadi;
         $riwayat['flag'] = $flag;
-        $riwayat['komentar'] = $this->input->post('komentar');
 
         $this->Riwayat_model->add_riwayat($riwayat);
 
