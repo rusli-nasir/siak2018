@@ -266,21 +266,19 @@ class Jurnal_rsa extends MY_Controller {
         if($jenis=='NK'){
             $direct_url = 'akuntansi/kuitansi/jadi_spm';
         }else if($jenis=='UP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/UP';
+            $direct_url = 'akuntansi/kuitansi/jadi/UP/1';
         }else if($jenis=='PUP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/PUP';
+            $direct_url = 'akuntansi/kuitansi/jadi/PUP/1';
         }else if($jenis=='GP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/GP';
+            $direct_url = 'akuntansi/kuitansi/jadi/GP/1';
         }else if($jenis=='GUP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/GUP';
+            $direct_url = 'akuntansi/kuitansi/jadi/GUP/1';
         }else if($jenis=='GP_NIHIL'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/GP_NIHIL';
+            $direct_url = 'akuntansi/kuitansi/jadi/GP_NIHIL/1';
         }else if($jenis=='TUP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/TUP';
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP/1';
         }else if($jenis=='TUP_NIHIL'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/TUP_NIHIL';
-        }else if($jenis=='TUP'){
-            $direct_url = 'akuntansi/kuitansi/index_tup';
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP_NIHIL/1';
         }
         redirect($direct_url);
 
