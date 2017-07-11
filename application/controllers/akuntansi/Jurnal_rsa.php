@@ -297,6 +297,9 @@ class Jurnal_rsa extends MY_Controller {
             $entry = $this->input->post();
             unset($entry['simpan']);
 
+            $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
+
+
             if ($mode == 'revisi'){
                 $riwayat = array();
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
@@ -313,6 +316,11 @@ class Jurnal_rsa extends MY_Controller {
             }
 
             $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
+
+            if ($kuitansi['status'] == 'posted') {
+                $q2 = $this->Kuitansi_model->update_kuitansi_jadi_post($id_kuitansi_jadi,$entry);
+                redirect('akuntansi/edit/');
+            }
 
             if ($q2)
                 $this->session->set_flashdata('success','Berhasil menyimpan !');
