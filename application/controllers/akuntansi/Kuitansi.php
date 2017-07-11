@@ -805,11 +805,25 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit, 'NK');
+		$this->data['query'] = $this->data['query']->result_array();
+        $this->load->model('akuntansi/Akun_model');
+        foreach($this->data['query'] as $key=>$value){
+            $this->data['query'][$key]['nama_akun_debet'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet']);
+            $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
+            $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
+            $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            $this->data['query'][$key] = (object) $this->data['query'][$key];
+        }
 
 		$this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
-        $this->data['kuitansi_pasif'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif_1'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>'pengeluaran', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif_2'] = $this->Kuitansi_model->read_total(array('status'=>'direvisi', 'tipe'=>'pengeluaran', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->data['kuitansi_pasif_2'] + $this->data['kuitansi_pasif_1'];
         $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 		
+        /*print_r($this->data['query']);
+        die();*/
+
 		$temp_data['content'] = $this->load->view('akuntansi/spm_non_kuitansi_list_jadi',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}

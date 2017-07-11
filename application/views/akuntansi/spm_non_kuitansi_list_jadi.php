@@ -1,4 +1,40 @@
 <!-- javascript -->
+<style type="text/css">
+table {
+        width:1800px;
+    }
+
+thead, tbody, tr, td, th { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 80px !important;
+
+    /*text-align: left;*/
+}
+
+tbody {
+    height: 320px;
+    overflow-y: auto;
+}
+
+thead {
+	width:1800px;
+    overflow-x: auto;
+}
+
+
+tbody td, thead th {
+    width: 110px;
+    float: left;
+}
+</style>
 <script type="text/javascript">
 	$(document).ready(function(){
 		var host = location.protocol + '//' + location.host + '/sisrenbang/index.php/';
@@ -21,13 +57,13 @@
 </div><!--/.row-->
 <hr/>
 <ul class="nav nav-tabs">
-  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/1/UP'); ?>">UP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->up_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->up_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/1/PUP'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/1/GP'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_jadi; ?></span></a></li>
-    <li role="presentation" class="<?php if(isset($tab9)){ if($tab9==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/1/GUP'); ?>">GU&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gu_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gu_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/1/GP_NIHIL'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/1/TUP'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/1/TUP_NIHIL'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/UP/1'); ?>">UP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->up_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->up_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/PUP/1'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GP/1'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_jadi; ?></span></a></li>
+    <li role="presentation" class="<?php if(isset($tab9)){ if($tab9==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GUP/1'); ?>">GU&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gu_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gu_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GP_NIHIL/1'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP/1'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_NIHIL/1'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab7)){ if($tab7==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi_ls'); ?>">LS- 3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_jadi; ?></span></a></li>
 </ul>
@@ -73,30 +109,25 @@
 <br/>
 <div class="row">
 	<div class="col-sm-12">
-		<table class="table table-striped" style="table-layout:fixed">
+		<table class="table">
 			<thead>
 				<tr>
-					<th width="5%">NO</th>
+					<th style="width:50px;">NO</th>
 					<th>AKSI</th>
 					<th>TANGGAL</th>
-					<th>NO.SPM</th>
-					<th width="20%">KODE KEGIATAN</th>
-					<th>UNIT</th>
-					<th>AKUN DEBET</th>
-					<th>AKUN KREDIT</th>
-					<th>JUMLAH</th>
+					<th style="width:150px;">NO.SPM</th>
+					<th style="width:250px;">KODE KEGIATAN</th>
+					<th style="width:150px;">UNIT</th>
+					<th style="width:600px !important" nowrap>NO. AKUN <br/><span style="color:blue;">KAS</span><br/>AKRUAL</th>
+					<th style="width:110px;">DEBET</th>
+					<th style="width:110px;">KREDIT</th>
 					<th>STATUS</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($query->result() as $result){ ?>
-                <?php 
-                    if($this->session->userdata('level') == 2){
-                        if(!($result->flag==1 && ($result->status=="direvisi" || $result->status=="proses"))) continue;
-                    }
-                ?>
+				<?php foreach($query as $result){ ?>
 				<tr>
-					<td><?php echo $no; ?></td>
+					<td style="width:50px;"><?php echo $no; ?></td>
                     <td>						
 							<a href="<?php echo site_url('akuntansi/rsa_gup/lspg/id/'.get_id_spm($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
@@ -107,17 +138,30 @@
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/evaluasi'); ?>"><button type="button" class="btn btn-sm btn-warning">Verifikasi</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/ganti_status/'.$result->id_kuitansi_jadi.'/list'); ?>"><button type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span> Terima</button></a>
 						<?php }else if($this->session->userdata('level')==3){ ?>
 							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
 						<?php } ?>
 					</td>
 					<td><?php echo date("d/m/Y", strtotime($result->tanggal)); ?></td>
-					<td><?php echo $result->no_spm; ?></td>
-					<td><?php echo str_replace(',', '<br/>,', $result->kode_kegiatan); ?></td>
-					<td>-</td>
-					<td><?php echo $result->akun_debet; ?></td>
-					<td><?php echo $result->akun_kredit; ?></td>
-					<td><?php echo number_format($result->jumlah_debet); ?></td>
+					<td style="width:150px;"><?php echo $result->no_spm; ?></td>
+					<td style="width:250px;"><?php echo str_replace(',', '<br/>,', $result->kode_kegiatan); ?></td>
+					<td style="width:150px;">-</td>
+					<td style="width:600px !important" nowrap>
+						<?php echo '<b style="color:blue">'.$result->akun_debet.' - '.$result->nama_akun_debet.'<br/>'.$result->akun_kredit.' - '.$result->nama_akun_kredit.'</b><br/>'.$result->akun_debet_akrual.' - ';
+					 	if(substr($result->akun_debet_akrual,0,1)=='7'){
+						 	$uraian_akun = explode(' ', $result->nama_akun_debet_akrual);
+				            if($uraian_akun[0]!='Beban' OR $uraian_akun[0]!='beban'){
+				              $uraian_akun[0] = 'Beban';
+				            }
+				            $hasil_uraian = implode(' ', $uraian_akun);
+				        }else{
+				        	$hasil_uraian = $result->nama_akun_debet_akrual;
+				        }
+			            echo $hasil_uraian;
+            			echo '<br/>'.$result->akun_kredit_akrual.' - '.$result->nama_akun_kredit_akrual; ?></td>
+					<td style="width:110px;"><?php echo number_format($result->jumlah_debet).'<br/><br/>'.number_format($result->jumlah_debet); ?></td>
+					<td style="width:110px;"><?php echo '<br/>'.number_format($result->jumlah_kredit).'<br/><br/>'.number_format($result->jumlah_kredit); ?></td>
 					<td>
 						<?php if($result->flag==1){ ?>
 							<?php if($result->status=='revisi'){ ?>
@@ -155,5 +199,33 @@ function get_id_spm($no_spm){
 	$query = "SELECT id_spmls FROM kepeg_tr_spmls WHERE nomor='$no_spm'";
 	$q = $ci->db->query($query)->row();
 	return $q->id_spmls;
+}
+
+function get_tabel_by_jenis($jenis)
+{
+	if ($jenis == 'GP') {
+		return 'rsa_kuitansi_detail_pajak';
+	}elseif ($jenis == 'L3') {
+		return 'rsa_kuitansi_detail_pajak_lsphk3';
+	}
+}
+function get_detail_pajak($no_bukti,$jenis)
+{
+	$ci =& get_instance();
+	if (strpos($no_bukti, '-')) {
+		return null;
+	}
+
+	$hasil = $ci->db->get_where(get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+	
+	$data = array();
+
+	foreach ($hasil as $entry) {
+		$detail = $ci->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
+		if ($detail != null)
+			$data[] = array_merge($entry,$detail);
+	}
+
+	return $data;
 }
 ?>

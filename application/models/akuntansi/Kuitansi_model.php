@@ -158,10 +158,12 @@ class Kuitansi_model extends CI_Model {
 
         if($this->session->userdata('level')==1){
             $verifikasi = "AND ((status='revisi' AND flag=1) OR (status='proses' AND flag=1))";
-            $order = "ORDER BY FIELD(status, 'revisi', 'proses', 'terima', 'posted')";
+            $order = "ORDER BY no_bukti ASC";
+            //$order = "ORDER BY FIELD(status, 'revisi', 'proses', 'terima', 'posted')";
         }else{
             $verifikasi = "AND ((status='proses' AND flag=1) OR (status='direvisi' AND flag=1))";
-            $order = "ORDER BY FIELD(status, 'proses', 'revisi', 'terima', 'posted')";
+            $order = "ORDER BY no_bukti ASC";
+           //$order = "ORDER BY FIELD(status, 'proses', 'revisi', 'terima', 'posted')";
         }
 
         if($limit!=null OR $start!=null){
