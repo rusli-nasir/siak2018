@@ -150,9 +150,9 @@ function get_nama_akun_v($kode_akun){
 				$kode_akun[0] = 5;
 				$nama = $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
 				$uraian_akun = explode(' ', $nama);
-				if(isset($uraian_akun[2])){
-		            if($uraian_akun[2]!='beban'){
-		              $uraian_akun[2] = 'beban';
+				if(isset($uraian_akun[0])){
+		            if($uraian_akun[0]!='beban'){
+		              $uraian_akun[0] = 'beban';
 		            }
 		        }
 	            $hasil_uraian = implode(' ', $uraian_akun);

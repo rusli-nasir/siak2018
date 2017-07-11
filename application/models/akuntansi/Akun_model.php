@@ -16,7 +16,7 @@ class Akun_model extends CI_Model {
 				$kode_akun[0] = 5;
 				$nama = $this->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
 				$uraian_akun = explode(' ', $nama);
-				if(isset($uraian_akun[2])){
+				if(isset($uraian_akun[0])){
 		            if($uraian_akun[0]!='beban'){
 		              $uraian_akun[0] = 'beban';
 		            }
