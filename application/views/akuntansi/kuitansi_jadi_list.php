@@ -93,7 +93,7 @@ tbody td, thead th {
 </div><!--/.row-->
 <div class="row">
 	<div class="col-sm-4">
-	    <form action="<?php echo site_url('akuntansi/kuitansi/jadi/1/'.$jenis); ?>" method="post">
+	    <form action="<?php echo site_url('akuntansi/kuitansi/jadi/'.$jenis.'/1'); ?>" method="post">
 			<div class="input-group">
 				<span class="input-group-btn">
 	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search_jadi'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
