@@ -38,6 +38,26 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/content_template',$temp_data,false);
     }
 
+    public function lainnya(){
+        $this->data['tab1'] = true;
+
+//      $this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
+//      $this->data['query_debet_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_debet_akrual');
+//      $this->data['query_kredit'] = $this->Laporan_model->read_buku_besar_group('akun_kredit');
+//      $this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
+        if($this->input->post('jenis_laporan')!=null){
+            if($this->input->post('jenis_laporan')=='Aktifitas'){
+                $this->cetak_laporan_aktifitas();
+            }
+        }else{
+            $this->db2 = $this->load->database('rba', true);
+            $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
+
+            $temp_data['content'] = $this->load->view('akuntansi/laporan_lainnya_list',$this->data,true);
+            $this->load->view('akuntansi/content_template',$temp_data,false);
+        }
+    }
+
     public function rekap_jurnal($id = 0){
         $this->data['tab1'] = true;
 
