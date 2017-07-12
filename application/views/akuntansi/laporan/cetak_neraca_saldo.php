@@ -145,8 +145,8 @@ if(isset($excel)){
 				
 					if ($saldo_neraca > 0) {
 		                $jumlah_neraca_debet += $saldo_neraca;
-		                echo '<td align="right">0.00</td>';
 		                echo '<td align="right">'.eliminasi_negatif($saldo_neraca).'</td>';
+		                echo '<td align="right">0.00</td>';
 		            } elseif ($saldo_neraca < 0) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_kredit += $saldo_neraca;
