@@ -3,13 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Coba extends MY_Controller {
 	public function __construct(){
-		parent::__construct();
-		// $this->cek_session_in();
+        // $this->cek_session_in();
 
-        $this->load->model(array('rsa_gup_model','setting_up_model','kuitansi_model'));
+		parent::__construct();
+        $this->load->model(array('rsa_gup_model','setting_up_model'));
         $this->load->model("user_model");
         $this->load->model("unit_model");
         $this->load->model('menu_model');
+        $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
         $this->load->model('akuntansi/Coba_model', 'Coba_model');
         $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
@@ -37,9 +38,17 @@ class Coba extends MY_Controller {
         print_r($this->Pajak_model->get_detail_pajak('FTE00010','GP'));
     }
 
-    public function fixing()
+    public function fixing_nk()
     {
+        // die('aa');
         print_r($this->Coba_model->fixing_nk());
+    }
+
+    public function fixing_gp()
+    {
+        // die('aa');
+        // $this->Kuitansi_model->coba();
+        print_r($this->Coba_model->fixing_gp());
     }
 
     public function spm()
