@@ -480,8 +480,22 @@ class Kuitansi_model extends CI_Model {
 
     public function update_kuitansi_jadi($id_kuitansi_jadi,$params)
     {
-    	$this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+        $this->db->where('id_kuitansi_jadi',$id_kuitansi_jadi);
         $response = $this->db->update('akuntansi_kuitansi_jadi',$params);
+         if($response)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public function update_kuitansi_jadi_post($id_kuitansi_jadi,$params)
+    {
+    	$this->db_laporan->where('id_kuitansi_jadi',$id_kuitansi_jadi);
+        $response = $this->db_laporan->update('akuntansi_kuitansi_jadi',$params);
          if($response)
         {
             return 1;

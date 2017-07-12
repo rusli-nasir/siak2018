@@ -321,7 +321,7 @@ class Jurnal_rsa extends MY_Controller {
 
             if ($kuitansi['status'] == 'posted') {
                 $q2 = $this->Kuitansi_model->update_kuitansi_jadi_post($id_kuitansi_jadi,$entry);
-                redirect('akuntansi/edit/');
+                redirect('akuntansi/jurnal_rsa/detail_kuitansi/'.$id_kuitansi_jadi.'/lihat');
             }
 
             if ($q2)
@@ -342,7 +342,13 @@ class Jurnal_rsa extends MY_Controller {
             $isian['query_1'] = $this->Memorial_model->read_akun('akuntansi_aset_6');
             $isian['query_2'] = $this->Memorial_model->read_akun('akuntansi_hutang_6');
 
-            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
+            if ($this->session->userdata('level') == 3) {
+                $kode_unit = $isian['unit_kerja'];
+            } else {
+                $kode_unit = $this->session->userdata('kode_unit');
+            }
+
+            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($kode_unit)->result_array();
 
             $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 
@@ -354,8 +360,8 @@ class Jurnal_rsa extends MY_Controller {
 
             $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
             $isian['komentar'] = $query_riwayat['komentar'];
-            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
-            $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit')));
+            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($kode_unit)->result();
+            $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($kode_unit));
             $isian['akun_sal'][] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
