@@ -39,6 +39,8 @@ class Laporan extends MY_Controller {
     }
 
     public function lainnya(){
+        $this->data['menu9'] = null;
+        $this->data['menu15'] = true;
         $this->data['tab1'] = true;
 
 //      $this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
@@ -48,6 +50,12 @@ class Laporan extends MY_Controller {
         if($this->input->post('jenis_laporan')!=null){
             if($this->input->post('jenis_laporan')=='Aktifitas'){
                 $this->cetak_laporan_aktifitas();
+            }else if($this->input->post('jenis_laporan')=='Posisi Keuangan'){
+                $this->cetak_laporan_posisi_keuangan();
+            }else if($this->input->post('jenis_laporan')=='Realisasi Anggaran'){
+                $this->cetak_laporan_realisasi_anggaran();
+            }else if($this->input->post('jenis_laporan')=='Arus Kas'){
+                $this->cetak_laporan_arus_kas();
             }
         }else{
             $this->db2 = $this->load->database('rba', true);
@@ -975,6 +983,14 @@ class Laporan extends MY_Controller {
 
     public function cetak_laporan_aktifitas(){
         $this->load->view('akuntansi/laporan/cetak_laporan_aktifitas');
+    }
+
+    public function cetak_laporan_posisi_keuangan(){
+        $this->load->view('akuntansi/laporan/cetak_laporan_posisi_keuangan');
+    }
+
+    public function cetak_laporan_arus_kas(){
+        $this->load->view('akuntansi/laporan/cetak_laporan_arus_kas');
     }
 
     public function get_neraca_saldo($mode = null)

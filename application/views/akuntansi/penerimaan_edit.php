@@ -318,6 +318,12 @@ var host = "<?=site_url('/')?>";
                   <?php
                 }
                 ?> 
+                <?php foreach ($sal_penerimaan as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
             </select> 
           </div>
 
@@ -341,6 +347,12 @@ var host = "<?=site_url('/')?>";
                 }
                 ?>
                 <?php foreach ($sal_penerimaan as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
+                <?php foreach ($akun_kas_akrual as $akun) {
                   ?>
                   <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
                   <?php
@@ -437,11 +449,17 @@ var host = "<?=site_url('/')?>";
         <option value="">Pilih Akun</option>
         <option value="">
          <?php foreach ($akun_kas_akrual as $akun) {
-          ?>
-          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-          <?php
-        }
-        ?> 
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?> 
+                <?php foreach ($sal_penerimaan as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
     </select> 
   </div>
 
@@ -460,18 +478,24 @@ var host = "<?=site_url('/')?>";
   <div class="col-md-5">
     <select class="form-control" required="">
         <option value="">Pilih Akun</option>
-        <?php foreach ($sal_penerimaan as $akun) {
-          ?>
-          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
-          <?php
-        }
-        ?>
         <?php foreach ($data_akun_kredit as $akun) {
           ?>
           <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
         ?>
+        <?php foreach ($sal_penerimaan as $akun) {
+            ?>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?>
+          <?php foreach ($akun_kas_akrual as $akun) {
+            ?>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?>
     </select> 
   </div>
 

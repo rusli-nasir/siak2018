@@ -147,6 +147,12 @@
                   <?php
                 }
                 ?> 
+                <?php foreach ($sal_penerimaan as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
             </select> 
           </div>
 
@@ -170,6 +176,12 @@
                 }
                 ?>
                 <?php foreach ($sal_penerimaan as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
+                <?php foreach ($akun_kas_akrual as $akun) {
                   ?>
                   <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
                   <?php
@@ -304,7 +316,18 @@
           <?php
         }
         ?>
-
+        <?php foreach ($sal_penerimaan as $akun) {
+            ?>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?>
+          <?php foreach ($akun_kas_akrual as $akun) {
+            ?>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?>
     </select> 
   </div>
 

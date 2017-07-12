@@ -126,16 +126,34 @@
       <div class="col-md-6">
           <select id="jenis_laporan" name="jenis_laporan" class="form-control" required="">
             <option value="Aktifitas">Aktifitas</option>
+            <option value="Posisi Keuangan">Posisi Keuangan</option>
+            <option value="Realisasi Anggaran">Realisasi Anggaran</option>
+            <option value="Arus Kas">Arus Kas</option>
           </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-md-2 control-label">Level Laporan</label>  
-      <div class="col-md-6">
-          <select id="level" name="level" class="form-control" required="">
-            <option value="Header">Header</option>
-            <option value="Sub-Header">Sub-Header</option>
-          </select>
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label class="col-md-6 control-label">Level Laporan</label>  
+          <div class="col-md-6">
+              <select id="level" name="level" class="form-control" required="">
+                <option value="Header">Header</option>
+                <option value="Sub-Header">Sub-Header</option>
+              </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+         <div class="form-group">
+          <label class="col-md-6 control-label">Digit</label>  
+          <div class="col-md-6">
+              <select id="digit" name="digit" class="form-control" required="">
+                <option value="3">3 Digit</option>
+                <option value="4">4 Digit</option>
+              </select>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Button (Double) -->
