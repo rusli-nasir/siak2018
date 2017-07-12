@@ -404,7 +404,9 @@ class Penerimaan extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
             // $this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['akun_kas_akrual'] = $this->Akun_model->get_akun_penerimaan();
-            $this->data['akun_kas_akrual'][]=$this->Akun_model->get_akun_sal_penerimaan();
+            $this->data['akun_kas_akrual'][]= $this->Akun_model->get_akun_sal_penerimaan();
+
+            $this->data['sal_penerimaan'][] = $this->Akun_model->get_akun_sal_penerimaan();
         	// $this->data['data_akun_debet'] = array_merge($this->Akun_lra_model->get_akun_debet(),$this->Akun_model->get_akun_sal_penerimaan());
             $this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
@@ -482,6 +484,7 @@ class Penerimaan extends MY_Controller {
         	// $this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
             $this->data['akun_kas_akrual'] = $this->Akun_model->get_akun_penerimaan();
             $this->data['akun_kas_akrual'][]=$this->Akun_model->get_akun_sal_penerimaan();
+            $this->data['sal_penerimaan'][] = $this->Akun_model->get_akun_sal_penerimaan();
         	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_edit',$this->data,true);
