@@ -1,4 +1,13 @@
 <!DOCTYPE>
+<?php
+if(isset($excel)){
+	header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+	header("Content-Disposition: attachment; filename=buku_besar.xls");  //File name extension was wrong
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	header("Cache-Control: private",false);
+}
+?>
 <html>
 	<head>
 		<title>Buku Besar</title>
@@ -23,8 +32,10 @@
 		</script>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
+		<?php if(!isset($excel)){ ?>
 		&nbsp;&nbsp;
-		<?php echo form_open("akuntansi/laporan/$sumber/excel",array("class"=>"form-horizontal")); ?>
+		<?php echo form_open("akuntansi/laporan/cetak_buku_besar",array("class"=>"form-horizontal")); ?>
+			<input type="hidden" name="tipe" value="excel">
 			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
 			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
 			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
@@ -45,6 +56,7 @@
 			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
 			<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
 		</form>
+		<?php } ?>
 		<div align="center" style="font-weight:bold">
 			<?php echo $teks_unit; ?><br/>
 			BUKU BESAR<br/>
@@ -141,25 +153,31 @@
 		$item++;
 		}
 		?>
+		<br/>
+		<table width="1100px;">
+			<tbody>
+				<tr>
+					<td colspan="4" width="600px;"></td>
+					<td colspan="4">
+						<?php 
+						if ($unit == null or $unit == 9999 or $unit == 52) {
+						    $pejabat = get_pejabat('all','rektor');
+						    $teks_kpa = "Rektor";
+						    $teks_unit = "UNIVERSITAS DIPONEGORO";
+						} else {
+						    $pejabat = get_pejabat($unit,'kpa');
+						    $teks_kpa = "Pengguna Anggaran";
+						    $teks_unit = get_nama_unit($unit);
+						}
+						echo 'Semarang, '.$periode_akhir.'<br/>'.$teks_kpa.'<br/>';
+						echo $teks_unit.'<br/><br/><br/><br/>';
+						echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
+						?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</body>
-	<div align="right" style="width:1100px">
-		<div style="width:400px" align="left">
-			<?php 
-			if ($unit == null or $unit == 9999 or $unit == 52) {
-			    $pejabat = get_pejabat('all','rektor');
-			    $teks_kpa = "Rektor";
-			    $teks_unit = "UNIVERSITAS DIPONEGORO";
-			} else {
-			    $pejabat = get_pejabat($unit,'kpa');
-			    $teks_kpa = "Pengguna Anggaran";
-			    $teks_unit = get_nama_unit($unit);
-			}
-			echo 'Semarang, '.$periode_akhir.'<br/>'.$teks_kpa.'<br/>';
-			echo $teks_unit.'<br/><br/><br/><br/>';
-			echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
-			?>
-		</div>
-	</div>
 </html>
 <?php
 function get_nama_unit($kode_unit)

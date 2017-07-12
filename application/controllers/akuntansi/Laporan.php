@@ -838,6 +838,9 @@ class Laporan extends MY_Controller {
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_buku_besar',$data);
+        }else if($tipe=='excel'){
+            $data['excel'] = true;
+            $this->load->view('akuntansi/laporan/cetak_buku_besar',$data);
         }else{
             $this->load->view('akuntansi/laporan/cetak_buku_besar',$data);
         }
@@ -897,6 +900,9 @@ class Laporan extends MY_Controller {
 
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_rekap_jurnal',$data);
+        }else if($tipe=='excel'){
+            $data['excel'] = true;
+            $this->load->view('akuntansi/laporan/cetak_rekap_jurnal',$data);
         }else{
             $this->load->view('akuntansi/laporan/cetak_rekap_jurnal',$data);
         }
@@ -959,6 +965,9 @@ class Laporan extends MY_Controller {
 
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_neraca_saldo',$data);
+        }else if($tipe=='excel'){
+            $data['excel'] = true;
+            $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
         }else{
             $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
         }
