@@ -310,7 +310,7 @@ var host = "<?=site_url('/')?>";
       <div class="col-md-12" id="group-akunDebet_akrual">
         <div class="form-group" style="display:none"> 
           <div class="col-md-5">
-            <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual" required="">
+            <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual">
                 <option value="">Pilih Akun</option>
                 <?php foreach ($akun_kas_akrual as $akun) {
                   ?>
@@ -332,7 +332,7 @@ var host = "<?=site_url('/')?>";
       <div class="col-md-12" id="group-akunKredit_akrual">
         <div class="form-group" style="display:none"> 
           <div class="col-md-5">
-            <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual" required="">
+            <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual">
                 <option value="">Pilih Akun</option>
                 <?php foreach ($data_akun_kredit as $akun) {
                   ?>
