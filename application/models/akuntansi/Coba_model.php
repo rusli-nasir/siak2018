@@ -50,8 +50,9 @@ class Coba_model extends CI_Model {
 
 		$query = "SELECT k.id_kuitansi_jadi,k.no_bukti,k.jenis,k.tipe,k.id_pajak, p.jenis_pajak,k.status, sum(rupiah_pajak) as jumlah_pajak, count(Distinct 'jenis_pajak') as macam_pajak FROM akuntansi_kuitansi_jadi as k, rsa_kuitansi_detail_pajak as p WHERE k.no_bukti = p.no_bukti AND k.jenis='GP' AND p.jenis_pajak in ('Lainnya','PPh_Ps_4(2)') AND rupiah_pajak != 0 AND k.tipe!='pajak' GROUP BY p.jenis_pajak,p.no_bukti";
 		$query = $this->db->query($query)->result_array();
+		
 
-		// print_r($query);die();
+		print_r($query);die();
 
 
 		$array_update = array();
