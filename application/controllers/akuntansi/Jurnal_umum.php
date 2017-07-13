@@ -175,163 +175,170 @@ class Jurnal_umum extends MY_Controller {
             $array_pajak = array();
             $array_pengembalian = array();
             $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
-            $date = DateTime::createFromFormat('d-m-Y', $tanggal);
-            $tanggal = $date->format('Y-m-d');
-
-            $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
-            $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(5,$row)->getValue();
-            $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
-            $entry['unit_kerja'] = 92;
-            $entry['tipe'] = 'jurnal_umum';
-            $entry['jenis'] = 'jurnal_umum';
-            $entry['jenis_pembatasan_dana'] = 'tidak_terikat';
-
-            $entry['flag'] =3;
-            $entry['status'] = 4;
-
-            $entry['tanggal_posting'] = $waktu_jurnal_umum;
-            $entry['tanggal_verifikasi'] = $waktu_jurnal_umum;
-            $entry['tanggal_jurnal'] = $waktu_jurnal_umum;
-            
-            for ($kolom=$start_debet; $kolom <= $end_debet; $kolom++) { 
-                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();
-                $akun = explode('-',$akun);
-                $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
-                //sebagai debet-kas
-                if ($jumlah != 0 and $jumlah != '-') {
-
-                    // ISI ARRAY RELASI
-
-                    $entry_relasi['tipe'] = 'debet';
-                    $entry_relasi['jenis'] = 'kas';
-                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                    $entry_relasi['akun'] = $akun[0];
-                    $entry_relasi['jumlah'] = $jumlah;
-
-                    $array_relasi[] = $entry_relasi;
-
-                    //sebagai debet-akrual
-                    $entry_relasi['tipe'] = 'debet';
-                    $entry_relasi['jenis'] = 'akrual';
-                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                    $entry_relasi['akun'] = substr_replace($akun[0],'7',0,1);
-                    $entry_relasi['jumlah'] = $jumlah;
-
-                    $array_relasi[] = $entry_relasi;
-
-                    //sebagai kredit-kas
-                    $entry_relasi['tipe'] = 'kredit';
-                    $entry_relasi['jenis'] = 'kas';
-                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                    $entry_relasi['akun'] = $akun[1];
-                    $entry_relasi['jumlah'] = $jumlah;
-
-                    $array_relasi[] = $entry_relasi;
-
-                    //sebagai kredit-akrual
-                    $entry_relasi['tipe'] = 'kredit';
-                    $entry_relasi['jenis'] = 'akrual';
-                    $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                    $entry_relasi['akun'] = substr_replace($akun[1],'6',0,1);
-                    $entry_relasi['jumlah'] = $jumlah;
-
-                    $array_relasi[] = $entry_relasi;
-
-                }
-
+            //$tanggal = DateTime::createFromFormat('d-m-Y', $tanggal);
+            if($objWorksheet->getCellByColumnAndRow(2,$row)->getValue()!=null){
+                $arr_tgl = explode('-', $tanggal);
+                $tgl_jadi = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+                $tanggal = $tgl_jadi;
             }
+            //$tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
 
-            //SUSUN RELASI POTONGAN
-            $entry_pajak = array();
+            if($objWorksheet->getCellByColumnAndRow(5,$row)->getValue()!=null){
+                $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
+                $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(5,$row)->getValue();
+                $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
+                $entry['unit_kerja'] = 92;
+                $entry['tipe'] = 'jurnal_umum';
+                $entry['jenis'] = 'jurnal_umum';
+                $entry['jenis_pembatasan_dana'] = 'tidak_terikat';
 
+                $entry['flag'] =3;
+                $entry['status'] = 4;
 
-            for ($kolom=$start_potongan; $kolom <= $end_potongan; $kolom++) { 
-                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
-                $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
-                // echo $akun. "-";
-                // echo $jumlah. "-<br/>";
-                //sebagai debet-kas
-                if ($jumlah != 0 and $jumlah != '-') {
-
-                    // ISI ARRAY PAJAK
-
-                    $entry_pajak['jenis'] = 'pajak';
-                    $entry_pajak['no_bukti'] = $entry['no_bukti'];
-                    $entry_pajak['akun'] = $akun;
-                    // print_r($entry_pajak);die();                    
-                    $entry_pajak['jumlah'] = $jumlah;
-
-                    // echo $entry_pajak['jenis'].":";
-                    // echo $akun.":";
-                    // echo $entry['no_bukti'].":";
-                    // echo $jumlah.":";
-
-                    $array_pajak[] = $entry_pajak;
-                }
-
-            }
-
-
-            $entry_pengembalian = array();
-            for ($kolom=$start_pengembalian; $kolom <= $end_pengembalian; $kolom++) { 
-                $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
-                $akun = explode('-',$akun);
-                $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
-                //sebagai debet-kas
-                if ($jumlah != 0 and $jumlah != '-') {
-
-                    // ISI ARRAY RELASI
-
-                    $entry_pengembalian['tipe'] = 'kredit';
-                    $entry_pengembalian['jenis'] = 'kas';
-                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
-                    $entry_pengembalian['akun'] = $akun[0];
-                    $entry_pengembalian['jumlah'] = $jumlah;
-
-                    $array_pengembalian[] = $entry_pengembalian;
-
-                    //sebagai kredit-akrual
-                    $entry_pengembalian['tipe'] = 'kredit';
-                    $entry_pengembalian['jenis'] = 'akrual';
-                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
-                    $entry_pengembalian['akun'] = substr_replace($akun[0],'7',0,1);
-                    $entry_pengembalian['jumlah'] = $jumlah;
-
-                    $array_pengembalian[] = $entry_pengembalian;
-
+                $entry['tanggal_posting'] = $waktu_jurnal_umum;
+                $entry['tanggal_verifikasi'] = $waktu_jurnal_umum;
+                $entry['tanggal_jurnal'] = $waktu_jurnal_umum;
+                
+                for ($kolom=$start_debet; $kolom <= $end_debet; $kolom++) { 
+                    $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();
+                    $akun = explode('-',$akun);
+                    $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
                     //sebagai debet-kas
-                    $entry_pengembalian['tipe'] = 'debet';
-                    $entry_pengembalian['jenis'] = 'kas';
-                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
-                    $entry_pengembalian['akun'] = $akun[1];
-                    $entry_pengembalian['jumlah'] = $jumlah;
+                    if ($jumlah != 0 and $jumlah != '-') {
 
-                    $array_pengembalian[] = $entry_pengembalian;
+                        // ISI ARRAY RELASI
 
-                    //sebagai debet-akrual
-                    $entry_pengembalian['tipe'] = 'debet';
-                    $entry_pengembalian['jenis'] = 'akrual';
-                    $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
-                    $entry_pengembalian['akun'] = substr_replace($akun[1],'6',0,1);
-                    $entry_pengembalian['jumlah'] = $jumlah;
+                        $entry_relasi['tipe'] = 'debet';
+                        $entry_relasi['jenis'] = 'kas';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = $akun[0];
+                        $entry_relasi['jumlah'] = $jumlah;
 
-                    $array_pengembalian[] = $entry_pengembalian;
+                        $array_relasi[] = $entry_relasi;
+
+                        //sebagai debet-akrual
+                        $entry_relasi['tipe'] = 'debet';
+                        $entry_relasi['jenis'] = 'akrual';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = substr_replace($akun[0],'7',0,1);
+                        $entry_relasi['jumlah'] = $jumlah;
+
+                        $array_relasi[] = $entry_relasi;
+
+                        //sebagai kredit-kas
+                        $entry_relasi['tipe'] = 'kredit';
+                        $entry_relasi['jenis'] = 'kas';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = $akun[1];
+                        $entry_relasi['jumlah'] = $jumlah;
+
+                        $array_relasi[] = $entry_relasi;
+
+                        //sebagai kredit-akrual
+                        $entry_relasi['tipe'] = 'kredit';
+                        $entry_relasi['jenis'] = 'akrual';
+                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                        $entry_relasi['akun'] = substr_replace($akun[1],'6',0,1);
+                        $entry_relasi['jumlah'] = $jumlah;
+
+                        $array_relasi[] = $entry_relasi;
+
+                    }
 
                 }
 
-            }
-        $data[$row]['entry'] = $entry;
-        $data[$row]['relasi'] = $array_relasi;
-        $data[$row]['pajak'] = $array_pajak;
-        $data[$row]['pengembalian'] = $array_pengembalian;
-        // print_r($array_pajak);
-        // echo (count($array_pajak));
-        
-        // echo $start_potongan .'-'.$end_potongan;
+                //SUSUN RELASI POTONGAN
+                $entry_pajak = array();
 
-        // print_r($data);die();
+
+                for ($kolom=$start_potongan; $kolom <= $end_potongan; $kolom++) { 
+                    $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
+                    $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
+                    // echo $akun. "-";
+                    // echo $jumlah. "-<br/>";
+                    //sebagai debet-kas
+                    if ($jumlah != 0 and $jumlah != '-') {
+
+                        // ISI ARRAY PAJAK
+
+                        $entry_pajak['jenis'] = 'pajak';
+                        $entry_pajak['no_bukti'] = $entry['no_bukti'];
+                        $entry_pajak['akun'] = $akun;
+                        // print_r($entry_pajak);die();                    
+                        $entry_pajak['jumlah'] = $jumlah;
+
+                        // echo $entry_pajak['jenis'].":";
+                        // echo $akun.":";
+                        // echo $entry['no_bukti'].":";
+                        // echo $jumlah.":";
+
+                        $array_pajak[] = $entry_pajak;
+                    }
+
+                }
+
+
+                $entry_pengembalian = array();
+                for ($kolom=$start_pengembalian; $kolom <= $end_pengembalian; $kolom++) { 
+                    $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();;
+                    $akun = explode('-',$akun);
+                    $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
+                    //sebagai debet-kas
+                    if ($jumlah != 0 and $jumlah != '-') {
+
+                        // ISI ARRAY RELASI
+
+                        $entry_pengembalian['tipe'] = 'kredit';
+                        $entry_pengembalian['jenis'] = 'kas';
+                        $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                        $entry_pengembalian['akun'] = $akun[0];
+                        $entry_pengembalian['jumlah'] = $jumlah;
+
+                        $array_pengembalian[] = $entry_pengembalian;
+
+                        //sebagai kredit-akrual
+                        $entry_pengembalian['tipe'] = 'kredit';
+                        $entry_pengembalian['jenis'] = 'akrual';
+                        $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                        $entry_pengembalian['akun'] = substr_replace($akun[0],'7',0,1);
+                        $entry_pengembalian['jumlah'] = $jumlah;
+
+                        $array_pengembalian[] = $entry_pengembalian;
+
+                        //sebagai debet-kas
+                        $entry_pengembalian['tipe'] = 'debet';
+                        $entry_pengembalian['jenis'] = 'kas';
+                        $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                        $entry_pengembalian['akun'] = $akun[1];
+                        $entry_pengembalian['jumlah'] = $jumlah;
+
+                        $array_pengembalian[] = $entry_pengembalian;
+
+                        //sebagai debet-akrual
+                        $entry_pengembalian['tipe'] = 'debet';
+                        $entry_pengembalian['jenis'] = 'akrual';
+                        $entry_pengembalian['no_bukti'] = $entry['no_bukti'];
+                        $entry_pengembalian['akun'] = substr_replace($akun[1],'6',0,1);
+                        $entry_pengembalian['jumlah'] = $jumlah;
+
+                        $array_pengembalian[] = $entry_pengembalian;
+
+                    }
+
+                }
+            $data[$row]['entry'] = $entry;
+            $data[$row]['relasi'] = $array_relasi;
+            $data[$row]['pajak'] = $array_pajak;
+            $data[$row]['pengembalian'] = $array_pengembalian;
+            // print_r($array_pajak);
+            // echo (count($array_pajak));
+            
+            // echo $start_potongan .'-'.$end_potongan;
+
+            // print_r($data);die();
 
         }
+    }
 
         foreach ($data as $entry_data) {
 

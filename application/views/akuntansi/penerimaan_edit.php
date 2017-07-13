@@ -259,6 +259,12 @@ var host = "<?=site_url('/')?>";
                   <?php
                 }
                 ?>
+                <?php foreach ($data_akun_debet as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
             </select> 
           </div>
 
@@ -276,6 +282,12 @@ var host = "<?=site_url('/')?>";
             <select name="akun_kredit_kas[]" class="form-control akun_kredit_kas">
                 <option value="">Pilih Akun</option>
                 <?php foreach ($data_akun_debet as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
+                <?php foreach ($sal_penerimaan as $akun) {
                   ?>
                   <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
                   <?php
@@ -304,7 +316,7 @@ var host = "<?=site_url('/')?>";
       <div class="col-md-12" id="group-akunDebet_akrual">
         <div class="form-group" style="display:none"> 
           <div class="col-md-5">
-            <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual" required="">
+            <select name="akun_debet_akrual[]" class="form-control akun_debet_akrual">
                 <option value="">Pilih Akun</option>
                 <?php foreach ($akun_kas_akrual as $akun) {
                   ?>
@@ -312,6 +324,12 @@ var host = "<?=site_url('/')?>";
                   <?php
                 }
                 ?> 
+                <?php foreach ($sal_penerimaan as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
             </select> 
           </div>
 
@@ -326,9 +344,21 @@ var host = "<?=site_url('/')?>";
       <div class="col-md-12" id="group-akunKredit_akrual">
         <div class="form-group" style="display:none"> 
           <div class="col-md-5">
-            <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual" required="">
+            <select name="akun_kredit_akrual[]" class="form-control akun_kredit_akrual">
                 <option value="">Pilih Akun</option>
                 <?php foreach ($data_akun_kredit as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
+                <?php foreach ($sal_penerimaan as $akun) {
+                  ?>
+                  <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+                  <?php
+                }
+                ?>
+                <?php foreach ($akun_kas_akrual as $akun) {
                   ?>
                   <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
                   <?php
@@ -375,6 +405,18 @@ var host = "<?=site_url('/')?>";
           <?php
         }
         ?>
+        <?php foreach ($data_akun_debet as $akun) {
+          ?>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+          <?php
+        }
+        ?>
+        <?php foreach ($sal_penerimaan as $akun) {
+          ?>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+          <?php
+        }
+        ?>
     </select> 
   </div>
 
@@ -394,6 +436,12 @@ var host = "<?=site_url('/')?>";
     <select class="form-control">
         <option value="">Pilih Akun</option>
         <?php foreach ($data_akun_debet as $akun) {
+          ?>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+          <?php
+        }
+        ?>
+        <?php foreach ($sal_penerimaan as $akun) {
           ?>
           <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
@@ -419,11 +467,23 @@ var host = "<?=site_url('/')?>";
         <option value="">Pilih Akun</option>
         <option value="">
          <?php foreach ($akun_kas_akrual as $akun) {
+              ?>
+              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <?php
+            }
+            ?> 
+            <?php foreach ($sal_penerimaan as $akun) {
+              ?>
+              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <?php
+            }
+            ?>
+           <?php foreach ($data_akun_kredit as $akun) {
           ?>
           <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
           <?php
         }
-        ?> 
+        ?>
     </select> 
   </div>
 
@@ -448,6 +508,18 @@ var host = "<?=site_url('/')?>";
           <?php
         }
         ?>
+        <?php foreach ($sal_penerimaan as $akun) {
+            ?>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?>
+          <?php foreach ($akun_kas_akrual as $akun) {
+            ?>
+            <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+            <?php
+          }
+          ?>
     </select> 
   </div>
 
@@ -655,12 +727,12 @@ var host = "<?=site_url('/')?>";
       format: "yyyy-mm-dd"
   });
 
-  var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
-  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  // var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
+  // var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  <?php if (isset($akun_debet_akrual)): ?>
-        selectize1.setValue('<?=$akun_debet_akrual?>');  
-  <?php endif ?>
+  // <?php if (isset($akun_debet_akrual)): ?>
+  //       selectize1.setValue('<?=$akun_debet_akrual?>');  
+  // <?php endif ?>
   
 
 
@@ -671,23 +743,23 @@ var host = "<?=site_url('/')?>";
   //     selectize3.setValue('<?=$kode_unit?>');
   // <?php endif ?>
 
-  var $select4 = $('#akun_kredit').selectize();  // This initializes the selectize control
-  var selectize4 = $select4[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  // var $select4 = $('#akun_kredit').selectize();  // This initializes the selectize control
+  // var selectize4 = $select4[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  <?php if (isset($akun_kredit)): ?>
-      selectize4.setValue('<?=$akun_kredit?>');
-  <?php endif ?>
+  // <?php if (isset($akun_kredit)): ?>
+  //     selectize4.setValue('<?=$akun_kredit?>');
+  // <?php endif ?>
 
 
-  var $select5 = $('#akun_kredit_akrual').selectize();  // This initializes the selectize control
-  var selectize5 = $select5[0].selectize; // This stores the selectize object to a variable (with 
+  // var $select5 = $('#akun_kredit_akrual').selectize();  // This initializes the selectize control
+  // var selectize5 = $select5[0].selectize; // This stores the selectize object to a variable (with 
 
-  <?php if (isset($akun_kredit_akrual)): ?>
-      selectize5.setValue('<?=$akun_kredit_akrual?>');
-  <?php endif ?>
+  // <?php if (isset($akun_kredit_akrual)): ?>
+  //     selectize5.setValue('<?=$akun_kredit_akrual?>');
+  // <?php endif ?>
 
-  $('#jumlah_akun_debet').keyup(function () {
-    var current_val = $(this).val();
-    $('#jumlah_akun_kredit').val(current_val);
-  })
+  // $('#jumlah_akun_debet').keyup(function () {
+  //   var current_val = $(this).val();
+  //   $('#jumlah_akun_kredit').val(current_val);
+  // })
 </script>

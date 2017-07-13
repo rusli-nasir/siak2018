@@ -123,8 +123,12 @@ class Penerimaan extends MY_Controller {
                 $entry_relasi = array();
                 $array_relasi = array();
                 $array_data = array();
-                $tanggal = $objWorksheet->getCellByColumnAndRow(1,$row)->getCalculatedValue();
-                $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
+                $tanggal = $this->tanggal_excel_normalisasi($objWorksheet->getCellByColumnAndRow(1,$row)->getValue());
+                if(substr($tanggal, 0, 1)=='-'){
+                    $tanggal = $objWorksheet->getCellByColumnAndRow(1,$row)->getCalculatedValue();
+                    $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+                }
+                //$tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
                 $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
                 $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
                 $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
@@ -143,40 +147,79 @@ class Penerimaan extends MY_Controller {
                     $akun = $objWorksheet->getCellByColumnAndRow($kolom,1)->getValue();
                     $jumlah = $objWorksheet->getCellByColumnAndRow($kolom,$row)->getValue();
                     if ($jumlah != 0 and $jumlah != '-') {
-                        $entry_relasi['tipe'] = 'debet';
-                        $entry_relasi['jenis'] = 'kas';
-                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                        $entry_relasi['akun'] = $sal_penerimaan;
-                        $entry_relasi['jumlah'] = $jumlah;
+                        if($jumlah<0){
+                            //negatif
+                            $entry_relasi['tipe'] = 'kredit';
+                            $entry_relasi['jenis'] = 'kas';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = $sal_penerimaan;
+                            $entry_relasi['jumlah'] = abs($jumlah);
 
-                        $array_relasi[] = $entry_relasi;
+                            $array_relasi[] = $entry_relasi;
 
-                        //sebagai debet-akrual
-                        $entry_relasi['tipe'] = 'debet';
-                        $entry_relasi['jenis'] = 'akrual';
-                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                        $entry_relasi['akun'] = $akun_debet_akrual;
-                        $entry_relasi['jumlah'] = $jumlah;
+                            //sebagai debet-akrual
+                            $entry_relasi['tipe'] = 'kredit';
+                            $entry_relasi['jenis'] = 'akrual';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = $akun_debet_akrual;
+                            $entry_relasi['jumlah'] = abs($jumlah);
 
-                        $array_relasi[] = $entry_relasi;
+                            $array_relasi[] = $entry_relasi;
 
-                        //sebagai kredit-kas
-                        $entry_relasi['tipe'] = 'kredit';
-                        $entry_relasi['jenis'] = 'kas';
-                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                        $entry_relasi['akun'] = $akun;
-                        $entry_relasi['jumlah'] = $jumlah;
+                            //sebagai kredit-kas
+                            $entry_relasi['tipe'] = 'debet';
+                            $entry_relasi['jenis'] = 'kas';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = $akun;
+                            $entry_relasi['jumlah'] = abs($jumlah);
 
-                        $array_relasi[] = $entry_relasi;
+                            $array_relasi[] = $entry_relasi;
 
-                        //sebagai kredit-akrual
-                        $entry_relasi['tipe'] = 'kredit';
-                        $entry_relasi['jenis'] = 'akrual';
-                        $entry_relasi['no_bukti'] = $entry['no_bukti'];
-                        $entry_relasi['akun'] = substr_replace($akun,'6',0,1);
-                        $entry_relasi['jumlah'] = $jumlah;
+                            //sebagai kredit-akrual
+                            $entry_relasi['tipe'] = 'debet';
+                            $entry_relasi['jenis'] = 'akrual';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = substr_replace($akun,'6',0,1);
+                            $entry_relasi['jumlah'] = abs($jumlah);
 
-                        $array_relasi[] = $entry_relasi;
+                            $array_relasi[] = $entry_relasi;
+                        }else{
+                            //positif
+                            $entry_relasi['tipe'] = 'debet';
+                            $entry_relasi['jenis'] = 'kas';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = $sal_penerimaan;
+                            $entry_relasi['jumlah'] = $jumlah;
+
+                            $array_relasi[] = $entry_relasi;
+
+                            //sebagai debet-akrual
+                            $entry_relasi['tipe'] = 'debet';
+                            $entry_relasi['jenis'] = 'akrual';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = $akun_debet_akrual;
+                            $entry_relasi['jumlah'] = $jumlah;
+
+                            $array_relasi[] = $entry_relasi;
+
+                            //sebagai kredit-kas
+                            $entry_relasi['tipe'] = 'kredit';
+                            $entry_relasi['jenis'] = 'kas';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = $akun;
+                            $entry_relasi['jumlah'] = $jumlah;
+
+                            $array_relasi[] = $entry_relasi;
+
+                            //sebagai kredit-akrual
+                            $entry_relasi['tipe'] = 'kredit';
+                            $entry_relasi['jenis'] = 'akrual';
+                            $entry_relasi['no_bukti'] = $entry['no_bukti'];
+                            $entry_relasi['akun'] = substr_replace($akun,'6',0,1);
+                            $entry_relasi['jumlah'] = $jumlah;
+
+                            $array_relasi[] = $entry_relasi;
+                        }
                     }
                 }
 
@@ -404,7 +447,11 @@ class Penerimaan extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
             // $this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['akun_kas_akrual'] = $this->Akun_model->get_akun_penerimaan();
-        	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+            $this->data['akun_kas_akrual'][]= $this->Akun_model->get_akun_sal_penerimaan();
+
+            $this->data['sal_penerimaan'][] = $this->Akun_model->get_akun_sal_penerimaan();
+        	// $this->data['data_akun_debet'] = array_merge($this->Akun_lra_model->get_akun_debet(),$this->Akun_model->get_akun_sal_penerimaan());
+            $this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
         	// $this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_tambah',$this->data,true);
@@ -479,6 +526,8 @@ class Penerimaan extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
         	// $this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
             $this->data['akun_kas_akrual'] = $this->Akun_model->get_akun_penerimaan();
+            $this->data['akun_kas_akrual'][]=$this->Akun_model->get_akun_sal_penerimaan();
+            $this->data['sal_penerimaan'][] = $this->Akun_model->get_akun_sal_penerimaan();
         	$this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_edit',$this->data,true);
@@ -511,5 +560,16 @@ class Penerimaan extends MY_Controller {
     {
     	$this->Penerimaan_model->hapus_penerimaan($id_kuitansi_jadi);
     	redirect('akuntansi/penerimaan');
+    }
+
+    public function reset_search(){
+        $this->session->unset_userdata('keyword_penerimaan');
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    public function tanggal_excel_normalisasi($tanggal){
+        $arr_tgl = explode('/', $tanggal);
+        $tanggal_normal = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+        return $tanggal_normal;
     }
 }

@@ -38,6 +38,34 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/content_template',$temp_data,false);
     }
 
+    public function lainnya(){
+        $this->data['menu9'] = null;
+        $this->data['menu15'] = true;
+        $this->data['tab1'] = true;
+
+//      $this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
+//      $this->data['query_debet_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_debet_akrual');
+//      $this->data['query_kredit'] = $this->Laporan_model->read_buku_besar_group('akun_kredit');
+//      $this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
+        if($this->input->post('jenis_laporan')!=null){
+            if($this->input->post('jenis_laporan')=='Aktifitas'){
+                $this->cetak_laporan_aktifitas();
+            }else if($this->input->post('jenis_laporan')=='Posisi Keuangan'){
+                $this->cetak_laporan_posisi_keuangan();
+            }else if($this->input->post('jenis_laporan')=='Realisasi Anggaran'){
+                $this->cetak_laporan_realisasi_anggaran();
+            }else if($this->input->post('jenis_laporan')=='Arus Kas'){
+                $this->cetak_laporan_arus_kas();
+            }
+        }else{
+            $this->db2 = $this->load->database('rba', true);
+            $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
+
+            $temp_data['content'] = $this->load->view('akuntansi/laporan_lainnya_list',$this->data,true);
+            $this->load->view('akuntansi/content_template',$temp_data,false);
+        }
+    }
+
     public function rekap_jurnal($id = 0){
         $this->data['tab1'] = true;
 
@@ -512,7 +540,9 @@ class Laporan extends MY_Controller {
 
 
         if ($unit == 'all' or $unit == 9999) {
-            $unit = null;
+            if ($unit == 'all') {
+                $unit = null;
+            }
             // $mode = 'neraca';
             $teks_unit = "UNIVERSITAS DIPONEGORO";
         } else {
@@ -766,7 +796,6 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]) or null;    
 
-        $mode = null;
 
         if ($unit == 'all') {
             $unit = null;
@@ -797,6 +826,7 @@ class Laporan extends MY_Controller {
         
         $teks_tahun = substr($periode_akhir,0,4);
         $data['teks_tahun_anggaran'] = "TAHUN ANGGARAN $teks_tahun";
+        $mode = null;
 
 
         if ($periode_awal != null and $periode_akhir != null){
@@ -811,10 +841,14 @@ class Laporan extends MY_Controller {
         $data['periode_text'] = $teks_periode;
         $data['unit'] = $unit;
         $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        // die($mode);
 
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_buku_besar',$data);
+        }else if($tipe=='excel'){
+            $data['excel'] = true;
+            $this->load->view('akuntansi/laporan/cetak_buku_besar',$data);
         }else{
             $this->load->view('akuntansi/laporan/cetak_buku_besar',$data);
         }
@@ -834,7 +868,10 @@ class Laporan extends MY_Controller {
         $periode_akhir = strtodate($date_t[1]);
 
          if ($unit == 'all' or $unit == 9999) {
-            $unit = null;
+            if ($unit == 'all') {
+                $unit = null;
+            }
+            // $unit = null;
             $data['teks_unit'] = "UNIVERSITAS DIPONEGORO";
         } else {
             $data['teks_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);
@@ -871,6 +908,9 @@ class Laporan extends MY_Controller {
 
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_rekap_jurnal',$data);
+        }else if($tipe=='excel'){
+            $data['excel'] = true;
+            $this->load->view('akuntansi/laporan/cetak_rekap_jurnal',$data);
         }else{
             $this->load->view('akuntansi/laporan/cetak_rekap_jurnal',$data);
         }
@@ -905,6 +945,8 @@ class Laporan extends MY_Controller {
         // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
         ksort($data['query']);
+        /*print_r($data['query']['411121']);
+        die();*/
         
         $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";
@@ -933,6 +975,9 @@ class Laporan extends MY_Controller {
 
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_neraca_saldo',$data);
+        }else if($tipe=='excel'){
+            $data['excel'] = true;
+            $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
         }else{
             $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
         }
@@ -940,6 +985,14 @@ class Laporan extends MY_Controller {
 
     public function cetak_laporan_aktifitas(){
         $this->load->view('akuntansi/laporan/cetak_laporan_aktifitas');
+    }
+
+    public function cetak_laporan_posisi_keuangan(){
+        $this->load->view('akuntansi/laporan/cetak_laporan_posisi_keuangan');
+    }
+
+    public function cetak_laporan_arus_kas(){
+        $this->load->view('akuntansi/laporan/cetak_laporan_arus_kas');
     }
 
     public function get_neraca_saldo($mode = null)

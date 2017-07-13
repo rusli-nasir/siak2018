@@ -36,6 +36,8 @@ class Akun extends MY_Controller {
 			foreach ($unit as $entry) {
 				$array_unit[$entry['kode_unit']] = $entry['nama_unit'];
 			}
+			$array_unit['9999'] = 'Penerimaan';
+			$array_unit['all'] = 'Semua (All)';
 
 			$crud->field_type('kode_unit','dropdown',$array_unit);
         }

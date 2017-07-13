@@ -223,9 +223,12 @@ class Jurnal_rsa extends MY_Controller {
         if ($from == 'list') {
             $post = null;
             $status = 2;
+            $riwayat['komentar'] = '';
+
         } else {
             $post = $this->input->post();
             $status = $this->input->post('status');
+            $riwayat['komentar'] = $this->input->post('komentar');
         }
 
         $updater = array();
@@ -237,7 +240,6 @@ class Jurnal_rsa extends MY_Controller {
         $riwayat['status'] = $status;
         $riwayat['id_kuitansi_jadi'] = $id_kuitansi_jadi;
         $riwayat['flag'] = $flag;
-        $riwayat['komentar'] = $this->input->post('komentar');
 
         $this->Riwayat_model->add_riwayat($riwayat);
 
@@ -266,21 +268,19 @@ class Jurnal_rsa extends MY_Controller {
         if($jenis=='NK'){
             $direct_url = 'akuntansi/kuitansi/jadi_spm';
         }else if($jenis=='UP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/UP';
+            $direct_url = 'akuntansi/kuitansi/jadi/UP/1';
         }else if($jenis=='PUP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/PUP';
+            $direct_url = 'akuntansi/kuitansi/jadi/PUP/1';
         }else if($jenis=='GP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/GP';
+            $direct_url = 'akuntansi/kuitansi/jadi/GP/1';
         }else if($jenis=='GUP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/GUP';
+            $direct_url = 'akuntansi/kuitansi/jadi/GUP/1';
         }else if($jenis=='GP_NIHIL'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/GP_NIHIL';
+            $direct_url = 'akuntansi/kuitansi/jadi/GP_NIHIL/1';
         }else if($jenis=='TUP'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/TUP';
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP/1';
         }else if($jenis=='TUP_NIHIL'){
-            $direct_url = 'akuntansi/kuitansi/jadi/1/TUP_NIHIL';
-        }else if($jenis=='TUP'){
-            $direct_url = 'akuntansi/kuitansi/index_tup';
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP_NIHIL/1';
         }
         redirect($direct_url);
 
@@ -299,6 +299,9 @@ class Jurnal_rsa extends MY_Controller {
             $entry = $this->input->post();
             unset($entry['simpan']);
 
+            $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
+
+
             if ($mode == 'revisi'){
                 $riwayat = array();
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
@@ -315,6 +318,11 @@ class Jurnal_rsa extends MY_Controller {
             }
 
             $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
+
+            if ($kuitansi['status'] == 'posted') {
+                $q2 = $this->Kuitansi_model->update_kuitansi_jadi_post($id_kuitansi_jadi,$entry);
+                redirect('akuntansi/jurnal_rsa/detail_kuitansi/'.$id_kuitansi_jadi.'/lihat');
+            }
 
             if ($q2)
                 $this->session->set_flashdata('success','Berhasil menyimpan !');
@@ -334,7 +342,13 @@ class Jurnal_rsa extends MY_Controller {
             $isian['query_1'] = $this->Memorial_model->read_akun('akuntansi_aset_6');
             $isian['query_2'] = $this->Memorial_model->read_akun('akuntansi_hutang_6');
 
-            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
+            if ($this->session->userdata('level') == 3) {
+                $kode_unit = $isian['unit_kerja'];
+            } else {
+                $kode_unit = $this->session->userdata('kode_unit');
+            }
+
+            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($kode_unit)->result_array();
 
             $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 
@@ -346,8 +360,8 @@ class Jurnal_rsa extends MY_Controller {
 
             $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
             $isian['komentar'] = $query_riwayat['komentar'];
-            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
-            $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit')));
+            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($kode_unit)->result();
+            $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($kode_unit));
             $isian['akun_sal'][] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);

@@ -1,4 +1,13 @@
 <!DOCTYPE>
+<?php
+if(isset($excel)){
+	header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+	header("Content-Disposition: attachment; filename=rekap_jurnal.xls");  //File name extension was wrong
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	header("Cache-Control: private",false);
+}
+?>
 <html>
 	<head>
 		<title>Rekap Jurnal</title>
@@ -22,28 +31,31 @@
 		</script>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
-		&nbsp;&nbsp;
-		<?php echo form_open("akuntansi/laporan/$sumber/excel",array("class"=>"form-horizontal")); ?>
-			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
-			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
-			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
-			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
-			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-			<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
-		</form>
-		<?php 
-		$arr_sumber = explode('_', $sumber);
-		$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
-		?>
-		<?php echo form_open("akuntansi/laporan/$link_cetak",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
-			<input type="hidden" name="tipe" value="pdf">
-			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
-			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
-			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
-			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
-			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-			<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
-		</form>
+		<?php if(!isset($excel)){ ?>
+			&nbsp;&nbsp;
+			<?php echo form_open("akuntansi/laporan/cetak_rekap_jurnal",array("class"=>"form-horizontal")); ?>
+				<input type="hidden" name="tipe" value="excel">
+				<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+				<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+				<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
+			</form>
+			<?php 
+			$arr_sumber = explode('_', $sumber);
+			$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
+			?>
+			<?php echo form_open("akuntansi/laporan/$link_cetak",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
+				<input type="hidden" name="tipe" value="pdf">
+				<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+				<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+				<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
+			</form>
+		<?php } ?>
 		<div align="center" style="font-weight:bold">
 			<?php echo $teks_unit; ?><br/>
 			JURNAL UMUM<br/>
@@ -94,12 +106,12 @@
             					<td>'.$in_akun['akun'].'</td>
             					<td>'.get_nama_akun_v($in_akun['akun']).'</td>';
             					if ($in_akun['tipe'] == 'debet'){
-				                    echo '<td align="right">'.number_format($in_akun['jumlah'],2).'</td>';
+				                    echo '<td align="right">'.eliminasi_negatif($in_akun['jumlah']).'</td>';
 				                    echo '<td align="right">0.00</td>';
 				                    $jumlah_debet += $in_akun['jumlah'];
 				                }elseif ($in_akun['tipe'] == 'kredit') {
 				                    echo '<td align="right">0.00</td>';
-				                    echo '<td align="right">'.number_format($in_akun['jumlah'],2).'</td>';
+				                    echo '<td align="right">'.eliminasi_negatif($in_akun['jumlah']).'</td>';
 				                    $jumlah_kredit += $in_akun['jumlah'];
 				                }
             			echo '</tr>';         			
@@ -111,26 +123,43 @@
 			<?php
 			echo '<tr>
     				<td align="right" colspan="7" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-    				<td align="right">'.number_format($jumlah_debet,2).'</td>
-    				<td align="right">'.number_format($jumlah_kredit,2).'</td>
+    				<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
+    				<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
     			</tr>';
 			?>
 		</table>
-		<div align="right" style="width:1200px;margin-top:40px;">
-			<div style="width:400px" align="left">
-				<?php 
-				echo 'Semarang, '.$periode_akhir.'<br/>Pengguna Anggaran<br/>';
-				echo get_nama_unit($unit).'<br/><br/><br/><br/>';
-				$pejabat = get_pejabat($unit, 'kpa'); 
-				echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
-				?>
-			</div>
-		</div>
+		<br/>
+		<table width="1100px;">
+			<tbody>
+				<tr>
+					<td colspan="4" width="600px;"></td>
+					<td colspan="4">
+						<?php 
+						if ($unit == null or $unit == 9999) {
+						    $pejabat = get_pejabat('all','rektor');
+						    $teks_kpa = "Rektor";
+						    $teks_unit = "UNIVERSITAS DIPONEGORO";
+						} else {
+						    $pejabat = get_pejabat($unit,'kpa');
+						    $teks_kpa = "Pengguna Anggaran";
+						    $teks_unit = get_nama_unit($unit);
+						}
+						echo 'Semarang, '.$periode_akhir.'<br/>'.$teks_kpa.'<br/>';
+						echo $teks_unit.'<br/><br/><br/><br/>';
+						echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
+						?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</body>
 </html>
 <?php
 function get_nama_unit($kode_unit)
 {
+	if ($kode_unit == 9999) {
+		return 'Penerimaan';
+	}
 	$ci =& get_instance();
 	$ci->db2 = $ci->load->database('rba', true);
     $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
@@ -150,9 +179,9 @@ function get_nama_akun_v($kode_akun){
 				$kode_akun[0] = 5;
 				$nama = $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
 				$uraian_akun = explode(' ', $nama);
-				if(isset($uraian_akun[2])){
-		            if($uraian_akun[2]!='beban'){
-		              $uraian_akun[2] = 'beban';
+				if(isset($uraian_akun[0])){
+		            if($uraian_akun[0]!='beban'){
+		              $uraian_akun[0] = 'beban';
 		            }
 		        }
 	            $hasil_uraian = implode(' ', $uraian_akun);
@@ -190,7 +219,8 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun))->row_array();
+	$tahun = gmdate('Y');
+	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
 	return $hasil;
 }

@@ -12,31 +12,182 @@ class Pajak_model extends CI_Model {
 
     public function get_tabel_by_jenis($jenis)
     {
+        if ($jenis == 'GP') {
+            return 'rsa_kuitansi_detail_pajak';
+        }elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
+            return 'rsa_kuitansi_detail_pajak_lsphk3';
+        }
+    }
+
+    public function get_tabel_detail_by_jenis($jenis)
+    {
+        if ($jenis == 'GP') {
+            return 'rsa_kuitansi_detail';
+        }elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
+            return 'rsa_kuitansi_detail_lsphk3';
+        }
+    }
+
+    public function get_tabel_utama_by_jenis($jenis)
+    {
     	if ($jenis == 'GP') {
-    		return 'rsa_kuitansi_detail_pajak';
+    		return 'rsa_kuitansi';
     	}elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
-    		return 'rsa_kuitansi_detail_pajak_lsphk3';
+    		return 'rsa_kuitansi_lsphk3';
     	}
     }
 
     public function get_detail_pajak($no_bukti,$jenis)
     {
-    	// $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+        // $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
 
+        $from = $this->get_tabel_by_jenis($jenis);
         $hasil = $this->db
                     ->select('*')
                     ->select_sum('rupiah_pajak')
                     ->group_by('jenis_pajak')
                     ->where('no_bukti',$no_bukti)
-                    ->get($this->get_tabel_by_jenis($jenis))
+                    ->get($from)
                     ->result_array()
                     ;
+
+
+        $data = array();
+
+        $data_2 = array();
+
+        foreach ($hasil as $entry) {
+            if ($entry['jenis_pajak'] == 'Lainnya' or $entry['jenis_pajak'] == 'PPh_Ps_4(2)') {
+                $entry['jenis_pajak'] = 'PPh_final';
+            }
+            $detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
+            if ($detail != null) {
+              $data[] = array_merge($entry,$detail);  
+            }
+        }
+
+
+
+        // foreach ($data as $entry) {
+        //     $jumlah_pajak = $entry['rupiah_pajak'];
+        //     $unset($entry['rupiah_pajak']);
+        //     $data_2[$entry['jenis_pajak']] = $entry;
+        //     $data_2[$entry['jenis_pajak']['rupiah_pajak']] += $jumlah_pajak;
+        // }
+
+        return $data;
+    }
+
+    public function get_detail_pajak_lama($no_bukti,$jenis)
+    {
+        // $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+
+        $from = $this->get_tabel_by_jenis($jenis);
+        $hasil = $this->db
+                    ->select('*')
+                    ->select_sum('rupiah_pajak')
+                    ->group_by('jenis_pajak')
+                    ->where('no_bukti',$no_bukti)
+                    ->get($from)
+                    ->result_array()
+                    ;
+
+
+        $data = array();
+
+        $data_2 = array();
+
+        foreach ($hasil as $entry) {
+            $detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
+            if ($detail != null) {
+              $data[] = array_merge($entry,$detail);  
+            }
+        }
+
+
+
+        // foreach ($data as $entry) {
+        //     $jumlah_pajak = $entry['rupiah_pajak'];
+        //     $unset($entry['rupiah_pajak']);
+        //     $data_2[$entry['jenis_pajak']] = $entry;
+        //     $data_2[$entry['jenis_pajak']['rupiah_pajak']] += $jumlah_pajak;
+        // }
+
+        return $data;
+    }
+
+
+    // public function get_detail_pajak($id_kuitansi,$jenis)
+    // {
+    //     // $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+
+    //     $hasil = $this->db
+    //                 ->select('*')
+    //                 ->select_sum('rupiah_pajak')
+    //                 ->group_by('jenis_pajak')
+    //                 ->where('no_bukti',$no_bukti)
+    //                 ->get($this->get_tabel_by_jenis($jenis))
+    //                 ->result_array()
+    //                 ;
+
+    //     $data = array();
+
+    //     $data_2 = array();
+
+    //     foreach ($hasil as $entry) {
+    //         if ($entry['jenis_pajak'] == 'Lainnya' or $entry['jenis_pajak'] == 'PPh_Ps_4(2)') {
+    //             $entry['jenis_pajak'] = 'PPh_final';
+    //         }
+    //         $detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
+    //         if ($detail != null) {
+    //           $data[] = array_merge($entry,$detail);  
+    //         }
+    //     }
+
+
+
+    //     // foreach ($data as $entry) {
+    //     //     $jumlah_pajak = $entry['rupiah_pajak'];
+    //     //     $unset($entry['rupiah_pajak']);
+    //     //     $data_2[$entry['jenis_pajak']] = $entry;
+    //     //     $data_2[$entry['jenis_pajak']['rupiah_pajak']] += $jumlah_pajak;
+    //     // }
+
+    //     return $data;
+    // }
+
+    public function get_detail_pajak_baru($id_kuitansi,$jenis)
+    {
+    	// $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+
+        $tabel_detail = $this->get_tabel_detail_by_jenis($jenis);
+        $tabel_utama = $this->get_tabel_utama_by_jenis($jenis);
+        $tabel_pajak = $this->get_tabel_by_jenis($jenis);
+
+        $query = "SELECT tp.*,SUM(tp.rupiah_pajak) as rupiah_pajak FROM $tabel_utama as tu, $tabel_detail as td, $tabel_pajak as tp WHERE tu.id_kuitansi='$id_kuitansi' AND td.id_kuitansi = tu.id_kuitansi AND td.id_kuitansi_detail=tp.id_kuitansi_detail AND tp.rupiah_pajak > 0 GROUP BY tp.jenis_pajak";
+        // echo $query;die();
+
+
+        $hasil =  $this->db->query($query)->result_array();
+
+        // $hasil = $this->db
+        //             ->select('*')
+        //             ->select_sum('rupiah_pajak')
+        //             ->group_by('jenis_pajak')
+        //             ->join($tabel_detail,"$tabel_detail.id_kuitansi = rsa")
+        //             ->where('no_bukti',$no_bukti)
+        //             ->get($this->get_tabel_by_jenis($jenis))
+        //             ->result_array()
+        //             ;
 
     	$data = array();
 
         $data_2 = array();
 
     	foreach ($hasil as $entry) {
+            if ($entry['jenis_pajak'] == 'Lainnya' or $entry['jenis_pajak'] == 'PPh_Ps_4(2)') {
+                $entry['jenis_pajak'] = 'PPh_final';
+            }
     		$detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
             if ($detail != null) {
     		  $data[] = array_merge($entry,$detail);  
@@ -55,6 +206,7 @@ class Pajak_model extends CI_Model {
     	return $data;
     }
 
+
     public function get_transfer_pajak($id_kuitansi_jadi)
     {
     	$kuitansi = $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi' => $id_kuitansi_jadi))->row_array();
@@ -70,6 +222,9 @@ class Pajak_model extends CI_Model {
     	$data = array();
 
     	foreach ($hasil as $entry) {
+            if ($entry['jenis_pajak'] == 'Lainnya' or $entry['jenis_pajak'] == 'PPh_Ps_4(2)') {
+                $entry['jenis_pajak'] = 'PPh_final';
+            }
     		$detail = $this->db->select('kode_akun as akun',false)->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
             if ($detail != null ){
     		  $detail['jenis'] = 'pajak';
