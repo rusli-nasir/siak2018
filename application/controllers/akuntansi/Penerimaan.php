@@ -123,8 +123,12 @@ class Penerimaan extends MY_Controller {
                 $entry_relasi = array();
                 $array_relasi = array();
                 $array_data = array();
-                $tanggal = $objWorksheet->getCellByColumnAndRow(1,$row)->getCalculatedValue();
-                $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
+                $tanggal = $this->tanggal_excel_normalisasi($objWorksheet->getCellByColumnAndRow(1,$row)->getValue());
+                if(substr($tanggal, 0, 1)=='-'){
+                    $tanggal = $objWorksheet->getCellByColumnAndRow(1,$row)->getCalculatedValue();
+                    $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+                }
+                //$tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
                 $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;
                 $entry['uraian'] = $objWorksheet->getCellByColumnAndRow(3,$row)->getValue();
                 $entry['no_bukti'] = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
@@ -561,5 +565,11 @@ class Penerimaan extends MY_Controller {
     public function reset_search(){
         $this->session->unset_userdata('keyword_penerimaan');
         redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    public function tanggal_excel_normalisasi($tanggal){
+        $arr_tgl = explode('/', $tanggal);
+        $tanggal_normal = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+        return $tanggal_normal;
     }
 }

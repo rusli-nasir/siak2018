@@ -186,15 +186,15 @@ class Kuitansi_model extends CI_Model {
         if($this->session->userdata('level')==1){
             $verifikasi = "";
         }else{
-            $verifikasi = "AND (status<>'proses' OR flag<>2)";
+            $verifikasi = "AND ((status='proses' AND flag=1) OR (status='direvisi' AND flag=1))";
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND status<>'posted' $verifikasi AND
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit GROUP BY no_spm ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND status<>'posted' $verifikasi
+            $unit GROUP BY no_spm ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted') LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND status<>'posted' $verifikasi AND 
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit GROUP BY no_spm ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND (tipe<>'memorial' AND tipe<>'jurnal_umum' AND tipe<>'pajak') AND status<>'posted' $verifikasi 
+            $unit GROUP BY no_spm ORDER BY FIELD(status, 'revisi', 'terima', 'proses', 'posted')");
         }
         return $query;
     }
@@ -207,11 +207,11 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='$jenis' AND tipe<>'pajak' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit GROUP BY no_spm LIMIT $start, $limit");
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND tipe<>'pajak'  
+            $unit AND status='proses' AND flag=2 GROUP BY no_spm LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE flag=2 AND jenis='$jenis' AND tipe<>'pajak' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $unit GROUP BY no_spm");
+            $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis='$jenis' AND tipe<>'pajak'  
+            $unit AND status='proses' AND flag=2 GROUP BY no_spm");
         }
         return $query;
     }

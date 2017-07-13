@@ -133,6 +133,12 @@ if(isset($excel)){
 		    		$jumlah_debet += $debet;
 		    		$jumlah_kredit += $kredit;
 
+		    		/*if(substr(get_nama_akun_v((string)$key),0,2)=='PPh' or substr(get_nama_akun_v((string)$key),0,2)=='PPN'){
+		    			$total_num = (string)($debet);
+		    			$n = count($total_num);
+		    			
+		    		}*/
+
 		    		echo '<td align="right">'.eliminasi_negatif($debet).'</td>
 						<td align="right">'.eliminasi_negatif($kredit).'</td>';
 

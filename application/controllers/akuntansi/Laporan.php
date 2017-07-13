@@ -945,6 +945,8 @@ class Laporan extends MY_Controller {
         // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
         ksort($data['query']);
+        /*print_r($data['query']['411121']);
+        die();*/
         
         $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";
