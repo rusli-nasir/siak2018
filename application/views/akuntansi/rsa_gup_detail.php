@@ -337,6 +337,8 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
 //                        location.reload();
         });
     });
+  
+  $("button[id='btn-lihat'][rel='<?= $id_kw ?>']").click();
 
 });
 

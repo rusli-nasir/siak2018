@@ -30,7 +30,8 @@ class rsa_gup extends MY_Controller{
         }
     }
     
-    function jurnal(){
+    function jurnal($id_kw){
+        $this->data['id_kw'] = $id_kw;
         $no_spm = urldecode($this->input->get('spm'));
         $this->load->model('akuntansi/rsa_gup2_model');
         $_spm = $this->rsa_gup2_model->get_spm_detail($no_spm, array('tahun', 'kode_unit', 'str_nomor_trx'));
