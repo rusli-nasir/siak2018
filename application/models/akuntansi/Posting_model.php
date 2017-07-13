@@ -55,8 +55,14 @@ class Posting_model extends CI_Model {
 		$kuitansi = $this->db_laporan->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi',$id_kuitansi_jadi))->row_array();
 
 		if ($kuitansi['id_pajak'] != 0) {
+			$id_pajak = $kuitansi['id_pajak'];
 			$this->db_laporan->where('id_kuitansi_jadi',$id_pajak)->delete('akuntansi_kuitansi_jadi');
 			$this->db_laporan->where('id_kuitansi_jadi',$id_pajak)->delete('akuntansi_relasi_kuitansi_akun');
+		}
+		if ($kuitansi['id_pengembalian'] != 0) {
+			$id_pengembalian = $kuitansi['id_pengembalian'];
+			$this->db_laporan->where('id_kuitansi_jadi',$id_pengembalian)->delete('akuntansi_kuitansi_jadi');
+			$this->db_laporan->where('id_kuitansi_jadi',$id_pengembalian)->delete('akuntansi_relasi_kuitansi_akun');
 		}
 
 		$this->db_laporan->where('id_kuitansi_jadi',$id_kuitansi_jadi)->delete('akuntansi_kuitansi_jadi');

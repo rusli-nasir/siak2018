@@ -10,7 +10,9 @@ class Coba_model extends CI_Model {
         $this->load->database('default', TRUE);
         $this->db_laporan = $this->load->database('laporan',TRUE);
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
+        $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
     }
+
 	
 	public function fixing_nk()
 	{
@@ -133,6 +135,126 @@ class Coba_model extends CI_Model {
 			// print_r($entry);
 			// die('aa');
 		
+	}
+
+	public function fixing_pajak($start,$end)
+	{
+		// $query = "SELECT FROM akuntansi_kuitansi_jadi AS ak, rsa_kuitansi AS rk, rsa_kuitansi_detail as rd, rsa_kuitansi_detail_pajak AS rp 
+		// 			WHERE ak.id_kuitansi = rk.id_kuitansi AND rk.id_kuitansi = rd.id_kuitansi AND rk.id_kuitansi_detail = rp.kuitansi_detail_pajak AND ak.tipe = 'pengeluaran'
+		// 			";
+		$query = "SELECT id_kuitansi_jadi,id_kuitansi,no_bukti,jenis,id_pajak,status FROM akuntansi_kuitansi_jadi WHERE jenis in ('GP','L3','LSPHK3') AND (id_kuitansi_jadi BETWEEN $start AND $end) AND tipe <> 'pajak' AND tipe <> 'pengembalian'";
+		// echo $query;
+		// $this->db->select('id_kuitansi_jadi,id_kuitansi,no_bukti,jenis')->where_in('jenis',array('GP','NK'));
+		$data = $this->db->query($query)->result_array();
+		// print_r($data);die();
+
+		$array_pajak = array();
+
+		foreach ($data as $key => $kuitansi) {
+			// print_r($kuitansi);
+			// $array_pajak[$key] = $kuitansi;
+			// $array_pajak[$i]['lama'] = $this->Pajak_model->get_detail_pajak($kuitansi['no_bukti'],$kuitansi['jenis']);
+			$lama = $this->Pajak_model->get_detail_pajak_lama($kuitansi['no_bukti'],$kuitansi['jenis']);
+			$baru = $this->Pajak_model->get_detail_pajak_baru($kuitansi['id_kuitansi'],$kuitansi['jenis']);
+			if ($baru != $lama) {
+				$array_pajak[$key]['kuitansi'] = $kuitansi;
+				$array_pajak[$key]['lama'] = $lama;
+				$array_pajak[$key]['baru'] = $baru;
+			}
+		}
+
+
+		foreach ($array_pajak as $pajak) {
+			$lama = $pajak['lama'];
+			$baru = $pajak['baru'];
+			$kuitansi = $pajak['kuitansi'];
+
+			if ($lama != null and $baru != null ) {
+				$this->db->where('id_kuitansi_jadi',$kuitansi['id_pajak'])->delete('akuntansi_relasi_kuitansi_akun');
+				foreach ($baru as $array_pajak) {
+					$entry['no_bukti'] = $array_pajak['no_bukti'];
+					$entry['id_kuitansi_jadi'] = $kuitansi['id_pajak'];
+					$entry['akun'] = $this->Pajak_model->get_akun_by_jenis($array_pajak['jenis_pajak'])['kode_akun'];
+					$entry['jumlah'] = $array_pajak['rupiah_pajak'];
+					$entry['jenis_pajak'] = $array_pajak['jenis_pajak'];
+					$entry['jenis'] = 'pajak';
+
+					$this->db->insert('akuntansi_relasi_kuitansi_akun',$entry);
+				}
+				if ($kuitansi['status'] == 'posted') {
+					$this->db_laporan->where('id_kuitansi_jadi',$kuitansi['id_pajak'])->delete('akuntansi_kuitansi_jadi');
+			    	$this->db_laporan->where('id_kuitansi_jadi',$kuitansi['id_pajak'])->delete('akuntansi_relasi_kuitansi_akun');
+			    	$q6 = $this->Posting_model->posting_kuitansi_full($kuitansi['id_pajak']);
+				}
+			}
+			elseif ($lama != null and $baru == null) {
+				$this->db->where('id_kuitansi_jadi',$kuitansi['id_pajak'])->delete('akuntansi_kuitansi_jadi');
+				$this->db->where('id_kuitansi_jadi',$kuitansi['id_pajak'])->delete('akuntansi_relasi_kuitansi_akun');
+				if ($kuitansi['status'] == 'posted') {
+					$this->db_laporan->where('id_kuitansi_jadi',$kuitansi['id_pajak'])->delete('akuntansi_kuitansi_jadi');
+					$this->db_laporan->where('id_kuitansi_jadi',$kuitansi['id_pajak'])->delete('akuntansi_relasi_kuitansi_akun');
+				}
+				$updater = array();
+				$updater['id_pajak'] = 0;
+				$this->Kuitansi_model->edit_kuitansi_jadi($updater,$kuitansi['id_kuitansi_jadi']);
+				if ($kuitansi['status'] == 'posted') {
+					$this->Kuitansi_model->edit_kuitansi_jadi_post($updater,$kuitansi['id_kuitansi_jadi']);
+				}
+			}
+			elseif ($lama == null and $baru != null) {
+				$kuitansi_pajak = $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi' => $kuitansi['id_kuitansi_jadi']))->row_array();
+		    	$kuitansi_pajak['tipe'] = 'pajak';
+
+	    		$kuitansi_pajak['akun_debet'] = 0;
+	    		$kuitansi_pajak['akun_debet_akrual'] = 0;
+	    		$kuitansi_pajak['jumlah_debet'] = 0;
+	    		$kuitansi_pajak['akun_kredit'] = 0;
+	    		$kuitansi_pajak['akun_kredit_akrual'] = 0;
+	    		$kuitansi_pajak['jumlah_kredit'] = 0;
+	            $kuitansi_pajak['uraian'] = "Pemungutan dan Penyetoran Pajak " . $kuitansi_pajak['uraian'];
+
+
+	    		$id_kuitansi_awal = $kuitansi_pajak['id_kuitansi_jadi'];
+
+	    		unset($kuitansi['id_kuitansi_jadi']);
+	            unset($kuitansi['id_pengembalian']);
+
+	    		$this->db->insert('akuntansi_kuitansi_jadi',$kuitansi);	
+		        $id_kuitansi_pajak = $this->db->insert_id();
+
+
+				foreach ($baru as $array_pajak) {
+					$entry['no_bukti'] = $kuitansi['no_bukti'];
+					$entry['id_kuitansi_jadi'] = $id_kuitansi_pajak;
+					$entry['akun'] = $this->Pajak_model->get_akun_by_jenis($array_pajak['jenis_pajak'])['kode_akun'];
+					$entry['jumlah'] = $array_pajak['rupiah_pajak'];
+					$entry['jenis_pajak'] = $array_pajak['jenis_pajak'];
+					$entry['jenis'] = 'pajak';
+
+					$this->db->insert('akuntansi_relasi_kuitansi_akun',$entry);
+				}
+
+				$updater['id_pajak'] = $id_kuitansi_pajak;
+
+            	$this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_awal);
+
+
+            	if ($kuitansi['status'] == 'posted') {
+					$q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_pajak);
+			    	$this->db_laporan->where('id_kuitansi_jadi',$id_kuitansi_awal)->delete('akuntansi_kuitansi_jadi');
+			    	$this->db_laporan->where('id_kuitansi_jadi',$id_kuitansi_awal)->delete('akuntansi_relasi_kuitansi_akun');
+
+			    	$q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_awal);
+				}
+
+				
+			}
+		}
+		
+
+		return ($array_pajak);
+
+
 	}
 
 	

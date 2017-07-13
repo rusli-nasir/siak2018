@@ -44,6 +44,12 @@ class Coba extends MY_Controller {
         print_r($this->Coba_model->fixing_nk());
     }
 
+    public function fixing_pajak($start,$end)
+    {
+        // die('aa');
+        print_r($this->Coba_model->fixing_pajak($start,$end));
+    }
+
     public function fixing_gp()
     {
         // die('aa');
