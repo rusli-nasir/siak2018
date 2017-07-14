@@ -165,6 +165,8 @@ class Pajak_model extends CI_Model {
         $tabel_pajak = $this->get_tabel_by_jenis($jenis);
 
         $query = "SELECT tp.*,SUM(tp.rupiah_pajak) as rupiah_pajak FROM $tabel_utama as tu, $tabel_detail as td, $tabel_pajak as tp WHERE tu.id_kuitansi='$id_kuitansi' AND td.id_kuitansi = tu.id_kuitansi AND td.id_kuitansi_detail=tp.id_kuitansi_detail AND tp.rupiah_pajak > 0 GROUP BY tp.jenis_pajak";
+
+        $pajak_valid = array('PPh_Ps_21','PPh_Ps_22','PPh_Ps_22','PPh_Ps_23','PPh_Ps_26','PPN');
         // echo $query;die();
 
 
@@ -185,7 +187,7 @@ class Pajak_model extends CI_Model {
         $data_2 = array();
 
     	foreach ($hasil as $entry) {
-            if ($entry['jenis_pajak'] == 'Lainnya' or $entry['jenis_pajak'] == 'PPh_Ps_4(2)') {
+            if (!in_array($entry['jenis_pajak'],$pajak_valid)) {
                 $entry['jenis_pajak'] = 'PPh_final';
             }
     		$detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();

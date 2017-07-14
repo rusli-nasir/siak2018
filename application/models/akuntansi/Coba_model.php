@@ -24,12 +24,9 @@ class Coba_model extends CI_Model {
 		$this->db->from('akuntansi_kuitansi_jadi');
 		$this->db->select('akuntansi_kuitansi_jadi.id_kuitansi_jadi,akuntansi_kuitansi_jadi.jumlah_debet,akuntansi_kuitansi_jadi.flag,akuntansi_kuitansi_jadi.status,akuntansi_kuitansi_jadi.jumlah_kredit,kepeg_tr_spmls.total_sumberdana,kepeg_tr_spmls.jumlah_bayar');
 
-		// die($this->db->get_compiled_select());
+		die($this->db->get_compiled_select());
 
 		$query = $this->db->get()->result_array();
-
-		print_r($query);
-		die();
 
 		$updater = array();
 		$array_updater = array();
@@ -38,8 +35,10 @@ class Coba_model extends CI_Model {
 			$updater['jumlah_kredit'] = $entry['total_sumberdana'];
 			$this->db->where('id_kuitansi_jadi',$entry['id_kuitansi_jadi']);
 			$this->db->update('akuntansi_kuitansi_jadi',$updater);
-			$this->db_laporan->where('id_kuitansi_jadi',$entry['id_kuitansi_jadi']);
-			$this->db_laporan->update('akuntansi_kuitansi_jadi',$updater);
+			if ($entry['status'] == 'posted') {
+				$this->db_laporan->where('id_kuitansi_jadi',$entry['id_kuitansi_jadi']);
+				$this->db_laporan->update('akuntansi_kuitansi_jadi',$updater);
+			}
 		}
 
 		
@@ -162,6 +161,8 @@ class Coba_model extends CI_Model {
 				$array_pajak[$key]['baru'] = $baru;
 			}
 		}
+
+		print_r($array_pajak);die();
 
 
 		foreach ($array_pajak as $pajak) {

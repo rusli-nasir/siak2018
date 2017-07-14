@@ -25,6 +25,31 @@ class Coba extends MY_Controller {
         echo $this->Akun_model->get_nama_akun('111111');
     }
 
+    public function coba_regex()
+    {
+        echo preg_replace("[']",'',"'12-12-1234");
+    }
+
+    public function cek_memori($value='')
+    {
+        ini_set('memory_limit', '256M');
+        $memory_limit = ini_get('memory_limit');
+        if (preg_match('/^(\d+)(.)$/', $memory_limit, $matches)) {
+            if ($matches[2] == 'M') {
+                $memory_limit = $matches[1] * 1024 * 1024; // nnnM -> nnn MB
+            } else if ($matches[2] == 'K') {
+                $memory_limit = $matches[1] * 1024; // nnnK -> nnn KB
+            }
+        }
+
+        $ok = ($memory_limit >= 640 * 1024 * 1024); // at least 64M?
+
+        echo '<phpmem>';
+        echo '<val>' . $memory_limit . '</val>';
+        echo '<ok>' . ($ok ? 1 : 0) . '</ok>';
+        echo '</phpmem>';
+    }
+
 	public function pajak()
 	{
         $array_pajak = $this->Pajak_model->get_transfer_pajak(5);

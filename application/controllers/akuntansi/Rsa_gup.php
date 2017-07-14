@@ -32,6 +32,7 @@ class rsa_gup extends MY_Controller{
     
     function jurnal(){
         $no_spm = urldecode($this->input->get('spm'));
+        // echo $no_spm;die();
         $this->load->model('akuntansi/rsa_gup2_model');
         $_spm = $this->rsa_gup2_model->get_spm_detail($no_spm, array('tahun', 'kode_unit', 'str_nomor_trx'));
         
@@ -63,8 +64,11 @@ class rsa_gup extends MY_Controller{
                 $this->data['alias'] = $this->unit_model->get_alias($kd_unit);
         }
                                 
-                               
         $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($kd_unit,$tahun);
+        if ($dokumen_gup == null) {
+            $kd_unit = substr($kd_unit,0,2);
+            $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($kd_unit,$tahun);
+        }
 
         $this->data['doc_up'] = $dokumen_gup;
 
@@ -106,6 +110,9 @@ class rsa_gup extends MY_Controller{
             $this->data_url = urlencode(base64_encode($du_));
             $du = $this->data_url ;
             $this->data_url = urldecode($this->data_url);
+            // echo base64_encode(base64_decode($this->data_url, true));
+            // print_r($this->data_url);
+            // die();
             if( base64_encode(base64_decode($this->data_url, true)) === $this->data_url){
                 //$array_id = base64_decode($this->data_url) ;
                 $array_id = $this->data_spp->data_kuitansi;
@@ -151,6 +158,7 @@ class rsa_gup extends MY_Controller{
            $this->data['cur_tahun_spp'] = '';
 
         }
+
 
 
         //$nomor_trx_spm = '';
@@ -247,6 +255,7 @@ class rsa_gup extends MY_Controller{
             $nomor_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx_spp);
 
 
+
             if(empty($nomor_spm)){
 
                 $this->data_akun_before = $this->kuitansi_model->get_gup_akun_before_by_unit($kd_unit,$tahun);
@@ -289,6 +298,7 @@ class rsa_gup extends MY_Controller{
 
             $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
         }
+
 
         $this->data['data_akun_pengeluaran'] = $this->data_akun_pengeluaran;
         $this->data['rincian_akun_pengeluaran'] = $rincian_akun_pengeluaran;
