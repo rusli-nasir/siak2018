@@ -247,7 +247,7 @@ class Jurnal_rsa extends MY_Controller {
         if ($status == 2){
             $status = 1;
             $riwayat['status'] = $status;
-            $flag++;
+            $flag = 2;
             $riwayat['flag'] = $flag;
             $riwayat['komentar'] = '';
             $this->Riwayat_model->add_riwayat($riwayat);

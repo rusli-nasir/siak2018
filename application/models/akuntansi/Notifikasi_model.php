@@ -36,11 +36,11 @@ class Notifikasi_model extends CI_Model {
         $condstr="1";
         switch($level){
             case 0: //operator
-                $condstr = "((flag=1 AND status='revisi') OR (flag=2 AND status='proses'))";
+                $condstr = "((flag=1 AND status='revisi') OR (flag=1 AND status='proses'))";
                 break;
                 
             case 1: //verifikator
-                $condstr = "(flag=1 AND (status='direvisi' OR status='proses'))";
+                $condstr = "((status='proses' AND flag=1) OR (status='direvisi' AND flag=1))";
                 //break;
                 
             case 2: //posting
