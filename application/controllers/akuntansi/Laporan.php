@@ -917,6 +917,7 @@ class Laporan extends MY_Controller {
     }
 
     public function cetak_neraca_saldo(){
+        ini_set('memory_limit', '256M');
         $array_akun = array(1,2,3,4,5,6,7,8,9);
 
         $basis = $this->input->post('basis');
@@ -933,7 +934,7 @@ class Laporan extends MY_Controller {
         $teks_unit = null;
 
 
-        if ($unit == 'all') {
+        if ($unit == 'all' or $unit == 'penerimaan') {
             $unit = null;
             $mode = 'neraca';
             $data['teks_unit'] = "UNIVERSITAS DIPONEGORO";
@@ -943,11 +944,12 @@ class Laporan extends MY_Controller {
         }
 
         // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
-        $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
-        ksort($data['query']);
-        /*print_r($data['query']['411121']);
-        die();*/
+        // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
+        $data['query'] = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
+        // print_r($data['query']);
+        // die();
         
+        ksort($data['query']);
         $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";
 
@@ -963,7 +965,7 @@ class Laporan extends MY_Controller {
             $teks_sumber_dana .= "DARI DANA ".strtoupper(str_replace('_',' ',$sumber_dana));
         }
 
-        ksort($data);
+        // ksort($data);
 
         $n_akun = count($data);
 
@@ -1031,6 +1033,8 @@ class Laporan extends MY_Controller {
 
     	// $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         $data = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
+        // $data = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
+
 
         if ($data == null){
             $this->load->view('akuntansi/no_data',true);
