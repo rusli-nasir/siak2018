@@ -176,12 +176,24 @@ class Jurnal_umum extends MY_Controller {
             $array_pengembalian = array();
             $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
             //$tanggal = DateTime::createFromFormat('d-m-Y', $tanggal);
-            if($objWorksheet->getCellByColumnAndRow(2,$row)->getValue()!=null){
-                $arr_tgl = explode('-', $tanggal);
+            /*if($objWorksheet->getCellByColumnAndRow(2,$row)->getValue()!=null){
+                $arr_tgl = explode('/', $tanggal);
+                echo $row;
+                print_r($arr_tgl);
+                die();
+                $tgl_jadi = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+                $tanggal = $tgl_jadi;
+            }*/
+            if(substr($tanggal, 0,1)=="'"){
+                $tanggal=substr($tanggal, 1);              
+            }
+            
+            $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+            if(substr($tanggal, 0,4)!='2017'){
+                $arr_tgl = explode('/', $objWorksheet->getCellByColumnAndRow(2,$row)->getValue());
                 $tgl_jadi = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
                 $tanggal = $tgl_jadi;
             }
-            //$tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
 
             if($objWorksheet->getCellByColumnAndRow(5,$row)->getValue()!=null){
                 $entry['tanggal'] = $entry['tanggal_bukti'] = $tanggal;

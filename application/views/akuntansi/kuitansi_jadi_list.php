@@ -176,7 +176,7 @@ tbody td, thead th {
 							<?php } else if(isset($tab5)){ ?>
 								<a href="<?php $r=tup_get_details($result->no_spm); echo site_url('akuntansi/rsa_gup/tup/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php }else{ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if($result->flag==1 AND $result->status=='revisi'){ ?>
