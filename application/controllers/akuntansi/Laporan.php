@@ -816,10 +816,23 @@ class Laporan extends MY_Controller {
         if ($akun == 'all') {
             $array_akun = array(1,2,3,4,5,6,7,8,9);
             $mode = 'neraca';
+
+            $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
+
+            if($basis=='kas'){
+                $array_akun = array(4,5);
+            }else{
+                $array_akun = array(6,7,423141);
+            }
+            foreach ($query_pajak as $result) {
+                $array_akun[] = $result->kode_akun;
+            }
         }
         else {
             $array_akun[] = $akun;
         }
+
+
 
         $teks_sumber_dana = "BUKU BESAR ";
         $teks_periode = "";
@@ -928,14 +941,16 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]);
 
-        $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result_array();
+        $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
         if($basis=='kas'){
             $array_akun = array(4,5);
         }else{
             $array_akun = array(6,7,423141);
         }
-        $array_akun = array_merge($array_akun, $query_pajak);
+        foreach ($query_pajak as $result) {
+            $array_akun[] = $result->kode_akun;
+        }
         
         $sumber_dana = $this->input->post('sumber_dana');
         $data['sumber'] = 'get_neraca_saldo';
