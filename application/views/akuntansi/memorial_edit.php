@@ -301,6 +301,7 @@ $(document).ready(function(){
       <option <?php if ($jenis == 'GP'): ?> selected <?php endif ?> value="GP" >GUP</option>
       <option <?php if ($jenis == 'LS-Gaji'): ?> selected <?php endif ?> value="LS-Gaji">LS-Gaji</option>
       <option <?php if ($jenis == 'TUP'): ?> selected <?php endif ?> value="TUP">TUP</option>
+      <option <?php if ($jenis == 'LSPHK3'): ?> selected <?php endif ?> value="LSPHK3">LS PIHAK KE 3</option>
     </select>
   </div>
     

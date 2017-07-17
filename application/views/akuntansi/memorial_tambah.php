@@ -98,6 +98,7 @@ $(document).ready(function(){
       <option value="GP" >GUP</option>
       <option value="LS-Gaji">LS-Gaji</option>
       <option value="TUP">TUP</option>
+      <option value="LSPHK3">LS PIHAK KE 3</option>
     </select>
   </div>
     
