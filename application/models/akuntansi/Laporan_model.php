@@ -393,6 +393,134 @@ class Laporan_model extends CI_Model {
 
     }
 
+
+    public function get_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
+    {
+        $array_tipe  = array('debet','kredit');
+
+        $array_jenis = array();
+        if ($jenis == null){
+            $array_jenis = array('akrual','kas');
+        }else {
+            $array_jenis[] = $jenis;
+        }
+
+        $kolom = array(
+                'debet' => array(
+                        'kas' => 'akun_debet',
+                        'akrual' => 'akun_debet_akrual',
+                    ),
+                'kredit' => array(
+                        'kas' => 'akun_kredit',
+                        'akrual' => 'akun_kredit_akrual'
+                    ),
+            );
+
+        
+
+        $data = array();
+
+        $query1 = array();
+
+        foreach ($array_tipe as $tipe) {
+            foreach ($array_jenis as $jenis) {
+                foreach ($array_akun as $akun) {
+                    $cari = $kolom[$tipe][$jenis];
+                    $this->db_laporan->select("*, $cari as akun, jumlah_debet as jumlah");
+                    $this->db_laporan
+                        ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
+                        // ->order_by('no_bukti')
+                        ;
+
+                    if ($akun != null){
+                        $this->db_laporan->like($kolom[$tipe][$jenis],$akun,'after');
+                    }
+
+                    if ($sumber_dana != null){
+                        $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
+                    }
+
+                    if ($start_date != null and $end_date != null){
+                        $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
+                    }
+
+                    if ($unit != null) {
+                            $this->db_laporan->where('unit_kerja',$unit);
+                        }
+
+                    // $this->db_laporan->where('unit_kerja',$unit);
+
+                    // $this->db_laporan->group_by($kolom[$tipe][$jenis]);
+
+                    // echo $this->db_laporan->get_compiled_select();
+
+                    $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
+
+                    for ($i=0; $i < count($hasil); $i++) { 
+                        $hasil[$i]['tipe'] = $tipe;
+                        $query1[$hasil[$i]['akun']][] = $hasil[$i];
+                    }
+
+                }
+            }
+        }
+
+
+        $query2 = array();
+
+        foreach ($array_tipe as $tipe) {
+            foreach ($array_jenis as $jenis) {
+                    foreach ($array_akun as $akun) {
+                        $added_query = "";
+
+                        if ($unit != null){
+                            $added_query .= "AND tu.unit_kerja = '$unit'";
+                        }
+                        if ($sumber_dana != null){
+                            $added_query .= "AND tu.jenis_pembatasan_dana = '$sumber_dana'";
+                        }
+                        if ($akun != null){
+                            $added_query .= "AND tr.akun LIKE '$akun%'";
+                        }
+                        if ($start_date != null and $end_date != null){
+                            $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
+                        }
+
+                        $query = "SELECT tr.akun,tu.* FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                                 tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
+                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' OR tu.tipe = 'pajak' OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
+                                 $added_query 
+                                 AND (tr.tipe = '$tipe' or tr.jenis = 'pajak')
+
+                        ";
+
+                        // echo $query;
+
+                        $hasil = $this->db_laporan->query($query)->result_array();
+
+                        for ($i=0; $i < count($hasil); $i++) { 
+                            $hasil[$i]['tipe'] = $tipe;
+                            $query1[$hasil[$i]['akun']][] = $hasil[$i];
+                        }
+
+
+
+                }
+            }
+        }
+
+        return $query1;
+
+        // print_r($query1);
+        // die();
+        // print_r($query2);die();
+        // $hasil = array_merge($query1,$query2);
+        // print_r($hasil);die();
+
+
+
+    }
+
     public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
     {
 
