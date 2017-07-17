@@ -917,8 +917,7 @@ class Laporan extends MY_Controller {
     }
 
     public function cetak_neraca_saldo(){
-        ini_set('memory_limit', '256M');
-        $array_akun = array(1,2,3,4,5,6,7,8,9);
+        ini_set('memory_limit', '256M');       
 
         $basis = $this->input->post('basis');
         $tipe = $this->input->post('tipe');
@@ -926,6 +925,12 @@ class Laporan extends MY_Controller {
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]);
+
+        if($basis=='kas'){
+            $array_akun = array(4,5,411121,423141,423951,423957,811111,811131,811132,811211);
+        }else{
+            $array_akun = array(6,7,411121,423141,423951,423957,811111,811131,811132,811211);
+        }
         
         $sumber_dana = $this->input->post('sumber_dana');
         $data['sumber'] = 'get_neraca_saldo';
