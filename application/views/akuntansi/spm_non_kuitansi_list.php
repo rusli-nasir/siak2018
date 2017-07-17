@@ -102,7 +102,7 @@
 					<td><?php echo $this->session->userdata('username'); ?></td>
 					<td><?php echo substr($result->detail_belanja, 18, 6); ?></td>
 					<td><?php echo '?'; ?></td>
-					<td><?php echo number_format($result->jumlah_bayar); ?></td>
+					<td><?php echo number_format($result->total_sumberdana); ?></td>
 				</tr>
 				<?php $no++; } ?>
 			</tbody>
