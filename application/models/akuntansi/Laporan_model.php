@@ -287,6 +287,8 @@ class Laporan_model extends CI_Model {
                     ),
             );
 
+        // print_r($array_akun);die();
+
         
 
         $data = array();
@@ -323,13 +325,13 @@ class Laporan_model extends CI_Model {
 
                     $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
-                    // echo $this->db_laporan->get_compiled_select();
+                    // echo $this->db_laporan->get_compiled_select();die();
 
                     $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
                     for ($i=0; $i < count($hasil); $i++) { 
                         $hasil[$i]['tipe'] = $tipe;
-                        // $query1[$hasil[$i]['akun']][] = $hasil[$i];
+                        $query1[$hasil[$i]['akun']][] = $hasil[$i];
                     }
 
                 }
@@ -380,11 +382,11 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
+        // print_r($query1);
+        // die();
 
         return $query1;
 
-        // print_r($query1);
-        // die();
         // print_r($query2);die();
         // $hasil = array_merge($query1,$query2);
         // print_r($hasil);die();
