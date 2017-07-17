@@ -452,7 +452,7 @@ class Laporan_model extends CI_Model {
 
                     // $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
-                    // echo $this->db_laporan->get_compiled_select();
+                    // echo $this->db_laporan->get_compiled_select();die();
 
                     $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
@@ -486,7 +486,7 @@ class Laporan_model extends CI_Model {
                             $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
                         }
 
-                        $query = "SELECT tr.akun,tu.* FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        $query = "SELECT tr.akun,tu.*,tr.jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
                                  AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' OR tu.tipe = 'pajak' OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
@@ -509,10 +509,10 @@ class Laporan_model extends CI_Model {
             }
         }
 
-        return $query1;
-
         // print_r($query1);
         // die();
+        return $query1;
+
         // print_r($query2);die();
         // $hasil = array_merge($query1,$query2);
         // print_r($hasil);die();
