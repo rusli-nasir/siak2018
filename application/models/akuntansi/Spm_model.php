@@ -72,6 +72,9 @@ class Spm_model extends CI_Model {
 
             $inti = $this->db->get()->row_array();
 
+            // echo $tabel_data;
+            // print_r($inti);die();
+
             $inti['kode_unit_subunit'] = substr($inti['kode_unit_subunit'],0,2);
 
             $unit = $this->db2->get_where('unit',array('kode_unit' => $inti['kode_unit_subunit']))->row_array()['nama_unit'];
@@ -84,12 +87,13 @@ class Spm_model extends CI_Model {
 
             $inti['str_nomor_trx_spm'] = $inti['str_nomor_trx'];
 
-          	$inti['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal(date('Y-m-d', strtotime($inti['tgl_spm'])));
-          	$inti['tanggal_bukti'] = $inti['tanggal'];
+            $inti['tanggal'] = $this->Jurnal_rsa_model->reKonversiTanggal(date('Y-m-d', strtotime($inti['tgl_spm'])));
+            $inti['tanggal_bukti'] = $inti['tanggal'];
 
-          	$inti['jenis'] = $jenis;
+            $inti['jenis'] = $jenis;
 
-          	$inti['pajak'] = null;
+            $inti['pajak'] = null;
+
 
 
           	$debet = $this->db->get_where($tabel_debet,array('no_spm' => $inti['str_nomor_trx']))->row_array();
@@ -134,7 +138,7 @@ class Spm_model extends CI_Model {
           		$inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
 
           		$inti['akun_kredit'] = $kredit['kd_akun_kas'];
-	          	$inti['jumlah_kredit'] = $kredit['kredit'];
+	          	$inti['jumlah_kredit'] = $inti['jumlah_bayar'];
 	          	$inti['kas_akun_kredit'] = $inti['akun_kredit'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_kredit']);
           		// print_r($id_kuitansi);
           		$inti['pajak'] = $this->Pajak_model->get_detail_pajak($kuitansi['no_bukti'],'L3');
@@ -258,6 +262,7 @@ class Spm_model extends CI_Model {
           		$inti['akun_debet'] = $kuitansi['kode_akun'];
           		$inti['jumlah_debet'] = $inti['jumlah_bayar'];
           		$inti['akun_debet_kas'] = $inti['akun_debet'] ." - ". $this->Akun_model->get_nama_akun($inti['akun_debet']);
+              $inti['id_kuitansi'] = $id_kuitansi;
 
               $sal_univ = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
 

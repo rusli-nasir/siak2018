@@ -843,7 +843,9 @@ class Laporan extends MY_Controller {
         $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
         // die($mode);
 
-        $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
+        // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
+        $data['query'] = $this->Laporan_model->get_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
+        // print_r($data['query']);die();
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_buku_besar',$data);
         }else if($tipe=='excel'){
