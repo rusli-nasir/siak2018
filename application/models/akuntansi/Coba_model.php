@@ -162,7 +162,7 @@ class Coba_model extends CI_Model {
 			}
 		}
 
-		print_r($array_pajak);die();
+		//print_r($array_pajak);die();
 
 
 		foreach ($array_pajak as $pajak) {
@@ -217,15 +217,15 @@ class Coba_model extends CI_Model {
 
 	    		$id_kuitansi_awal = $kuitansi_pajak['id_kuitansi_jadi'];
 
-	    		unset($kuitansi['id_kuitansi_jadi']);
-	            unset($kuitansi['id_pengembalian']);
+	    		unset($kuitansi_pajak['id_kuitansi_jadi']);
+	            unset($kuitansi_pajak['id_pengembalian']);
 
-	    		$this->db->insert('akuntansi_kuitansi_jadi',$kuitansi);	
+	    		$this->db->insert('akuntansi_kuitansi_jadi',$kuitansi_pajak);	
 		        $id_kuitansi_pajak = $this->db->insert_id();
 
 
 				foreach ($baru as $array_pajak) {
-					$entry['no_bukti'] = $kuitansi['no_bukti'];
+					$entry['no_bukti'] = $kuitansi_pajak['no_bukti'];
 					$entry['id_kuitansi_jadi'] = $id_kuitansi_pajak;
 					$entry['akun'] = $this->Pajak_model->get_akun_by_jenis($array_pajak['jenis_pajak'])['kode_akun'];
 					$entry['jumlah'] = $array_pajak['rupiah_pajak'];
