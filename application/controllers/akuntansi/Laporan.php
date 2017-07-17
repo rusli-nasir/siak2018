@@ -928,11 +928,14 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]);
 
+        $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result_array();
+
         if($basis=='kas'){
-            $array_akun = array(4,5,411121,423141,423951,423957,811111,811131,811132,811211);
+            $array_akun = array(4,5);
         }else{
-            $array_akun = array(6,7,411121,423141,423951,423957,811111,811131,811132,811211);
+            $array_akun = array(6,7,423141);
         }
+        $array_akun = array_merge($array_akun, $query_pajak);
         
         $sumber_dana = $this->input->post('sumber_dana');
         $data['sumber'] = 'get_neraca_saldo';
