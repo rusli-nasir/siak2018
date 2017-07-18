@@ -54,6 +54,29 @@ class Akun_model extends CI_Model {
 		
 	}
 
+	public function get_akun_by_level($kode_akun,$level,$tabel)
+	{
+		$this->db
+			->select($kode_akun)
+			->like("akun_$level",$kode_akun,'after')
+			->from("akuntansi_$tabel_$level")
+		;
+
+		$hasil = $this->db->get()->result_array();
+		$data = array();
+
+		foreach ($hasil as $key => $entry) {
+			if ($level == 3) {
+				$data['akun_1']['akun_2']['akun_3'] = $entry;
+			} else {
+				$data['akun_1']['akun_2']['akun_3']['akun_4'] = $entry;
+			}
+		}
+
+		return $data;
+
+	}
+
 	public function get_saldo_awal($kode_akun)
 	{
 		$tahun = gmdate('Y');
