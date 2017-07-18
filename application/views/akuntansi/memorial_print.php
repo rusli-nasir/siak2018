@@ -1269,13 +1269,13 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
   <table>
     <tr>
       <td style="width:300px;">
-      </td>
-      <td style="width:300px;">
         <?php 
         echo '<br/>Menyetujui<br/>Kabag. Akuntansi<br/>';
         echo '<br/><br/><br/><br/><br/>';
         echo 'Drs. Sudarno, MSi, Akt, Phd.<br/>NIP. 196505201990011001.';
         ?>
+      </td>
+      <td style="width:300px;">
       </td>
       <td style="width:300px;">
         <?php 

@@ -48,6 +48,7 @@ tr > td{
 
 .green{color:green;}
 .orange{color:orange;}
+.blue{color:blue;}
 </style>
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -93,10 +94,11 @@ tr > td{
 			<thead>
 				<tr>
 					<th style="width:200px !important">Nama Unit</th>
-					<th style="width:100px !important" align="center">Total Kuitansi</th>
+					<th style="width:100px !important" align="center">Belum dijurnal</th>
 					<th style="width:100px !important" align="center">Belum verifikasi</th>
 					<th style="width:100px !important" align="center">Disetujui</th>
-					<th style="width:100px !important" align="center">Direvisi</th>
+					<th style="width:100px !important" align="center">Revisi</th>
+					<th style="width:100px !important" align="center">Sudah direvisi</th>
 					<th style="width:100px !important" align="center">Posting</th>
 				</tr>
 			</thead>
@@ -108,6 +110,7 @@ tr > td{
 				<td class="<?php if($non_verif[$no] > 0) echo 'blink_me'; ?>" style="text-align:center;width:100px !important; <?php if($non_verif[$no] > 0) echo 'color:red !important;' ?>"><?php echo $non_verif[$no]; ?></td>
 				<td class="<?php if($setuju[$no] > 0) echo 'blink_me green'; ?>" style="text-align:center;width:100px !important"><?php echo $setuju[$no]; ?></td>
 				<td class="<?php if($revisi[$no] > 0) echo 'blink_me orange'; ?>" style="text-align:center;width:100px !important"><?php echo $revisi[$no]; ?></td>
+				<td class="<?php if($direvisi[$no] > 0) echo 'blink_me blue'; ?>" style="text-align:center;width:100px !important"><?php echo $direvisi[$no]; ?></td>
 				<td style="text-align:center;width:100px !important;color:#1c1c1c"><span class="glyphicon glyphicon-ok"></span> <?php echo $posting[$no]; ?></td>
 			</tr>
 		<?php $no++;

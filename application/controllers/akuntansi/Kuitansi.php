@@ -1143,6 +1143,7 @@ class Kuitansi extends MY_Controller {
     		$this->data['setuju'][$i] = $this->get_total_data($result->kode_unit, 'setuju', $periode_awal, $periode_akhir);
     		$this->data['revisi'][$i] = $this->get_total_data($result->kode_unit, 'revisi', $periode_awal, $periode_akhir);
     		$this->data['posting'][$i] = $this->get_total_data($result->kode_unit, 'posting', $periode_awal, $periode_akhir);
+    		$this->data['direvisi'][$i] = $this->get_total_data($result->kode_unit, 'direvisi', $periode_awal, $periode_akhir);
     		$i++;
     	}
         /*$this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
@@ -1171,6 +1172,8 @@ class Kuitansi extends MY_Controller {
 			$cond = array('unit_kerja'=>$kode_unit, 'status'=>'posted');
 		}else if($jenis=='non_verif'){
 			$cond = array('unit_kerja'=>$kode_unit, 'status'=>'proses', 'flag'=>1);
+		}else if($jenis=='direvisi'){
+			$cond = array('unit_kerja'=>$kode_unit, 'status'=>'direvisi', 'flag'=>1);
 		}
 		$this->db->where($cond);
 		if($periode_awal!=null AND $periode_akhir!=null){
