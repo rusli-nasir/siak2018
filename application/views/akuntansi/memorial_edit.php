@@ -395,6 +395,14 @@ $(document).ready(function(){
   </div>
 </div>
 
+<!-- Textarea -->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="untuk">Untuk</label>
+  <div class="col-md-6">                     
+    <textarea class="form-control" id="untuk" name="untuk"><?=$untuk?></textarea>
+  </div>
+</div>
+
 <div class="form-group checkbox" align="center">
     <label><input type="checkbox" id="no-kas">  Kosongkan Kas</label>
 </div>

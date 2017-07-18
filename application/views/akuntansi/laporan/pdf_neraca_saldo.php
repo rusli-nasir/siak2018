@@ -110,7 +110,7 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 		    	$debet = 0;
 		    	$kredit = 0;
 
-		    	$case_hutang = in_array(substr($key,0,1),[2,3]);
+		    	$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
 
 				$html .= '<tr>
 						<td width="40px">'.$i.'</td>
@@ -145,15 +145,15 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 
 				$html .= '<td align="right" width="100px">'.eliminasi_negatif($debet).'</td>
 						<td align="right" width="100px">'.eliminasi_negatif($kredit).'</td>';
-					if ($saldo_neraca > 0) {
+					if ($kredit > $debet) {
 		                $jumlah_neraca_debet += $saldo_neraca;
 		                $html .= '<td align="right" width="100px">0.00</td>';
 		                $html .= '<td align="right" width="100px">'.eliminasi_negatif($saldo_neraca).'</td>';
-		            } elseif ($saldo_neraca < 0) {
+		            } elseif ($kredit < $debet) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_kredit += $saldo_neraca;
-		                $html .= '<td align="right" width="100px">0.00</td>';
 		                $html .= '<td align="right" width="100px">'.eliminasi_negatif($saldo_neraca).'</td>';
+		                $html .= '<td align="right" width="100px">0.00</td>';
 		            }else{
 		            	$html .= '<td align="right" width="100px">0.00</td>';
 		            	$html .= '<td align="right" width="100px">0.00</td>';
@@ -233,6 +233,9 @@ $pdf->Output('example_006.pdf', 'I');
 
 function get_nama_unit($kode_unit)
 {
+	if ($kode_unit == 9999) {
+		return 'Penerimaan';
+	}
 	$ci =& get_instance();
 	$ci->db2 = $ci->load->database('rba', true);
     $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
@@ -308,7 +311,8 @@ function get_pejabat($unit, $jabatan){
 function eliminasi_negatif($value)
 {
     if ($value < 0) 
-        return "(". number_format(abs($value),2,',','.') .")";
+    	return number_format(abs($value),2,',','.');
+        // return "(". number_format(abs($value),2,',','.') .")";
     else
         return number_format($value,2,',','.');
 }

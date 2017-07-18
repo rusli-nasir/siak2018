@@ -993,6 +993,27 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   style='font-size:12.0pt;font-family:"Arial",sans-serif'><?php $t = explode('_', $jenis_pembatasan_dana); echo ucfirst($t[0]).' '.ucfirst($t[1])?><o:p></o:p></span></p>
   </td>
  </tr>
+ <tr style='mso-yfti-irow:7;height:.3in'>
+  <td width=197 valign=top style='width:148.1pt;padding:0in 5.4pt 0in 5.4pt;
+  height:.3in'>
+  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
+  justify;text-justify:inter-ideograph;line-height:normal;tab-stops:2.0in'><span
+  class=SpellE><span style='font-size:12.0pt;font-family:"Arial",sans-serif'>Untuk</span></span><span
+  style='font-size:12.0pt;font-family:"Arial",sans-serif'><o:p></o:p></span></p>
+  </td>
+  <td width=16 valign=top style='width:11.8pt;padding:0in 5.4pt 0in 5.4pt;
+  height:.3in'>
+  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
+  justify;text-justify:inter-ideograph;line-height:normal;tab-stops:2.0in'><span
+  style='font-size:12.0pt;font-family:"Arial",sans-serif'>:<o:p></o:p></span></p>
+  </td>
+  <td width=426 valign=top style='width:319.4pt;padding:0in 5.4pt 0in 5.4pt;
+  height:.3in'>
+  <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
+  justify;text-justify:inter-ideograph;line-height:normal;tab-stops:2.0in'><span
+  style='font-size:12.0pt;font-family:"Arial",sans-serif'><?php if(isset($untuk)) echo $untuk; ?><o:p></o:p></span></p>
+  </td>
+ </tr>
 </table>
 
 <p class=MsoNormal style='text-align:justify;text-justify:inter-ideograph'><span
@@ -1244,22 +1265,33 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
  <![endif]>
 </table>
 
-<div align="right" style="width:900px;margin-top:40px;font-family:sans-serif">
-    <div style="width:600px;float:left;border:0px solid black" align="left">
-      <?php 
-      echo 'Penyusun Laporan<br/><br/><br/><br/><br/><br/>';
-      $pejabat = get_pejabat($kode_unit, 'operator'); 
-      echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
-      ?>
-    </div>
-    <div style="width:245px;float:right;border:0px solid black" align="left">
-      <?php 
-      echo 'Semarang, '.$konversi_tanggal.'<br/>Pengguna Anggaran<br/>';
-      echo get_nama_unit($kode_unit).'<br/><br/><br/><br/>';
-      $pejabat = get_pejabat($kode_unit, 'ppk'); 
-      echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
-      ?>
-    </div>
+<div style="margin-top:40px;font-family:sans-serif">
+  <table>
+    <tr>
+      <td style="width:300px;">
+      </td>
+      <td style="width:300px;">
+        <?php 
+        echo '<br/>Menyetujui<br/>Kabag. Akuntansi<br/>';
+        echo '<br/><br/><br/><br/><br/>';
+        echo 'Drs. Sudarno, MSi, Akt, Phd.<br/>NIP. 196505201990011001.';
+        ?>
+      </td>
+      <td style="width:300px;">
+        <?php 
+        echo 'Semarang, '.$konversi_tanggal.'<br/>Mengetahui<br/>Kabag. Pelapor<br/>';
+        echo '<br/><br/><br/><br/>';
+        //$pejabat = get_pejabat($kode_unit, 'ppk'); 
+        echo 'Tri Widowati, SE.<br/>NIP. 196806081989032001.';
+
+        /*echo 'Semarang, '.$konversi_tanggal.'<br/>Pengguna Anggaran<br/>';
+        echo get_nama_unit($kode_unit).'<br/><br/><br/><br/>';
+        $pejabat = get_pejabat($kode_unit, 'ppk'); 
+        echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];*/
+        ?>
+      </td>
+    </tr>
+  </table>
 </div>
 
 <p class=MsoNormal style='text-align:justify;text-justify:inter-ideograph'><span

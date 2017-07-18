@@ -47,14 +47,14 @@ if(isset($excel)){
 			$arr_sumber = explode('_', $sumber);
 			$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
 			?>
-			<?php echo form_open("akuntansi/laporan/$link_cetak",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
+			<?php echo form_open("akuntansi/laporan/cetak_neraca_saldo",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
 				<input type="hidden" name="tipe" value="pdf">
 				<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
 				<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
 				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
 				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-				<!-- <input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF"> -->
+				<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
 			</form>
 		<?php } ?>
 		<div align="center" style="font-weight:bold">

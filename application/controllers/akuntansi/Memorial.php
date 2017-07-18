@@ -689,7 +689,7 @@ class Memorial extends MY_Controller {
         $akun_pajak = $this->Pajak_model->get_pajak();
         echo ' <tr>
           <td>
-            <select class="form-control" name="id_pajak[]" required>
+            <select class="form-control" name="id_pajak[]">
               <option value="">Pilih Jenis</option>';
               foreach($akun_pajak->result() as $result){ 
               echo '<option value='.$result->id_akun_pajak.'>'.$result->nama_akun.'</option>';
