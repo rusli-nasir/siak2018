@@ -820,9 +820,9 @@ class Laporan extends MY_Controller {
             $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
             if($basis=='kas'){
-                $array_akun = array(1,2,3,4,5,8,9);
+                $array_akun = array(2,3,4,5,8,9);
             }else{
-                $array_akun = array(1,2,3,6,7,8,9,423141);
+                $array_akun = array(1,2,3,6,7,8,423141);
             }
             foreach ($query_pajak as $result) {
                 $array_akun[] = $result->kode_akun;
@@ -956,9 +956,9 @@ class Laporan extends MY_Controller {
         $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
         if($basis=='kas'){
-            $array_akun = array(1,2,3,4,5,8,9);
+            $array_akun = array(2,3,4,5,8,9);
         }else{
-            $array_akun = array(1,2,3,6,7,8,9,423141);
+            $array_akun = array(1,2,3,6,7,8,423141);
         }
         foreach ($query_pajak as $result) {
             $array_akun[] = $result->kode_akun;

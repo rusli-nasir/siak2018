@@ -415,7 +415,7 @@ class Laporan_model extends CI_Model {
     }
 
 
-    public function get_rekap_posisi($array_akun,$array_not_akun = null,$jenis=null,$unit=null)
+    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null)
     {
         $array_tipe  = array('debet','kredit');
 
