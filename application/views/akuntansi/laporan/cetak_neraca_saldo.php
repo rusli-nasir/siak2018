@@ -54,7 +54,7 @@ if(isset($excel)){
 				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
 				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-				<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
+				<!-- <input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF"> -->
 			</form>
 		<?php } ?>
 		<div align="center" style="font-weight:bold">
@@ -284,7 +284,8 @@ function get_pejabat($unit, $jabatan){
 function eliminasi_negatif($value)
 {
     if ($value < 0) 
-        return "(". number_format(abs($value),2,',','.') .")";
+    	return number_format(abs($value),2,',','.');
+        // return "(". number_format(abs($value),2,',','.') .")";
     else
         return number_format($value,2,',','.');
 }

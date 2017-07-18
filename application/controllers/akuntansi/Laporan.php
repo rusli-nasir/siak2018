@@ -820,9 +820,9 @@ class Laporan extends MY_Controller {
             $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
             if($basis=='kas'){
-                $array_akun = array(4,5);
+                $array_akun = array(1,2,3,4,5,8,9);
             }else{
-                $array_akun = array(6,7,423141);
+                $array_akun = array(1,2,3,6,7,8,9,423141);
             }
             foreach ($query_pajak as $result) {
                 $array_akun[] = $result->kode_akun;
@@ -920,6 +920,7 @@ class Laporan extends MY_Controller {
         // $akun = array(1,2,3,4,5,6,7,8,9);
         //public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
         $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+        // print_r($data['query']);die();
 
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_rekap_jurnal',$data);
@@ -941,12 +942,23 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]);
 
+        // $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
+
+        // if($basis=='kas'){
+        //     $array_akun = array(4,5);
+        // }else{
+        //     $array_akun = array(6,7,423141);
+        // }
+        // foreach ($query_pajak as $result) {
+        //     $array_akun[] = $result->kode_akun;
+        // }
+
         $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
         if($basis=='kas'){
-            $array_akun = array(4,5);
+            $array_akun = array(1,2,3,4,5,8,9);
         }else{
-            $array_akun = array(6,7,423141);
+            $array_akun = array(1,2,3,6,7,8,9,423141);
         }
         foreach ($query_pajak as $result) {
             $array_akun[] = $result->kode_akun;

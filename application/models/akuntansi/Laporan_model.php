@@ -341,6 +341,13 @@ class Laporan_model extends CI_Model {
 
         $query2 = array();
 
+        $query_pajak1 = "OR tu.tipe = 'pajak'";
+        $query_pajak2 = "or tr.jenis = 'pajak'";
+        // $iter_pajak = 0;
+        // $cur_tipe = 'debet';
+        $last_tipe = 'debet';
+
+
         foreach ($array_tipe as $tipe) {
             foreach ($array_jenis as $jenis) {
                     foreach ($array_akun as $akun) {
@@ -359,22 +366,34 @@ class Laporan_model extends CI_Model {
                             $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
                         }
 
-                        $query = "SELECT tr.akun,tu.*,sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        $query_pajak1 = "OR tu.tipe = 'pajak'";
+                        $query_pajak2 = "or tr.jenis = 'pajak'";
+                        // $query_pajak1 = "";
+                        // $query_pajak2 = "";
+
+                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak, sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
-                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' OR tu.tipe = 'pajak' OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
+                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
-                                 AND (tr.tipe = '$tipe' or tr.jenis = 'pajak')
+                                 AND (tr.tipe = '$tipe' $query_pajak2)
                                  GROUP BY tr.akun
 
                         ";
 
-                        // echo $query;
+                        // echo $query."\n";
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
                         for ($i=0; $i < count($hasil); $i++) { 
                             $hasil[$i]['tipe'] = $tipe;
-                            $query1[$hasil[$i]['akun']][] = $hasil[$i];
+                            if ($hasil[$i]['jenis_pajak'] == 'pajak') {
+                                if ($tipe == 'debet') 
+                                    $query1[$hasil[$i]['akun']][0] = $hasil[$i];        
+                                else
+                                    $query1[$hasil[$i]['akun']][1] = $hasil[$i];        
+                            } else {
+                                $query1[$hasil[$i]['akun']][] = $hasil[$i];                            
+                            }
                         }
 
 
@@ -382,12 +401,180 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
-        // print_r($query1);
-        // die();
 
+        // print_r($hasil);die();
+
+        // print_r($query1);die();
         return $query1;
 
-        // print_r($query2);die();
+        // $hasil = array_merge($query1,$query2);
+        // print_r($hasil);die();
+
+
+
+    }
+
+
+    public function get_rekap_posisi($array_akun,$array_not_akun = null,$jenis=null,$unit=null)
+    {
+        $array_tipe  = array('debet','kredit');
+
+        $array_jenis = array();
+        if ($jenis == null){
+            $array_jenis = array('akrual','kas');
+        }else {
+            $array_jenis[] = $jenis;
+        }
+
+        $year = date("Y");
+        $start_date = "$year-01-01";
+        $end_date = "$year-12-31";
+
+        $kolom = array(
+                'debet' => array(
+                        'kas' => 'akun_debet',
+                        'akrual' => 'akun_debet_akrual',
+                    ),
+                'kredit' => array(
+                        'kas' => 'akun_kredit',
+                        'akrual' => 'akun_kredit_akrual'
+                    ),
+            );
+
+        // print_r($array_akun);die();
+
+        
+
+        $data = array();
+
+        $query1 = array();
+
+        foreach ($array_tipe as $tipe) {
+            foreach ($array_jenis as $jenis) {
+                foreach ($array_akun as $akun) {
+                    $cari = $kolom[$tipe][$jenis];
+                    $this->db_laporan->select("*, $cari as akun, sum(jumlah_debet) as jumlah");
+                    $this->db_laporan
+                        ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
+                        // ->order_by('no_bukti')
+                        ;
+                    if ($start_date != null and $end_date != null){
+                        $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
+                    }
+
+                    if ($akun != null){
+                        $this->db_laporan->like($kolom[$tipe][$jenis],$akun,'after');
+                    }
+
+                    if ($array_not_akun != null){
+                        $this->db_laporan->not_in($kolom[$tipe][$jenis],$array_not_akun);
+                    }
+
+                    if ($unit != null) {
+                            $this->db_laporan->where('unit_kerja',$unit);
+                        }
+
+                    // $this->db_laporan->where('unit_kerja',$unit);
+
+                    $this->db_laporan->group_by($kolom[$tipe][$jenis]);
+
+                    // echo $this->db_laporan->get_compiled_select();die();
+
+                    $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
+
+                    for ($i=0; $i < count($hasil); $i++) { 
+                        $hasil[$i]['tipe'] = $tipe;
+                        $query1[$hasil[$i]['akun']][] = $hasil[$i];
+                    }
+
+                }
+            }
+        }
+
+
+        $query2 = array();
+
+        $query_pajak1 = "OR tu.tipe = 'pajak'";
+        $query_pajak2 = "or tr.jenis = 'pajak'";
+        // $iter_pajak = 0;
+        // $cur_tipe = 'debet';
+        $last_tipe = 'debet';
+
+
+        foreach ($array_tipe as $tipe) {
+            foreach ($array_jenis as $jenis) {
+                    foreach ($array_akun as $akun) {
+                        $added_query = "";
+
+                        if ($unit != null){
+                            $added_query .= "AND tu.unit_kerja = '$unit'";
+                        }
+                        if ($akun != null){
+                            $added_query .= "AND tr.akun LIKE '$akun%'";
+                        }
+                        if ($array_not_akun) {
+                            $added_query .= "AND tr.akun NOT IN (";
+                            foreach ($array_not_akun as $not_akun) {
+                                $added_query .= "'$not_akun',";
+                            }
+                            $added_query = substr($added_query,0,-1);
+                            $added_query .= ")";
+                        }
+
+                        if ($start_date != null and $end_date != null){
+                            $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
+                        }
+
+                        $query_pajak1 = "OR tu.tipe = 'pajak'";
+                        $query_pajak2 = "or tr.jenis = 'pajak'";
+                        // $query_pajak1 = "";
+                        // $query_pajak2 = "";
+
+                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak, sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                                 tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
+                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
+                                 $added_query 
+                                 AND (tr.tipe = '$tipe' $query_pajak2)
+                                 GROUP BY tr.akun
+
+                        ";
+
+                        // echo $query."\n";
+
+                        $hasil = $this->db_laporan->query($query)->result_array();
+
+                        for ($i=0; $i < count($hasil); $i++) { 
+                            $hasil[$i]['tipe'] = $tipe;
+                            if ($hasil[$i]['jenis_pajak'] == 'pajak') {
+                                if ($tipe == 'debet') 
+                                    $query1[$hasil[$i]['akun']][0] = $hasil[$i];        
+                                else
+                                    $query1[$hasil[$i]['akun']][1] = $hasil[$i];        
+                            } else {
+                                $query1[$hasil[$i]['akun']][] = $hasil[$i];                            
+                            }
+                        }
+
+
+
+                }
+            }
+        }
+
+        $saldo = array();
+        foreach ($query1 as $akun => $posisi) {
+            $saldo[$akun] = $this->db->select('saldo_awal')->get_where('akuntansi_pajak',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
+        }
+
+        $data['saldo'] = $saldo;
+        $data['posisi'] = $query1;
+
+        // print_r($hasil);die();
+
+        // print_r($query1);die();
+
+        return $data;
+
         // $hasil = array_merge($query1,$query2);
         // print_r($hasil);die();
 

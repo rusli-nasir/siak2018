@@ -258,5 +258,33 @@ class Coba_model extends CI_Model {
 
 	}
 
+	public function backup_rsa()
+	{
+		$this->load->model('akuntansi/Spm_model', 'Spm_model');
+
+		$array_primary = array (
+						'trx_spm_up_data' => 'id_trx_spm_up_data',
+						'trx_spm_gup_data' => 'id_trx_spm_gup_data',
+						'trx_spm_tambah_tup_data' => 'id_trx_spm_tambah_tup_data',
+						'trx_spm_tambah_up_data' => 'id_trx_spm_tambah_up_data',
+						'trx_spm_tup_data' => 'id_trx_spm_tup_data',
+						'trx_spm_lsphk3_data' => 'id_trx_spm_lsphk3_data',
+						'rsa_kuitansi' => 'id_kuitansi'
+			);
+							
+
+		$tabel_jenis = $this->Spm_model->get_array_jenis();
+
+		$data = array();
+
+		foreach ($tabel_jenis as $tabel) {
+			$data[$tabel][] = $this->db->select('flag_proses_akuntansi')->get_where($tabel,array('flag_proses_akuntansi',1))->row_array()['flag_proses_akuntansi'];
+		}
+
+		return $data;
+
+
+	}
+
 	
 }
