@@ -144,17 +144,6 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
-         <div class="form-group">
-          <label class="col-md-6 control-label">Digit</label>  
-          <div class="col-md-6">
-              <select id="digit" name="digit" class="form-control" required="">
-                <option value="3">3 Digit</option>
-                <option value="4">4 Digit</option>
-              </select>
-          </div>
-        </div>
-      </div>
     </div>
     <!-- Button (Double) -->
     <div class="form-group">

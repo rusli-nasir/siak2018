@@ -31,7 +31,23 @@ th,td
 	text-align: left;
 	vertical-align: top;
 	border-left: 1px solid #fff;
+	border-bottom: 1px solid #000;
 }
+tr > td{
+	color:#bdbdbd;
+}
+.blink_me {
+	font-size:14pt;
+	font-weight:bold;
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {  
+  50% { opacity: 0.2; }
+}
+
+.green{color:green;}
+.orange{color:orange;}
 </style>
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -87,12 +103,12 @@ th,td
 			<tbody>		
 		<?php $no=0;foreach($query_unit->result() as $result){ ?>
 			<tr style="font-size:12pt;">
-				<td style="width:200px !important"><?php echo $result->nama_unit; ?></td>
-				<td style="width:100px !important"><?php echo $total_kuitansi[$no]; ?></td>
-				<td style="width:100px !important"><?php echo $non_verif[$no]; ?></td>
-				<td style="width:100px !important"><span style="color:green"><?php echo $setuju[$no]; ?></span></td>
-				<td style="width:100px !important"><span style="color:orange"><?php echo $revisi[$no]; ?></span></td>
-				<td style="width:100px !important"><?php echo $posting[$no]; ?></td>
+				<td style="width:200px !important;color:#1c1c1c"><?php echo $result->nama_unit; ?></td>
+				<td class="<?php if($total_kuitansi[$no] > 0) echo 'blink_me'; ?>" style="text-align:center;width:100px !important; <?php if($total_kuitansi[$no] > 0) echo 'color:red;' ?>"><?php echo $total_kuitansi[$no]; ?></td>
+				<td class="<?php if($non_verif[$no] > 0) echo 'blink_me'; ?>" style="text-align:center;width:100px !important; <?php if($non_verif[$no] > 0) echo 'color:red !important;' ?>"><?php echo $non_verif[$no]; ?></td>
+				<td class="<?php if($setuju[$no] > 0) echo 'blink_me green'; ?>" style="text-align:center;width:100px !important"><?php echo $setuju[$no]; ?></td>
+				<td class="<?php if($revisi[$no] > 0) echo 'blink_me orange'; ?>" style="text-align:center;width:100px !important"><?php echo $revisi[$no]; ?></td>
+				<td style="text-align:center;width:100px !important;color:#1c1c1c"><span class="glyphicon glyphicon-ok"></span> <?php echo $posting[$no]; ?></td>
 			</tr>
 		<?php $no++;
 		
