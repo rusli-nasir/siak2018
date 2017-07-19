@@ -107,6 +107,12 @@ if(isset($excel)){
 	                $saldo = $saldo['saldo_awal'];
 	            }
 
+	            if ($case_hutang) {
+	                $kredit = $saldo;
+	            } else {
+	                $debet = $saldo;
+	            }
+
 				echo '<tr>
 						<td>'.$i.'</td>
 						<td>'.$key.'</td>

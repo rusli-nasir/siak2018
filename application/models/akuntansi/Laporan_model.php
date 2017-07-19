@@ -9,6 +9,7 @@ class Laporan_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
         $this->db_laporan = $this->load->database('laporan',TRUE);
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Akun_model', 'Akun_model');
 
     }
 
@@ -252,15 +253,15 @@ class Laporan_model extends CI_Model {
             $data[$entry['akun']][] = $entry;
         }
 
-        // foreach ($data as $key => $value) {
-        //     usort($data[$key],function($a,$b){
-        //         $hasil = strcmp($a['pre_tanggal'],$b['pre_tanggal']);
-        //         if ($hasil == 0) {
-        //             $hasil = strcmp($a['no_bukti'],$b['no_bukti']);
-        //         }
-        //         return $hasil;
-        //     });
-        // }
+        foreach ($data as $key => $value) {
+            usort($data[$key],function($a,$b){
+                $hasil = strcmp($a['pre_tanggal'],$b['pre_tanggal']);
+                if ($hasil == 0) {
+                    $hasil = strcmp($a['no_bukti'],$b['no_bukti']);
+                }
+                return $hasil;
+            });
+        }
 
         return $data;
     }
@@ -268,6 +269,8 @@ class Laporan_model extends CI_Model {
     public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
     {
         $array_tipe  = array('debet','kredit');
+
+        // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();
 
         $array_jenis = array();
         if ($jenis == null){
@@ -401,6 +404,20 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
+
+        // foreach ($query1 as $key => $transaksi) {
+        //     if (in_array(substr($key,0,1),[1,2,3])) {
+        //         $case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
+        //         $saldo_awal = $this->Akun_model->get_saldo_awal($key);
+        //         if ($saldo_awal != null) {
+        //             $saldo_awal = $saldo_awal['saldo_awal'];
+        //             if ($case_hutang) {
+                        
+        //             }
+        //         }
+
+        //     }
+        // }
 
         // print_r($hasil);die();
 
@@ -553,14 +570,22 @@ class Laporan_model extends CI_Model {
                         for ($i=0; $i < count($hasil); $i++) { 
                             $hasil[$i]['tipe'] = $tipe;
                             if ($hasil[$i]['jenis_pajak'] == 'pajak') {
-                                if ($tipe == 'debet') 
-                                    $query1[$hasil[$i]['akun']][0] = $hasil[$i];        
-                                else
-                                    $query1[$hasil[$i]['akun']][1] = $hasil[$i];        
-                            } else {
-                                $query1[$hasil[$i]['akun']][] = $hasil[$i];                            
+                                $hasil[$i]['jumlah'] = $hasil[$i]['jumlah'] / 2 ;
                             }
+                            $query1[$hasil[$i]['akun']][] = $hasil[$i];
                         }
+
+                        // for ($i=0; $i < count($hasil); $i++) { 
+                        //     $hasil[$i]['tipe'] = $tipe;
+                        //     if ($hasil[$i]['jenis_pajak'] == 'pajak') {
+                        //         if ($tipe == 'debet') 
+                        //             $query1[$hasil[$i]['akun']][0] = $hasil[$i];        
+                        //         else
+                        //             $query1[$hasil[$i]['akun']][1] = $hasil[$i];        
+                        //     } else {
+                        //         $query1[$hasil[$i]['akun']][] = $hasil[$i];                            
+                        //     }
+                        // }
 
 
 
@@ -594,6 +619,7 @@ class Laporan_model extends CI_Model {
 
     public function get_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
     {
+        // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();
         $array_tipe  = array('debet','kredit');
 
         $array_jenis = array();
@@ -651,6 +677,7 @@ class Laporan_model extends CI_Model {
                     // $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
                     // echo $this->db_laporan->get_compiled_select();die();
+                    // echo $this->db_laporan->get_compiled_select();die();
 
                     $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
@@ -684,20 +711,22 @@ class Laporan_model extends CI_Model {
                             $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
                         }
 
-                        $query = "SELECT tr.akun,tu.*,tr.jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        $query = "SELECT tr.akun,tu.*,tr.jumlah,tu.tipe as jenis_pajak FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
-                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' OR tu.tipe = 'pajak' OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
+                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' /* OR tu.tipe = 'pajak' */ OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
-                                 AND (tr.tipe = '$tipe' or tr.jenis = 'pajak')
+                                 AND (tr.tipe = '$tipe' /* or tr.jenis = 'pajak' */)
 
                         ";
 
-                        // echo $query;
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
                         for ($i=0; $i < count($hasil); $i++) { 
                             $hasil[$i]['tipe'] = $tipe;
+                            // if ($hasil[$i]['jenis_pajak'] == 'pajak') {
+                            //     $hasil[$i]['jumlah'] = $hasil[$i]['jumlah'] / 2 ;
+                            // }
                             $query1[$hasil[$i]['akun']][] = $hasil[$i];
                         }
 
@@ -707,11 +736,57 @@ class Laporan_model extends CI_Model {
             }
         }
 
-        // print_r($query1);
-        // die();
+        // foreach ($array_akun as $akun) {
+        //     $added_query = "";
+
+        //     if ($unit != null){
+        //         $added_query .= "AND tu.unit_kerja = '$unit'";
+        //     }
+        //     if ($sumber_dana != null){
+        //         $added_query .= "AND tu.jenis_pembatasan_dana = '$sumber_dana'";
+        //     }
+        //     if ($akun != null){
+        //         $added_query .= "AND tr.akun LIKE '$akun%'";
+        //     }
+        //     if ($start_date != null and $end_date != null){
+        //         $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
+        //     }
+
+        //     $query = "SELECT tr.akun,tu.*,tr.jumlah,tu.tipe as jenis_pajak FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+        //              tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
+        //              AND (tu.tipe = 'pajak')
+        //              $added_query 
+        //              AND (tr.jenis = 'pajak' )
+
+        //     ";
+
+
+        //     $hasil = $this->db_laporan->query($query)->result_array();
+
+        //     for ($i=0; $i < count($hasil); $i++) { 
+        //         if ($hasil[$i]['tipe'] = 'pajak')
+        //         $query1[$hasil[$i]['akun']][] = $hasil[$i];
+        //     }
+        // }
+
+
+
+
+        print_r($query1);die();
+
+        foreach ($query1 as $key => $value) {
+            usort($query1[$key],function($a,$b){
+                $hasil = strcmp($a['tanggal'],$b['tanggal']);
+                if ($hasil == 0) {
+                    $hasil = strcmp($a['no_bukti'],$b['no_bukti']);
+                }
+                return $hasil;
+            });
+        }
+        
+
         return $query1;
 
-        // print_r($query2);die();
         // $hasil = array_merge($query1,$query2);
         // print_r($hasil);die();
 
