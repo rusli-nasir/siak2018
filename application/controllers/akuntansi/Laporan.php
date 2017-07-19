@@ -1297,21 +1297,19 @@ class Laporan extends MY_Controller {
         // print_r($akun);
         // print_r($rekap);
         // die();
-        $data['nama_level_1'] = array();
-        $data['nama_level_2'] = array();
-        $data['nama_level_3'] = array();
-        $data['nama_level_4'] = array();
+        $data['akun'] = $akun;
         foreach ($akun as $key_1 => $akun_1) {
             $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
-            $data['nama_level_1'][] = $nama;
+            $data['nama_lvl_1'][$key_1][] = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
             echo "$key_1 - $nama<br/>";
             foreach($akun_1 as $key_2 => $akun_2){
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
-                $data['nama_level_2'][] = $nama;
+                $data['nama_lvl_2'][$key_1][] = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
                 echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
                 foreach ($akun_2 as $key_3 => $akun_3) {
                     if ($level == 4) {
                         $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
+                        $data['nama_lvl_4'][$key_1][] = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
                         echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
                         foreach ($akun_3 as $key_4 => $akun_4) {
                             $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
@@ -1327,6 +1325,9 @@ class Laporan extends MY_Controller {
                         $saldo_sekarang = $debet - $kredit;
                         $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                         $nama = $akun_3['nama'];
+                        $data['nama_lvl_3'][$key_1][] = $nama;
+                        $data['saldo_sekarang_lvl_3'][$key_1][] = $saldo_sekarang;
+                        $data['saldo_awal_lvl_3'][$key_1][] = $saldo_awal;
                         echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                     }
                 }

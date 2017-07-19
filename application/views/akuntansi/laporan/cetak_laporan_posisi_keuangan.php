@@ -45,82 +45,41 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($nama as $key=>$value){ ?>
-				<tr>
-					<td></td>
-					<td class="tab0"><?php echo $value; ?></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<?php } ?>
-				<tr>
-					<td></td>
-					<td class="tab1">ASET LANCAR</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab1" style="font-weight:0;">Kas dan Setara Kas</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Kas Bank Mandiri</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Kas Bank BNI</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
+				<?php 
+				foreach ($akun as $key_1 => $akun_1) {
+					foreach($nama_lvl_1[$key_1] as $key=>$value){ ?>
+					<tr>
+						<td></td>
+						<td class="tab0"><?php echo $value; ?></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<?php foreach($nama_lvl_2[$key_1] as $key=>$value){ ?>
+						<tr>
+							<td></td>
+							<td class="tab1"><?php echo $key; ?></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<?php $i=0;foreach($nama_lvl_3[$key_1] as $key=>$value){ ?>
+							<tr>
+								<td></td>
+								<td class="tab2"><?php echo $value; ?></td>
+								<td><?php echo $saldo_sekarang_lvl_3[$key_1][$i]; ?></td>
+								<td><?php echo $saldo_awal_lvl_3[$key_1][$i]; ?></td>
+								<td></td>
+								<td></td>
+							</tr>
+						<?php 	$i++; } ?>
+					<?php 	} ?>
+				<?php	
+					}
+				} ?>	
 			</tbody>
 		</table>
 	</body>
 </html>
-<?php
-public function get_nama_akun_by_level($kode_akun,$level,$tabel)
-{
-	$sub_kode = substr($kode_akun,0,1);
-
-	if ($sub_kode == 6) {
-		$kode_akun = substr_replace($kode_akun,'4',0,1);
-	}
-
-	if ($sub_kode == 5 or $sub_kode == 7) {
-		$kode_akun = substr_replace($kode_akun,'5',0,1);
-
-		$this->db2->select("nama_akun".$level."digit as nama");
-		$this->db2
-				 ->like("kode_akun".$level."digit",$kode_akun,'after')
-				 ->where("kode_akun".$level."digit",$kode_akun)
-				 ->group_by("kode_akun".$level."digit")
-				 ->from("akun_belanja")
-		;
-
-		return ucwords(str_replace("Biaya","Beban",$this->db2->get()->row_array()['nama']));
-	} else {
-		$this->db
-			->like("akun_$level",$kode_akun,'after')
-			->from("akuntansi_".$tabel."_".$level)
-			->where("akun_$level",$kode_akun)
-		;
-
-		return ucwords($this->db->get()->row_array()['nama']);
-	}
-
-}
-?>
