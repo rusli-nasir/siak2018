@@ -535,6 +535,7 @@ class Memorial extends MY_Controller {
         $result = $query->result();
         
         $i=0;
+        $data = array();
         foreach($result as $result){
             $data[$i]['kd_akun'] = $result->akun;
             $data[$i]['akun'] = $this->Akun_model->get_nama_akun($result->akun);

@@ -30,6 +30,7 @@
 			Laporan Aktivitas<br/>
 			Untuk Tahun Berakhir Pada Tanggal 31 Desember 20X1<br/><br/>
 		</div>
+		<?php print_r($jenis_pembatasan); ?>
 		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
@@ -40,48 +41,21 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td></td>
-					<td class="tab0">PERUBAHAN ASET BERSIH TIDAK TERIKAT</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab1">Pendapatan Tidak terikat</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Pendapatan Layanan Pendidikan Utama</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Pendapatan Layanan Pendidikan Utama</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">1</td>
-					<td class="tab0">Jumlah Pendapatan Tidak terikat</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab1">Beban Tidak Terikat</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Beban Pegawai</td>
-					<td></td>
-					<td></td>
-				</tr>
+				<?php $i=0;$j=0;
+				foreach ($akun as $key_1 => $akun_1) {
+					foreach($nama_lvl_1[$key_1] as $key=>$value){ ?>
+					<tr>
+						<td></td>
+						<td class="tab0"><?php echo $value; ?></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					
+				<?php	
+					}
+				} ?>	
 			</tbody>
 		</table>
 	</body>

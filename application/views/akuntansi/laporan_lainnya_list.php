@@ -138,8 +138,8 @@
           <label class="col-md-6 control-label">Level Laporan</label>  
           <div class="col-md-6">
               <select id="level" name="level" class="form-control" required="">
-                <option value="Header">Header</option>
-                <option value="Sub-Header">Sub-Header</option>
+                <option value="3">Header</option>
+                <option value="4">Sub-Header</option>
               </select>
           </div>
         </div>

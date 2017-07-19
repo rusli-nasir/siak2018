@@ -1055,9 +1055,11 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   0in 5.4pt 0in 5.4pt;height:17.15pt'>
       <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='kas_kredit'>
           <?php
+          if(isset($kas_debet)){
             foreach($kas_debet as $item){
                 echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['kd_akun'].' - '.$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
+          }
           ?>
       </table>
   </td>
@@ -1068,9 +1070,11 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   padding:0in 5.4pt 0in 5.4pt;height:17.15pt'>
       <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='kas_kredit'>
           <?php
+          if(isset($kas_kredit)){
             foreach($kas_kredit as $item){
                 echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['kd_akun'].' - '.$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
+          }
           ?>
       </table>
   </td>
@@ -1180,9 +1184,11 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
   0in 5.4pt 0in 5.4pt;height:17.15pt'>
   <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='kas_kredit'>
           <?php
+          if(isset($akrual_debet)){
             foreach($akrual_debet as $item){
                 echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['kd_akun'].' - '.$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
+          }
           ?>
       </table>
   </td>
@@ -1193,9 +1199,11 @@ mso-ansi-language:DE'><o:p>&nbsp;</o:p></span></p>
   padding:0in 5.4pt 0in 5.4pt;height:17.15pt'>
       <table  width=438 valign=top style='width:328.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt' id='kas_kredit'>
           <?php
+          if(isset($akrual_kredit)){
             foreach($akrual_kredit as $item){
                 echo "<tr><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".$item['kd_akun'].' - '.$item['akun']."</p></td><td width=219 valign=top style='width:209.5pt;border:none;mso-border-left-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:right;line-height:normal'><span lang=DE style='font-size:12.0pt;font-family:\"Arial\",sans-serif;mso-ansi-language:DE'></span>".number_format($item['jumlah'], 0, ',', '.')."</p></td></tr>";
             }
+          }
           ?>
       </table>
   </td>
