@@ -110,6 +110,16 @@ if(isset($excel)){
 	    		$iter++;
 	    		if ($iter == 1 and $saldo != null) {
 	    			$saldo = $saldo['saldo_awal'];
+	    			echo '<tr>
+						<td>'.$iter.'</td>
+						<td>1 Januari '.$teks_tahun.'</td>
+						<td></td>
+						<td>Saldo Awal</td>
+						<td></td>';
+						echo '<td align="right">0</td>';
+						echo '<td align="right">0</td>';
+						echo '<td align="right">'.eliminasi_negatif($saldo).'</td>';
+						echo '</tr>';
 	    			$iter++;
 	    		}
 				echo '<tr>

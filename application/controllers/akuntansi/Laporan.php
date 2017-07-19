@@ -854,6 +854,7 @@ class Laporan extends MY_Controller {
         $data['periode_text'] = $teks_periode;
         $data['unit'] = $unit;
         $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+        $data['teks_tahun'] = substr($periode_akhir,0,4);
         // die($mode);
 
         // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);

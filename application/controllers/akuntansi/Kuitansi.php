@@ -1231,4 +1231,21 @@ class Kuitansi extends MY_Controller {
     // Redirect ke memorial
     
     /****************** RUPIAH MURNI ************************/
+
+
+    public function isi_kode_user(){
+    	$query = $this->db->query("SELECT K.id_kuitansi_jadi,K.no_bukti,K.no_spm,U.kode_user FROM akuntansi_user U, akuntansi_kuitansi_jadi K WHERE K.unit_kerja=U.kode_unit AND U.username LIKE '%operator%' AND K.kode_user='' AND K.tipe='pajak' AND K.no_spm IS NULL");
+    	foreach($query->result() as $result){
+    		$this->db->query("UPDATE akuntansi_kuitansi_jadi SET kode_user='".$result->kode_user."' WHERE id_kuitansi_jadi=".$result->id_kuitansi_jadi."");
+    		//echo $result->id_kuitansi_jadi.' = '.$result->kode_user.'<br/>';
+    	}
+    }
+
+    public function isi_kode_user_non_rm(){
+    	$query = $this->db->query("SELECT K.id_kuitansi_jadi,K.no_bukti,K.no_spm,U.kode_user FROM akuntansi_user U, akuntansi_kuitansi_jadi K WHERE K.unit_kerja=U.kode_unit AND U.username LIKE '%verifikator%' AND K.kode_user='' AND K.tipe='pajak' AND K.jenis<>'jurnal_umum'");
+    	foreach($query->result() as $result){
+    		$this->db->query("UPDATE akuntansi_kuitansi_jadi SET kode_user='".$result->kode_user."' WHERE id_kuitansi_jadi=".$result->id_kuitansi_jadi."");
+    		//echo $result->id_kuitansi_jadi.' = '.$result->kode_user.'<br/>';
+    	}
+    }
 }
