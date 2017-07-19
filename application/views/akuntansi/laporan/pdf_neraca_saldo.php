@@ -143,20 +143,20 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 		                $saldo_neraca = $debet - $kredit;
 		            }
 
-				$html .= '<td align="right" width="100px">'.eliminasi_negatif($debet).'</td>
-						<td align="right" width="100px">'.eliminasi_negatif($kredit).'</td>';
+				$html .= '<td align="right" width="100px" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
+						<td align="right" width="100px" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
 					if ($kredit > $debet) {
 		                $jumlah_neraca_debet += $saldo_neraca;
-		                $html .= '<td align="right" width="100px">0.00</td>';
-		                $html .= '<td align="right" width="100px">'.eliminasi_negatif($saldo_neraca).'</td>';
+		                $html .= '<td align="right" width="100px" style="font-size:8pt">0.00</td>';
+		                $html .= '<td align="right" width="100px" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
 		            } elseif ($kredit < $debet) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_kredit += $saldo_neraca;
-		                $html .= '<td align="right" width="100px">'.eliminasi_negatif($saldo_neraca).'</td>';
-		                $html .= '<td align="right" width="100px">0.00</td>';
+		                $html .= '<td align="right" width="100px" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
+		                $html .= '<td align="right" width="100px" style="font-size:8pt">0.00</td>';
 		            }else{
-		            	$html .= '<td align="right" width="100px">0.00</td>';
-		            	$html .= '<td align="right" width="100px">0.00</td>';
+		            	$html .= '<td align="right" width="100px" style="font-size:8pt">0.00</td>';
+		            	$html .= '<td align="right" width="100px" style="font-size:8pt">0.00</td>';
 		            }
 
 				$html .= '</tr>';
@@ -168,10 +168,10 @@ $pdf->writeHTML($html_head, true, false, true, false, '');
 	    			<tfoot>
 					 	<tr>
 		    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_debet).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_kredit).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
 		    			</tr>
 	    			</tfoot>
 				</table></body>';

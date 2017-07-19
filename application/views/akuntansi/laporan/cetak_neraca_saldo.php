@@ -144,8 +144,8 @@ if(isset($excel)){
 		    			$debet = substr($string_num, 0, -1);
 		    		}*/
 
-		    		echo '<td align="right">'.eliminasi_negatif($debet).'</td>
-						<td align="right">'.eliminasi_negatif($kredit).'</td>';
+		    		echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
+						<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
 
 		    		if ($case_hutang) {
 		                $saldo_neraca = $kredit - $debet;
@@ -156,16 +156,16 @@ if(isset($excel)){
 				
 					if ($kredit > $debet) {
 		                $jumlah_neraca_kredit += $saldo_neraca;
-		                echo '<td align="right">0.00</td>';
-		                echo '<td align="right">'.eliminasi_negatif($saldo_neraca).'</td>';
+		                echo '<td align="right" style="font-size:8pt">0.00</td>';
+		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
 		            } elseif ($kredit < $debet) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_debet += $saldo_neraca;
-		                echo '<td align="right">'.eliminasi_negatif($saldo_neraca).'</td>';
-		                echo '<td align="right">0.00</td>';
+		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
+		                echo '<td align="right" style="font-size:8pt">0.00</td>';
 		            }else{
-		            	echo '<td align="right">0.00</td>';
-		            	echo '<td align="right">0.00</td>';
+		            	echo '<td align="right" style="font-size:8pt">0.00</td>';
+		            	echo '<td align="right" style="font-size:8pt">0.00</td>';
 		            }
 
 				echo '</tr>';
@@ -176,10 +176,10 @@ if(isset($excel)){
 	    			<tfoot>
 					 	<tr style="background-color:#B1E9F2;">
 		    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_debet).'</td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_kredit).'</td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
-		    				<td align="right">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_debet).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_kredit).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
 		    			</tr>
 	    			</tfoot>
 				</table>';
