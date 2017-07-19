@@ -36,6 +36,9 @@ class Coba extends MY_Controller {
         echo preg_replace("[']",'',"'12-12-1234");
     }
 
+
+    
+
     public function cek_memori($value='')
     {
         ini_set('memory_limit', '256M');

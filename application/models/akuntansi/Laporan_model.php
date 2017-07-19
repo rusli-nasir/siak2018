@@ -713,9 +713,9 @@ class Laporan_model extends CI_Model {
 
                         $query = "SELECT tr.akun,tu.*,tr.jumlah,tu.tipe as jenis_pajak FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
-                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' /* OR tu.tipe = 'pajak' */ OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
+                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' OR tu.tipe = 'pajak' OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
-                                 AND (tr.tipe = '$tipe' /* or tr.jenis = 'pajak' */)
+                                 AND (tr.tipe = '$tipe' or tr.jenis = 'pajak' )
 
                         ";
 
@@ -771,9 +771,10 @@ class Laporan_model extends CI_Model {
 
 
 
-
-        print_r($query1);die();
-
+        // echo ($query1[411121][42] == $query1[411121][28]);
+        // print_r(array_unique($query1[411121],SORT_REGULAR));die();
+        // print_r(array_unique($query1[411121][42]),SORT_REGULAR);die();
+        // print_r($query1);die();
         foreach ($query1 as $key => $value) {
             usort($query1[$key],function($a,$b){
                 $hasil = strcmp($a['tanggal'],$b['tanggal']);
@@ -783,6 +784,11 @@ class Laporan_model extends CI_Model {
                 return $hasil;
             });
         }
+        
+        foreach ($query1 as $key => $value) {
+            $query1[$key] = array_unique($query1[$key],SORT_REGULAR);
+        }
+
         
 
         return $query1;
