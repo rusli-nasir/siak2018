@@ -415,7 +415,7 @@ class Laporan_model extends CI_Model {
     }
 
 
-    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null)
+    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null)
     {
         $array_tipe  = array('debet','kredit');
 
@@ -453,13 +453,17 @@ class Laporan_model extends CI_Model {
             foreach ($array_jenis as $jenis) {
                 foreach ($array_akun as $akun) {
                     $cari = $kolom[$tipe][$jenis];
-                    $this->db_laporan->select("*, $cari as akun, sum(jumlah_debet) as jumlah");
+                    $this->db_laporan->select("$cari as akun, sum(jumlah_debet) as jumlah");
                     $this->db_laporan
                         ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
                         // ->order_by('no_bukti')
                         ;
                     if ($start_date != null and $end_date != null){
                         $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
+                    }
+
+                    if ($sumber_dana != null){
+                        $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
                     }
 
                     if ($akun != null){
@@ -512,6 +516,9 @@ class Laporan_model extends CI_Model {
                         if ($akun != null){
                             $added_query .= "AND tr.akun LIKE '$akun%'";
                         }
+                        if ($sumber_dana != null){
+                            $added_query .= "AND tu.jenis_pembatasan_dana = '$sumber_dana'";
+                        }
                         if ($array_not_akun) {
                             $added_query .= "AND tr.akun NOT IN (";
                             foreach ($array_not_akun as $not_akun) {
@@ -530,7 +537,7 @@ class Laporan_model extends CI_Model {
                         // $query_pajak1 = "";
                         // $query_pajak2 = "";
 
-                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak, sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        $query = "SELECT tr.akun,tu.tipe as jenis_pajak,sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
                                  AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
@@ -561,12 +568,14 @@ class Laporan_model extends CI_Model {
             }
         }
 
-        $saldo = array();
-        foreach ($query1 as $akun => $posisi) {
-            $saldo[$akun] = $this->db->select('saldo_awal')->get_where('akuntansi_pajak',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
+        if ($laporan == 'saldo') {
+            $saldo = array();
+            foreach ($query1 as $akun => $posisi) {
+                $saldo[$akun] = $this->db->select('saldo_awal')->get_where('akuntansi_saldo',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
+            }
+            $data['saldo'] = $saldo;
         }
 
-        $data['saldo'] = $saldo;
         $data['posisi'] = $query1;
 
         // print_r($hasil);die();

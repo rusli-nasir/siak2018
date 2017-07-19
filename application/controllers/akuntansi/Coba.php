@@ -25,6 +25,12 @@ class Coba extends MY_Controller {
         echo $this->Akun_model->get_nama_akun('111111');
     }
 
+    public function cek_129()
+    {
+        $array_akun = array(129);
+        print_r($this->Laporan_model->get_buku_besar($array_akun,null,null,null,"2017-01-01","2017-12-31",'neraca'));
+    }
+
     public function coba_regex()
     {
         echo preg_replace("[']",'',"'12-12-1234");

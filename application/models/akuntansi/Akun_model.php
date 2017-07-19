@@ -6,6 +6,7 @@ class Akun_model extends CI_Model {
     {
         parent::__construct();
         $this->load->database('default', TRUE);
+        $this->db2 = $this->load->database('rba',TRUE);
     }
 	
 	public function get_nama_akun($kode_akun){
@@ -56,24 +57,108 @@ class Akun_model extends CI_Model {
 
 	public function get_akun_by_level($kode_akun,$level,$tabel)
 	{
-		$this->db
-			->select($kode_akun)
-			->like("akun_$level",$kode_akun,'after')
-			->from("akuntansi_$tabel_$level")
-		;
-
-		$hasil = $this->db->get()->result_array();
+		$replacer = 0;
+		if ($kode_akun == 6) {
+			$kode_akun = 4;
+			$replacer = 6;
+		}
 		$data = array();
 
-		foreach ($hasil as $key => $entry) {
-			if ($level == 3) {
-				$data['akun_1']['akun_2']['akun_3'] = $entry;
-			} else {
-				$data['akun_1']['akun_2']['akun_3']['akun_4'] = $entry;
+		if ($kode_akun == 5 or $kode_akun == 7) {
+			$kode_akun = 5;
+			$replacer = 7;
+			for ($i=1; $i <= $level; $i++) { 
+				$this->db2->select("kode_akun".$i."digit as akun_$i");
+			}
+			$this->db2->select("nama_akun".$level."digit as nama");
+			$this->db2
+					 ->like("kode_akun".$level."digit",$kode_akun,'after')
+					 ->group_by("kode_akun".$level."digit")
+					 ->from("akun_belanja")
+			;
+			// echo $this->db2->get_compiled_select();die();
+			$hasil = $this->db2->get()->result_array();
+			// print_r($hasil);die();
+			// echo "atas";
+			// $data = array();
+
+
+		} else {
+			// echo "bawah";die();
+			// echo $kode_akun;
+			$this->db
+				->like("akun_$level",$kode_akun,'after')
+				->from("akuntansi_".$tabel."_".$level)
+			;
+
+			$hasil = $this->db->get()->result_array();
+
+
+
+
+		}
+
+
+		if ($replacer != 0) {
+			foreach ($hasil as $key => $entry) {
+				if ($level == 3) {
+					$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+					$entry['nama'] = ucwords(strtolower($entry['nama']));
+					$data[substr_replace($entry['akun_1'],$replacer,0,1)][substr_replace($entry['akun_2'],$replacer,0,1)][substr_replace($entry['akun_3'],$replacer,0,1)] = $entry;
+				} else {
+					$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+					$entry['nama'] = ucwords(strtolower($entry['nama']));
+					$data[substr_replace($entry['akun_1'],$replacer,0,1)][substr_replace($entry['akun_2'],$replacer,0,1)][substr_replace($entry['akun_3'],$replacer,0,1)][substr_replace($entry['akun_4'],$replacer,0,1)] = $entry;
+				}
+			}
+		} else {
+			foreach ($hasil as $key => $entry) {
+				if ($level == 3) {
+					$entry['nama'] = ucwords(strtolower($entry['nama']));
+					$data[$entry['akun_1']][$entry['akun_2']][$entry['akun_3']] = $entry;
+				} else {
+					$entry['nama'] = ucwords(strtolower($entry['nama']));
+					$data[$entry['akun_1']][$entry['akun_2']][$entry['akun_3']][$entry['akun_4']] = $entry;
+				}
 			}
 		}
 
+
 		return $data;
+
+		
+
+	}
+
+	public function get_nama_akun_by_level($kode_akun,$level,$tabel)
+	{
+		$sub_kode = substr($kode_akun,0,1);
+
+		if ($sub_kode == 6) {
+			$kode_akun = substr_replace($kode_akun,'4',0,1);
+		}
+
+		if ($sub_kode == 5 or $sub_kode == 7) {
+			$kode_akun = substr_replace($kode_akun,'5',0,1);
+
+			$this->db2->select("nama_akun".$level."digit as nama");
+			$this->db2
+					 ->like("kode_akun".$level."digit",$kode_akun,'after')
+					 ->where("kode_akun".$level."digit",$kode_akun)
+					 ->group_by("kode_akun".$level."digit")
+					 ->from("akun_belanja")
+			;
+
+			return ucwords(str_replace("Biaya","Beban",$this->db2->get()->row_array()['nama']));
+		} else {
+			$this->db
+				->like("akun_$level",$kode_akun,'after')
+				->from("akuntansi_".$tabel."_".$level)
+				->where("akun_$level",$kode_akun)
+			;
+
+			return ucwords($this->db->get()->row_array()['nama']);
+		}
 
 	}
 
