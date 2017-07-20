@@ -134,6 +134,7 @@ class Akun_model extends CI_Model {
 	{
 		$sub_kode = substr($kode_akun,0,1);
 
+
 		if ($sub_kode == 6) {
 			$kode_akun = substr_replace($kode_akun,'4',0,1);
 		}
@@ -164,6 +165,7 @@ class Akun_model extends CI_Model {
 
 	public function get_saldo_awal($kode_akun)
 	{
+		
 		$tahun = gmdate('Y');
 
 		$hasil = $this->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();

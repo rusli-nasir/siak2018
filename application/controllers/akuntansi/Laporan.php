@@ -273,6 +273,7 @@ class Laporan extends MY_Controller {
 
 	public function get_rekap_jurnal($mode = null)
 	{
+        ini_set('memory_limit', '256M');
         $basis = $this->input->post('basis');
         $unit = $this->input->post('unit');
         $sumber_dana = $this->input->post('sumber_dana');
@@ -891,7 +892,7 @@ class Laporan extends MY_Controller {
         $daterange = $this->input->post('daterange');
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
-        $periode_akhir = strtodate($date_t[1]);
+        $periode_akhir = strtodate($date_t[1]) or null;
 
          if ($unit == 'all' or $unit == 9999) {
             if ($unit == 'all') {
@@ -969,7 +970,7 @@ class Laporan extends MY_Controller {
         if($basis=='kas'){
             $array_akun = array(2,3,4,5,8,9);
         }else{
-            $array_akun = array(1,2,3,6,7,8,423141);
+            $array_akun = array(1,2,3,6,7,423141);
         }
         foreach ($query_pajak as $result) {
             $array_akun[] = $result->kode_akun;

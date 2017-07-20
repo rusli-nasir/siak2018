@@ -279,6 +279,8 @@ class Laporan_model extends CI_Model {
             $array_jenis[] = $jenis;
         }
 
+        // $array_jenis = array('akrual','kas');
+
         $kolom = array(
                 'debet' => array(
                         'kas' => 'akun_debet',

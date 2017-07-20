@@ -274,6 +274,9 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
+	if ($ci->session->userdata('kode_unit') != 42 AND $ci->session->userdata('kode_unit') != 9999) {
+		return null;
+	}
 	$tahun = gmdate('Y');
 	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
