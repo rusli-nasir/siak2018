@@ -29,7 +29,7 @@
 		<div align="center" style="font-weight:bold">
 			UNIVERSITAS DIPONEGORO<br/>
 			Laporan Aktivitas<br/>
-			Untuk Tahun Berakhir Pada Tanggal 31 Desember 20X1<br/><br/>
+			<?php echo $atribut['teks_periode']; ?><br/><br/>
 		</div>
 		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
