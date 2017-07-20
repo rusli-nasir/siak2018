@@ -127,7 +127,7 @@
           <select id="jenis_laporan" name="jenis_laporan" class="form-control" required="">
             <option value="Aktifitas">Aktifitas</option>
             <option value="Posisi Keuangan">Posisi Keuangan</option>
-            <option value="Realisasi Anggaran">Realisasi Anggaran</option>
+            <!-- <option value="Realisasi Anggaran">Realisasi Anggaran</option> -->
             <option value="Arus Kas">Arus Kas</option>
           </select>
       </div>
