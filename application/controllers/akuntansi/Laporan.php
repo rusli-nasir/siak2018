@@ -1380,7 +1380,7 @@ class Laporan extends MY_Controller {
 
         foreach ($data_all as $jenis_pembatasan => $data) {
             $data_parsing['jenis_pembatasan'][] = $jenis_pembatasan;
-            echo "<hr/>".$jenis_pembatasan."<hr/>";
+            //echo "<hr/>".$jenis_pembatasan."<hr/>";
             $rekap = array();
 
             foreach ($data['posisi'] as $kd_akun => $entry) {
@@ -1410,29 +1410,30 @@ class Laporan extends MY_Controller {
             $data_parsing['akun'] = $akun;
             foreach ($akun as $key_1 => $akun_1) {
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
-                $data_parsing['nama_lvl_1'][$key_1][] = $nama;
-                echo "$key_1 - $nama<br/>";
+                $data_parsing['nama_lvl_1'][$jenis_pembatasan][$key_1][] = $nama;
+                $data_parsing['key_level_1'][] = $key_1;
+                //echo "$key_1 - $nama<br/>";
                 foreach($akun_1 as $key_2 => $akun_2){
                     $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
-                    $data_parsing['nama_lvl_2'][$key_1][] = $nama;
+                    $data_parsing['nama_lvl_2'][$jenis_pembatasan][$key_1][] = $nama;
                     $data_parsing['key_lvl_2'][] = $key_2;
-                    echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
+                    //echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
                     foreach ($akun_2 as $key_3 => $akun_3) {
                         if ($level == 4) {
                             $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
-                            $data_parsing['nama_lvl_3'][$key_2][] = $nama;
+                            $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
                             $data_parsing['key_lvl_3'][] = $key_3;
-                            echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
+                            //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
                             foreach ($akun_3 as $key_4 => $akun_4) {
                                 $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
                                 $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
                                 $saldo_sekarang = $debet - $kredit;
                                 $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                                 $nama = $akun_4['nama'];
-                                $data_parsing['nama_lvl_4'][$key_3][] = $nama;
-                                $data_parsing['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
-                                $data_parsing['saldo_awal_lvl_4'][$key_3][] = $saldo_awal;
-                                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
+                                $data_parsing['nama_lvl_4'][$jenis_pembatasan][$key_3][] = $nama;
+                                $data_parsing['saldo_sekarang_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_sekarang;
+                                $data_parsing['saldo_awal_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_awal;
+                                //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
                             }
                         } else {
                             $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
@@ -1440,10 +1441,10 @@ class Laporan extends MY_Controller {
                             $saldo_sekarang = $debet - $kredit;
                             $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                             $nama = $akun_3['nama'];
-                            $data_parsing['nama_lvl_3'][$key_2][] = $nama;
-                            $data_parsing['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
-                            $data_parsing['saldo_awal_lvl_3'][$key_2][] = $saldo_awal;
-                            echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
+                            $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
+                            $data_parsing['saldo_sekarang_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_sekarang;
+                            $data_parsing['saldo_awal_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_awal;
+                            //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                         }
                     }
                 }
