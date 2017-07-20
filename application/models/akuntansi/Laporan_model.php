@@ -646,9 +646,9 @@ class Laporan_model extends CI_Model {
 
         $query1 = array();
 
-        foreach ($array_tipe as $tipe) {
-            foreach ($array_jenis as $jenis) {
-                foreach ($array_akun as $akun) {
+        foreach ($array_jenis as $jenis) {
+            foreach ($array_akun as $akun) {
+                foreach ($array_tipe as $tipe) {
                     $cari = $kolom[$tipe][$jenis];
                     $this->db_laporan->select("*, $cari as akun, jumlah_debet as jumlah");
                     $this->db_laporan
@@ -693,9 +693,9 @@ class Laporan_model extends CI_Model {
 
         $query2 = array();
 
-        foreach ($array_tipe as $tipe) {
-            foreach ($array_jenis as $jenis) {
-                    foreach ($array_akun as $akun) {
+        foreach ($array_jenis as $jenis) {
+                foreach ($array_akun as $akun) {
+                    foreach ($array_tipe as $tipe) {
                         $added_query = "";
 
                         if ($unit != null){
@@ -780,6 +780,11 @@ class Laporan_model extends CI_Model {
                 $hasil = strcmp($a['tanggal'],$b['tanggal']);
                 if ($hasil == 0) {
                     $hasil = strcmp($a['no_bukti'],$b['no_bukti']);
+                    if ($hasil == 0) {
+                        if ($a['tipe'] == 'kredit') {
+                            return 1;
+                        }
+                    }
                 }
                 return $hasil;
             });
@@ -790,7 +795,7 @@ class Laporan_model extends CI_Model {
         }
 
         
-
+        ksort($query1);
         return $query1;
 
         // $hasil = array_merge($query1,$query2);
