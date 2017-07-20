@@ -569,29 +569,20 @@ class Laporan_model extends CI_Model {
 
                         for ($i=0; $i < count($hasil); $i++) { 
                             $hasil[$i]['tipe'] = $tipe;
-                            if ($hasil[$i]['jenis_pajak'] == 'pajak') {
-                                $hasil[$i]['jumlah'] = $hasil[$i]['jumlah'] / 2 ;
-                            }
+                            $hasil[$i]['jumlah'] = $hasil[$i]['jumlah'];
                             $query1[$hasil[$i]['akun']][] = $hasil[$i];
                         }
-
-                        // for ($i=0; $i < count($hasil); $i++) { 
-                        //     $hasil[$i]['tipe'] = $tipe;
-                        //     if ($hasil[$i]['jenis_pajak'] == 'pajak') {
-                        //         if ($tipe == 'debet') 
-                        //             $query1[$hasil[$i]['akun']][0] = $hasil[$i];        
-                        //         else
-                        //             $query1[$hasil[$i]['akun']][1] = $hasil[$i];        
-                        //     } else {
-                        //         $query1[$hasil[$i]['akun']][] = $hasil[$i];                            
-                        //     }
-                        // }
-
 
 
                 }
             }
         }
+
+        foreach ($query1 as $key => $value) {
+            $query1[$key] = array_unique($query1[$key],SORT_REGULAR);
+        }
+
+
 
         if ($laporan == 'saldo') {
             $saldo = array();
@@ -599,6 +590,26 @@ class Laporan_model extends CI_Model {
                 $saldo[$akun] = $this->db->select('saldo_awal')->get_where('akuntansi_saldo',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
             }
             $data['saldo'] = $saldo;
+        }
+
+        if ($laporan == 'sum') {
+            $sum_debet = 0;
+            $sum_kredit = 0;
+            $sum_saldo = 0;
+            foreach ($query as $akun => $sub_query) {
+                $sum_saldo +=  $this->db->select('saldo_awal')->get_where('akuntansi_saldo',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
+                foreach ($sub_query as $entry) {
+                    if ($entry['tipe'] == 'debet') {
+                        $sum_debet += $entry['jumlah'];
+                    } elseif ($entry['tipe'] == 'kredit'){
+                        $sum_kredit += $entry['jumlah'];
+                    }
+                }
+            }
+            $data['debet'] = $sum_debet;
+            $data['kredit'] = $sum_kredit;
+            $data['saldo'] = $sum_saldo;
+            return $data;
         }
 
         $data['posisi'] = $query1;
@@ -736,45 +747,6 @@ class Laporan_model extends CI_Model {
             }
         }
 
-        // foreach ($array_akun as $akun) {
-        //     $added_query = "";
-
-        //     if ($unit != null){
-        //         $added_query .= "AND tu.unit_kerja = '$unit'";
-        //     }
-        //     if ($sumber_dana != null){
-        //         $added_query .= "AND tu.jenis_pembatasan_dana = '$sumber_dana'";
-        //     }
-        //     if ($akun != null){
-        //         $added_query .= "AND tr.akun LIKE '$akun%'";
-        //     }
-        //     if ($start_date != null and $end_date != null){
-        //         $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
-        //     }
-
-        //     $query = "SELECT tr.akun,tu.*,tr.jumlah,tu.tipe as jenis_pajak FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
-        //              tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
-        //              AND (tu.tipe = 'pajak')
-        //              $added_query 
-        //              AND (tr.jenis = 'pajak' )
-
-        //     ";
-
-
-        //     $hasil = $this->db_laporan->query($query)->result_array();
-
-        //     for ($i=0; $i < count($hasil); $i++) { 
-        //         if ($hasil[$i]['tipe'] = 'pajak')
-        //         $query1[$hasil[$i]['akun']][] = $hasil[$i];
-        //     }
-        // }
-
-
-
-        // echo ($query1[411121][42] == $query1[411121][28]);
-        // print_r(array_unique($query1[411121],SORT_REGULAR));die();
-        // print_r(array_unique($query1[411121][42]),SORT_REGULAR);die();
-        // print_r($query1);die();
         foreach ($query1 as $key => $value) {
             usort($query1[$key],function($a,$b){
                 $hasil = strcmp($a['tanggal'],$b['tanggal']);
@@ -797,11 +769,6 @@ class Laporan_model extends CI_Model {
         
         ksort($query1);
         return $query1;
-
-        // $hasil = array_merge($query1,$query2);
-        // print_r($hasil);die();
-
-
 
     }
 
