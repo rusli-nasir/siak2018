@@ -334,6 +334,8 @@ class Laporan_model extends CI_Model {
 
                     $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
+                    // print_r($hasil);die();
+
                     for ($i=0; $i < count($hasil); $i++) { 
                         $hasil[$i]['tipe'] = $tipe;
                         $query1[$hasil[$i]['akun']][] = $hasil[$i];
@@ -389,8 +391,13 @@ class Laporan_model extends CI_Model {
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
+                        // print_r($hasil);die();
+
                         for ($i=0; $i < count($hasil); $i++) { 
                             $hasil[$i]['tipe'] = $tipe;
+                            // if ($hasil[$i]['jenis'] == 'MEMORIAL' AND $tipe == 'kredit') {
+                            //     $hasil[$i]['jumlah'] = $hasil[$i]['jumlah']/2;
+                            // }
                             if ($hasil[$i]['jenis_pajak'] == 'pajak') {
                                 if ($tipe == 'debet') 
                                     $query1[$hasil[$i]['akun']][0] = $hasil[$i];        
@@ -406,6 +413,10 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
+
+        // foreach ($query1 as $key => $value) {
+        //     $query1[$key] = array_unique($query1[$key],SORT_REGULAR);
+        // }
 
         // foreach ($query1 as $key => $transaksi) {
         //     if (in_array(substr($key,0,1),[1,2,3])) {
@@ -434,9 +445,11 @@ class Laporan_model extends CI_Model {
     }
 
 
-    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null)
+    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null)
     {
         $array_tipe  = array('debet','kredit');
+
+        // print_r($laporan);die();
 
         $array_jenis = array();
         if ($jenis == null){
@@ -446,8 +459,11 @@ class Laporan_model extends CI_Model {
         }
 
         $year = date("Y");
-        $start_date = "$year-01-01";
-        $end_date = "$year-12-31";
+        if ($start_date == null) {
+            $start_date = "$year-01-01";        
+        }elseif ($end_date == null) {
+            $end_date = "$year-12-31";        
+        }
 
         $kolom = array(
                 'debet' => array(
@@ -460,7 +476,6 @@ class Laporan_model extends CI_Model {
                     ),
             );
 
-        // print_r($array_akun);die();
 
         
 
@@ -504,6 +519,7 @@ class Laporan_model extends CI_Model {
                     // echo $this->db_laporan->get_compiled_select();die();
 
                     $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
+
 
                     for ($i=0; $i < count($hasil); $i++) { 
                         $hasil[$i]['tipe'] = $tipe;
@@ -580,6 +596,7 @@ class Laporan_model extends CI_Model {
             }
         }
 
+
         foreach ($query1 as $key => $value) {
             $query1[$key] = array_unique($query1[$key],SORT_REGULAR);
         }
@@ -597,8 +614,8 @@ class Laporan_model extends CI_Model {
         if ($laporan == 'sum') {
             $sum_debet = 0;
             $sum_kredit = 0;
-            $sum_saldo = 0;
-            foreach ($query as $akun => $sub_query) {
+            $sum_saldo = 0;        
+            foreach ($query1 as $akun => $sub_query) {
                 $sum_saldo +=  $this->db->select('saldo_awal')->get_where('akuntansi_saldo',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
                 foreach ($sub_query as $entry) {
                     if ($entry['tipe'] == 'debet') {
