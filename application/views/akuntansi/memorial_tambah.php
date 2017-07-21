@@ -283,7 +283,15 @@ $(document).ready(function(){
                 <option value="">
                  <?php foreach ($akun_akrual as $akun) {
                   ?>
-              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+              <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '; ?>
+                <?php
+                 $uraian_akun = explode(' ', $akun['nama']);
+            if($uraian_akun[0]!='beban'){
+              $uraian_akun[0] = 'beban';
+            }
+            $hasil_uraian = implode(' ', $uraian_akun);
+            echo $hasil_uraian;
+            ?></option>
                   <?php
                 }
                 ?> 
