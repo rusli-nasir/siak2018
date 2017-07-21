@@ -1629,6 +1629,58 @@ public function get_laporan_arus($level, $parse_data)
         }
     }
 
+    public function rekap_spm($tipe = 'UP' , $kode_unit = null){
+        if($kode_unit==null){
+            $filter_unit_gu = '';
+            $filter_unit_up = '';
+            $filter_unit_gup = '';
+            $filter_unit_pup = '';
+            $filter_unit_tup = '';
+            $filter_unit_lsphk3 = '';
+            $filter_unit_lspg = '';
+        }else{
+            $filter_unit_gu = "AND substr(trx_gup.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_up = "AND substr(trx_up.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_gup = "AND substr(kode_unit,1,2)='".$kode_unit."'";
+            $filter_unit_pup = "AND substr(trx_tambah_up.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_tup = "AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_lsphk3 = "AND substr(trx_lsphk3.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_lspg = "AND P.unitsukpa=".$kode_unit."";
+        }
+        if($tipe=='UP'){
+            //up
+            $this->data['query'] = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
+                $filter_unit_up");
+        }else if($tipe=='GU'){
+            //gu
+            $this->data['query'] = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND kredit=0 
+                $filter_unit_gu");
+        }else if($tipe=='PUP'){
+            //pup
+            $this->data['query'] = $this->db->query("SELECT * FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx 
+                $filter_unit_pup");
+        }else if($tipe=='TUP'){
+            //tup
+            $this->data['query'] = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
+                $filter_unit_tup");
+        }else if($tipe=='LSPHK3'){
+            //ls3
+            $this->data['query'] = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1
+                $filter_unit_lsphk3");
+        }else if($tipe=='LSPG'){
+            //lspg
+            $this->data['query'] = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.proses=5 $filter_unit_lspg");
+        }
+
+        //gup
+        //$this->data['gup'] = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 $filter_unit_gup ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
+
+        $this->data['tipe'] = $tipe;
+        $temp_data['content'] = $this->load->view('akuntansi/rekap_spm',$this->data,true);
+        $this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+
     public function eliminasi_negatif($value)
     {
         if ($value < 0) 
