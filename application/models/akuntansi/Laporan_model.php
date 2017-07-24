@@ -268,9 +268,13 @@ class Laporan_model extends CI_Model {
 
     public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
     {
+
+        $mode = 'saldo';
         $array_tipe  = array('debet','kredit');
 
         // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();
+
+        $year = date("Y");
 
         $array_jenis = array();
         if ($jenis == null){
@@ -299,6 +303,30 @@ class Laporan_model extends CI_Model {
         $data = array();
 
         $query1 = array();
+
+        if ($mode == 'saldo') {
+            $array_saldo = $this->Akun_model->get_saldo_awal_batch($array_akun);
+            $saldo = 0;
+            foreach ($array_saldo as $akun => $saldo) {
+                $case_hutang = in_array(substr($akun,0,1),[2,3,4,6]);
+                if ($start_date != "$year-01-01") {
+                    $rekap = $this->get_rekap(array($akun),null,'akrual',$unit,'rekap',$sumber_dana,$start_date,$end_date);
+                    if ($case_hutang) {
+                        $saldo +=  $rekap['kredit']['jumlah'] - $rekap['debet']['jumlah'];
+                    } else {
+                        $saldo +=  $rekap['debet']['jumlah'] - $rekap['kredit']['jumlah'];
+                    }
+                }
+                $entry['tipe'] = 'debet';
+                $entry['jumlah'] = $saldo;
+                $entry['akun'] = $akun;
+                $query1[$akun][] = $entry[];
+            }
+        }
+
+        print_r($query1);die();
+
+        //public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null)
 
         foreach ($array_tipe as $tipe) {
             foreach ($array_jenis as $jenis) {

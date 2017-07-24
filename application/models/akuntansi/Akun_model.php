@@ -173,6 +173,20 @@ class Akun_model extends CI_Model {
 		return $hasil;
 	}
 
+	public function get_saldo_batch($array_akun)
+	{
+		$tahun = gmdate('Y');		
+		$data = array();
+
+		foreach ($array_akun as $akun) {
+			$this->db->where('tahun',$tahun);
+			$this->db->like('akun',$akun,'after');
+			$hasil = $this->db->get()->row_array();
+			$data[$hasil['akun']] = $hasil['saldo'];
+		}
+		return $data;
+	}
+
 	public function get_akun_penerimaan()
     {
         $this->db->not_like('nama', 'Operasional');
