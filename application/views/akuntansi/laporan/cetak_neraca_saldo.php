@@ -101,7 +101,7 @@ if(isset($excel)){
 			foreach ($query as $key => $entry) {			
 		    	$debet = 0;
 		    	$kredit = 0;
-		    	$case_hutang = in_array(substr($key,0,1),[2,3,4,6]);
+		    	$case_hutang = in_array(substr($key,0,1),array(2,3,4,6));
 		    	$saldo = get_saldo_awal($key);
 	            if ($saldo != null) {
 	                $saldo = $saldo['saldo_awal'];
@@ -119,33 +119,43 @@ if(isset($excel)){
 						<td>'.get_nama_akun_v((string)$key).'</td>';
 					foreach ($entry as $transaksi) {
 		    			if ($transaksi['tipe'] == 'debet'){
-		    				if ($case_hutang) {
-		                        $saldo -= $transaksi['jumlah'];
-		                    } else {
-		                        $saldo += $transaksi['jumlah'];
-		                    }
 		    				$debet += $transaksi['jumlah'];
+		    				if ($case_hutang and $transaksi['jumlah'] > 0) {
+		                        $saldo -= $transaksi['jumlah'];
+		                    } else {
+		                        $saldo += $transaksi['jumlah'];
+		                    }
+		                    // echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';
 		    			} else if ($transaksi['tipe'] == 'kredit'){
-							if ($case_hutang) {
+							$kredit += $transaksi['jumlah'];
+							if ($case_hutang and $transaksi['jumlah'] > 0) {
 		                        $saldo += $transaksi['jumlah'];
 		                    } else {
 		                        $saldo -= $transaksi['jumlah'];
 		                    }
-							$kredit += $transaksi['jumlah'];
+		                    // echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
 		    			}
 		    		}
 
 
-		    		$jumlah_debet += $debet;
-		    		$jumlah_kredit += $kredit;
 
 		    		/*if(substr(get_nama_akun_v((string)$key),0,2)=='PPh' or substr(get_nama_akun_v((string)$key),0,2)=='PPN'){
 		    			$string_num = (string)($debet);
 		    			$debet = substr($string_num, 0, -1);
 		    		}*/
 
-		    		echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
-						<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
+		    		if ($debet < 0 or $kredit < 0){
+		    			$jumlah_debet += abs($kredit);
+		    			$jumlah_kredit += abs($debet);
+						echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
+						<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';		    			
+		    		} else {
+		    			$jumlah_debet += abs($debet);
+		    			$jumlah_kredit += abs($kredit);
+			    		echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
+							<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
+		    		}
+
 
 		    		if ($case_hutang) {
 		                $saldo_neraca = $kredit - $debet;
@@ -157,11 +167,15 @@ if(isset($excel)){
 					if ($kredit > $debet) {
 						$saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_kredit += $saldo_neraca;
+		    //             echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
+						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';
 		                echo '<td align="right" style="font-size:8pt">0.00</td>';
 		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
 		            } elseif ($kredit < $debet) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_debet += $saldo_neraca;
+		    //             echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
+						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
 		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
 		                echo '<td align="right" style="font-size:8pt">0.00</td>';
 		            }else{

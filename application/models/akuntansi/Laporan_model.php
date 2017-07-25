@@ -330,7 +330,8 @@ class Laporan_model extends CI_Model {
             }
         }
 
-        return $query1;
+        // return $query1;
+        // $query1 = array();
 
         // echo $debet ."--". $kredit;
 
