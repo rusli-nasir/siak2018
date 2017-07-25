@@ -1672,7 +1672,7 @@ public function get_laporan_arus($level, $parse_data)
             $periode_akhir = null;
             $this->data['periode'] = 'Semua Periode';
             $filter_periode = "";
-            $$filter_periode_lspg = "";
+            $filter_periode_lspg = "";
         }
 
         //up
