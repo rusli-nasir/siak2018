@@ -1358,12 +1358,13 @@ class Laporan extends MY_Controller {
     {
         $array_akun = array(6,7);
         $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
+        $array_pembatasan = array(
+            'tidak_terikat' => array(61,73,79),
+            'terikat_temporer' => array(62,73,79),
+            'terikat_permanen' => array(62,73,79)
+        );
         foreach ($sumber_dana as $jenis_pembatasan) {
-            if($jenis_pembatasan=='tidak_terikat'){
-                $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun,array('61','73','79'),'akrual',null,'saldo',$jenis_pembatasan);
-            }else{
-                $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo',$jenis_pembatasan);
-            }
+            $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun,$array_pembatasan[$jenis_pembatasan],'akrual',null,'saldo',$jenis_pembatasan);         
         }
         $tabel_akun = array(
             1 => 'aset',
