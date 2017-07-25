@@ -544,7 +544,7 @@ class Laporan_model extends CI_Model {
                     }
 
                     if ($array_not_akun != null){
-                        $this->db_laporan->not_in($kolom[$tipe][$jenis],$array_not_akun);
+                        $this->db_laporan->where_not_in($kolom[$tipe][$jenis],$array_not_akun);
                     }
 
                     if ($unit != null) {
