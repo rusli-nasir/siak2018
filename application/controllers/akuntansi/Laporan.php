@@ -968,7 +968,7 @@ class Laporan extends MY_Controller {
         $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
         if($basis=='kas'){
-            $array_akun = array(2,3,4,5,8,9);
+            $array_akun = array(4,5,8,9);
         }else{
             $array_akun = array(1,2,3,6,7,423141);
         }
