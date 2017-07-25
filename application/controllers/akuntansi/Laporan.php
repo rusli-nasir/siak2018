@@ -1359,7 +1359,11 @@ class Laporan extends MY_Controller {
         $array_akun = array(6,7);
         $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
         foreach ($sumber_dana as $jenis_pembatasan) {
-            $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo',$jenis_pembatasan);
+            if($jenis_pembatasan=='tidak_terikat'){
+                $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun,array('61','73','79'),'akrual',null,'saldo',$jenis_pembatasan);
+            }else{
+                $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo',$jenis_pembatasan);
+            }
         }
         $tabel_akun = array(
             1 => 'aset',
@@ -1655,28 +1659,44 @@ public function get_laporan_arus($level, $parse_data)
             $filter_unit_lspg = "AND P.unitsukpa=".$kode_unit."";
         }
 
+        if($this->input->post('daterange')!=null){
+            $daterange = $this->input->post('daterange');
+            $date_t = explode(' - ', $daterange);
+            $periode_awal = strtodate($date_t[0]);
+            $periode_akhir = strtodate($date_t[1]);
+            $this->data['periode'] = $daterange;
+            $filter_periode = "AND (tgl_spm BETWEEN '$periode_awal' AND '$periode_akhir')";
+            $filter_periode_lspg = "AND (S.tanggal BETWEEN '$periode_awal' AND '$periode_akhir')";
+        }else{
+            $periode_awal = null;
+            $periode_akhir = null;
+            $this->data['periode'] = 'Semua Periode';
+            $filter_periode = "";
+            $$filter_periode_lspg = "";
+        }
+
         //up
         $this->data['up'] = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
-            $filter_unit_up");
+            $filter_unit_up $filter_periode");
 
         //gu
         $this->data['gu'] = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND kredit=0 
-            $filter_unit_gu");
+            $filter_unit_gu $filter_periode");
 
         //pup
         $this->data['pup'] = $this->db->query("SELECT * FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx 
-            $filter_unit_pup");
+            $filter_unit_pup $filter_periode");
 
         //tup
         $this->data['tup'] = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
-            $filter_unit_tup");
+            $filter_unit_tup $filter_periode");
 
         //ls3
         $this->data['ls3'] = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1
-            $filter_unit_lsphk3");
+            $filter_unit_lsphk3 $filter_periode");
 
         //lspg
-        $this->data['lspg'] = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.proses=5 $filter_unit_lspg");
+        $this->data['lspg'] = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.proses=5 $filter_unit_lspg $filter_periode_lspg");
 
         //gup
         //$this->data['gup'] = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 $filter_unit_gup ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
