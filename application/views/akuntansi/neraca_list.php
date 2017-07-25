@@ -87,6 +87,17 @@
       </div>
     </div>
     <div class="form-group">
+      <label class="col-md-2 control-label">Sumber Dana</label>  
+      <div class="col-md-6">
+          <select id="sumber_dana" name="sumber_dana" class="form-control" required="">
+            <option value="all">Semua</option>
+            <option value="tidak_terikat">Tidak Terikat</option>
+            <option value="terikat_temporer">Terikat Temporer</option>
+            <option value="terikat_permanen">Terikat Permanen</option>
+          </select>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="col-md-2 control-label">Basis</label>  
       <div class="col-md-6">
           <select id="basis" name="basis" class="form-control" required="">
