@@ -39,6 +39,10 @@ class Akun_model extends CI_Model {
 				return $hasil;
 			} else if (substr($kode_akun,0,1) == 9){
 				return $this->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+			} else if (substr($kode_akun,0,1) == 2){
+				return $this->db->get_where('akuntansi_hutang_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+			} else if (substr($kode_akun,0,1) == 3){
+				return $this->db->get_where('akuntansi_aset_bersih_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 			} else if (substr($kode_akun,0,1) == 1){
 				$hasil = $this->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
 				if ($hasil == null){
@@ -173,7 +177,7 @@ class Akun_model extends CI_Model {
 		return $hasil;
 	}
 
-	public function get_saldo_batch($array_akun)
+	public function get_saldo_awal_batch($array_akun)
 	{
 		$tahun = gmdate('Y');		
 		$data = array();
@@ -181,9 +185,13 @@ class Akun_model extends CI_Model {
 		foreach ($array_akun as $akun) {
 			$this->db->where('tahun',$tahun);
 			$this->db->like('akun',$akun,'after');
-			$hasil = $this->db->get()->row_array();
-			$data[$hasil['akun']] = $hasil['saldo'];
+			$query = $this->db->get('akuntansi_saldo')->result_array();
+
+			foreach ($query as $hasil) {
+				$data[$hasil['akun']] = $hasil['saldo_awal'];
+			}
 		}
+
 		return $data;
 	}
 

@@ -274,7 +274,7 @@ class Laporan_model extends CI_Model {
 
         // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();
 
-        $year = date("Y");
+        $year = gmdate("Y");
 
         $array_jenis = array();
         if ($jenis == null){
@@ -298,16 +298,16 @@ class Laporan_model extends CI_Model {
 
         // print_r($array_akun);die();
 
-        
-
         $data = array();
 
         $query1 = array();
+        $debet = 0;
+        $kredit = 0;
 
         if ($mode == 'saldo') {
             $array_saldo = $this->Akun_model->get_saldo_awal_batch($array_akun);
-            $saldo = 0;
             foreach ($array_saldo as $akun => $saldo) {
+                $entry = array();
                 $case_hutang = in_array(substr($akun,0,1),[2,3,4,6]);
                 if ($start_date != "$year-01-01") {
                     $rekap = $this->get_rekap(array($akun),null,'akrual',$unit,'rekap',$sumber_dana,$start_date,$end_date);
@@ -317,14 +317,24 @@ class Laporan_model extends CI_Model {
                         $saldo +=  $rekap['debet']['jumlah'] - $rekap['kredit']['jumlah'];
                     }
                 }
-                $entry['tipe'] = 'debet';
+                if ($case_hutang) {
+                    $entry['tipe'] = 'kredit';
+                } else {
+                    $entry['tipe'] = 'debet';
+                }
                 $entry['jumlah'] = $saldo;
                 $entry['akun'] = $akun;
-                $query1[$akun][] = $entry[];
+                $entry['tanggal'] = $start_date;
+                $entry['uraian'] = "Saldo per ".$this->Jurnal_rsa_model->reKonversiTanggal($start_date);
+                $query1[$akun][] = $entry;
             }
         }
 
-        print_r($query1);die();
+        return $query1;
+
+        // echo $debet ."--". $kredit;
+
+        // print_r($query1);die();
 
         //public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null)
 
@@ -434,6 +444,7 @@ class Laporan_model extends CI_Model {
                             } else {
                                 $query1[$hasil[$i]['akun']][] = $hasil[$i];                            
                             }
+                            // print_r($query1);die();
                         }
 
 

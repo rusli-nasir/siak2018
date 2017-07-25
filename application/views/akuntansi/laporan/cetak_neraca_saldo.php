@@ -257,14 +257,18 @@ function get_nama_akun_v($kode_akun){
 				return $hasil;
 			} else if (substr($kode_akun,0,1) == 9){
 				return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+			} else if (substr($kode_akun,0,1) == 2){
+				return $ci->db->get_where('akuntansi_hutang_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+			} else if (substr($kode_akun,0,1) == 3){
+				return $ci->db->get_where('akuntansi_aset_bersih_6', array('akun_6' => $kode_akun))->row_array()['nama'];
 			} else if (substr($kode_akun,0,1) == 1){
 				$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
-				/*if ($hasil == null){
-					$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
-				}*/
 				if ($hasil == null){
 					$hasil = $ci->db->get_where('akuntansi_aset_6',array('akun_6' => $kode_akun))->row_array()['nama'];
 				}
+				// if ($hasil == null){
+				// 	$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
+				// }
 				return $hasil;
 			} else {
 				return 'Nama tidak ditemukan';
@@ -275,7 +279,8 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	if ($ci->session->userdata('kode_unit') != 42 and $ci->session->userdata('kode_unit') != 9999 and $ci->session->userdata('level') !=3) {
+	if (1) {
+	// if ($ci->session->userdata('kode_unit') != 42 and $ci->session->userdata('kode_unit') != 9999 and $ci->session->userdata('level') !=3) {
 		return null;
 	}
 	$tahun = gmdate('Y');
