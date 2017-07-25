@@ -544,7 +544,10 @@ class Laporan_model extends CI_Model {
                     }
 
                     if ($array_not_akun != null){
-                        $this->db_laporan->where_not_in($kolom[$tipe][$jenis],$array_not_akun);
+                        foreach ($array_not_akun as $not_akun) {
+                            $this->db_laporan->not_like($kolom[$tipe][$jenis],$not_akun,'after');
+                        }
+                        // $this->db_laporan->where_not_in($kolom[$tipe][$jenis],$array_not_akun);
                     }
 
                     if ($unit != null) {
@@ -594,12 +597,17 @@ class Laporan_model extends CI_Model {
                             $added_query .= "AND tu.jenis_pembatasan_dana = '$sumber_dana'";
                         }
                         if ($array_not_akun) {
-                            $added_query .= "AND tr.akun NOT IN (";
+
                             foreach ($array_not_akun as $not_akun) {
-                                $added_query .= "'$not_akun',";
+                                $added_query .= " AND tr.akun NOT LIKE '$not_akun%' ";
+                                $this->db_laporan->not_like($kolom[$tipe][$jenis],$not_akun,'after');
                             }
-                            $added_query = substr($added_query,0,-1);
-                            $added_query .= ")";
+                            // $added_query .= "AND tr.akun NOT IN (";
+                            // foreach ($array_not_akun as $not_akun) {
+                            //     $added_query .= "'$not_akun',";
+                            // }
+                            // $added_query = substr($added_query,0,-1);
+                            // $added_query .= ")";
                         }
 
                         if ($start_date != null and $end_date != null){
@@ -621,6 +629,7 @@ class Laporan_model extends CI_Model {
                         ";
 
                         // echo $query."\n";
+                        // echo $query;die();
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
