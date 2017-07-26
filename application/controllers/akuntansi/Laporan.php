@@ -953,7 +953,7 @@ class Laporan extends MY_Controller {
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]) or null;
-        $level = 3;
+        $level = $this->input->post('level');
 
         // $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
@@ -1013,6 +1013,8 @@ class Laporan extends MY_Controller {
             }
             $data['query'] = $data_3;
         }
+        /*print_r($data['query']);
+        die();*/
 
         // print_r($data_3);die();
 

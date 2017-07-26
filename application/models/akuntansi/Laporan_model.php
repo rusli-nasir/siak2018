@@ -268,8 +268,11 @@ class Laporan_model extends CI_Model {
 
     public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
     {
-
-        $mode = 'saldo';
+        if($sumber_dana=='tidak_terikat'){
+            $mode = 'saldo';
+        }else{
+            $mode = null;
+        }
         $array_tipe  = array('debet','kredit');
 
         // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();

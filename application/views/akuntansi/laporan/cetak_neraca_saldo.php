@@ -243,6 +243,7 @@ function get_nama_unit($kode_unit)
 function get_nama_akun_v($kode_akun){
 	$ci =& get_instance();
 	if (isset($kode_akun)){
+		if(strlen($kode_akun)>3){
 			if (substr($kode_akun,0,1) == 5){
 				return $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
 			} else if (substr($kode_akun,0,1) == 7){
@@ -287,8 +288,61 @@ function get_nama_akun_v($kode_akun){
 			} else {
 				return 'Nama tidak ditemukan';
 			}
+		}else{
+			switch (substr($kode_akun, 0, 1)) {
+				case 1:
+					$tabelnya = 'akuntansi_aset_3';
+					break;
+				case 2:
+					$tabelnya = 'akuntansi_hutang_3';
+					break;
+				case 3:
+					$tabelnya = 'akuntansi_aset_bersih_3';
+					break;
+				case 4:
+					$tabelnya = 'akuntansi_lra_3';
+					break;
+				case 5:
+					$tabelnya = 'akun_belanja';
+					break;
+				case 6:
+					$kode_akun[0] = 4;
+					$tabelnya = 'akuntansi_lra_3';
+					break;
+				case 7:
+					$kode_akun[0] = 5;
+					$tabelnya = 'akun_belanja';
+					break;
+				case 8:
+					$tabelnya = 'akuntansi_pembiayaan_3';
+					break;
+				case 9:
+					$tabelnya = 'akuntansi_sal_3';
+					break;
+				default:
+					# code...
+					break;
+			}
+
+			if(substr($kode_akun, 0, 1)=='5' OR substr($kode_akun, 0, 1)=='7'){
+				$atribut = 'kode_akun3digit';
+			}else{
+				$atribut = 'akun_3';
+			}
+
+			$query = $ci->db->query('SELECT * FROM '.$tabelnya.' WHERE '.$atribut.'='.$kode_akun.'')->row_array();
+			if($query==null){
+				$query = $ci->db->query('SELECT * FROM akuntansi_pajak WHERE kode_akun LIKE "%kode_akun%"')->row_array();
+				return $query['nama_akun'];
+			}else{
+				if(substr($kode_akun, 0, 1)=='5' OR substr($kode_akun, 0, 1)=='7'){
+					return $query['nama_akun3digit'];
+				}else{
+					return $query['nama'];
+				}	
+			}		
 		}
-	
+	}	
 }
 
 function get_saldo_awal($kode_akun){
