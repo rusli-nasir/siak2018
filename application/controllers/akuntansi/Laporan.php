@@ -953,6 +953,7 @@ class Laporan extends MY_Controller {
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]) or null;
+        $level = 3;
 
         // $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
@@ -1002,6 +1003,22 @@ class Laporan extends MY_Controller {
         // die();
         
         ksort($data['query']);
+
+        if ($level == 3) {
+            $data_3 = array();
+            foreach ($data['query'] as $akun => $entry) {
+                foreach ($entry as $inner_entry) {
+                    $data_3[substr($akun,0,3)][] = $inner_entry;
+                }
+            }
+            $data['query'] = $data_3;
+        }
+
+        // print_r($data_3);die();
+
+
+
+
         $teks_sumber_dana = "NERACA SALDO ";
         $teks_periode = "";
 
