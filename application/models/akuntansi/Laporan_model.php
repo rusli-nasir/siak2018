@@ -485,11 +485,11 @@ class Laporan_model extends CI_Model {
     }
 
 
-    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null)
+    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null)
     {
         $array_tipe  = array('debet','kredit');
 
-        // print_r($laporan);die();
+        // print_r($array_uraian);die();
 
         $array_jenis = array();
         if ($jenis == null){
@@ -515,8 +515,6 @@ class Laporan_model extends CI_Model {
                         'akrual' => 'akun_kredit_akrual'
                     ),
             );
-
-
         
 
         $data = array();
@@ -540,20 +538,30 @@ class Laporan_model extends CI_Model {
                         $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
                     }
 
+                    if ($array_uraian != null){
+                        $where_query = "";
+                        $where_query .= "( 0 ";
+                        foreach ($array_uraian as $uraian) {
+                            $where_query .= " OR uraian LIKE '%".$uraian."%' ";
+                        }
+                        $where_query .= ")";
+                        $this->db_laporan->where($where_query);
+                    }
+
                     if ($akun != null){
                         $this->db_laporan->like($kolom[$tipe][$jenis],$akun,'after');
                     }
 
                     if ($array_not_akun != null){
                         foreach ($array_not_akun as $not_akun) {
+
                             $this->db_laporan->not_like($kolom[$tipe][$jenis],$not_akun,'after');
                         }
-                        // $this->db_laporan->where_not_in($kolom[$tipe][$jenis],$array_not_akun);
                     }
 
                     if ($unit != null) {
-                            $this->db_laporan->where('unit_kerja',$unit);
-                        }
+                        $this->db_laporan->where('unit_kerja',$unit);
+                    }
 
                     // $this->db_laporan->where('unit_kerja',$unit);
 
@@ -589,36 +597,35 @@ class Laporan_model extends CI_Model {
                         $added_query = "";
 
                         if ($unit != null){
-                            $added_query .= "AND tu.unit_kerja = '$unit'";
+                            $added_query .= " AND tu.unit_kerja = '$unit'";
                         }
                         if ($akun != null){
-                            $added_query .= "AND tr.akun LIKE '$akun%'";
+                            $added_query .= " AND tr.akun LIKE '$akun%'";
                         }
                         if ($sumber_dana != null){
-                            $added_query .= "AND tu.jenis_pembatasan_dana = '$sumber_dana'";
+                            $added_query .= " AND tu.jenis_pembatasan_dana = '$sumber_dana'";
                         }
                         if ($array_not_akun) {
-
                             foreach ($array_not_akun as $not_akun) {
                                 $added_query .= " AND tr.akun NOT LIKE '$not_akun%' ";
                                 $this->db_laporan->not_like($kolom[$tipe][$jenis],$not_akun,'after');
                             }
-                            // $added_query .= "AND tr.akun NOT IN (";
-                            // foreach ($array_not_akun as $not_akun) {
-                            //     $added_query .= "'$not_akun',";
-                            // }
-                            // $added_query = substr($added_query,0,-1);
-                            // $added_query .= ")";
                         }
 
                         if ($start_date != null and $end_date != null){
-                            $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
+                            $added_query .= " and tu.tanggal BETWEEN '$start_date' AND '$end_date' ";
+                        }
+
+                        if ($array_uraian != null){
+                            $added_query .= "AND ( 0 ";
+                            foreach ($array_uraian as $uraian) {
+                                $added_query .= " OR tu.uraian LIKE '%".$uraian."%' ";
+                            }
+                            $added_query .= ")";
                         }
 
                         $query_pajak1 = "OR tu.tipe = 'pajak'";
                         $query_pajak2 = "or tr.jenis = 'pajak'";
-                        // $query_pajak1 = "";
-                        // $query_pajak2 = "";
 
                         $query = "SELECT tr.akun,tu.tipe as jenis_pajak,sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
@@ -629,9 +636,6 @@ class Laporan_model extends CI_Model {
 
                         ";
 
-                        // echo $query."\n";
-                        // echo $query;die();
-
                         $hasil = $this->db_laporan->query($query)->result_array();
 
                         for ($i=0; $i < count($hasil); $i++) { 
@@ -639,8 +643,6 @@ class Laporan_model extends CI_Model {
                             $hasil[$i]['jumlah'] = $hasil[$i]['jumlah'];
                             $query1[$hasil[$i]['akun']][] = $hasil[$i];
                         }
-
-
                 }
             }
         }

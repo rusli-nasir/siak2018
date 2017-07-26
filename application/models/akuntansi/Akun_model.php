@@ -59,7 +59,7 @@ class Akun_model extends CI_Model {
 		
 	}
 
-	public function get_akun_by_level($kode_akun,$level,$tabel)
+	public function get_akun_by_level($kode_akun,$level,$tabel,$array_not_akun = null)
 	{
 		$replacer = 0;
 		if ($kode_akun == 6) {
@@ -75,6 +75,12 @@ class Akun_model extends CI_Model {
 				$this->db2->select("kode_akun".$i."digit as akun_$i");
 			}
 			$this->db2->select("nama_akun".$level."digit as nama");
+			foreach ($array_not_akun as $not_akun) {
+				if (substr($not_akun,0,1) == 7){
+					$not_akun = substr_replace($not_akun,5,0,1);
+				}
+				$this->db2->not_like("kode_akun".$level."digit",$not_akun,'after');
+			}
 			$this->db2
 					 ->like("kode_akun".$level."digit",$kode_akun,'after')
 					 ->group_by("kode_akun".$level."digit")
@@ -90,10 +96,17 @@ class Akun_model extends CI_Model {
 		} else {
 			// echo "bawah";die();
 			// echo $kode_akun;
+			foreach ($array_not_akun as $not_akun) {
+				if (substr($not_akun,0,1) == 6){
+					$not_akun = substr_replace($not_akun,4,0,1);
+				}
+				$this->db->not_like("akun_".$level,$not_akun,'after');
+			}
 			$this->db
 				->like("akun_$level",$kode_akun,'after')
 				->from("akuntansi_".$tabel."_".$level)
 			;
+			// echo $this->db->get_compiled_select();die();
 
 			$hasil = $this->db->get()->result_array();
 

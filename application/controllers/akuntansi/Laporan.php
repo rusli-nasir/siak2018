@@ -977,6 +977,9 @@ class Laporan extends MY_Controller {
         }
         
         $sumber_dana = $this->input->post('sumber_dana');
+        if ($sumber_dana == 'all') {
+            $sumber_dana = null;
+        }
         $data['sumber'] = 'get_neraca_saldo';
         $unit = $this->input->post('unit');
 
@@ -1378,13 +1381,15 @@ class Laporan extends MY_Controller {
         $urutan = array();
         $akun = array();
 
-        foreach ($array_akun as $kd_awal) {
-            $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal]);
-        }
         // print_r($akun);die();
 
 
         foreach ($data_all as $jenis_pembatasan => $data) {
+            $akun = array();
+            foreach ($array_akun as $kd_awal) {
+                $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal],$array_pembatasan[$jenis_pembatasan]);
+            }
+
             $data_parsing['jenis_pembatasan'][] = $jenis_pembatasan;
             //echo "<hr/>".$jenis_pembatasan."<hr/>";
             $rekap = array();
@@ -1483,35 +1488,52 @@ public function get_laporan_arus($level, $parse_data)
 
         $array_not_investasi['penerimaan_aset_tetap'] = array(537);
 
-        $array_pendanaan['pendanaan_masuk']['perolehan_pinjaman'] = array();
-        $array_pendanaan['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = array();
-        $array_pendanaan['pendanaan_masuk']['investasi'] = array();
+        $array_pendanaan['pendanaan_masuk']['perolehan_pinjaman'] = array(2);
+        $array_pendanaan['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = array(2);
+        $array_pendanaan['pendanaan_masuk']['investasi'] = array(1);
 
-        $array_pendanaan['pendanaan_keluar']['pemberian_pinjaman'] = array();
-        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array();
-        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array();
+        $array_pendanaan['pendanaan_keluar']['pemberian_pinjaman'] = array(1);
+        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array(2);
+        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array(2);
+
+        $array_uraian['pendanaan_masuk']['perolehan_pinjaman'] = array('perolehan pinjaman','perolehan hutang','perolehan kewajiban');
+        $array_uraian['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = array('penerimaan kembali pokok pinjaman','penerimaan kembali pokok hutang','penerimaan kembali pokok kewajiban');
+        $array_uraian['pendanaan_masuk']['investasi'] = array('pendanaan investasi');
+
+        $array_uraian['pendanaan_keluar']['pemberian_pinjaman'] = array('pemberian pinjaman');
+        $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array('pembayaran pinjaman jangka pendek','pembayaran hutang jangka pendek','pembayaran kewajiban jangka pendek');
+        $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array('pembayaran pinjaman jangka panjang','pembayaran hutang jangka panjang','pembayaran kewajiban jangka panjang');
+
+
 
 
         //get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null)
         $data_investasi = array();
         $data_pendanaan = array();
-        foreach ($array_investasi as $nama => $akun) {
-            $array_not = null;
-            if (isset($array_not_investasi[$nama])) {
-                $array_not = $array_not_investasi[$nama];
-            }
-            $data_investasi[$nama] = $this->Laporan_model->get_rekap($akun,$arrat_not,'akrual',null,'sum',null,$start_date,$end_date);
-        }
+        // foreach ($array_investasi as $nama => $akun) {
+        //     $array_not = null;
+        //     if (isset($array_not_investasi[$nama])) {
+        //         $array_not = $array_not_investasi[$nama];
+        //     }
+        //     $data_investasi[$nama] = $this->Laporan_model->get_rekap($akun,$array_not,'akrual',null,'sum',null,$start_date,$end_date);
+        // }
 
         foreach ($array_pendanaan as $pendanaan => $sub_array_pendanaan ) {
             foreach ($sub_array_pendanaan as $nama => $akun) {
+                $array_kata = null;
                 $array_not = null;
                 if (isset($array_not_investasi[$nama])) {
                     $array_not = $array_not_investasi[$nama];
                 }
-                $data_pendanaan[$pendanaan][$nama] = $this->Laporan_model->get_rekap($akun,null,'akrual',null,'sum',null,$start_date,$end_date);
+                if (isset($array_uraian[$pendanaan][$nama])) {
+                    $array_kata = $array_uraian[$pendanaan][$nama];
+                }
+                $data_pendanaan[$pendanaan][$nama] = $this->Laporan_model->get_rekap($akun,null,'akrual',null,'sum',null,$start_date,$end_date,$array_kata);
             }
         }
+
+        // print_r($data_investasi);
+        // print_r($data_pendanaan);die();
 
 
         $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo');
