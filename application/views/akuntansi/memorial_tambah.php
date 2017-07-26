@@ -136,6 +136,9 @@ $(document).ready(function(){
               <?php
             }
             ?>
+            <?php if($this->session->userdata('kode_unit')==9999): ?>
+            <option value="9999">Penerimaan</option>
+          <?php endif ?>
           </select>
           <?php } ?>    
   </div>
@@ -285,13 +288,18 @@ $(document).ready(function(){
                   ?>
               <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '; ?>
                 <?php
-                 $uraian_akun = explode(' ', $akun['nama']);
-            if($uraian_akun[0]!='beban'){
-              $uraian_akun[0] = 'beban';
-            }
-            $hasil_uraian = implode(' ', $uraian_akun);
-            echo $hasil_uraian;
-            ?></option>
+                if(substr($akun['akun_6'], 0, 1)=='7'){
+                  $uraian_akun = explode(' ', $akun['nama']);
+                  if($uraian_akun[0]!='beban'){
+                    $uraian_akun[0] = 'Beban';
+                  }
+                  $hasil_uraian = implode(' ', $uraian_akun);
+                  echo $hasil_uraian;
+                }else{
+                  echo $akun['nama'];
+                }
+                ?>
+              </option>
                   <?php
                 }
                 ?> 
@@ -421,7 +429,20 @@ $(document).ready(function(){
         <option value="">
          <?php foreach ($akun_akrual as $akun) {
           ?>
-          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>
+          <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '; ?>
+                <?php
+                if(substr($akun['akun_6'], 0, 1)=='7'){
+                  $uraian_akun = explode(' ', $akun['nama']);
+                  if($uraian_akun[0]!='beban'){
+                    $uraian_akun[0] = 'Beban';
+                  }
+                  $hasil_uraian = implode(' ', $uraian_akun);
+                  echo $hasil_uraian;
+                }else{
+                  echo $akun['nama'];
+                }
+                ?>
+              </option>
           <?php
         }
         ?> 
