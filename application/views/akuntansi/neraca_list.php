@@ -106,6 +106,15 @@
           </select>
       </div>
     </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Level Laporan</label>  
+      <div class="col-md-3">
+          <select id="level" name="level" class="form-control" required="">
+            <option value="3">Header</option>
+            <option value="4">Sub-Header</option>
+          </select>
+      </div>
+    </div>
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
