@@ -268,6 +268,7 @@ class Laporan_model extends CI_Model {
 
     public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
     {
+        if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
             $mode = 'saldo';
         }else{
             $mode = null;
