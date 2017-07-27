@@ -1388,15 +1388,22 @@ class Laporan extends MY_Controller {
     {
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
-        $array_akun = array(6,7);
+        // $array_akun = array(6,7);
         $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
         $array_pembatasan = array(
             'tidak_terikat' => array(61,73,79),
             'terikat_temporer' => array(62,73,79),
-            'terikat_permanen' => array(62,73,79)
+            'terikat_permanen' => array(61,621,623,624,626,627,628,629,73,79)
         );
+
+        $array_akun = array(
+            'tidak_terikat' => array(6,7),
+            'terikat_temporer' => array(6,7),
+            'terikat_permanen' => array(6,7)
+        );
+
         foreach ($sumber_dana as $jenis_pembatasan) {
-            $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun,$array_pembatasan[$jenis_pembatasan],'akrual',null,'saldo',$jenis_pembatasan);         
+            $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'saldo',$jenis_pembatasan);         
         }
         $tabel_akun = array(
             1 => 'aset',
@@ -1414,9 +1421,13 @@ class Laporan extends MY_Controller {
 
         foreach ($data_all as $jenis_pembatasan => $data) {
             $akun = array();
-            foreach ($array_akun as $kd_awal) {
+            foreach ($array_akun[$jenis_pembatasan] as $kd_awal) {
+                $kd_awal = substr($kd_awal,0,1);
                 $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal],$array_pembatasan[$jenis_pembatasan]);
             }
+            // if ($jenis_pembatasan == 'terikat_permanen') {
+            //     print_r($data_all[$jenis_pembatasan]);die();
+            // }
 
             $data_parsing['jenis_pembatasan'][] = $jenis_pembatasan;
             //echo "<hr/>".$jenis_pembatasan."<hr/>";
@@ -1544,13 +1555,13 @@ public function get_laporan_arus($level, $parse_data)
         //get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null)
         $data_investasi = array();
         $data_pendanaan = array();
-        // foreach ($array_investasi as $nama => $akun) {
-        //     $array_not = null;
-        //     if (isset($array_not_investasi[$nama])) {
-        //         $array_not = $array_not_investasi[$nama];
-        //     }
-        //     $data_investasi[$nama] = $this->Laporan_model->get_rekap($akun,$array_not,'akrual',null,'sum',null,$start_date,$end_date);
-        // }
+        foreach ($array_investasi as $nama => $akun) {
+            $array_not = null;
+            if (isset($array_not_investasi[$nama])) {
+                $array_not = $array_not_investasi[$nama];
+            }
+            $data_investasi[$nama] = $this->Laporan_model->get_rekap($akun,$array_not,'akrual',null,'sum',null,$start_date,$end_date);
+        }
 
         foreach ($array_pendanaan as $pendanaan => $sub_array_pendanaan ) {
             foreach ($sub_array_pendanaan as $nama => $akun) {
