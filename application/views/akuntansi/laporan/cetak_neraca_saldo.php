@@ -257,7 +257,7 @@ function get_nama_akun_v($kode_akun){
 				$uraian_akun = explode(' ', $nama);
 				if(isset($uraian_akun[0])){
 		            if($uraian_akun[0]!='beban'){
-		              $uraian_akun[0] = 'beban';
+		              $uraian_akun[0] = 'Beban';
 		            }
 		        }
 	            $hasil_uraian = implode(' ', $uraian_akun);
@@ -352,10 +352,10 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	/*if (1) {
+	if (1) {
 	// if ($ci->session->userdata('kode_unit') != 42 and $ci->session->userdata('kode_unit') != 9999 and $ci->session->userdata('level') !=3) {
 		return null;
-	}*/
+	}
 	$tahun = gmdate('Y');
 	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 

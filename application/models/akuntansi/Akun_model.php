@@ -19,7 +19,7 @@ class Akun_model extends CI_Model {
 				$uraian_akun = explode(' ', $nama);
 				if(isset($uraian_akun[0])){
 		            if($uraian_akun[0]!='beban'){
-		              $uraian_akun[0] = 'beban';
+		              $uraian_akun[0] = 'Beban';
 		            }
 		        }
 	            $hasil_uraian = implode(' ', $uraian_akun);
