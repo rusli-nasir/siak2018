@@ -104,6 +104,10 @@ if(isset($excel)){
 		    	$kredit = 0;
 		    	$case_hutang = in_array(substr($key,0,1),array(2,3,4,6));
 		    	$saldo = get_saldo_awal($key);
+		    	/*if($key==111302){
+		    		echo $key.' = '.$saldo;
+		    		die();
+		    	}*/
 	            if ($saldo != null) {
 	                $saldo = $saldo['saldo_awal'];
 	            }
@@ -348,10 +352,10 @@ function get_nama_akun_v($kode_akun){
 
 function get_saldo_awal($kode_akun){
 	$ci =& get_instance();
-	if (1) {
+	/*if (1) {
 	// if ($ci->session->userdata('kode_unit') != 42 and $ci->session->userdata('kode_unit') != 9999 and $ci->session->userdata('level') !=3) {
 		return null;
-	}
+	}*/
 	$tahun = gmdate('Y');
 	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
