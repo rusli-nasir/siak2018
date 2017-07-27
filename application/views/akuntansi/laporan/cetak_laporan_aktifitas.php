@@ -96,6 +96,13 @@
 					}
 				} ?>	
 			</tbody>
+			<tfoot>
+				<tr style="background-color:#B1E9F2">
+					<td colspan="2" align="right">Total</td>
+					<td align="right"><?php echo eliminasi_negatif($jumlah_tahun_sekarang); ?></td>
+					<td align="right"><?php echo eliminasi_negatif($jumlah_tahun_awal); ?></td>
+				</tr>
+			</tfoot>
 		</table>
 	</body>
 </html>
@@ -104,7 +111,7 @@
 function eliminasi_negatif($value)
 {
     if ($value < 0) 
-    	return '-'.number_format(abs($value),2,',','.');
+    	return '('.number_format(abs($value),2,',','.').')';
         // return "(". number_format(abs($value),2,',','.') .")";
     else
         return number_format($value,2,',','.');

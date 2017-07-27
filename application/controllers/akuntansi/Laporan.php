@@ -1290,6 +1290,8 @@ class Laporan extends MY_Controller {
 
     public function get_lpk($level, $parse_data = null)
     {       
+        $jumlah_tahun_sekarang = 0;
+        $jumlah_tahun_awal = 0;
         $array_akun = array(1,2,3);
         $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo');
         $tabel_akun = array(
@@ -1355,6 +1357,8 @@ class Laporan extends MY_Controller {
                             $data['nama_lvl_4'][$key_3][] = $nama;
                             $data['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
                             $data['saldo_awal_lvl_4'][$key_3][] = $saldo_awal;
+                            $jumlah_tahun_sekarang += $saldo_sekarang;
+                            $jumlah_tahun_awal += $saldo_awal;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
                         }
                     } else {
@@ -1366,6 +1370,8 @@ class Laporan extends MY_Controller {
                         $data['nama_lvl_3'][$key_2][] = $nama;
                         $data['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
                         $data['saldo_awal_lvl_3'][$key_2][] = $saldo_awal;
+                        $jumlah_tahun_sekarang += $saldo_sekarang;
+                        $jumlah_tahun_awal += $saldo_awal;
                         //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                     }
                 }
@@ -1373,11 +1379,15 @@ class Laporan extends MY_Controller {
         }
         $data['atribut'] = $parse_data;
         $data['level'] = $level;
+        $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
+        $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
         $this->load->view('akuntansi/laporan/cetak_laporan_posisi_keuangan', $data);
     }
 
     public function get_lapak($level, $parse_data)
     {
+        $jumlah_tahun_sekarang = 0;
+        $jumlah_tahun_awal = 0;
         $array_akun = array(6,7);
         $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
         $array_pembatasan = array(
@@ -1398,8 +1408,7 @@ class Laporan extends MY_Controller {
             7 => 'akun_belanja'
         );
         $urutan = array();
-        $akun = array();
-
+        $akun = array();       
         // print_r($akun);die();
 
 
@@ -1463,6 +1472,8 @@ class Laporan extends MY_Controller {
                                 $data_parsing['nama_lvl_4'][$jenis_pembatasan][$key_3][] = $nama;
                                 $data_parsing['saldo_sekarang_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_sekarang;
                                 $data_parsing['saldo_awal_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_awal;
+                                $jumlah_tahun_sekarang += $saldo_sekarang;
+                                $jumlah_tahun_awal += $saldo_awal;
                                 //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
                             }
                         } else {
@@ -1474,6 +1485,8 @@ class Laporan extends MY_Controller {
                             $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
                             $data_parsing['saldo_sekarang_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_sekarang;
                             $data_parsing['saldo_awal_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_awal;
+                            $jumlah_tahun_sekarang += $saldo_sekarang;
+                            $jumlah_tahun_awal += $saldo_awal;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                         }
                     }
@@ -1482,6 +1495,8 @@ class Laporan extends MY_Controller {
         }
         $data_parsing['atribut'] = $parse_data;
         $data_parsing['level'] = $level;
+        $data_parsing['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
+        $data_parsing['jumlah_tahun_awal'] = $jumlah_tahun_awal;
         $this->load->view('akuntansi/laporan/cetak_laporan_aktifitas', $data_parsing);
     }
 

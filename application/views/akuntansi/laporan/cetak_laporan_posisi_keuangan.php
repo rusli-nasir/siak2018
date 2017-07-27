@@ -73,8 +73,15 @@
 										<td class="tab2"><?php echo $value; ?></td>
 										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
 										<td align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
-										<td></td>
-										<td></td>
+										<td align="right"><?php $selisih = $saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter] - $saldo_awal_lvl_3[$key_lvl_2[$i]][$counter];
+										echo eliminasi_negatif($selisih); ?></td>
+										<td align="right">
+											<?php 
+											if($saldo_awal_lvl_3[$key_lvl_2[$i]][$counter]>0){ 
+												$persen = ($selisih/$saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter])*100; 
+												echo abs(number_format($persen)).'%';
+											} 
+											?></td>
 									</tr>
 						<?php  $counter++; }
 							}else{ 
@@ -112,6 +119,15 @@
 					}
 				} ?>	
 			</tbody>
+			<tfoot>
+				<tr style="background-color:#B1E9F2">
+					<td colspan="2" align="right">Total</td>
+					<td align="right"><?php echo eliminasi_negatif($jumlah_tahun_sekarang); ?></td>
+					<td align="right"><?php echo eliminasi_negatif($jumlah_tahun_awal); ?></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>
 		</table>
 	</body>
 </html>

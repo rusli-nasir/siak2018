@@ -37,6 +37,7 @@ if(isset($excel)){
 			<?php echo form_open("akuntansi/laporan/cetak_neraca_saldo/excel",array("class"=>"form-horizontal")); ?>
 				<input type="hidden" name="tipe" value="excel">
 				<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+				<input type="hidden" name="level" value="<?php echo $this->input->post('level') ?>">
 				<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
 				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
