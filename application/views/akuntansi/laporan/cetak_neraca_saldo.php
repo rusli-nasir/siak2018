@@ -120,8 +120,14 @@ if(isset($excel)){
 
 				echo '<tr>
 						<td>'.$i.'</td>
-						<td>'.$key.'</td>
-						<td>'.get_nama_akun_v((string)$key).'</td>';
+						<td>'.str_replace('-pajak', '', $key).'</td>
+						<td>';
+						if(strlen((string)$key)==6){
+							echo strtolower(get_nama_akun_v((string)$key));
+						}else{
+							echo strtoupper(get_nama_akun_v((string)$key));
+						}						
+				echo    '</td>';
 					foreach ($entry as $transaksi) {
 		    			if ($transaksi['tipe'] == 'debet'){
 		    				$debet += $transaksi['jumlah'];
@@ -249,49 +255,59 @@ function get_nama_akun_v($kode_akun){
 	$ci =& get_instance();
 	if (isset($kode_akun)){
 		if(strlen($kode_akun)>3){
-			if (substr($kode_akun,0,1) == 5){
-				return $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
-			} else if (substr($kode_akun,0,1) == 7){
-				$kode_akun[0] = 5;
-				$nama = $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
-				$uraian_akun = explode(' ', $nama);
-				if(isset($uraian_akun[0])){
-		            if($uraian_akun[0]!='beban'){
-		              $uraian_akun[0] = 'Beban';
-		            }
-		        }
-	            $hasil_uraian = implode(' ', $uraian_akun);
-	            return $hasil_uraian;
-			} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
-				$kode_akun[0] = 4;
-				$hasil =  $ci->db->get_where('akuntansi_lra_6',array('akun_6' => $kode_akun))->row_array()['nama'];
-				if ($hasil == null) {
-					$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+			if($kode_akun[3]=='-'){
+				if(substr($kode_akun, 0, 3)=='411'){
+					return 'Pemungutan/Penyetoran Pajak';
+				}else{
+					$query = $ci->db->query("SELECT nama_akun FROM akuntansi_pajak WHERE kode_akun LIKE '".substr($kode_akun, 0, 3)."%' LIMIT 0,1")->row_array();
+					$data = explode(' ',$query['nama_akun']);
+					return $data[0].' '.$data[1].' '.$data[2];
 				}
-				return $hasil;
-			}else if (substr($kode_akun,0,1) == 8){
-				$hasil =  $ci->db->get_where('akuntansi_pembiayaan_6',array('akun_6' => $kode_akun))->row_array()['nama'];
-				if ($hasil == null) {
-					$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+			}else{
+				if (substr($kode_akun,0,1) == 5){
+					return $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+				} else if (substr($kode_akun,0,1) == 7){
+					$kode_akun[0] = 5;
+					$nama = $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+					$uraian_akun = explode(' ', $nama);
+					if(isset($uraian_akun[0])){
+			            if($uraian_akun[0]!='beban'){
+			              $uraian_akun[0] = 'Beban';
+			            }
+			        }
+		            $hasil_uraian = implode(' ', $uraian_akun);
+		            return $hasil_uraian;
+				} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
+					$kode_akun[0] = 4;
+					$hasil =  $ci->db->get_where('akuntansi_lra_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+					if ($hasil == null) {
+						$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+					}
+					return $hasil;
+				}else if (substr($kode_akun,0,1) == 8){
+					$hasil =  $ci->db->get_where('akuntansi_pembiayaan_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+					if ($hasil == null) {
+						$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+					}
+					return $hasil;
+				} else if (substr($kode_akun,0,1) == 9){
+					return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+				} else if (substr($kode_akun,0,1) == 2){
+					return $ci->db->get_where('akuntansi_hutang_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+				} else if (substr($kode_akun,0,1) == 3){
+					return $ci->db->get_where('akuntansi_aset_bersih_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+				} else if (substr($kode_akun,0,1) == 1){
+					$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
+					if ($hasil == null){
+						$hasil = $ci->db->get_where('akuntansi_aset_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+					}
+					// if ($hasil == null){
+					// 	$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
+					// }
+					return $hasil;
+				} else {
+					return 'Nama tidak ditemukan';
 				}
-				return $hasil;
-			} else if (substr($kode_akun,0,1) == 9){
-				return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
-			} else if (substr($kode_akun,0,1) == 2){
-				return $ci->db->get_where('akuntansi_hutang_6', array('akun_6' => $kode_akun))->row_array()['nama'];
-			} else if (substr($kode_akun,0,1) == 3){
-				return $ci->db->get_where('akuntansi_aset_bersih_6', array('akun_6' => $kode_akun))->row_array()['nama'];
-			} else if (substr($kode_akun,0,1) == 1){
-				$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
-				if ($hasil == null){
-					$hasil = $ci->db->get_where('akuntansi_aset_6',array('akun_6' => $kode_akun))->row_array()['nama'];
-				}
-				// if ($hasil == null){
-				// 	$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
-				// }
-				return $hasil;
-			} else {
-				return 'Nama tidak ditemukan';
 			}
 		}else{
 			switch (substr($kode_akun, 0, 1)) {

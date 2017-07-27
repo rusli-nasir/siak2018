@@ -1008,7 +1008,12 @@ class Laporan extends MY_Controller {
             $data_3 = array();
             foreach ($data['query'] as $akun => $entry) {
                 foreach ($entry as $inner_entry) {
-                    $data_3[substr($akun,0,3)][] = $inner_entry;
+                    $check = $this->db->query("SELECT * FROM akuntansi_pajak WHERE kode_akun='".$akun."'");
+                    if($check->num_rows() > 0){
+                        $data_3[substr($akun,0,3).'-pajak'][] = $inner_entry;
+                    }else{
+                        $data_3[substr($akun,0,3)][] = $inner_entry;
+                    }
                 }
             }
             $data['query'] = $data_3;
