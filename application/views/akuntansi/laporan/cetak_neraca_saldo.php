@@ -55,7 +55,7 @@ if(isset($excel)){
 				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
 				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-				<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
+				<!-- <input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF"> -->
 			</form>
 		<?php } ?>
 		<div align="center" style="font-weight:bold">
@@ -123,7 +123,7 @@ if(isset($excel)){
 						<td>'.str_replace('-pajak', '', $key).'</td>
 						<td>';
 						if(strlen((string)$key)==6){
-							echo strtolower(get_nama_akun_v((string)$key));
+							echo get_nama_akun_v((string)$key);
 						}else{
 							echo strtoupper(get_nama_akun_v((string)$key));
 						}						
