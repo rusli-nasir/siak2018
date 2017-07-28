@@ -26,6 +26,11 @@ if(isset($excel)){
 		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
     	.excel{background-color:#A3A33E;color:#fff;}
     	.pdf{background-color:#588097;color:#fff;}
+    	<?php if($level==3){ ?>
+    		.level_6{display:none;}
+    	<?php }else{ ?>
+    		.level_3{display:none;}
+    	<?php } ?>
 		</style>
 		<script type="text/javascript">
 		//window.print();
@@ -64,7 +69,7 @@ if(isset($excel)){
 			<?php echo $teks_periode; ?><br/><br/>
 		</div>
 		<?php 
-			echo '<table style="font-size:10pt;">
+			echo '<table style="font-size:10pt;" class="level_6">
 						<tr>
 							<td width="150px"><b>Unit Kerja</b></td>
 							<td>:'.$teks_unit.'</td>
@@ -74,7 +79,7 @@ if(isset($excel)){
 							<td>:'.$teks_tahun_anggaran.'</td>
 						</tr>
 				</table>';
-			echo '<table style="width:1300px;font-size:10pt;" class="border">
+			echo '<table style="width:1300px;font-size:10pt;" class="border level_6">
 					<thead style="background-color:#ECF379;height:45px">
 						<tr style="background-color:#ECF379;">
 							<th rowspan="2">No</th>
@@ -93,11 +98,13 @@ if(isset($excel)){
 					<tbody>';
 
 			$i = 1;
+			$counter = 0;
 
 			$jumlah_debet = 0;
 		    $jumlah_kredit = 0;
 	        $jumlah_neraca_debet = 0;
 	        $jumlah_neraca_kredit = 0;
+	        $arr_3 = array();
 
 			foreach ($query as $key => $entry) {			
 		    	$debet = 0;
@@ -126,7 +133,11 @@ if(isset($excel)){
 							echo get_nama_akun_v((string)$key);
 						}else{
 							echo strtoupper(get_nama_akun_v((string)$key));
-						}						
+						}	
+
+						$arr_3[$counter]['kode_akun'] = $key;
+						$arr_3[$counter]['uraian'] = get_nama_akun_v((string)$key);
+
 				echo    '</td>';
 					foreach ($entry as $transaksi) {
 		    			if ($transaksi['tipe'] == 'debet'){
@@ -159,12 +170,16 @@ if(isset($excel)){
 		    			$jumlah_debet += abs($kredit);
 		    			$jumlah_kredit += abs($debet);
 						echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
-						<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';		    			
+						<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';	
+						$arr_3[$counter]['mutasi_debit'] = abs($kredit);    			
+						$arr_3[$counter]['mutasi_kredit'] = abs($debet);    			
 		    		} else {
 		    			$jumlah_debet += abs($debet);
 		    			$jumlah_kredit += abs($kredit);
 			    		echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
 							<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
+						$arr_3[$counter]['mutasi_debit'] = abs($debet);    			
+						$arr_3[$counter]['mutasi_kredit'] = abs($kredit); 
 		    		}
 
 
@@ -182,6 +197,8 @@ if(isset($excel)){
 						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';
 		                echo '<td align="right" style="font-size:8pt">0.00</td>';
 		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
+		                $arr_3[$counter]['neraca_debit'] = 0;    			
+						$arr_3[$counter]['neraca_kredit'] = abs($saldo_neraca); 
 		            } elseif ($kredit < $debet) {
 		                $saldo_neraca = abs($saldo_neraca);
 		                $jumlah_neraca_debet += $saldo_neraca;
@@ -189,14 +206,19 @@ if(isset($excel)){
 						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
 		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
 		                echo '<td align="right" style="font-size:8pt">0.00</td>';
+		                $arr_3[$counter]['neraca_debit'] = abs($saldo_neraca);    			
+						$arr_3[$counter]['neraca_kredit'] = 0;
 		            }else{
 		            	echo '<td align="right" style="font-size:8pt">0.00</td>';
 		            	echo '<td align="right" style="font-size:8pt">0.00</td>';
+		            	$arr_3[$counter]['neraca_debit'] = 0;    			
+						$arr_3[$counter]['neraca_kredit'] = 0; 
 		            }
 
 				echo '</tr>';
 
 				$i++;
+				$counter++;
 			}
     		echo '</tbody>
 	    			<tfoot>
@@ -209,6 +231,96 @@ if(isset($excel)){
 		    			</tr>
 	    			</tfoot>
 				</table>';
+
+				$result = array();
+				foreach ($arr_3 as $data) {
+				  $kode_akun = substr($data['kode_akun'],0,3);
+				  $cek_di_pajak = check_di_pajak($data['kode_akun']);
+				  if($cek_di_pajak>0){
+				  	$result[$kode_akun.'-pajak'][] = $data;
+				  }else{
+				  	$result[$kode_akun][] = $data;
+				  }
+				}
+
+				//print_r($result);
+				$display_3_digit = array();
+
+				foreach ($result as $key => $value) {
+					$display_3_digit[$key]['kode_akun'] = $key;
+					$display_3_digit[$key]['mutasi_debit'] = 0;
+					$display_3_digit[$key]['mutasi_kredit'] = 0;
+					$display_3_digit[$key]['neraca_debit'] = 0;
+					$display_3_digit[$key]['neraca_kredit'] = 0;
+					foreach($value as $inner_key => $inner_data){
+						$display_3_digit[$key]['mutasi_debit'] += $inner_data['mutasi_debit'];
+						$display_3_digit[$key]['mutasi_kredit'] += $inner_data['mutasi_kredit'];
+						$display_3_digit[$key]['neraca_debit'] += $inner_data['neraca_debit'];
+						$display_3_digit[$key]['neraca_kredit'] += $inner_data['neraca_kredit'];
+					}
+				}
+
+				echo '<table style="font-size:10pt;" class="level_3">
+						<tr>
+							<td width="150px"><b>Unit Kerja</b></td>
+							<td>:'.$teks_unit.'</td>
+						</tr>
+						<tr>
+							<td><b>Tahun Anggaran</b></td>
+							<td>:'.$teks_tahun_anggaran.'</td>
+						</tr>
+				</table>';
+			echo '<table style="width:1300px;font-size:10pt;" class="border level_3">
+					<thead style="background-color:#ECF379;height:45px">
+						<tr style="background-color:#ECF379;">
+							<th rowspan="2">No</th>
+							<th rowspan="2">Kode</th>
+							<th width="500px" rowspan="2">Uraian</th>
+							<th colspan="2">Mutasi</th>
+							<th colspan="2">Neraca Saldo</th>
+						</tr>
+						<tr style="background-color:#ECF379;">
+							<th>DEBIT</th>
+							<th>KREDIT</th>
+							<th>DEBIT</th>
+							<th>KREDIT</th>
+						</tr>
+					</thead>
+					<tbody>';
+					$nomor = 1;
+					$jumlah_debet = 0;
+				    $jumlah_kredit = 0;
+			        $jumlah_neraca_debet = 0;
+			        $jumlah_neraca_kredit = 0;
+				foreach ($display_3_digit as $key => $value) {
+					echo '<tr>';
+					echo '<td>'.$nomor.'</td>';
+					echo '<td>'.str_replace('-pajak', '', $value['kode_akun']).'</td>';
+					echo '<td>';
+					echo get_nama_akun_v($value['kode_akun']);
+					echo '</td>';
+					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['mutasi_debit']).'</td>';
+					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['mutasi_kredit']).'</td>';
+					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['neraca_debit']).'</td>';
+					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['neraca_kredit']).'</td>';
+					echo '</tr>';
+					$jumlah_debet += $value['mutasi_debit'];
+				    $jumlah_kredit += $value['mutasi_kredit'];
+			        $jumlah_neraca_debet += $value['neraca_debit'];
+			        $jumlah_neraca_kredit += $value['neraca_kredit'];
+					$nomor++;
+				}
+				echo '</tbody>
+	    			<tfoot>
+					 	<tr style="background-color:#B1E9F2;">
+		    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_debet).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_kredit).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
+		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
+		    			</tr>
+	    			</tfoot>
+				</table>'; 
 		?>
 		<table width="1300px;">
 			<tbody>
@@ -236,6 +348,13 @@ if(isset($excel)){
 	</body>
 </html>
 <?php
+function check_di_pajak($kode_akun)
+{
+	$ci =& get_instance();
+    $hasil = $ci->db->where('kode_akun',$kode_akun)->get('akuntansi_pajak')->num_rows();
+    return $hasil;
+}
+
 function get_nama_unit($kode_unit)
 {
 	if ($kode_unit == 9999) {

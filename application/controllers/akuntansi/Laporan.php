@@ -1004,7 +1004,7 @@ class Laporan extends MY_Controller {
         
         ksort($data['query']);
 
-        if ($level == 3) {
+        /*if ($level == 3) {
             $data_3 = array();
             foreach ($data['query'] as $akun => $entry) {
                 foreach ($entry as $inner_entry) {
@@ -1017,7 +1017,7 @@ class Laporan extends MY_Controller {
                 }
             }
             $data['query'] = $data_3;
-        }
+        }*/
         /*print_r($data['query']);
         die();*/
 
@@ -1049,7 +1049,7 @@ class Laporan extends MY_Controller {
         $data['teks_tahun_anggaran'] = $teks_tahun_anggaran;
         $data['unit'] = $unit;
         $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
-
+        $data['level'] = $level;
 
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_neraca_saldo',$data);
