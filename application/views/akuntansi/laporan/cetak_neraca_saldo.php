@@ -297,7 +297,7 @@ if(isset($excel)){
 					echo '<td>'.$nomor.'</td>';
 					echo '<td>'.str_replace('-pajak', '', $value['kode_akun']).'</td>';
 					echo '<td>';
-					echo get_nama_akun_v($value['kode_akun']);
+					echo get_nama_akun_v((string)$value['kode_akun']);
 					echo '</td>';
 					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['mutasi_debit']).'</td>';
 					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['mutasi_kredit']).'</td>';
