@@ -35,6 +35,7 @@
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
+		
 		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
@@ -46,51 +47,54 @@
 			</thead>
 			<tbody>
 				<?php $i=0;$j=0;
-				foreach ($akun as $key_1 => $akun_1) {
-					foreach($nama_lvl_1[$key_1] as $key=>$value){ ?>
-					<tr>
-						<td></td>
-						<td class="tab0"><?php echo $value; ?></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<?php foreach($nama_lvl_2[$key_1] as $key=>$value){ ?>
+				foreach($data_all as $order=>$entry){
+				 foreach ($akun[$order] as $key_1 => $akun_1) {
+					foreach($nama_lvl_1[$order][$key_1] as $key=>$value){ ?>
 						<tr>
 							<td></td>
-							<td class="tab1"><?php echo $value; ?></td>
+							<td class="tab0"><?php echo $value.' '.$jenis_pembatasan[$order]; ?></td>
 							<td></td>
 							<td></td>
 						</tr>
-						<?php if($level==3){
-								$counter=0;foreach($nama_lvl_3[$key_lvl_2[$i]] as $key=>$value){ ?>
-									<tr>
-										<td></td>
-										<td class="tab2"><?php echo $value; ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
-									</tr>
-						<?php  $counter++; }
-							}else{ 
-								foreach($nama_lvl_3[$key_lvl_2[$i]] as $key=>$value){ ?>
-									<tr>
-										<td></td>
-										<td class="tab2"><?php echo $value; ?></td>
-										<td></td>
-										<td></td>
-									</tr>
-							<?php $counter=0;foreach($nama_lvl_4[$key_lvl_3[$j]] as $key=>$value){ ?>
-									<tr>
-										<td></td>
-										<td class="tab3"><?php echo $value; ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter]); ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_4[$key_lvl_3[$j]][$counter]); ?></td>
-									</tr>
-							<?php 	$counter++; } 
-								$j++;
-								}
-							} ?>
-					<?php 	$i++; } ?>
-				<?php	
+						<?php foreach($nama_lvl_2[$order][$key_1] as $key=>$value){ ?>
+								<tr>
+									<td></td>
+									<td class="tab1"><?php echo $value; ?></td>
+									<td></td>
+									<td></td>
+								</tr>	
+								<?php if($level==3){
+									$counter=0;foreach($nama_lvl_3[$order][$key_lvl_2[$order][$key]] as $key_3=>$value){ ?>
+										<tr>
+											<td></td>
+											<td class="tab2"><?php echo $value; ?></td>
+											<td class="tab2"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$order][$key_lvl_2[$order][$key]][$counter]); ?></td>
+										<td class="tab2"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$order][$key_lvl_2[$order][$key]][$counter]); ?></td>
+										</tr>
+							<?php  $counter++; }
+									}else{ ?>
+									<?php foreach($nama_lvl_3[$order][$key_lvl_2[$order][$key]] as $key_3=>$value){ ?>
+										<tr>
+											<td></td>
+											<td class="tab2"><?php echo $value; ?></td>
+											<td></td>
+											<td></td>
+										</tr>
+									<?php $counter=0;foreach($nama_lvl_4[$order][$key_lvl_3[$order][$key_3]] as $key_4=>$value){ ?>
+											<tr>
+												<td></td>
+												<td class="tab3"><?php echo $value; ?></td>
+												<td class="tab2"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter]); ?></td>
+												<td class="tab2"><?php echo eliminasi_negatif($saldo_awal_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter]); ?></td>
+											</tr>
+									<?php 	$counter++; 
+											} 
+											$j++;
+										}				
+									}				
+						  	}	
+								$i++;
+						}
 					}
 				} ?>
 			</tbody>

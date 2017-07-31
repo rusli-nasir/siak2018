@@ -1638,7 +1638,7 @@ public function get_laporan_arus($level, $parse_data)
 
         $rekap = array();
 
-
+        $data_parsing['data_all'] = $data_all;
         foreach ($data_all as $order => $entry) {
 
             $akun = array();
@@ -1676,32 +1676,34 @@ public function get_laporan_arus($level, $parse_data)
             // print_r($akun);
             // print_r($rekap);
             // die();
-            $data_parsing['akun'] = $akun;
+            
+            $data_parsing['akun'][$order] = $akun;
             foreach ($akun as $key_1 => $akun_1) {
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
-                $data_parsing['nama_lvl_1'][$key_1][] = $nama;
-                echo "$key_1 - $nama ".$array_akun[$order]['jenis_pembatasan']."<br/>";
+                $data_parsing['nama_lvl_1'][$order][$key_1][] = $nama;
+                $data_parsing['jenis_pembatasan'][$order] = $array_akun[$order]['jenis_pembatasan'];
+                //echo "$key_1 - $nama ".$array_akun[$order]['jenis_pembatasan']."<br/>";
                 foreach($akun_1 as $key_2 => $akun_2){
                     $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
-                    $data_parsing['nama_lvl_2'][$key_1][] = $nama;
-                    $data_parsing['key_lvl_2'][] = $key_2;
-                    echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
+                    $data_parsing['nama_lvl_2'][$order][$key_1][] = $nama;
+                    $data_parsing['key_lvl_2'][$order][] = $key_2;
+                    //echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
                     foreach ($akun_2 as $key_3 => $akun_3) {
                         if ($level == 4) {
                             $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
-                            $data_parsing['nama_lvl_3'][$key_2][] = $nama;
-                            $data_parsing['key_lvl_3'][] = $key_3;
-                            echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
+                            $data_parsing['nama_lvl_3'][$order][$key_2][] = $nama;
+                            $data_parsing['key_lvl_3'][$order][] = $key_3;
+                            //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
                             foreach ($akun_3 as $key_4 => $akun_4) {
                                 $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
                                 $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
                                 $saldo_sekarang = $debet - $kredit;
                                 $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                                 $nama = $akun_4['nama'];
-                                $data_parsing['nama_lvl_4'][$key_3][] = $nama;
-                                $data_parsing['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
-                                $data_parsing['saldo_awal_lvl_4'][$key_3][] = $saldo_awal;
-                                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
+                                $data_parsing['nama_lvl_4'][$order][$key_3][] = $nama;
+                                $data_parsing['saldo_sekarang_lvl_4'][$order][$key_3][] = $saldo_sekarang;
+                                $data_parsing['saldo_awal_lvl_4'][$order][$key_3][] = $saldo_awal;
+                                //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
                             }
                         } else {
                             $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
@@ -1709,18 +1711,16 @@ public function get_laporan_arus($level, $parse_data)
                             $saldo_sekarang = $debet - $kredit;
                             $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                             $nama = $akun_3['nama'];
-                            $data_parsing['nama_lvl_3'][$key_2][] = $nama;
-                            $data_parsing['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
-                            $data_parsing['saldo_awal_lvl_3'][$key_2][] = $saldo_awal;
-                            echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
+                            $data_parsing['nama_lvl_3'][$order][$key_2][] = $nama;
+                            $data_parsing['saldo_sekarang_lvl_3'][$order][$key_2][] = $saldo_sekarang;
+                            $data_parsing['saldo_awal_lvl_3'][$order][$key_2][] = $saldo_awal;
+                            //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                         }
                     }
                 }
             }
 
         }
-
-        die();
         
 
         $data_parsing['atribut'] = $parse_data;
