@@ -267,7 +267,7 @@ class Coba_model extends CI_Model {
 						'trx_spm_gup_data' => 'id_trx_spm_gup_data',
 						'trx_spm_tambah_tup_data' => 'id_trx_spm_tambah_tup_data',
 						'trx_spm_tambah_up_data' => 'id_trx_spm_tambah_up_data',
-						'trx_spm_tup_data' => 'id_trx_spm_tup_data',
+						'trx_spm_tup_data' => 'id_trx_spm_gup_data',
 						'trx_spm_lsphk3_data' => 'id_trx_spm_lsphk3_data',
 						'rsa_kuitansi' => 'id_kuitansi'
 			);
@@ -275,10 +275,17 @@ class Coba_model extends CI_Model {
 
 		$tabel_jenis = $this->Spm_model->get_array_jenis();
 
+		$tabel_jenis['GP'] = 'rsa_kuitansi';
+
 		$data = array();
 
+		// print_r($tabel_jenis);die();
+
 		foreach ($tabel_jenis as $tabel) {
-			$data[$tabel][] = $this->db->select('flag_proses_akuntansi')->get_where($tabel,array('flag_proses_akuntansi',1))->row_array()['flag_proses_akuntansi'];
+			$query = $this->db->select($array_primary[$tabel],"flag_proses_akuntansi")->get_where($tabel,array('flag_proses_akuntansi' => 1))->result_array();
+			foreach ($query as $entry) {
+				$data[$tabel][] = $entry[$array_primary[$tabel]];
+			}
 		}
 
 		return $data;
