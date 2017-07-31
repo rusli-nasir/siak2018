@@ -1520,6 +1520,7 @@ public function get_laporan_arus($level, $parse_data)
     {
         $array_akun = array(6,7);
         $data = array();
+        $data_all = array();
         $array_investasi = array();
         $array_pendanaan = array();
         $array_not_pendanaan = array();
@@ -1554,10 +1555,43 @@ public function get_laporan_arus($level, $parse_data)
         $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array('pembayaran pinjaman jangka pendek','pembayaran hutang jangka pendek','pembayaran kewajiban jangka pendek');
         $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array('pembayaran pinjaman jangka panjang','pembayaran hutang jangka panjang','pembayaran kewajiban jangka panjang');
 
+        $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
 
+        $array_akun = array(
+                        array( 
+                              'jenis_pembatasan' => 'tidak_terikat',
+                              'list_akun' => array(6)
+                            ),
+                        array(
+                              'jenis_pembatasan' => 'terikat_temporer',
+                              'list_akun' => array(7)
+                            ),
+                        array(
+                              'jenis_pembatasan' => 'tidak_terikat',
+                              'list_akun' => array(7)
+                            ),
+        );
+
+        $array_pembatasan = array(
+            'tidak_terikat' => null,
+            'terikat_temporer' => null,
+            'terikat_permanen' => null
+        );
+
+        foreach ($array_akun as $key => $detail_pembatasan) {
+            $jenis_pembatasan = $detail_pembatasan['jenis_pembatasan'];
+            $temp_data = array();
+            $temp_data['data'] = $this->Laporan_model->get_rekap($array_akun[$key]['list_akun'],$array_pembatasan[$jenis_pembatasan],'akrual',null,'saldo',$jenis_pembatasan);
+            $temp_data['jenis_pembatasan'] = $jenis_pembatasan;
+            $data_all[] = $temp_data;     
+        }
+
+        // print_r($data);die();
 
 
         //get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null)
+
+
         $data_investasi = array();
         $data_pendanaan = array();
         foreach ($array_investasi as $nama => $akun) {
@@ -1586,7 +1620,7 @@ public function get_laporan_arus($level, $parse_data)
         // print_r($data_pendanaan);die();
 
 
-        $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo');
+        // $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo');
         $tabel_akun = array(
             1 => 'aset',
             2 => 'hutang',
@@ -1598,81 +1632,97 @@ public function get_laporan_arus($level, $parse_data)
         );
         $urutan = array();
         $akun = array();
-
-        foreach ($array_akun as $kd_awal) {
-            $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal]);
-        }
         // print_r($akun);die();
 
 
 
         $rekap = array();
 
-        foreach ($data['posisi'] as $kd_akun => $entry) {
-            foreach ($entry as $inner_entry) {
-                $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
+
+        foreach ($data_all as $order => $entry) {
+
+            $akun = array();
+
+            $detail_pembatasan = $array_akun[$order];
+            foreach ($detail_pembatasan['list_akun'] as $kd_awal) {
+              $kd_awal = substr($kd_awal,0,1);
+              $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal]);   
             }
-        }
 
-        foreach ($data['posisi'] as $kd_akun => $entry) {
-            foreach ($entry as $inner_entry) {
-                $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] += $inner_entry['jumlah'];
+
+            $data = $entry['data'];
+            foreach ($data['posisi'] as $kd_akun => $entry) {
+                foreach ($entry as $inner_entry) {
+                    $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
+                }
             }
-        }
 
-        foreach ($data['saldo'] as $kd_akun => $entry) {
-            $rekap[substr($kd_akun,0,$level)]['saldo_awal'] = 0;
-        }
+            foreach ($data['posisi'] as $kd_akun => $entry) {
+                foreach ($entry as $inner_entry) {
+                    $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] += $inner_entry['jumlah'];
+                }
+            }
 
-        foreach ($data['saldo'] as $kd_akun => $entry) {
-            $rekap[substr($kd_akun,0,$level)]['saldo_awal'] += $entry;
-        }
+            foreach ($data['saldo'] as $kd_akun => $entry) {
+                $rekap[substr($kd_akun,0,$level)]['saldo_awal'] = 0;
+            }
 
-        // print_r($data);
-        // print_r($akun);
-        // print_r($rekap);
-        // die();
-        $data_parsing['akun'] = $akun;
-        foreach ($akun as $key_1 => $akun_1) {
-            $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
-            $data_parsing['nama_lvl_1'][$key_1][] = $nama;
-            //echo "$key_1 - $nama<br/>";
-            foreach($akun_1 as $key_2 => $akun_2){
-                $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
-                $data_parsing['nama_lvl_2'][$key_1][] = $nama;
-                $data_parsing['key_lvl_2'][] = $key_2;
-                //echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
-                foreach ($akun_2 as $key_3 => $akun_3) {
-                    if ($level == 4) {
-                        $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
-                        $data_parsing['nama_lvl_3'][$key_2][] = $nama;
-                        $data_parsing['key_lvl_3'][] = $key_3;
-                        //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
-                        foreach ($akun_3 as $key_4 => $akun_4) {
-                            $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
-                            $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
+            foreach ($data['saldo'] as $kd_akun => $entry) {
+                $rekap[substr($kd_akun,0,$level)]['saldo_awal'] += $entry;
+            }
+
+
+            // print_r($data_all);
+            // print_r($akun);
+            // print_r($rekap);
+            // die();
+            $data_parsing['akun'] = $akun;
+            foreach ($akun as $key_1 => $akun_1) {
+                $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
+                $data_parsing['nama_lvl_1'][$key_1][] = $nama;
+                echo "$key_1 - $nama ".$array_akun[$order]['jenis_pembatasan']."<br/>";
+                foreach($akun_1 as $key_2 => $akun_2){
+                    $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
+                    $data_parsing['nama_lvl_2'][$key_1][] = $nama;
+                    $data_parsing['key_lvl_2'][] = $key_2;
+                    echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
+                    foreach ($akun_2 as $key_3 => $akun_3) {
+                        if ($level == 4) {
+                            $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
+                            $data_parsing['nama_lvl_3'][$key_2][] = $nama;
+                            $data_parsing['key_lvl_3'][] = $key_3;
+                            echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
+                            foreach ($akun_3 as $key_4 => $akun_4) {
+                                $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
+                                $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
+                                $saldo_sekarang = $debet - $kredit;
+                                $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
+                                $nama = $akun_4['nama'];
+                                $data_parsing['nama_lvl_4'][$key_3][] = $nama;
+                                $data_parsing['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
+                                $data_parsing['saldo_awal_lvl_4'][$key_3][] = $saldo_awal;
+                                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
+                            }
+                        } else {
+                            $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
+                            $kredit = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['kredit'] : 0 ;
                             $saldo_sekarang = $debet - $kredit;
-                            $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
-                            $nama = $akun_4['nama'];
-                            $data_parsing['nama_lvl_4'][$key_3][] = $nama;
-                            $data_parsing['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
-                            $data_parsing['saldo_awal_lvl_4'][$key_3][] = $saldo_awal;
-                            //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
+                            $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
+                            $nama = $akun_3['nama'];
+                            $data_parsing['nama_lvl_3'][$key_2][] = $nama;
+                            $data_parsing['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
+                            $data_parsing['saldo_awal_lvl_3'][$key_2][] = $saldo_awal;
+                            echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                         }
-                    } else {
-                        $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
-                        $kredit = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['kredit'] : 0 ;
-                        $saldo_sekarang = $debet - $kredit;
-                        $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
-                        $nama = $akun_3['nama'];
-                        $data_parsing['nama_lvl_3'][$key_2][] = $nama;
-                        $data_parsing['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
-                        $data_parsing['saldo_awal_lvl_3'][$key_2][] = $saldo_awal;
-                        //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                     }
                 }
             }
+
         }
+
+        die();
+        
+
         $data_parsing['atribut'] = $parse_data;
         $data_parsing['level'] = $level;
         $this->load->view('akuntansi/laporan/cetak_laporan_arus_kas', $data_parsing);
