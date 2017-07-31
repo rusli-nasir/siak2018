@@ -85,7 +85,10 @@
 										<td></td>
 										<td></td>
 									</tr>
-								<?php $counter=0;foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){ ?>
+								<?php $counter=0;foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){ 
+										$jumlah_sekarang[$index] += $saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
+										$jumlah_awal[$index] += $saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
+										?>
 										<tr>
 											<td></td>
 											<td class="tab3"><?php echo $value; ?></td>
