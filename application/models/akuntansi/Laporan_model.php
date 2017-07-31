@@ -685,6 +685,21 @@ class Laporan_model extends CI_Model {
             return $data;
         }
 
+        if ($laporan == 'anggaran') {
+            $anggaran = array();
+            foreach ($query1 as $akun => $posisi) {
+                if ($unit != null) {
+                    $this->db2->where('LEFT(kode_usulan_belanja,2)',$unit);
+                } 
+                $this->db2->where('RIGHT(kode_usulan_belanja,6)',$akun);
+                $this->db2->select("Sum(harga_satuan * volume) AS jumlah");
+                $this->db2->group_by('RIGHT(kode_usulan_belanja,6)');
+
+                $anggaran[$akun] = $this->db2->get('detail_belanja_')->row_array()['jumlah'];
+            }
+            $data['anggaran'] = $anggaran;
+        }
+
         $data['posisi'] = $query1;
 
         // print_r($hasil);die();
