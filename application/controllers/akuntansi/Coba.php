@@ -18,6 +18,7 @@ class Coba extends MY_Controller {
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
         $this->load->model('akuntansi/User_akuntansi_model', 'User_akuntansi_model');
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
 	}
 
     public function index()
@@ -41,6 +42,10 @@ class Coba extends MY_Controller {
         print_r($this->Coba_model->backup_rsa());
     }
 
+    public function coba_akrual($value='')
+    {
+        print_r($this->Akun_belanja_rsa_model->get_all_akun_belanja());
+    }
 
     
 

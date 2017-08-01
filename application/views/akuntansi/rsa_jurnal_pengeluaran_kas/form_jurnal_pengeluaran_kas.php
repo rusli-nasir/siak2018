@@ -148,7 +148,7 @@ if($jenis=='NK'){
             <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - ';
             $uraian_akun = explode(' ', $akun['nama_akun']);
             if($uraian_akun[0]!='beban'){
-              $uraian_akun[0] = 'beban';
+              $uraian_akun[0] = 'Beban';
             }
             $hasil_uraian = implode(' ', $uraian_akun);
             echo $hasil_uraian;
