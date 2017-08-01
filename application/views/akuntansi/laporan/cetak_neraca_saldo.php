@@ -26,15 +26,7 @@ if(isset($excel)){
 		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
     	.excel{background-color:#A3A33E;color:#fff;}
     	.pdf{background-color:#588097;color:#fff;}
-    	<?php if($level==3){ ?>
-    		.level_6{display:none;}
-    	<?php }else{ ?>
-    		.level_3{display:none;}
-    	<?php } ?>
 		</style>
-		<script type="text/javascript">
-		//window.print();
-		</script>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
 		<?php if(!isset($excel)){ ?>
@@ -69,6 +61,7 @@ if(isset($excel)){
 			<?php echo $teks_periode; ?><br/><br/>
 		</div>
 		<?php 
+		if($level!=3){
 			echo '<table style="font-size:10pt;" class="level_6">
 						<tr>
 							<td width="150px"><b>Unit Kerja</b></td>
@@ -96,6 +89,7 @@ if(isset($excel)){
 						</tr>
 					</thead>
 					<tbody>';
+			}
 
 			$i = 1;
 			$counter = 0;
@@ -125,20 +119,23 @@ if(isset($excel)){
 	                $debet = $saldo;
 	            }
 
-				echo '<tr>
-						<td>'.$i.'</td>
-						<td>'.str_replace('-pajak', '', $key).'</td>
-						<td>';
-						if(strlen((string)$key)==6){
-							echo get_nama_akun_v((string)$key);
-						}else{
-							echo strtoupper(get_nama_akun_v((string)$key));
-						}	
+	            if($level!=3){
+					echo '<tr>
+							<td>'.$i.'</td>
+							<td>'.str_replace('-pajak', '', $key).'</td>
+							<td>';
+							if(strlen((string)$key)==6){
+								echo get_nama_akun_v((string)$key);
+							}else{
+								echo strtoupper(get_nama_akun_v((string)$key));
+							}
+							echo '</td>';
+				}	
 
 						$arr_3[$counter]['kode_akun'] = $key;
 						$arr_3[$counter]['uraian'] = get_nama_akun_v((string)$key);
 
-				echo    '</td>';
+				
 					foreach ($entry as $transaksi) {
 		    			if ($transaksi['tipe'] == 'debet'){
 		    				$debet += $transaksi['jumlah'];
@@ -169,15 +166,19 @@ if(isset($excel)){
 		    		if ($debet < 0 or $kredit < 0){
 		    			$jumlah_debet += abs($kredit);
 		    			$jumlah_kredit += abs($debet);
-						echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
-						<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';	
+		    			if($level!=3){
+							echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
+							<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';
+						}	
 						$arr_3[$counter]['mutasi_debit'] = abs($kredit);    			
 						$arr_3[$counter]['mutasi_kredit'] = abs($debet);    			
 		    		} else {
 		    			$jumlah_debet += abs($debet);
 		    			$jumlah_kredit += abs($kredit);
-			    		echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
+		    			if($level!=3){
+			    			echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
 							<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
+						}
 						$arr_3[$counter]['mutasi_debit'] = abs($debet);    			
 						$arr_3[$counter]['mutasi_kredit'] = abs($kredit); 
 		    		}
@@ -195,8 +196,10 @@ if(isset($excel)){
 		                $jumlah_neraca_kredit += $saldo_neraca;
 		    //             echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
 						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';
-		                echo '<td align="right" style="font-size:8pt">0.00</td>';
-		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
+						if($level!=3){
+			                echo '<td align="right" style="font-size:8pt">0.00</td>';
+			                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
+			            }
 		                $arr_3[$counter]['neraca_debit'] = 0;    			
 						$arr_3[$counter]['neraca_kredit'] = abs($saldo_neraca); 
 		            } elseif ($kredit < $debet) {
@@ -204,34 +207,43 @@ if(isset($excel)){
 		                $jumlah_neraca_debet += $saldo_neraca;
 		    //             echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
 						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
-		                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
-		                echo '<td align="right" style="font-size:8pt">0.00</td>';
+						if($level!=3){
+			                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
+			                echo '<td align="right" style="font-size:8pt">0.00</td>';
+			            }
 		                $arr_3[$counter]['neraca_debit'] = abs($saldo_neraca);    			
 						$arr_3[$counter]['neraca_kredit'] = 0;
 		            }else{
-		            	echo '<td align="right" style="font-size:8pt">0.00</td>';
-		            	echo '<td align="right" style="font-size:8pt">0.00</td>';
+		            	if($level!=3){
+			            	echo '<td align="right" style="font-size:8pt">0.00</td>';
+			            	echo '<td align="right" style="font-size:8pt">0.00</td>';
+			            }
 		            	$arr_3[$counter]['neraca_debit'] = 0;    			
 						$arr_3[$counter]['neraca_kredit'] = 0; 
 		            }
 
-				echo '</tr>';
+		        if($level!=3){
+					echo '</tr>';
+				}
 
 				$i++;
 				$counter++;
 			}
-    		echo '</tbody>
-	    			<tfoot>
-					 	<tr style="background-color:#B1E9F2;">
-		    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
-		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_debet).'</td>
-		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_kredit).'</td>
-		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
-		    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
-		    			</tr>
-	    			</tfoot>
-				</table>';
+			if($level!=3){
+	    		echo '</tbody>
+		    			<tfoot>
+						 	<tr style="background-color:#B1E9F2;">
+			    				<td align="right" colspan="3" style="background-color:#B1E9F2"><b>Jumlah Total</b></td>
+			    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_debet).'</td>
+			    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_kredit).'</td>
+			    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_debet).'</td>
+			    				<td align="right" style="font-size:8pt">'.eliminasi_negatif($jumlah_neraca_kredit).'</td>
+			    			</tr>
+		    			</tfoot>
+					</table>';
+			}
 
+				//Men-3-digitkan hasil neraca saldo
 				$result = array();
 				foreach ($arr_3 as $data) {
 				  $kode_akun = substr($data['kode_akun'],0,3);
@@ -260,6 +272,7 @@ if(isset($excel)){
 					}
 				}
 
+			if($level==3){
 				echo '<table style="font-size:10pt;" class="level_3">
 						<tr>
 							<td width="150px"><b>Unit Kerja</b></td>
@@ -270,7 +283,7 @@ if(isset($excel)){
 							<td>:'.$teks_tahun_anggaran.'</td>
 						</tr>
 				</table>';
-			echo '<table style="width:1300px;font-size:10pt;" class="border level_3">
+				echo '<table style="width:1300px;font-size:10pt;" class="border level_3">
 					<thead style="background-color:#ECF379;height:45px">
 						<tr style="background-color:#ECF379;">
 							<th rowspan="2">No</th>
@@ -321,6 +334,7 @@ if(isset($excel)){
 		    			</tr>
 	    			</tfoot>
 				</table>'; 
+			}
 		?>
 		<table width="1300px;">
 			<tbody>
