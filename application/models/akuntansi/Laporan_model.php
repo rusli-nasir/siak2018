@@ -688,14 +688,26 @@ class Laporan_model extends CI_Model {
         if ($laporan == 'anggaran') {
             $anggaran = array();
             foreach ($query1 as $akun => $posisi) {
-                if ($unit != null) {
-                    $this->db2->where('LEFT(kode_usulan_belanja,2)',$unit);
-                } 
-                $this->db2->where('RIGHT(kode_usulan_belanja,6)',$akun);
-                $this->db2->select("Sum(harga_satuan * volume) AS jumlah");
-                $this->db2->group_by('RIGHT(kode_usulan_belanja,6)');
+                if (substr($akun, 0,1) == 5) {
+                    if ($unit != null) {
+                        $this->db2->where('LEFT(kode_usulan_belanja,2)',$unit);
+                    } 
+                    $this->db2->where('RIGHT(kode_usulan_belanja,6)',$akun);
+                    $this->db2->select("Sum(harga_satuan * volume) AS jumlah");
+                    $this->db2->group_by('RIGHT(kode_usulan_belanja,6)');
 
-                $anggaran[$akun] = $this->db2->get('detail_belanja_')->row_array()['jumlah'];
+                    $anggaran[$akun] = $this->db2->get('detail_belanja_')->row_array()['jumlah'];
+                } elseif (substr($akun,0,1) == 4) {
+                    if ($unit != null) {
+                        $this->db2->where('LEFT(sukpa,2)',$unit);
+                    } 
+                    $this->db2->where('akun',$akun);
+                    $this->db2->select("SUM(jml_nilai) as jumlah");
+                    $this->db2->group_by('akun');
+
+                    $anggaran[$akun] = $this->db2->get('target')->row_array()['jumlah'];
+
+                }
             }
             $data['anggaran'] = $anggaran;
         }

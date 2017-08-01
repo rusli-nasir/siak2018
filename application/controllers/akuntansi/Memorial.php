@@ -134,7 +134,7 @@ class Memorial extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
-            $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
 
 
             $entry['tanggal_posting'] = date('Y-m-d H:i:s');
@@ -308,7 +308,7 @@ class Memorial extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
-            $entry['kode_kegiatan'] = $this->input->post('unit_kerja').'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
 
             unset($entry['kegiatan']);
             unset($entry['output']);
