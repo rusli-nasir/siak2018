@@ -69,8 +69,9 @@ class Akun_model extends CI_Model {
 		$data = array();
 
 		if ($kode_akun == 5 or $kode_akun == 7) {
+			$replacer = $kode_akun;
 			$kode_akun = 5;
-			$replacer = 7;
+			// $replacer = 7;
 			for ($i=1; $i <= $level; $i++) { 
 				$this->db2->select("kode_akun".$i."digit as akun_$i");
 			}
@@ -124,12 +125,16 @@ class Akun_model extends CI_Model {
 		if ($replacer != 0) {
 			foreach ($hasil as $key => $entry) {
 				if ($level == 3) {
-					$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
-					$entry['nama'] = ucwords(strtolower($entry['nama']));
+					if ($replacer == 7) {
+						$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+						$entry['nama'] = ucwords(strtolower($entry['nama']));
+					}
 					$data[substr_replace($entry['akun_1'],$replacer,0,1)][substr_replace($entry['akun_2'],$replacer,0,1)][substr_replace($entry['akun_3'],$replacer,0,1)] = $entry;
 				} else {
-					$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
-					$entry['nama'] = ucwords(strtolower($entry['nama']));
+					if ($replacer == 7) {
+						$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+						$entry['nama'] = ucwords(strtolower($entry['nama']));
+					}
 					$data[substr_replace($entry['akun_1'],$replacer,0,1)][substr_replace($entry['akun_2'],$replacer,0,1)][substr_replace($entry['akun_3'],$replacer,0,1)][substr_replace($entry['akun_4'],$replacer,0,1)] = $entry;
 				}
 			}

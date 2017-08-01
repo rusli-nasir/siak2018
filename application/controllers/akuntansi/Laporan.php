@@ -1728,6 +1728,102 @@ public function get_laporan_arus($level, $parse_data)
         $this->load->view('akuntansi/laporan/cetak_laporan_arus_kas', $data_parsing);
     }
 
+    public function get_lra($level)
+    {
+        $jumlah_tahun_sekarang = 0;
+        $jumlah_tahun_awal = 0;
+        $array_akun = array(4,5);
+        $data = $this->Laporan_model->get_rekap($array_akun,null,'kas',null,'anggaran');
+        $tabel_akun = array(
+            4 => 'lra',
+            5 => 'akun_belanja',
+        );
+        $akun = array();
+
+        foreach ($array_akun as $kd_awal) {
+            $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal]);
+        }
+
+
+        $rekap = array();
+
+        foreach ($data['posisi'] as $kd_akun => $entry) {
+            foreach ($entry as $inner_entry) {
+                $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
+            }
+        }
+
+        foreach ($data['posisi'] as $kd_akun => $entry) {
+            foreach ($entry as $inner_entry) {
+                $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] += $inner_entry['jumlah'];
+            }
+        }
+
+        foreach ($data['anggaran'] as $kd_akun => $entry) {
+            $rekap[substr($kd_akun,0,$level)]['anggaran'] = 0;
+        }
+
+        foreach ($data['anggaran'] as $kd_akun => $entry) {
+            $rekap[substr($kd_akun,0,$level)]['anggaran'] += $entry;
+        }
+
+        // print_r($data);
+        // print_r($akun);
+        // print_r($rekap);
+        // die();
+        $data['akun'] = $akun;
+        foreach ($akun as $key_1 => $akun_1) {
+            $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
+            $data['nama_lvl_1'][$key_1][] = $nama;
+            echo "$key_1 - $nama<br/>";
+            foreach($akun_1 as $key_2 => $akun_2){
+                $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
+                $data['nama_lvl_2'][$key_1][] = $nama;
+                $data['key_lvl_2'][] = $key_2;
+                echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
+                foreach ($akun_2 as $key_3 => $akun_3) {
+                    if ($level == 4) {
+                        $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
+                        $data['nama_lvl_3'][$key_2][] = $nama;
+                        $data['key_lvl_3'][] = $key_3;
+                        echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
+                        foreach ($akun_3 as $key_4 => $akun_4) {
+                            $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
+                            $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
+                            $saldo_sekarang = $debet - $kredit;
+                            $anggaran = (isset($rekap[$key_4]['anggaran'])) ? $rekap[$key_4]['anggaran'] : 0 ;
+                            // $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
+                            $nama = $akun_4['nama'];
+                            $data['nama_lvl_4'][$key_3][] = $nama;
+                            // $data['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
+                            // $data['saldo_awal_lvl_4'][$key_3][] = $saldo_awal;
+                            // $jumlah_tahun_sekarang += $saldo_sekarang;
+                            // $jumlah_tahun_awal += $saldo_awal;
+                            echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$anggaran<br/>";
+                        }
+                    } else {
+                        $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
+                        $kredit = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['kredit'] : 0 ;
+                        $anggaran = (isset($rekap[$key_3]['anggaran'])) ? $rekap[$key_3]['anggaran'] : 0 ;
+                        $saldo_sekarang = $debet - $kredit;
+                        // $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
+                        $nama = $akun_3['nama'];
+                        $data['nama_lvl_3'][$key_2][] = $nama;
+                        // $data['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
+                        // $data['saldo_awal_lvl_3'][$key_2][] = $saldo_awal;
+                        // $jumlah_tahun_sekarang += $saldo_sekarang;
+                        // $jumlah_tahun_awal += $saldo_awal;
+                        echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$anggaran<br/>";
+                    }
+                }
+            }
+        }
+        $data['atribut'] = $parse_data;
+        $data['level'] = $level;
+        $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
+        $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
+    }
+
     function copyRows(PHPExcel_Worksheet $sheet,$srcRow,$dstRow,$height,$width) {
         for ($row = 0; $row < $height; $row++) {
                for ($col = 0; $col < $width; $col++) {
