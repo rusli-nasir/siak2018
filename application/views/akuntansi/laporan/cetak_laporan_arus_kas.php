@@ -46,7 +46,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $i=0;$j=0;
+				<?php $i=0;$j=0;$index=0;
 				foreach($data_all as $order=>$entry){
 				 foreach ($akun[$order] as $key_1 => $akun_1) {
 					foreach($nama_lvl_1[$order][$key_1] as $key=>$value){ ?>
@@ -56,7 +56,10 @@
 							<td></td>
 							<td></td>
 						</tr>
-						<?php foreach($nama_lvl_2[$order][$key_1] as $key=>$value){ ?>
+						<?php foreach($nama_lvl_2[$order][$key_1] as $key=>$value){ 
+							$jumlah_sekarang[$index] = 0;
+							$jumlah_awal[$index] = 0;
+							?>
 								<tr>
 									<td></td>
 									<td class="tab1"><?php echo $value; ?></td>
@@ -64,12 +67,15 @@
 									<td></td>
 								</tr>	
 								<?php if($level==3){
-									$counter=0;foreach($nama_lvl_3[$order][$key_lvl_2[$order][$key]] as $key_3=>$value){ ?>
+									$counter=0;foreach($nama_lvl_3[$order][$key_lvl_2[$order][$key]] as $key_3=>$value){ 
+										$jumlah_sekarang[$index] += $saldo_sekarang_lvl_3[$order][$key_lvl_2[$order][$key]][$counter];
+										$jumlah_awal[$index] +=$saldo_awal_lvl_3[$order][$key_lvl_2[$order][$key]][$counter];
+										?>
 										<tr>
 											<td></td>
 											<td class="tab2"><?php echo $value; ?></td>
-											<td class="tab2"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$order][$key_lvl_2[$order][$key]][$counter]); ?></td>
-										<td class="tab2"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$order][$key_lvl_2[$order][$key]][$counter]); ?></td>
+											<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$order][$key_lvl_2[$order][$key]][$counter]); ?></td>
+											<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$order][$key_lvl_2[$order][$key]][$counter]); ?></td>
 										</tr>
 							<?php  $counter++; }
 									}else{ ?>
@@ -80,23 +86,79 @@
 											<td></td>
 											<td></td>
 										</tr>
-									<?php $counter=0;foreach($nama_lvl_4[$order][$key_lvl_3[$order][$key_3]] as $key_4=>$value){ ?>
+									<?php $counter=0;foreach($nama_lvl_4[$order][$key_lvl_3[$order][$key_3]] as $key_4=>$value){ 
+										$jumlah_sekarang[$index] += $saldo_sekarang_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter];
+										$jumlah_awal[$index] += $saldo_awal_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter];
+										?>
 											<tr>
 												<td></td>
 												<td class="tab3"><?php echo $value; ?></td>
-												<td class="tab2"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter]); ?></td>
-												<td class="tab2"><?php echo eliminasi_negatif($saldo_awal_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter]); ?></td>
+												<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter]); ?></td>
+												<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_4[$order][$key_lvl_3[$order][$key_3]][$counter]); ?></td>
 											</tr>
 									<?php 	$counter++; 
 											} 
 											$j++;
 										}				
-									}				
+									}	
+									?>
+									<tr style="background-color:#F7F2AF">
+										<td colspan="2" align="right"><b>Jumlah </b></td>
+										<td align="right"><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></td>
+										<td align="right"><?php echo eliminasi_negatif($jumlah_awal[$index]); ?></td>
+									</tr>
+								<?php			
 						  	}	
-								$i++;
+						  		$index++;
+								$i++; 
 						}
 					}
 				} ?>
+				<tr>
+					<td></td>
+					<td><b>ARUS KAS DARI AKTIVITAS INVESTASI</b></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<?php foreach($data_investasi as $key=>$value){ ?>
+				<tr>
+					<td></td>
+					<td class="tab2">
+						<?php 
+						$kode_akun = explode('_', $key);
+						if($kode_akun[0]=='fluk'){
+							$kode_akun[0] = '(Penambahan)/Pengurangan';
+						}
+						$hasil = implode(' ', $kode_akun);
+						echo ucwords($hasil); 
+						?>
+					</td>
+					<td align="right"><?php echo eliminasi_negatif($value['saldo']); ?></td>
+					<td></td>
+				</tr>
+				<?php } ?>
+				<tr>
+					<td></td>
+					<td><b>ARUS KAS DARI AKTIVITAS PENDANAAN</b></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<?php foreach($data_pendanaan as $key=>$value){ ?>
+				<tr>
+					<td></td>
+					<td class="tab2"><?php echo str_replace('_', ' ', $key); ?></td>
+					<td align="right"></td>
+					<td></td>
+				</tr>
+					<?php foreach($value as $key_1=>$value_1){ ?>
+					<tr>
+						<td></td>
+						<td class="tab3"><?php echo str_replace('_', ' ', $key_1); ?></td>
+						<td align="right"><?php echo eliminasi_negatif($value_1['saldo']); ?></td>
+						<td></td>
+					</tr>
+					<?php } ?>
+				<?php } ?>
 			</tbody>
 		</table>
 	</body>

@@ -54,14 +54,14 @@
 						?>
 						<tr>
 							<td></td>
-							<td class="tab0"><?php echo $value; ?></td>
+							<td class="tab0"><?php echo strtoupper($value); ?></td>
 							<td></td>
 							<td></td>
 						</tr>
 						<?php foreach($nama_lvl_2[$value_pembatasan][$key_1] as $key=>$value){ ?>
 							<tr>
 								<td></td>
-								<td class="tab1"><?php echo $value; ?></td>
+								<td class="tab1"><?php echo strtoupper($value.' '.str_replace('_', ' ', ($value_pembatasan))); ?></td>
 								<td></td>
 								<td></td>
 							</tr>	
@@ -72,7 +72,7 @@
 									?>
 									<tr>
 										<td></td>
-										<td class="tab2"><?php echo $value; ?></td>
+										<td class="tab2"><?php echo strtoupper($value); ?></td>
 										<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter]); ?></td>
 										<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter]); ?></td>
 									</tr>
@@ -81,9 +81,19 @@
 								<?php foreach($nama_lvl_3[$value_pembatasan][$key_lvl_2[$i]] as $key=>$value){ ?>
 									<tr>
 										<td></td>
-										<td class="tab2"><?php echo $value; ?></td>
-										<td></td>
-										<td></td>
+										<td class="tab2"><?php echo strtoupper($value); ?></td>
+										<?php
+										$total_sekarang = 0;
+										$total_awal = 0;
+										$counter=0;
+										foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){
+											$total_sekarang += $saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
+											$total_awal += $saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
+											$counter++;
+										}
+										?>
+										<td align="right"><?php echo eliminasi_negatif($total_sekarang); ?></td>
+										<td align="right"><?php echo eliminasi_negatif($total_awal); ?></td>
 									</tr>
 								<?php $counter=0;foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){ 
 										$jumlah_sekarang[$index] += $saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
@@ -91,7 +101,7 @@
 										?>
 										<tr>
 											<td></td>
-											<td class="tab3"><?php echo $value; ?></td>
+											<td class="tab3"><?php echo strtoupper($value); ?></td>
 											<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter]); ?></td>
 											<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter]); ?></td>
 										</tr>
@@ -103,7 +113,7 @@
 							$i++;
 							} ?>
 							<tr style="background-color:#F7F2AF">
-								<td colspan="2" class="tab2"><b>Jumlah <?php echo $nama_level_1.' '.$value_pembatasan; ?></b></td>
+								<td colspan="2" class="tab2"><b>JUMLAH <?php echo strtoupper(str_replace('_', ' ', $nama_level_1.' '.$value_pembatasan)); ?></b></td>
 								<td align="right"><b><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></b></td>
 								<td align="right"><b><?php echo eliminasi_negatif($jumlah_awal[$index]); ?></b></td>
 							</tr>
@@ -113,7 +123,7 @@
 					}
 					?>
 					<tr style="background-color:#8D76E4">
-						<td colspan="2" class="tab2"><b>Jumlah Kenaikan(Penurunan) ASET BERSIH <?php echo $value_pembatasan; ?></b></td>
+						<td colspan="2" class="tab2"><b>JUMLAH KENAIKAN(PENURUNAN) ASET BERSIH <?php echo strtoupper(str_replace('_', ' ', $value_pembatasan)); ?></b></td>
 						<td align="right"><b><?php echo eliminasi_negatif(abs($jumlah_sekarang[$index-1])-abs($jumlah_sekarang[$index-2])); ?></b></td>
 						<td align="right"><b><?php echo eliminasi_negatif(abs($jumlah_awal[$index-1])-abs($jumlah_awal[$index-2])); ?></b></td>
 					</tr>
@@ -135,7 +145,7 @@
 function eliminasi_negatif($value)
 {
     if ($value < 0) 
-    	return number_format(abs($value),2,',','.');
+    	return '('.number_format(abs($value),2,',','.').')';
         // return "(". number_format(abs($value),2,',','.') .")";
     else
         return number_format($value,2,',','.');
