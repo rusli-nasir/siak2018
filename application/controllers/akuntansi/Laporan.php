@@ -1482,7 +1482,13 @@ class Laporan extends MY_Controller {
                             foreach ($akun_3 as $key_4 => $akun_4) {
                                 $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
                                 $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
-                                $saldo_sekarang = $debet - $kredit;
+
+                                if ($this->case_hutang($key_4)) {
+                                    $saldo_sekarang = $kredit - $debet;
+                                } else {
+                                    $saldo_sekarang = $debet - $kredit;
+                                }
+                                
                                 $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                                 $nama = $akun_4['nama'];
                                 $data_parsing['nama_lvl_4'][$jenis_pembatasan][$key_3][] = $nama;
@@ -1495,7 +1501,13 @@ class Laporan extends MY_Controller {
                         } else {
                             $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
                             $kredit = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['kredit'] : 0 ;
-                            $saldo_sekarang = $debet - $kredit;
+                            
+                            if ($this->case_hutang($key_3)) {
+                                $saldo_sekarang = $kredit - $debet;
+                            } else {
+                                $saldo_sekarang = $debet - $kredit;
+                            }
+                            
                             $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                             $nama = $akun_3['nama'];
                             $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
@@ -1929,6 +1941,11 @@ public function get_laporan_arus($level, $parse_data)
         }else{
             $this->load->view('akuntansi/laporan/cetak_rekap_spm',$this->data);
         }
+    }
+
+    public function case_hutang($x)
+    {
+        return in_array(substr($x,0,1),[2,3,4,6]);
     }
 
 
