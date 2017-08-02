@@ -92,6 +92,13 @@ class Akun_model extends CI_Model {
 			;
 			// echo $this->db2->get_compiled_select();die();
 			$hasil = $this->db2->get()->result_array();
+
+			foreach ($hasil as $key => $value) {
+				if ($value['akun_3'] == 523){
+					$hasil[$key]['nama'] = "Beban Pengadaan Jasa Lain-lain";
+				}
+			}
+
 			// print_r($hasil);die();
 			// echo "atas";
 			// $data = array();

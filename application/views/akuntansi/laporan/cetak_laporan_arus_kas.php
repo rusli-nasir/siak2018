@@ -133,7 +133,7 @@
 						echo ucwords($hasil); 
 						?>
 					</td>
-					<td align="right"><?php echo eliminasi_negatif($value['saldo']); ?></td>
+					<td align="right"><?php echo eliminasi_negatif($value['saldo'] + $value['debet'] - $value['kredit'] ); ?></td>
 					<td></td>
 				</tr>
 				<?php } ?>

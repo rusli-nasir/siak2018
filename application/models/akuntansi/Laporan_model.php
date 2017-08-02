@@ -570,7 +570,10 @@ class Laporan_model extends CI_Model {
 
                     $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
-                    // echo $this->db_laporan->get_compiled_select();die();
+                    // if ($array_uraian != null) {
+                    //     echo $this->db_laporan->get_compiled_select();die();
+                    // }
+
 
                     $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
@@ -654,6 +657,13 @@ class Laporan_model extends CI_Model {
         foreach ($query1 as $key => $value) {
             $query1[$key] = array_unique($query1[$key],SORT_REGULAR);
         }
+ 
+        // if ($array_uraian != null) {
+        //     // print_r($array_uraian);die();
+            // if ($array_akun == array(7)) {
+            //     print_r($query1);die();
+            // }
+        // }
 
 
 
