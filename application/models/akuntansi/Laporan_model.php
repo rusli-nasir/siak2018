@@ -502,10 +502,9 @@ class Laporan_model extends CI_Model {
         }
 
         $year = date("Y");
-        if ($start_date == null) {
-            $start_date = "$year-01-01";        
-        }elseif ($end_date == null) {
-            $end_date = "$year-12-31";        
+        if ($start_date == null AND $end_date == null) {
+            $start_date = "$year-01-01";  
+            $end_date = "$year-06-30";      
         }
 
         $kolom = array(

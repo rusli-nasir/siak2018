@@ -1422,7 +1422,7 @@ class Laporan extends MY_Controller {
         $last_year = $year - 1;
 
         if ($year == '2017') {
-            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$year-01-01","$year-12-31");
+            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$year-01-01","$year-06-30");
 
             $aset_tahun_ini = array_sum($temp_aset['saldo']);
             $data_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = $aset_tahun_ini;
@@ -1432,12 +1432,12 @@ class Laporan extends MY_Controller {
             $aset_tahun_lalu = 0;
             $data_aset['tahun_lalu'] = $aset_tahun_lalu;
         } else {
-            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$year-01-01","$year-12-31");
+            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$year-01-01","$year-06-30");
             $aset_tahun_ini = array_sum($temp_aset['saldo']);
             $data_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = $aset_tahun_ini;
             $data_aset['tahun_ini'] = $aset_tahun_ini;
 
-            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$last_year-01-01","$last_year-12-31");
+            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$last_year-01-01","$last_year-06-30");
             $aset_tahun_lalu = array_sum($temp_aset['saldo']);
 
             $data_aset['tahun_lalu'] = $aset_tahun_lalu;
@@ -1559,6 +1559,7 @@ class Laporan extends MY_Controller {
                 }
             }
         }
+
         $data_parsing['atribut'] = $parse_data;
         $data_parsing['level'] = $level;
         $data_parsing['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;

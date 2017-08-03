@@ -489,8 +489,17 @@ function get_nama_akun_v($kode_akun){
 				$query = $ci->db->query('SELECT * FROM akuntansi_pajak WHERE kode_akun LIKE "%kode_akun%"')->row_array();
 				return $query['nama_akun'];
 			}else{
-				if(substr($kode_akun, 0, 1)=='5' OR substr($kode_akun, 0, 1)=='7'){
+				if(substr($kode_akun, 0, 1)=='5'){
 					return $query['nama_akun3digit'];
+				}else if(substr($kode_akun, 0, 1)=='7'){
+					$uraian_akun = explode(' ', $query['nama_akun3digit']);
+					if(isset($uraian_akun[0])){
+			            if($uraian_akun[0]!='beban'){
+			              $uraian_akun[0] = 'Beban';
+			            }
+			        }
+			        $hasil_uraian = implode(' ', $uraian_akun);
+			        return $hasil_uraian;
 				}else{
 					return $query['nama'];
 				}	

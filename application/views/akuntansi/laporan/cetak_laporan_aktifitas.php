@@ -41,7 +41,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $i=0;$j=0;$index=0;$index_atas=0;		
+				<?php $i=0;$j=0;$index=0;$index_atas=0;$total_semua_sekarang=0;$total_semua_awal=0;		
 				foreach($jenis_pembatasan as $key=>$value_pembatasan){ ?>
 					<tr>
 						<td colspan="4" align="center" style="background-color:#e6e6e6"><?php echo $value_pembatasan; ?></td>
@@ -124,17 +124,48 @@
 					?>
 					<tr style="background-color:#8D76E4">
 						<td colspan="2" class="tab2"><b>JUMLAH KENAIKAN(PENURUNAN) ASET BERSIH <?php echo strtoupper(str_replace('_', ' ', $value_pembatasan)); ?></b></td>
-						<td align="right"><b><?php echo eliminasi_negatif(abs($jumlah_sekarang[$index-1])-abs($jumlah_sekarang[$index-2])); ?></b></td>
-						<td align="right"><b><?php echo eliminasi_negatif(abs($jumlah_awal[$index-1])-abs($jumlah_awal[$index-2])); ?></b></td>
+						<td align="right"><b>
+							<?php 
+							$total_semua_sekarang += (abs($jumlah_sekarang[$index-2])-abs($jumlah_sekarang[$index-1]));
+							echo eliminasi_negatif(abs($jumlah_sekarang[$index-2])-abs($jumlah_sekarang[$index-1])); 
+							?></b></td>
+						<td align="right"><b>
+							<?php 
+							$total_semua_awal += (abs($jumlah_awal[$index-2])-abs($jumlah_awal[$index-1]));
+							echo eliminasi_negatif(abs($jumlah_awal[$index-2])-abs($jumlah_awal[$index-1])); 
+							?></b></td>
 					</tr>
 					<?php
 				} ?>	
+				<tr style="background-color:#B1E9F2">
+					<td colspan="2">KENAIKAN DAN (PENURUNAN) ASET BERSIH TAHUN BERJALAN</td>
+					<td align="right"><?php echo eliminasi_negatif($total_semua_sekarang); ?></td>
+					<td align="right"><?php echo eliminasi_negatif($total_semua_awal); ?></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td class="tab1">ASET BERSIH AWAL TAHUN:</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td class="tab2">Aset Bersih Kekayaan Awal PTN Badan Hukum</td>
+					<td align="right"><?php $total_ekuitas = 3109370974259; echo eliminasi_negatif($total_ekuitas); ?></td>
+					<td align="right">0,00</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td class="tab2">Kenaikan (Penurunan) Aset Bersih Tahun Lalu</td>
+					<td align="right">0</td>
+					<td align="right">0,00</td>
+				</tr>
 			</tbody>
 			<tfoot>
 				<tr style="background-color:#B1E9F2">
-					<td colspan="2" align="right">Total</td>
-					<td align="right"><?php echo eliminasi_negatif($jumlah_tahun_sekarang); ?></td>
-					<td align="right"><?php echo eliminasi_negatif($jumlah_tahun_awal); ?></td>
+					<td colspan="2">ASET BERSIH AKHIR TAHUN</td>
+					<td align="right"><?php echo eliminasi_negatif($total_semua_sekarang+$total_ekuitas); ?></td>
+					<td align="right"><?php echo eliminasi_negatif($total_semua_awal); ?></td>
 				</tr>
 			</tfoot>
 		</table>
