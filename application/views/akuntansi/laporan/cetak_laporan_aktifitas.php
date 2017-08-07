@@ -43,9 +43,9 @@
 			<tbody>
 				<?php $i=0;$j=0;$index=0;$index_atas=0;$total_semua_sekarang=0;$total_semua_awal=0;		
 				foreach($jenis_pembatasan as $key=>$value_pembatasan){ ?>
-					<tr>
+					<!-- <tr>
 						<td colspan="4" align="center" style="background-color:#e6e6e6"><?php echo $value_pembatasan; ?></td>
-					</tr>
+					</tr> -->
 				<?php foreach ($akun as $key_1 => $akun_1) {
 						$jumlah_sekarang[$index] = 0;
 						$jumlah_awal[$index] = 0;
