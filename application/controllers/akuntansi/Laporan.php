@@ -1755,6 +1755,33 @@ class Laporan extends MY_Controller {
             'terikat_permanen' => array(6,7)
         );
 
+        $array_akun = array(
+            array(
+                    'order' => 1,
+                    'akun' => array(6),
+                    'not_akun' => $array_pembatasan['terikat_temporer'],
+                    'pembatasan' => 'terikat_temporer'
+            ),
+            array(
+                    'order' => 2,
+                    'akun' => array(6),
+                    'not_akun' => $array_pembatasan['tidak_terikat'],
+                    'pembatasan' => 'tidak_terikat'
+            ),
+            array(
+                    'order' => 3,
+                    'akun' => array(7),
+                    'not_akun' => $array_pembatasan['terikat_temporer'],
+                    'pembatasan' => 'terikat_temporer'
+            ),
+            array(
+                    'order' => 4,
+                    'akun' => array(7),
+                    'not_akun' => $array_pembatasan['tidak_terikat'],
+                    'pembatasan' => 'tidak_terikat'
+            ),
+        );
+
         $array_aset = array();
         $array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = array(3);
 
@@ -1784,8 +1811,20 @@ class Laporan extends MY_Controller {
         }        
 
 
-        foreach ($sumber_dana as $jenis_pembatasan) {
-            $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'saldo',$jenis_pembatasan);         
+        // foreach ($sumber_dana as $jenis_pembatasan) {
+        //     $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'saldo',$jenis_pembatasan);         
+        // }
+
+        foreach ($array_akun as $data) {
+            $data_all[$data['order']]['pembatasan'] = $data['pembatasan'];
+            $data_all[$data['order']]['saldo'] = array();
+            $data_all[$data['order']]['posisi'] = array();
+        }
+
+        foreach ($array_akun as $data) {
+            $temp_data = $this->Laporan_model->get_rekap($data['akun'],$data['not_akun'],'akrual',null,'saldo',$data['pembatasan']);
+            $data_all[$data['order']]['saldo'] += $temp_data['saldo'];
+            $data_all[$data['order']]['posisi'] += $temp_data['posisi'];
         }
 
         $tabel_akun = array(
@@ -1799,12 +1838,17 @@ class Laporan extends MY_Controller {
         );
         $urutan = array();
         $akun = array();       
-        // print_r($akun);die();
+        // print_r($data_all);die();
 
 
-        foreach ($data_all as $jenis_pembatasan => $data) {
+        foreach ($data_all as $order => $data) {
+            // print_r($data);die();
+            $order -= 1;
+            $data_akun = $array_akun[$order];
+            $jenis_pembatasan = $data_akun['pembatasan'];
+
             $akun = array();
-            foreach ($array_akun[$jenis_pembatasan] as $kd_awal) {
+            foreach ($array_akun[$order]['akun'] as $kd_awal) {
                 $kd_awal = substr($kd_awal,0,1);
                 $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal],$array_pembatasan[$jenis_pembatasan]);
             }
@@ -1843,19 +1887,19 @@ class Laporan extends MY_Controller {
             $data_parsing['akun'] = $akun;
             foreach ($akun as $key_1 => $akun_1) {
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
-                $data_parsing['nama_lvl_1'][$jenis_pembatasan][$key_1][] = $nama;
-                $data_parsing['key_level_1'][] = $key_1;
+                $data_parsing[$order]['nama_lvl_1'][$jenis_pembatasan][$key_1][] = $nama;
+                $data_parsing[$order]['key_level_1'][] = $key_1;
                 //echo "$key_1 - $nama<br/>";
                 foreach($akun_1 as $key_2 => $akun_2){
                     $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
-                    $data_parsing['nama_lvl_2'][$jenis_pembatasan][$key_1][] = $nama;
-                    $data_parsing['key_lvl_2'][] = $key_2;
+                    $data_parsing[$order]['nama_lvl_2'][$jenis_pembatasan][$key_1][] = $nama;
+                    $data_parsing[$order]['key_lvl_2'][] = $key_2;
                     //echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
                     foreach ($akun_2 as $key_3 => $akun_3) {
                         if ($level == 4) {
                             $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
-                            $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
-                            $data_parsing['key_lvl_3'][] = $key_3;
+                            $data_parsing[$order]['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
+                            $data_parsing[$order]['key_lvl_3'][] = $key_3;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
                             foreach ($akun_3 as $key_4 => $akun_4) {
                                 $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
@@ -1869,9 +1913,9 @@ class Laporan extends MY_Controller {
                                 
                                 $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                                 $nama = $akun_4['nama'];
-                                $data_parsing['nama_lvl_4'][$jenis_pembatasan][$key_3][] = $nama;
-                                $data_parsing['saldo_sekarang_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_sekarang;
-                                $data_parsing['saldo_awal_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_awal;
+                                $data_parsing[$order]['nama_lvl_4'][$jenis_pembatasan][$key_3][] = $nama;
+                                $data_parsing[$order]['saldo_sekarang_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_sekarang;
+                                $data_parsing[$order]['saldo_awal_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_awal;
                                 $jumlah_tahun_sekarang += $saldo_sekarang;
                                 $jumlah_tahun_awal += $saldo_awal;
                                 //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
@@ -1888,9 +1932,9 @@ class Laporan extends MY_Controller {
 
                             $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                             $nama = $akun_3['nama'];
-                            $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
-                            $data_parsing['saldo_sekarang_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_sekarang;
-                            $data_parsing['saldo_awal_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_awal;
+                            $data_parsing[$order]['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
+                            $data_parsing[$order]['saldo_sekarang_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_sekarang;
+                            $data_parsing[$order]['saldo_awal_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_awal;
                             $jumlah_tahun_sekarang += $saldo_sekarang;
                             $jumlah_tahun_awal += $saldo_awal;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
@@ -1899,6 +1943,8 @@ class Laporan extends MY_Controller {
                 }
             }
         }
+
+        print_r($data_parsing);die();
 
         $data_parsing['atribut'] = $parse_data;
         $data_parsing['level'] = $level;
