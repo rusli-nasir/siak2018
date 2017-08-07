@@ -1567,7 +1567,7 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/laporan/cetak_laporan_aktifitas', $data_parsing);
     }
 
-public function get_laporan_arus($level, $parse_data)
+    public function get_laporan_arus($level, $parse_data)
     {
         $array_akun = array(6,7);
         $data = array();
@@ -1733,18 +1733,89 @@ public function get_laporan_arus($level, $parse_data)
         $data_parsing['data_investasi'] = $data_investasi;
         $data_parsing['data_pendanaan'] = $data_pendanaan;
         $data_parsing['data_all'] = $data_all;
-        foreach ($data_all as $order => $entry) {
+        
+        /*------------------------------------------------*/
+        /*-------------- dari aktifitas ------------------*/
+        /*------------------------------------------------*/
+        $data_all = array();
 
+        $jumlah_tahun_sekarang = 0;
+        $jumlah_tahun_awal = 0;
+        // $array_akun = array(6,7);
+        $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
+        $array_pembatasan = array(
+            'tidak_terikat' => array(61,73,79),
+            'terikat_temporer' => array(62,73,79),
+            'terikat_permanen' => array(61,621,623,624,626,627,628,629,73,79)
+        );
+
+        $array_akun = array(
+            'tidak_terikat' => array(6,7),
+            'terikat_temporer' => array(6,7),
+            'terikat_permanen' => array(6,7)
+        );
+
+        $array_aset = array();
+        $array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = array(3);
+
+        $year = gmdate('Y');
+        $last_year = $year - 1;
+
+        if ($year == '2017') {
+            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$year-01-01","$year-06-30");
+
+            $aset_tahun_ini = array_sum($temp_aset['saldo']);
+            $data_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = $aset_tahun_ini;
+            $data_aset['tahun_ini'] = $aset_tahun_ini;
+
+
+            $aset_tahun_lalu = 0;
+            $data_aset['tahun_lalu'] = $aset_tahun_lalu;
+        } else {
+            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$year-01-01","$year-06-30");
+            $aset_tahun_ini = array_sum($temp_aset['saldo']);
+            $data_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = $aset_tahun_ini;
+            $data_aset['tahun_ini'] = $aset_tahun_ini;
+
+            $temp_aset = $this->Laporan_model->get_rekap($array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'],null,'akrual',null,'saldo',"$last_year-01-01","$last_year-06-30");
+            $aset_tahun_lalu = array_sum($temp_aset['saldo']);
+
+            $data_aset['tahun_lalu'] = $aset_tahun_lalu;
+        }        
+
+
+        foreach ($sumber_dana as $jenis_pembatasan) {
+            $data_all[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'saldo',$jenis_pembatasan);         
+        }
+
+        $tabel_akun = array(
+            1 => 'aset',
+            2 => 'hutang',
+            3 => 'aset_bersih',
+            4 => 'lra',
+            5 => 'akun_belanja',
+            6 => 'lra',
+            7 => 'akun_belanja'
+        );
+        $urutan = array();
+        $akun = array();       
+        // print_r($akun);die();
+
+
+        foreach ($data_all as $jenis_pembatasan => $data) {
             $akun = array();
-
-            $detail_pembatasan = $array_akun[$order];
-            foreach ($detail_pembatasan['list_akun'] as $kd_awal) {
-              $kd_awal = substr($kd_awal,0,1);
-              $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal]);   
+            foreach ($array_akun[$jenis_pembatasan] as $kd_awal) {
+                $kd_awal = substr($kd_awal,0,1);
+                $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal],$array_pembatasan[$jenis_pembatasan]);
             }
+            // if ($jenis_pembatasan == 'terikat_permanen') {
+            //     print_r($data_all[$jenis_pembatasan]);die();
+            // }
 
+            $data_parsing['jenis_pembatasan'][] = $jenis_pembatasan;
+            //echo "<hr/>".$jenis_pembatasan."<hr/>";
+            $rekap = array();
 
-            $data = $entry['data'];
             foreach ($data['posisi'] as $kd_akun => $entry) {
                 foreach ($entry as $inner_entry) {
                     $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
@@ -1765,64 +1836,75 @@ public function get_laporan_arus($level, $parse_data)
                 $rekap[substr($kd_akun,0,$level)]['saldo_awal'] += $entry;
             }
 
-
-            // print_r($data_all);
+            // print_r($data);
             // print_r($akun);
-            // if ($order == 1) {
-            //     print_r($rekap);
-            //     die();
-            // }
             // print_r($rekap);
             // die();
-            
-            $data_parsing['akun'][$order] = $akun;
+            $data_parsing['akun'] = $akun;
             foreach ($akun as $key_1 => $akun_1) {
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
-                $data_parsing['nama_lvl_1'][$order][$key_1][] = $nama;
-                $data_parsing['jenis_pembatasan'][$order] = $array_akun[$order]['jenis_pembatasan'];
-                //echo "$key_1 - $nama ".$array_akun[$order]['jenis_pembatasan']."<br/>";
+                $data_parsing['nama_lvl_1'][$jenis_pembatasan][$key_1][] = $nama;
+                $data_parsing['key_level_1'][] = $key_1;
+                //echo "$key_1 - $nama<br/>";
                 foreach($akun_1 as $key_2 => $akun_2){
                     $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
-                    $data_parsing['nama_lvl_2'][$order][$key_1][] = $nama;
-                    $data_parsing['key_lvl_2'][$order][] = $key_2;
+                    $data_parsing['nama_lvl_2'][$jenis_pembatasan][$key_1][] = $nama;
+                    $data_parsing['key_lvl_2'][] = $key_2;
                     //echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
                     foreach ($akun_2 as $key_3 => $akun_3) {
                         if ($level == 4) {
                             $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
-                            $data_parsing['nama_lvl_3'][$order][$key_2][] = $nama;
-                            $data_parsing['key_lvl_3'][$order][] = $key_3;
+                            $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
+                            $data_parsing['key_lvl_3'][] = $key_3;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
                             foreach ($akun_3 as $key_4 => $akun_4) {
                                 $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
                                 $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
-                                $saldo_sekarang = $debet - $kredit;
+
+                                if ($this->case_hutang($key_4)) {
+                                    $saldo_sekarang = $kredit - $debet;
+                                } else {
+                                    $saldo_sekarang = $debet - $kredit;
+                                }
+                                
                                 $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                                 $nama = $akun_4['nama'];
-                                $data_parsing['nama_lvl_4'][$order][$key_3][] = $nama;
-                                $data_parsing['saldo_sekarang_lvl_4'][$order][$key_3][] = $saldo_sekarang;
-                                $data_parsing['saldo_awal_lvl_4'][$order][$key_3][] = $saldo_awal;
+                                $data_parsing['nama_lvl_4'][$jenis_pembatasan][$key_3][] = $nama;
+                                $data_parsing['saldo_sekarang_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_sekarang;
+                                $data_parsing['saldo_awal_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_awal;
+                                $jumlah_tahun_sekarang += $saldo_sekarang;
+                                $jumlah_tahun_awal += $saldo_awal;
                                 //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
                             }
                         } else {
                             $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
                             $kredit = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['kredit'] : 0 ;
-                            $saldo_sekarang = $debet - $kredit;
+                            
+                            if ($this->case_hutang($key_3)) {
+                                $saldo_sekarang = $kredit - $debet;
+                            } else {
+                                $saldo_sekarang = $debet - $kredit;
+                            }
+
                             $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                             $nama = $akun_3['nama'];
-                            $data_parsing['nama_lvl_3'][$order][$key_2][] = $nama;
-                            $data_parsing['saldo_sekarang_lvl_3'][$order][$key_2][] = $saldo_sekarang;
-                            $data_parsing['saldo_awal_lvl_3'][$order][$key_2][] = $saldo_awal;
+                            $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
+                            $data_parsing['saldo_sekarang_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_sekarang;
+                            $data_parsing['saldo_awal_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_awal;
+                            $jumlah_tahun_sekarang += $saldo_sekarang;
+                            $jumlah_tahun_awal += $saldo_awal;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                         }
                     }
                 }
             }
-
         }
-        
 
         $data_parsing['atribut'] = $parse_data;
         $data_parsing['level'] = $level;
+        $data_parsing['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
+        $data_parsing['jumlah_tahun_awal'] = $jumlah_tahun_awal;
+
         $this->load->view('akuntansi/laporan/cetak_laporan_arus_kas', $data_parsing);
     }
 
