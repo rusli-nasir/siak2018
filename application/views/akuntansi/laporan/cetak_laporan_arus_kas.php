@@ -35,7 +35,6 @@
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
-		
 		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
@@ -45,109 +44,69 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $i=0;$j=0;$index=0;$index_atas=0;$total_semua_sekarang=0;$total_semua_awal=0;		
-				foreach($jenis_pembatasan as $key=>$value_pembatasan){ ?>
-					<tr>
-						<td colspan="3" align="center" style="background-color:#e6e6e6"><?php echo $value_pembatasan; ?></td>
-					</tr>
-				<?php foreach ($akun as $key_1 => $akun_1) {
+				<?php $j=0;$index=0;$index_atas=0;$total_semua_sekarang=0;$total_semua_awal=0;$counter=0;		
+				foreach($order as $key_order=>$value_order){ ?>
+					<?php foreach ($akun[$value_order] as $key_1 => $akun_1) { 
 						$jumlah_sekarang[$index] = 0;
-						$jumlah_awal[$index] = 0;
-						foreach($nama_lvl_1[$value_pembatasan][$key_1] as $key=>$value){ 
+					?>
+						<?php foreach($nama_lvl_1[$value_order][$key_1] as $key=>$value){  
 							$nama_level_1 = $value;
-						?>
+							?>
 						<tr>
 							<td></td>
 							<td class="tab0"><?php echo strtoupper($value); ?></td>
 							<td></td>
 						</tr>
-						<?php foreach($nama_lvl_2[$value_pembatasan][$key_1] as $key=>$value){ ?>
-							<tr>
-								<td></td>
-								<td class="tab1"><?php echo strtoupper($value.' '.str_replace('_', ' ', ($value_pembatasan))); ?></td>
-								<td></td>
-							</tr>	
-							<?php if($level==3){
-								$counter=0;foreach($nama_lvl_3[$value_pembatasan][$key_lvl_2[$i]] as $key=>$value){ 
-									$jumlah_sekarang[$index] += $saldo_sekarang_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter];
-									$jumlah_awal[$index] += $saldo_awal_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter];
+							<?php foreach($nama_lvl_2[$value_order][$key_1] as $key_2=>$value_2){ ?>
+								<tr>
+									<td></td>
+									<td class="tab1"><?php echo strtoupper($value_2); ?></td>
+									<td></td>
+								</tr>	
+								<?php 
+								if($level==3){
+									$i=0;foreach($nama_lvl_3[$value_order][$key_lvl_2[$counter]] as $key_3=>$value){ 
+										$jumlah_sekarang[$index] += $saldo_sekarang_lvl_3[$value_order][$key_lvl_2[$counter]][$i];
 									?>
 									<tr>
 										<td></td>
 										<td class="tab2"><?php echo strtoupper($value); ?></td>
-										<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter]); ?></td>
-									</tr>
-						<?php  $counter++; }								
-							}else{ ?>
-								<?php foreach($nama_lvl_3[$value_pembatasan][$key_lvl_2[$i]] as $key=>$value){ ?>
+										<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$value_order][$key_lvl_2[$counter]][$i]); ?></td>
+									</tr>	
+								<?php $i++; } ?>
+							<?php $counter++; 
+								}else{
+								foreach($nama_lvl_3[$value_order][$key_lvl_2[$counter]] as $key_3=>$value){ ?>
+								<tr>
+									<td></td>
+									<td class="tab2"><?php echo strtoupper($value); ?></td>
+									<td class="tab2" align="right"></td>
+								</tr>
+								<?php $increment=0;foreach($nama_lvl_4[$value_order][$key_lvl_3[$j]] as $key_4=>$value){ ?>
 									<tr>
 										<td></td>
-										<td class="tab2"><?php echo strtoupper($value); ?></td>
-										<?php
-										$total_sekarang = 0;
-										$total_awal = 0;
-										$counter=0;
-										foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){
-											$total_sekarang += $saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-											$total_awal += $saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-											$counter++;
-										}
-										?>
-										<td align="right"><?php echo eliminasi_negatif($total_sekarang); ?></td>
+										<td class="tab3"><?php echo strtoupper($value); ?></td>
+										<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$value_order][$key_lvl_3[$j]][$increment]); ?></td>
 									</tr>
-								<?php $counter=0;foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){ 
-										$jumlah_sekarang[$index] += $saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-										$jumlah_awal[$index] += $saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-										?>
-										<tr>
-											<td></td>
-											<td class="tab3"><?php echo strtoupper($value); ?></td>
-											<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter]); ?></td>
-										</tr>
-								<?php 	$counter++; 
-										} 
-										$j++;
-									}				
-								}				
-							$i++;
-							} ?>
+								<?php $increment++; } ?>
+							<?php $j++; }
+								$counter++; 
+								} ?>
+							<?php } ?>
 							<tr style="background-color:#F7F2AF">
-								<td colspan="2" class="tab2"><b>JUMLAH <?php echo strtoupper(str_replace('_', ' ', $nama_level_1.' '.$value_pembatasan)); ?></b></td>
-								<td align="right"><b><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></b></td>
+								<td colspan="2" class="tab2"><b>JUMLAH <?php echo strtoupper($nama_level_1); ?></b></td>
+								<td align="right"><b>
+									<?php 
+									$total_semua_sekarang += $jumlah_sekarang[$index];
+									echo eliminasi_negatif($jumlah_sekarang[$index]); 
+									?></b></td>
 							</tr>
-						<?php
-					  	}
-					  	$index++;
-					}
-					?>
-					<tr style="background-color:#8D76E4">
-						<td colspan="2" class="tab2"><b>JUMLAH KENAIKAN(PENURUNAN) ASET BERSIH <?php echo strtoupper(str_replace('_', ' ', $value_pembatasan)); ?></b></td>
-						<td align="right"><b>
-							<?php 
-							$total_semua_sekarang += (abs($jumlah_sekarang[$index-2])-abs($jumlah_sekarang[$index-1]));
-							echo eliminasi_negatif(abs($jumlah_sekarang[$index-2])-abs($jumlah_sekarang[$index-1])); 
-							?></b></td>
-					</tr>
-					<?php
-				} ?>	
+						<?php } ?>
+					<?php } ?>
+				<?php $index++; } ?>
 				<tr style="background-color:#B1E9F2">
-					<td colspan="2">KENAIKAN DAN (PENURUNAN) ASET BERSIH TAHUN BERJALAN</td>
+					<td colspan="2">KAS BERSIH DIPEROLEH DARI AKTIVITAS OPERASI</td>
 					<td align="right"><?php echo eliminasi_negatif($total_semua_sekarang); ?></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab1">ASET BERSIH AWAL TAHUN:</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Aset Bersih Kekayaan Awal PTN Badan Hukum</td>
-					<td align="right"><?php $total_ekuitas = 3109370974259; echo eliminasi_negatif($total_ekuitas); ?></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Kenaikan (Penurunan) Aset Bersih Tahun Lalu</td>
-					<td align="right">0</td>
 				</tr>
 				<tr>
 					<td></td>
