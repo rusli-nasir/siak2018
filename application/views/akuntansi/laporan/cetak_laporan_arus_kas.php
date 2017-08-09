@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <html>
 	<head>
-		<title>Laporan Aktifitas</title>
+		<title>Laporan Arus Kas</title>
 		<style type="text/css">
 		@page{
 			size:landscape;
