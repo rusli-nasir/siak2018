@@ -690,11 +690,33 @@ class Laporan_model extends CI_Model {
         }
 
         if ($laporan == 'sum') {
+            // print_r($array_akun);die();
             $sum_debet = 0;
             $sum_kredit = 0;
             $sum_saldo = 0;        
+            foreach ($array_akun as $akun) {
+                $this->db->like('akun',$akun,'after');
+                $this->db->where('tahun',$year);
+                $this->db->select('saldo_awal,akun');
+
+                $temp_saldo = array_merge($temp_saldo,$this->db->get('akuntansi_saldo')->result_array());
+            }
+
+            // print_r($temp_saldo);die();
+            $data['saldo'] = 0;
+            foreach ($query1 as $akun => $posisi) {
+                $saldo[$akun] = 0;
+            }
+
+            foreach ($temp_saldo as $entry) {
+                $data['saldo'] += $entry['saldo_awal'];
+            }
+
+            $data['saldo'] = $saldo;
+
+
             foreach ($query1 as $akun => $sub_query) {
-                $sum_saldo +=  $this->db->select('saldo_awal')->get_where('akuntansi_saldo',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
+                // $sum_saldo +=  $this->db->select('saldo_awal')->get_where('akuntansi_saldo',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
                 foreach ($sub_query as $entry) {
                     if ($entry['tipe'] == 'debet') {
                         $sum_debet += $entry['jumlah'];
@@ -705,7 +727,18 @@ class Laporan_model extends CI_Model {
             }
             $data['debet'] = $sum_debet;
             $data['kredit'] = $sum_kredit;
-            $data['saldo'] = $sum_saldo;
+            // $data['saldo'] = $sum_saldo;
+
+            $case_hutang = in_array(substr($akun,0,1),[2,3,4,6]);
+
+            if ($case_hutang) {
+                $data['nett'] = ($kredit - $debet);
+                $data['balance'] = $sum_saldo + ($kredit - $debet);
+            }else{
+                $data['nett'] = $sum_saldo + ($debet - $kredit);
+                $data['nett'] = ($debet - $kredit);
+            }
+
             return $data;
         }
 

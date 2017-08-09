@@ -1298,6 +1298,9 @@ class Laporan extends MY_Controller {
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
         $array_akun = array(1,2,3);
+        $year = gmdate('Y');
+        $start_date = "$year-01-01";
+        $end_date = "$year-31-12";
         $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo');
         $tabel_akun = array(
             1 => 'aset',
@@ -1522,9 +1525,13 @@ class Laporan extends MY_Controller {
         //     echo $entry['nama'] ." ". $entry['jumlah_now']  ." ". $entry['jumlah_last']  ."<br/> ";
         // }
         // die();
+
+        // public function add_after_parse(&$parse,$jenis,$nama = null,$after,$array_akun,$level,$start_date,$end_date,$special_case = null)
+
+        $this->add_after_parse($parsed,'lpk','Piutang Netto',121,array(1131,1132),3,$start_date,$end_date,array('pengurangan' => 1133));
         print_r($parsed);die();
 
-        $this->remove_parse($parsed,112);
+        // $this->remove_parse($parsed,112);
 
         unset($data['posisi']);
         unset($data['saldo']);
@@ -1720,8 +1727,8 @@ class Laporan extends MY_Controller {
         $start_date = '2017-01-01';
         $end_date = '2017-12-31';
         
-        $array_investasi['fluk_investasi'] = array(112);
-        $array_investasi['fluk_penyertaan_ke_unit_usaha'] = array(121);
+        $array_investasi['fluk_investasi'] = array(121);
+        $array_investasi['fluk_penyertaan_ke_unit_usaha'] = array(112);
         $array_investasi['perolehan_aset_tetap'] = array(53,5211,5212);
         $array_investasi['hasil_penjualan_aset_tetap'] = array();
         $array_investasi['lima_tiga'] = array(53);
@@ -2308,6 +2315,9 @@ class Laporan extends MY_Controller {
 
     public function add_after_parse(&$parse,$jenis,$nama = null,$after,$array_akun,$level,$start_date,$end_date,$special_case = null)
     {
+
+        // special case array dengan key pengurangan, penambahan
+
         if ($nama != null) {
             $tabel_akun = array(
                 1 => 'aset',
@@ -2318,13 +2328,19 @@ class Laporan extends MY_Controller {
                 6 => 'lra',
                 7 => 'akun_belanja'
             );
-            $nama = $this->Akun_model->get_nama_akun_by_level($array_akun,strlen($array_akun),$tabel_akun[substr($array_akun[0],0,1)]);
+            $nama = $this->Akun_model->get_nama_akun_by_level($array_akun[0],strlen($array_akun[0]),$tabel_akun[substr($array_akun[0],0,1)]);
         }
         if ($jenis == 'lpk') {     
             $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'sum');
+            // print_r($data);die();
             $pengurang = array();
             $penambah = array();
-            $pengurang['saldo'] = $penambah['saldo'] = $penambah['nett'] = $pengurang['nett'] = 0; // kalo mau iclude saldo, nett ganti ke balance
+            $pengurang['saldo'] = 0;
+            $pengurang['nett'] = 0; // kalo mau iclude saldo, nett ganti ke balance
+            $penambah['saldo'] = 0;
+            $penambah['nett'] = 0;
+
+            // public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null)
 
             if ($special_case != null) {
                 if (isset($special_case['pengurang'])){
@@ -2353,8 +2369,23 @@ class Laporan extends MY_Controller {
                'persentase' => ($jumlah_now == 0 or $jumlah_last == 0) ? 0 : abs($jumlah_now - $jumlah_last) / $jumlah_now * 100 ,
             );
 
+            print_r($added_entry);die();
+
 
         }
+
+        //cari posisi yang mau dimasukkan
+
+        $i=0;
+        $posisi = 0;
+        while ($i < count($parse) and $posisi == 0) {
+            if ($parse[$i]['akun'] == $after) {
+                $posisi = $i;
+            }
+            ++$i;
+        }
+
+        array_splice($parse, $posisi, 0, $entry_added);
 
     }
 
