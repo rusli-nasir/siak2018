@@ -651,17 +651,17 @@ class Memorial extends MY_Controller {
             $i++;
         }
         foreach($query_5->result() as $result){
-            $query_konversi = $this->db->query("SELECT * FROM akuntansi_akun_konversi WHERE dari='".$result->kode_akun."'");
-            if($query_konversi->num_rows() > 0){
-                $konversi = $query_konversi->row_array();
-                $query_aset = $this->db->query("SELECT * FROM akuntansi_aset_6 WHERE akun_6='".$konversi['dari']."'")->row_array();
-                $data[$i]['akun_6'] = $query_aset['akun_6'];
-                $data[$i]['nama'] = $query_aset['nama'];
-            }else{
-                $result->kode_akun[0] = '7';
-                $data[$i]['akun_6'] = $result->kode_akun;
-                $data[$i]['nama'] = $result->nama_akun;
-            }
+            // $query_konversi = $this->db->query("SELECT * FROM akuntansi_akun_konversi WHERE dari='".$result->kode_akun."'");
+            // if($query_konversi->num_rows() > 0){
+            //     $konversi = $query_konversi->row_array();
+            //     $query_aset = $this->db->query("SELECT * FROM akuntansi_aset_6 WHERE akun_6='".$konversi['dari']."'")->row_array();
+            //     $data[$i]['akun_6'] = $query_aset['akun_6'];
+            //     $data[$i]['nama'] = $query_aset['nama'];
+            // }else{
+            $result->kode_akun[0] = '7';
+            $data[$i]['akun_6'] = $result->kode_akun;
+            $data[$i]['nama'] = $result->nama_akun;
+            // }
             $i++;
         }
         foreach($query_6->result() as $result){
