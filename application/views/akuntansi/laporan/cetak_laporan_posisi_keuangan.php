@@ -87,7 +87,11 @@
 										<td align="right">
 											<?php 
 											if($saldo_awal_lvl_3[$key_lvl_2[$i]][$counter]>0){ 
-												$persen = ($selisih/$saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter])*100; 
+												if ($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter] != 0) {
+													$persen = ($selisih/$saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter])*100; 
+												} else {
+													$persen = 0;
+												}
 												echo abs(number_format($persen)).'%';
 											} 
 											?></td>
@@ -119,7 +123,11 @@
 										<td align="right">
 											<?php 
 											if($saldo_awal_lvl_4[$key_lvl_3[$j]][$counter]>0){ 
-												$persen = ($selisih/$saldo_awal_lvl_4[$key_lvl_3[$j]][$counter])*100; 
+												if ($saldo_awal_lvl_4[$key_lvl_3[$j]][$counter] != 0){
+													$persen = ($selisih/$saldo_awal_lvl_4[$key_lvl_3[$j]][$counter])*100; 
+												}else {
+													$persen = 0;
+												}
 												echo abs(number_format($persen)).'%';
 											} 
 											?></td>

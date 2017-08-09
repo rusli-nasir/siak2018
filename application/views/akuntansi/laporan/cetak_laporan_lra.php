@@ -78,16 +78,20 @@
 									<tr>
 										<td></td>
 										<td class="tab2"><?php echo $value; ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
 										<td align="right"><?php echo eliminasi_negatif($anggaran_awal_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
-										<td align="right"><?php $selisih = $saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter] - $anggaran_awal_lvl_3[$key_lvl_2[$i]][$counter];
+										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
+										<td align="right"><?php $selisih = -abs($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter]) + abs($anggaran_awal_lvl_3[$key_lvl_2[$i]][$counter]);
 										echo eliminasi_negatif($selisih); 
 										$jumlah_selisih[$index] += abs($selisih);
 										?></td>
 										<td align="right">
 											<?php 
 											if($anggaran_awal_lvl_3[$key_lvl_2[$i]][$counter]>0){ 
-												$persen = ($selisih/$saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter])*100; 
+												if ($anggaran_awal_lvl_3[$key_lvl_2[$i]][$counter] != 0) {
+													$persen = ($selisih/$anggaran_awal_lvl_3[$key_lvl_2[$i]][$counter])*100; 												
+												} else {
+													$persen = 0;
+												}
 												echo abs(number_format($persen)).'%';
 											} 
 											?></td>
@@ -110,16 +114,20 @@
 									<tr>
 										<td></td>
 										<td class="tab3"><?php echo $value; ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter]); ?></td>
 										<td align="right"><?php echo eliminasi_negatif($anggaran_awal_lvl_4[$key_lvl_3[$j]][$counter]); ?></td>
-										<td align="right"><?php $selisih = $saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter] - $anggaran_awal_lvl_4[$key_lvl_3[$j]][$counter];
+										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter]); ?></td>
+										<td align="right"><?php $selisih = - abs($saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter]) + abs($anggaran_awal_lvl_4[$key_lvl_3[$j]][$counter]);
 										echo eliminasi_negatif($selisih); 
 										$jumlah_selisih[$index] += abs($selisih);
 										?></td>
 										<td align="right">
 											<?php 
 											if($anggaran_awal_lvl_4[$key_lvl_3[$j]][$counter]>0){ 
-												$persen = ($selisih/$anggaran_awal_lvl_4[$key_lvl_3[$j]][$counter])*100; 
+												if ($anggaran_awal_lvl_4[$key_lvl_3[$i]][$counter] != 0) {
+													$persen = ($selisih/$anggaran_awal_lvl_4[$key_lvl_2[$i]][$counter])*100; 
+												} else {
+													$persen = 0;
+												}
 												echo abs(number_format($persen)).'%';
 											} 
 											?></td>
@@ -132,8 +140,8 @@
 					<tr style="background-color:#F7F2AF">
 						<td></td>
 						<td class="tab0">JUMLAH <?php echo $namanya; ?></td>
-						<td align="right"><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></td>
 						<td align="right"><?php echo eliminasi_negatif($jumlah_awal[$index]); ?></td>
+						<td align="right"><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></td>
 						<td align="right"><?php echo eliminasi_negatif($jumlah_selisih[$index]); ?></td>
 						<td></td>
 					</tr>

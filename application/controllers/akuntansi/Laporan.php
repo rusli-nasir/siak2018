@@ -1306,6 +1306,45 @@ class Laporan extends MY_Controller {
         );
         $akun = array();
 
+        // $array_akun = array(
+        //     array(
+        //         'akun' => 1,
+        //         'special_case' => array(
+        //                                 array(
+        //                                     'order'=> 0,
+        //                                     'akun' => array(111),
+        //                                     'not_akun'=>null,
+        //                                     'akun_pengurang' =>null,
+        //                                 ),
+        //                                 array(
+        //                                     'order'=> 1,
+        //                                     'akun' => array(112),
+        //                                     'not_akun'=>null,
+        //                                     'akun_pengurang' =>null,
+        //                                 ),
+        //                                 array(
+        //                                     'order'=> 2,
+        //                                     'akun' => array(1131,1132),
+        //                                     'not_akun'=>null,
+        //                                     'akun_pengurang' =>array(1133),
+        //                                 ),
+        //                                 array(
+        //                                     'order'=> 3,
+        //                                     'akun' => array(114),
+        //                                     'not_akun'=>null,
+        //                                     'akun_pengurang' =>null,
+        //                                 ),
+        //                                 array(
+        //                                     'order'=> 3,
+        //                                     'akun' => array(115),
+        //                                     'not_akun'=>null,
+        //                                     'akun_pengurang' =>null,
+        //                                 ),
+        //                             )
+        //     ),
+
+        // );
+
         foreach ($array_akun as $kd_awal) {
             $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal]);
         }
@@ -1337,21 +1376,75 @@ class Laporan extends MY_Controller {
         // print_r($akun);
         // print_r($rekap);
         // die();
+        $order = 0;
+        $parsed = array();
+        $entry_parsed = array();
+
         $data['akun'] = $akun;
         foreach ($akun as $key_1 => $akun_1) {
             $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
             $data['nama_lvl_1'][$key_1][] = $nama;
+            $entry_parsed = array(
+               'order' => ++$order,
+               'level' => 0,
+               'akun' => $key_1,
+               'type' => 'index',
+               'nama' => $nama,
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'jumlah_now' => null,
+               'jumlah_last' => null,
+               'selisih' => null,
+               'persentase' => null,
+            );
+            $parsed[] = $entry_parsed;
             //echo "$key_1 - $nama<br/>";
             foreach($akun_1 as $key_2 => $akun_2){
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
                 $data['nama_lvl_2'][$key_1][] = $nama;
                 $data['key_lvl_2'][] = $key_2;
+
+                $entry_parsed = array(
+                   'order' => ++$order,
+                   'level' => 1,
+                   'akun' => $key_2,
+                   'type' => 'index',
+                   'nama' => $nama,
+                   'sum_negatif' => null,
+                   'start_sum' => null,
+                   'end_sum' => null,
+                   'jumlah_now' => null,
+                   'jumlah_last' => null,
+                   'selisih' => null,
+                   'persentase' => null,
+                );
+
+                $parsed[] = $entry_parsed;
+
                 //echo "&nbsp;&nbsp;$key_2 -  $nama<br/>";
                 foreach ($akun_2 as $key_3 => $akun_3) {
                     if ($level == 4) {
                         $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
                         $data['nama_lvl_3'][$key_2][] = $nama;
                         $data['key_lvl_3'][] = $key_3;
+                        $entry_parsed = array(
+                           'order' => ++$order,
+                           'level' => 2,
+                           'akun' => $key_3,
+                           'type' => 'index',
+                           'nama' => $nama,
+                           'sum_negatif' => null,
+                           'start_sum' => null,
+                           'end_sum' => null,
+                           'jumlah_now' => null,
+                           'jumlah_last' => null,
+                           'selisih' => null,
+                           'persentase' => null,
+                        );
+
+                        $parsed[] = $entry_parsed;
+
                         //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
                         foreach ($akun_3 as $key_4 => $akun_4) {
                             $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
@@ -1361,13 +1454,28 @@ class Laporan extends MY_Controller {
                             } else {
                                 $saldo_sekarang = $debet - $kredit;
                             }
-                            $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
+                            $saldo_awal = (isset($rekap[$key_4]['saldo_awal'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                             $nama = $akun_4['nama'];
                             $data['nama_lvl_4'][$key_3][] = $nama;
                             $data['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
                             $data['saldo_awal_lvl_4'][$key_3][] = $saldo_awal;
                             $jumlah_tahun_sekarang += $saldo_sekarang;
                             $jumlah_tahun_awal += $saldo_awal;
+                            $entry_parsed = array(
+                               'order' => ++$order,
+                               'level' => 4,
+                               'akun' => $key_4,
+                               'type' => 'entry',
+                               'nama' => $nama,
+                               'sum_negatif' => null,
+                               'start_sum' => null,
+                               'end_sum' => null,
+                               'jumlah_now' => $this->eliminasi_negatif($saldo_sekarang),
+                               'jumlah_last' => $this->eliminasi_negatif($saldo_awal),
+                               'selisih' => abs($saldo_sekarang - $saldo_awal),
+                               'persentase' => ($saldo_awal == 0 or $saldo_sekarang == 0) ? 0 : abs($saldo_sekarang - $saldo_awal) / $saldo_awal * 100 ,
+                            );
+                            $parsed[] = $entry_parsed;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$saldo_awal<br/>";
                         }
                     } else {
@@ -1378,18 +1486,48 @@ class Laporan extends MY_Controller {
                         } else {
                             $saldo_sekarang = $debet - $kredit;
                         }
-                        $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
+                        $saldo_awal = (isset($rekap[$key_3]['saldo_awal'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                         $nama = $akun_3['nama'];
                         $data['nama_lvl_3'][$key_2][] = $nama;
                         $data['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
                         $data['saldo_awal_lvl_3'][$key_2][] = $saldo_awal;
                         $jumlah_tahun_sekarang += $saldo_sekarang;
                         $jumlah_tahun_awal += $saldo_awal;
+
+                        $entry_parsed = array(
+                           'order' => ++$order,
+                           'level' => 3,
+                           'akun' => $key_3,
+                           'type' => 'entry',
+                           'nama' => $nama,
+                           'sum_negatif' => null,
+                           'start_sum' => null,
+                           'end_sum' => null,
+                           'jumlah_now' => $this->eliminasi_negatif($saldo_sekarang),
+                           'jumlah_last' => $this->eliminasi_negatif($saldo_awal),
+                           'selisih' => abs($saldo_sekarang - $saldo_awal),
+                           'persentase' => ($saldo_awal == 0 or $saldo_sekarang == 0) ? 0 : abs($saldo_sekarang - $saldo_awal) / $saldo_awal * 100 ,
+                        );
+                        $parsed[] = $entry_parsed;
                         //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$saldo_awal<br/>";
                     }
                 }
             }
         }
+        // foreach ($parsed as $val) {
+        //     $entry = $val;
+        //     for ($i=0; $i < $val['level']; $i++) { 
+        //         echo "&nbsp;&nbsp;";
+        //     }
+        //     echo $entry['nama'] ." ". $entry['jumlah_now']  ." ". $entry['jumlah_last']  ."<br/> ";
+        // }
+        // die();
+        print_r($parsed);die();
+
+        $this->remove_parse($parsed,112);
+
+        unset($data['posisi']);
+        unset($data['saldo']);
         $data['atribut'] = $parse_data;
         $data['level'] = $level;
         $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
@@ -1527,7 +1665,7 @@ class Laporan extends MY_Controller {
                                     $saldo_sekarang = $debet - $kredit;
                                 }
                                 
-                                $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
+                                $saldo_awal = (isset($rekap[$key_4]['saldo_awal'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                                 $nama = $akun_4['nama'];
                                 $data_parsing['nama_lvl_4'][$jenis_pembatasan][$key_3][] = $nama;
                                 $data_parsing['saldo_sekarang_lvl_4'][$jenis_pembatasan][$key_3][] = $saldo_sekarang;
@@ -1546,7 +1684,7 @@ class Laporan extends MY_Controller {
                                 $saldo_sekarang = $debet - $kredit;
                             }
 
-                            $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
+                            $saldo_awal = (isset($rekap[$key_3]['saldo_awal'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                             $nama = $akun_3['nama'];
                             $data_parsing['nama_lvl_3'][$jenis_pembatasan][$key_2][] = $nama;
                             $data_parsing['saldo_sekarang_lvl_3'][$jenis_pembatasan][$key_2][] = $saldo_sekarang;
@@ -1880,6 +2018,9 @@ class Laporan extends MY_Controller {
                 $rekap[substr($kd_akun,0,$level)]['saldo_awal'] += $entry;
             }
 
+            $replacer = 
+            $hasil = 
+
             // print_r($data);
             // print_r($akun);
             // print_r($rekap);
@@ -1912,7 +2053,7 @@ class Laporan extends MY_Controller {
                                     $saldo_sekarang = $debet - $kredit;
                                 }
                                 
-                                $saldo_awal = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
+                                $saldo_awal = (isset($rekap[$key_4]['saldo_awal'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
                                 $nama = $akun_4['nama'];
                                 $data_parsing['nama_lvl_4'][$order][$key_3][] = $nama;
                                 $data_parsing['saldo_sekarang_lvl_4'][$order][$key_3][] = $saldo_sekarang;
@@ -1931,7 +2072,7 @@ class Laporan extends MY_Controller {
                                 $saldo_sekarang = $debet - $kredit;
                             }
 
-                            $saldo_awal = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
+                            $saldo_awal = (isset($rekap[$key_3]['saldo_awal'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
                             $nama = $akun_3['nama'];
                             $data_parsing['nama_lvl_3'][$order][$key_2][] = $nama;
                             $data_parsing['saldo_sekarang_lvl_3'][$order][$key_2][] = $saldo_sekarang;
@@ -1945,7 +2086,7 @@ class Laporan extends MY_Controller {
             }
         }
 
-        //print_r($data_parsing);die();
+        // print_r($rekap);die();
 
         $data_parsing['atribut'] = $parse_data;
         $data_parsing['level'] = $level;
@@ -1979,7 +2120,7 @@ class Laporan extends MY_Controller {
                 $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
             }
         }
-
+ 
         foreach ($data['posisi'] as $kd_akun => $entry) {
             foreach ($entry as $inner_entry) {
                 $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] += $inner_entry['jumlah'];
@@ -1999,9 +2140,11 @@ class Laporan extends MY_Controller {
         // print_r($rekap);
         // die();
         $data['akun'] = $akun;
+        $parsed = array();
         foreach ($akun as $key_1 => $akun_1) {
             $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
             $data['nama_lvl_1'][$key_1][] = $nama;
+
             //echo "$key_1 - $nama<br/>";
             foreach($akun_1 as $key_2 => $akun_2){
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
@@ -2045,6 +2188,8 @@ class Laporan extends MY_Controller {
         $data['level'] = $level;
         $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
         $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
+
+        // print_r($rekap);die();
 
         $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
     }
@@ -2155,6 +2300,79 @@ class Laporan extends MY_Controller {
             $this->load->view('akuntansi/laporan/cetak_rekap_spm',$this->data);
         }
     }
+
+    public function replace_parse(&$parse,$jenis,$replaced,$akun)
+    {
+        # code...
+    }
+
+    public function add_after_parse(&$parse,$jenis,$nama = null,$after,$array_akun,$level,$start_date,$end_date,$special_case = null)
+    {
+        if ($nama != null) {
+            $tabel_akun = array(
+                1 => 'aset',
+                2 => 'hutang',
+                3 => 'aset_bersih',
+                4 => 'lra',
+                5 => 'akun_belanja',
+                6 => 'lra',
+                7 => 'akun_belanja'
+            );
+            $nama = $this->Akun_model->get_nama_akun_by_level($array_akun,strlen($array_akun),$tabel_akun[substr($array_akun[0],0,1)]);
+        }
+        if ($jenis == 'lpk') {     
+            $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'sum');
+            $pengurang = array();
+            $penambah = array();
+            $pengurang['saldo'] = $penambah['saldo'] = $penambah['nett'] = $pengurang['nett'] = 0; // kalo mau iclude saldo, nett ganti ke balance
+
+            if ($special_case != null) {
+                if (isset($special_case['pengurang'])){
+                    $pengurang = $this->Laporan_model->get_rekap(array($speical_case['pengurang']),null,'akrual',null,'sum');
+                }
+                if (isset($special_case['pengurang'])){
+                    $penambah = $this->Laporan_model->get_rekap(array($speical_case['penambah']),null,'akrual',null,'sum');
+                }
+            }
+
+            $jumlah_last = $data['saldo'] - $pengurang['saldo'] + $penambah['saldo'];
+            $jumlah_now = $data['nett'] - $pengurang['nett'] + $penambah['nett']; // kalo mau iclude saldo, nett ganti ke balance
+
+            $entry_added = array(
+               'order' => 'xx',
+               'level' => 0,
+               'akun' => $array_akun[0],
+               'type' => 'index',
+               'nama' => $nama,
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'jumlah_now' => $jumlah_now,
+               'jumlah_last' => $jumlah_last,
+               'selisih' => abs($jumlah_now - $jumlah_last),
+               'persentase' => ($jumlah_now == 0 or $jumlah_last == 0) ? 0 : abs($jumlah_now - $jumlah_last) / $jumlah_now * 100 ,
+            );
+
+
+        }
+
+    }
+
+    public function remove_parse(&$parse,$akun)
+    {
+        for ($i=0; $i < count($parse); $i++) { 
+            if ($parse[$i]['akun'] == $akun) {
+                unset($parse[$i]);
+            }
+        }
+    }
+
+    public function add_jumlah($jenis,$nama,$after,$start,$end)
+    {
+        # code...
+    }
+
+
 
     public function case_hutang($x)
     {

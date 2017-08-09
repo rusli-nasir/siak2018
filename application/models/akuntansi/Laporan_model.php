@@ -610,6 +610,7 @@ class Laporan_model extends CI_Model {
                         if ($sumber_dana != null){
                             $added_query .= " AND tu.jenis_pembatasan_dana = '$sumber_dana'";
                         }
+
                         if ($array_not_akun) {
                             foreach ($array_not_akun as $not_akun) {
                                 $added_query .= " AND tr.akun NOT LIKE '$not_akun%' ";
@@ -666,10 +667,24 @@ class Laporan_model extends CI_Model {
 
 
 
-        if ($laporan == 'saldo') {
+        if ($laporan == 'saldo' or $laporan == 'anggaran') { // FIX disini biar yang diluar yang ga ada transaksinya ketampil juga
             $saldo = array();
+            $temp_saldo = array();
+            foreach ($array_akun as $akun) {
+                $this->db->like('akun',$akun,'after');
+                $this->db->where('tahun',$year);
+                $this->db->select('saldo_awal,akun');
+
+                $temp_saldo = array_merge($temp_saldo,$this->db->get('akuntansi_saldo')->result_array());
+            }
+
+            // print_r($temp_saldo);die();
             foreach ($query1 as $akun => $posisi) {
-                $saldo[$akun] = $this->db->select('saldo_awal')->get_where('akuntansi_saldo',array('akun' => $akun, 'tahun' => $year))->row_array()['saldo_awal'];
+                $saldo[$akun] = 0;
+            }
+
+            foreach ($temp_saldo as $entry) {
+                $saldo[$entry['akun']] = $entry['saldo_awal'];
             }
             $data['saldo'] = $saldo;
         }
@@ -695,29 +710,72 @@ class Laporan_model extends CI_Model {
         }
 
         if ($laporan == 'anggaran') {
+            $tahun = $year;
             $anggaran = array();
-            foreach ($query1 as $akun => $posisi) {
-                if (substr($akun, 0,1) == 5) {
-                    if ($unit != null) {
-                        $this->db2->where('LEFT(kode_usulan_belanja,2)',$unit);
-                    } 
-                    $this->db2->where('RIGHT(kode_usulan_belanja,6)',$akun);
-                    $this->db2->select("Sum(harga_satuan * volume) AS jumlah");
-                    $this->db2->group_by('RIGHT(kode_usulan_belanja,6)');
+            $query_max_unit_revisi  = "SELECT max(revisi) as max_revisi,LEFT(kode_usulan_belanja,2) as unit FROM `detail_belanja_` WHERE 1 GROUP BY LEFT(kode_usulan_belanja,2)";
+            $max_revisi = $this->db2->query($query_max_unit_revisi)->result_array();
+            $revisi_unit = array();
+            $anggaran_temp = array();
 
-                    $anggaran[$akun] = $this->db2->get('detail_belanja_')->row_array()['jumlah'];
+            foreach ($max_revisi as $entry_revisi) {
+                $revisi_unit[$entry_revisi['unit']] = $entry_revisi['max_revisi'];
+            }
+            // foreach ($query1 as $akun => $posisi) {
+            //     $anggaran[$akun] = 0;
+            // }
+
+
+
+            foreach ($array_akun as $akun) {
+                // ambil dari array akun aja, dikelompokin per akun
+                if (substr($akun, 0,1) == 5) {
+
+
+                    foreach ($revisi_unit as $unit => $revisi) {
+                        $lenunit = 2;
+                        $query = "SELECT SUM(rba.detail_belanja_.volume*rba.detail_belanja_.harga_satuan) AS jumlah, SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) as akun  FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) LIKE '$akun%' AND  SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.tahun = '{$tahun}' AND rba.detail_belanja_.revisi ='{$revisi}' GROUP BY SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6)";
+                        $anggaran_temp = array_merge($anggaran_temp,$this->db2->query($query)->result_array());
+                    }
+
+
+                    // $added_query = "1 ";
+                    // $added_query_in = "1 ";
+
+
+                    // if ($unit != null){
+                    //     $lenunit = strlen($unit);
+                    //     $added_query .= "AND SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' ";
+                    //     $added_query_in = "AND SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' ";
+                    // }
+
+
+                    // $query = "SELECT SUM(rba.detail_belanja_.volume*rba.detail_belanja_.harga_satuan) AS jumlah FROM rba.detail_belanja_ WHERE  $added_query AND SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) = '{$akun}' AND rba.detail_belanja_.tahun = '{$year}' AND rba.detail_belanja_.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE $added_query_in AND det2.tahun = '{$year}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6)";
+
+                    // print_r($query);die();
+
+                    // $anggaran[$akun] = $this->db2->query($query)->row_array()['jumlah'];
                 } elseif (substr($akun,0,1) == 4) {
                     if ($unit != null) {
                         $this->db2->where('LEFT(sukpa,2)',$unit);
                     } 
-                    $this->db2->where('akun',$akun);
-                    $this->db2->select("SUM(jml_nilai) as jumlah");
+                    $this->db2->like('akun',$akun,'after');
+                    $this->db2->select("SUM(jml_nilai) as jumlah,akun");
                     $this->db2->group_by('akun');
 
-                    $anggaran[$akun] = $this->db2->get('target')->row_array()['jumlah'];
+                    // $anggaran[$akun] += $this->db2->get('target')->row_array()['jumlah'];
+                    $anggaran_temp = array_merge($anggaran_temp,$this->db2->get('target')->result_array());
 
                 }
             }
+            foreach ($anggaran_temp as $entry) {
+                $anggaran[$entry['akun']] = 0;
+            }
+
+            foreach ($anggaran_temp as $entry) {
+                $anggaran[$entry['akun']] += $entry['jumlah'];
+            }
+
+            // print_r($anggaran);die();
             $data['anggaran'] = $anggaran;
         }
 
