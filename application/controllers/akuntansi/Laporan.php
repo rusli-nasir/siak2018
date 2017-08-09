@@ -1727,13 +1727,14 @@ class Laporan extends MY_Controller {
         $start_date = '2017-01-01';
         $end_date = '2017-12-31';
         
-        $array_investasi['fluk_investasi'] = array(121);
-        $array_investasi['fluk_penyertaan_ke_unit_usaha'] = array(112);
-        $array_investasi['perolehan_aset_tetap'] = array(53,5211,5212);
-        $array_investasi['hasil_penjualan_aset_tetap'] = array();
-        $array_investasi['lima_tiga'] = array(53);
-        $array_investasi['lima_dua_satu'] = array(521);
-        $array_investasi['penambahan_hasil_tak_berwujud'] = array(537);
+        $array_investasi['fluk_investasi'] = array(112);
+        $array_investasi['fluk_penyertaan_ke_unit_usaha'] = array(121);
+        $array_investasi['perolehan_aset_tetap'] = array(531,532,533,534,535,536);
+        $array_investasi['hasil_penjualan_aset_tetap'] = array('penjualan aset tetap');
+        $array_investasi['perolehan_persediaan'] = array(52111,52121,521214,521215,521216,521217);
+        /*$array_investasi['lima_tiga'] = array(53);
+        $array_investasi['lima_dua_satu'] = array(521);*/
+        $array_investasi['penambahan_hasil_tak_berwujud'] = array(5371);
         // $array_investasi['investasi'] = array(121,112);
         $array_investasi['penerimaan_hasil_investasi'] = array(428);
 

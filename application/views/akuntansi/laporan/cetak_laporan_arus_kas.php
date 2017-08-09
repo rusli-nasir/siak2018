@@ -35,7 +35,7 @@
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
-		<?php print_r($data_investasi); ?>
+		<?php //print_r($data_investasi); ?>
 		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
@@ -131,7 +131,15 @@
 						echo ucwords($hasil); 
 						?>
 					</td>
-					<td align="right"><?php echo eliminasi_negatif($value['saldo'] + $value['debet'] - $value['kredit'] ); ?></td>
+					<td align="right">
+						<?php 
+						$jumlah_investasi = $value['saldo'] + $value['debet'] - $value['kredit'];
+						if($value['debet']>0){
+							$jumlah_investasi = -1 * $jumlah_investasi;
+						}
+						echo eliminasi_negatif($jumlah_investasi); 
+						?>
+					</td>
 				</tr>
 				<?php 
 					$total_investasi += ($value['saldo'] + $value['debet'] - $value['kredit']);
@@ -154,14 +162,19 @@
 					<td class="tab2"><?php echo str_replace('_', ' ', $key); ?></td>
 					<td></td>
 				</tr>
-					<?php foreach($value as $key_1=>$value_1){ ?>
+					<?php foreach($value as $key_1=>$value_1){ 
+						$jumlah_pendanaan = $value_1['debet'] - $value_1['kredit'];
+						if($value_1['debet']>0){
+							$jumlah_pendanaan = -1 * $jumlah_pendanaan;
+						}
+						?>
 					<tr>
 						<td></td>
 						<td class="tab3"><?php echo str_replace('_', ' ', $key_1); ?></td>
-						<td align="right"><?php echo eliminasi_negatif($value_1['saldo']+$value_1['debet']+$value_1['kredit']); ?></td>
+						<td align="right"><?php echo eliminasi_negatif($jumlah_pendanaan); ?></td>
 					</tr>
 					<?php 
-						$total_pendanaan += ($value_1['saldo'] + $value_1['debet'] - $value_1['kredit']);
+						$total_pendanaan += $jumlah_pendanaan;
 					} 
 					?>
 				<?php } ?>
@@ -208,7 +221,7 @@
 function eliminasi_negatif($value)
 {
     if ($value < 0) 
-    	return number_format(abs($value),2,',','.');
+    	return '('.number_format(abs($value),2,',','.').')';
         // return "(". number_format(abs($value),2,',','.') .")";
     else
         return number_format($value,2,',','.');
