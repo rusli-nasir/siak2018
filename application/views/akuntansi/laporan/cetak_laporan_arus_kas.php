@@ -140,14 +140,12 @@
 					<td></td>
 					<td class="tab2"><?php echo str_replace('_', ' ', $key); ?></td>
 					<td></td>
-					<!-- <td align="right"></td> -->
 				</tr>
 					<?php foreach($value as $key_1=>$value_1){ ?>
 					<tr>
 						<td></td>
 						<td class="tab3"><?php echo str_replace('_', ' ', $key_1); ?></td>
-						<!-- <td align="right"><?php echo eliminasi_negatif($value_1['saldo']); ?></td> -->
-						<td></td>
+						<td align="right"><?php echo eliminasi_negatif($value_1['saldo']+$value_1['debet']+$value_1['kredit']); ?></td>
 					</tr>
 					<?php } ?>
 				<?php } ?>
