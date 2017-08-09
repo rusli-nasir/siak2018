@@ -35,6 +35,7 @@
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
+		<?php print_r($data_investasi); ?>
 		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
@@ -97,7 +98,11 @@
 								<td colspan="2" class="tab2"><b>JUMLAH <?php echo strtoupper($nama_level_1); ?></b></td>
 								<td align="right"><b>
 									<?php 
-									$total_semua_sekarang += $jumlah_sekarang[$index];
+									if($index<=1){
+										$total_semua_sekarang += $jumlah_sekarang[$index];
+									}else{
+										$total_semua_sekarang -= $jumlah_sekarang[$index];
+									}
 									echo eliminasi_negatif($jumlah_sekarang[$index]); 
 									?></b></td>
 							</tr>
@@ -113,7 +118,7 @@
 					<td><b>ARUS KAS DARI AKTIVITAS INVESTASI</b></td>
 					<td></td>
 				</tr>
-				<?php foreach($data_investasi as $key=>$value){ ?>
+				<?php $total_investasi=0;foreach($data_investasi as $key=>$value){ ?>
 				<tr>
 					<td></td>
 					<td class="tab2">
@@ -128,14 +133,22 @@
 					</td>
 					<td align="right"><?php echo eliminasi_negatif($value['saldo'] + $value['debet'] - $value['kredit'] ); ?></td>
 				</tr>
-				<?php } ?>
+				<?php 
+					$total_investasi += ($value['saldo'] + $value['debet'] - $value['kredit']);
+				} 
+				?>
+				<tr style="background-color:#F7F2AF">
+					<td></td>
+					<td><b>KAS BERSIH DIGUNAKAN DARI AKTIVITAS OPERASI</b></td>
+					<td align="right"><?php echo eliminasi_negatif($total_investasi); ?></td>
+				</tr>
 				<tr>
 					<td></td>
 					<td><b>ARUS KAS DARI AKTIVITAS PENDANAAN</b></td>
 					<td></td>
 					<!-- <td></td> -->
 				</tr>
-				<?php foreach($data_pendanaan as $key=>$value){ ?>
+				<?php $total_pendanaan=0;foreach($data_pendanaan as $key=>$value){ ?>
 				<tr>
 					<td></td>
 					<td class="tab2"><?php echo str_replace('_', ' ', $key); ?></td>
@@ -147,8 +160,45 @@
 						<td class="tab3"><?php echo str_replace('_', ' ', $key_1); ?></td>
 						<td align="right"><?php echo eliminasi_negatif($value_1['saldo']+$value_1['debet']+$value_1['kredit']); ?></td>
 					</tr>
-					<?php } ?>
+					<?php 
+						$total_pendanaan += ($value_1['saldo'] + $value_1['debet'] - $value_1['kredit']);
+					} 
+					?>
 				<?php } ?>
+				<tr style="background-color:#F7F2AF">
+					<td></td>
+					<td><b>KAS BERSIH DIPEROLEH DARI AKTIVITAS PENDANAAN</b></td>
+					<td align="right"><?php echo eliminasi_negatif($total_pendanaan); ?></td>
+				</tr>
+				<tr>
+					<td colspan="3">&nbsp;</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><b>KENAIKAN (PENURUNAN) KAS DAN SETARA KAS</b></td>
+					<td align="right">
+						<?php 
+						$kenaikan_kas = $total_semua_sekarang+$total_investasi+$total_pendanaan;
+						echo eliminasi_negatif($kenaikan_kas); 
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><b>KAS DAN SETARA KAS AWAL TAHUN</b></td>
+					<td align="right">
+						<?php 
+						$ci =& get_instance();
+						$query = $ci->db->query("SELECT SUM(saldo_awal) AS total_saldo FROM akuntansi_saldo WHERE akun LIKE '111%'")->row_array();
+						echo eliminasi_negatif($query['total_saldo']);
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><b>KAS DAN SETARA KAS AKHIR TAHUN</b></td>>
+					<td align="right"><?php echo eliminasi_negatif($query['total_saldo']+$kenaikan_kas); ?></td>
+				</tr>
 			</tbody>
 		</table>
 	</body>
