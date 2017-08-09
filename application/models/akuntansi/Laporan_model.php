@@ -540,7 +540,7 @@ class Laporan_model extends CI_Model {
                         $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
                     }
 
-                    if ($array_uraian != null){
+                    if ($array_uraian != null and $array_uraian != 'hai'){
                         $where_query = "";
                         $where_query .= "( 0 ";
                         foreach ($array_uraian as $uraian) {
@@ -585,6 +585,11 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
+
+        // if ($array_uraian == 'hai') {
+
+        //     print_r($query1);die();
+        // }
 
 
         $query2 = array();
@@ -693,7 +698,8 @@ class Laporan_model extends CI_Model {
             // print_r($array_akun);die();
             $sum_debet = 0;
             $sum_kredit = 0;
-            $sum_saldo = 0;        
+            $sum_saldo = 0;    
+            $temp_saldo = array();    
             foreach ($array_akun as $akun) {
                 $this->db->like('akun',$akun,'after');
                 $this->db->where('tahun',$year);
@@ -702,17 +708,17 @@ class Laporan_model extends CI_Model {
                 $temp_saldo = array_merge($temp_saldo,$this->db->get('akuntansi_saldo')->result_array());
             }
 
+
             // print_r($temp_saldo);die();
             $data['saldo'] = 0;
-            foreach ($query1 as $akun => $posisi) {
-                $saldo[$akun] = 0;
-            }
 
             foreach ($temp_saldo as $entry) {
                 $data['saldo'] += $entry['saldo_awal'];
             }
 
-            $data['saldo'] = $saldo;
+            // print_r($data);
+
+            // $data['saldo'] = $saldo;
 
 
             foreach ($query1 as $akun => $sub_query) {
@@ -728,15 +734,15 @@ class Laporan_model extends CI_Model {
             $data['debet'] = $sum_debet;
             $data['kredit'] = $sum_kredit;
             // $data['saldo'] = $sum_saldo;
-
-            $case_hutang = in_array(substr($akun,0,1),[2,3,4,6]);
+            print_r($array_akun[0]);die();
+            $case_hutang = in_array(substr($array_akun[0],0,1),[2,3,4,6]);
 
             if ($case_hutang) {
-                $data['nett'] = ($kredit - $debet);
-                $data['balance'] = $sum_saldo + ($kredit - $debet);
+                $data['nett'] = ($sum_kredit - $sum_debet);
+                $data['balance'] = $data['saldo'] + ($sum_kredit - $sum_debet);
             }else{
-                $data['nett'] = $sum_saldo + ($debet - $kredit);
-                $data['nett'] = ($debet - $kredit);
+                $data['balance'] = $data['saldo'] + ($sum_debet - $sum_kredit);
+                $data['nett'] = ($sum_debet - $sum_kredit);
             }
 
             return $data;

@@ -1528,10 +1528,13 @@ class Laporan extends MY_Controller {
 
         // public function add_after_parse(&$parse,$jenis,$nama = null,$after,$array_akun,$level,$start_date,$end_date,$special_case = null)
 
-        $this->add_after_parse($parsed,'lpk','Piutang Netto',121,array(1131,1132),3,$start_date,$end_date,array('pengurangan' => 1133));
+        $this->add_after_parse($parsed,'lpk','Piutang Netto',112,array(1131,1132),3,$start_date,$end_date,array('pengurang' => 1133));
+
+        $this->remove_parse($parsed,113);
+        $this->remove_parse($parsed,121);
+
         print_r($parsed);die();
 
-        // $this->remove_parse($parsed,112);
 
         unset($data['posisi']);
         unset($data['saldo']);
@@ -1850,6 +1853,7 @@ class Laporan extends MY_Controller {
                 if (isset($array_uraian[$pendanaan][$nama])) {
                     $array_kata = $array_uraian[$pendanaan][$nama];
                 }
+                // $array_kata = 'hai';
                 $data_pendanaan[$pendanaan][$nama] = $this->Laporan_model->get_rekap($akun,null,'akrual',null,'sum',null,$start_date,$end_date,$array_kata);
             }
         }
@@ -2319,7 +2323,7 @@ class Laporan extends MY_Controller {
 
         // special case array dengan key pengurangan, penambahan
 
-        if ($nama != null) {
+        if ($nama == null) {
             $tabel_akun = array(
                 1 => 'aset',
                 2 => 'hutang',
@@ -2337,23 +2341,24 @@ class Laporan extends MY_Controller {
             $pengurang = array();
             $penambah = array();
             $pengurang['saldo'] = 0;
-            $pengurang['nett'] = 0; // kalo mau iclude saldo, nett ganti ke balance
+            $pengurang['balance'] = 0; // kalo mau iclude saldo, balance ganti ke balance
             $penambah['saldo'] = 0;
-            $penambah['nett'] = 0;
+            $penambah['balance'] = 0;
 
             // public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null)
 
             if ($special_case != null) {
                 if (isset($special_case['pengurang'])){
-                    $pengurang = $this->Laporan_model->get_rekap(array($speical_case['pengurang']),null,'akrual',null,'sum');
+                    $pengurang = $this->Laporan_model->get_rekap(array($special_case['pengurang']),null,'akrual',null,'sum');
+                    // print_r($pengurang);die();
                 }
-                if (isset($special_case['pengurang'])){
-                    $penambah = $this->Laporan_model->get_rekap(array($speical_case['penambah']),null,'akrual',null,'sum');
+                if (isset($special_case['penambah'])){
+                    $penambah = $this->Laporan_model->get_rekap(array($special_case['penambah']),null,'akrual',null,'sum');
                 }
             }
 
-            $jumlah_last = $data['saldo'] - $pengurang['saldo'] + $penambah['saldo'];
-            $jumlah_now = $data['nett'] - $pengurang['nett'] + $penambah['nett']; // kalo mau iclude saldo, nett ganti ke balance
+            $jumlah_last = $data['saldo'] - abs($pengurang['saldo']) + abs($penambah['saldo']);
+            $jumlah_now = $data['balance'] - abs($pengurang['balance']) + abs($penambah['balance']); // kalo mau iclude saldo, nett ganti ke balance
 
             $entry_added = array(
                'order' => 'xx',
@@ -2370,7 +2375,7 @@ class Laporan extends MY_Controller {
                'persentase' => ($jumlah_now == 0 or $jumlah_last == 0) ? 0 : abs($jumlah_now - $jumlah_last) / $jumlah_now * 100 ,
             );
 
-            print_r($added_entry);die();
+            // print_r($entry_added);die();
 
 
         }
@@ -2386,15 +2391,17 @@ class Laporan extends MY_Controller {
             ++$i;
         }
 
-        array_splice($parse, $posisi, 0, $entry_added);
+        array_splice($parse, $posisi+1, 0, array($entry_added));
 
     }
 
     public function remove_parse(&$parse,$akun)
     {
         for ($i=0; $i < count($parse); $i++) { 
-            if ($parse[$i]['akun'] == $akun) {
-                unset($parse[$i]);
+            if (isset($parse[$i])) {
+                if ($parse[$i]['akun'] == $akun) {
+                    unset($parse[$i]);
+                }
             }
         }
     }
