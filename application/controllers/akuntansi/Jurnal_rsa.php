@@ -166,6 +166,8 @@ class Jurnal_rsa extends MY_Controller {
                 $isian = $this->Jurnal_rsa_model->get_kuitansi_tup_pengembalian($id_kuitansi);
                 $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+                $isian['akun_sal_debet'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+                $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_rekening_by_unit('all')->result();
 
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
 
