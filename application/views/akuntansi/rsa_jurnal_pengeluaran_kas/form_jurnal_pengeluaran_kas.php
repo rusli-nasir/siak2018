@@ -120,8 +120,18 @@ if($jenis=='NK'){
   <div class="form-group">
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
     <div class="col-md-3">
-    <input id="kas_akun_debet" name="kas_akun_debet" value="<?=$akun_debet_kas?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
-      
+      <?php if ($jenis == 'TUP_PENGEMBALIAN'): ?>
+        <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
+         <?php foreach ($akun_kas as $akun) {
+          ?>
+          <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
+          <?php
+        }
+        ?>
+        </select>
+      <?php else: ?>
+          <input id="kas_akun_debet" name="kas_akun_debet" value="<?=$akun_debet_kas?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>        
+      <?php endif ?>
     </div>
 
     

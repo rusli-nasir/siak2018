@@ -10,7 +10,13 @@ class Kuitansi_model extends CI_Model {
         $this->db_laporan = $this->load->database('laporan',TRUE);
     }
 	
-	function read_kuitansi($limit = null, $start = null, $keyword = null, $kode_unit = null){
+	function read_kuitansi($limit = null, $start = null, $keyword = null, $kode_unit = null, $jenis = null){
+        $added_query = "1 ";
+
+        if ($jenis != null){
+            $added_query .= "AND jenis='$jenis'";
+        }
+
         if($kode_unit!=null){
             $unit = 'AND substr(kode_unit,1,2)="'.$kode_unit.'"';
         }else{
@@ -18,16 +24,19 @@ class Kuitansi_model extends CI_Model {
         }
 
 		if($limit!=null OR $start!=null){
-			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
 			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC LIMIT $start, $limit");
 		}else{
-			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+			$query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
 			(no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
 		}
 		return $query;
 	}
 
-    function read_kuitansi_spm($limit = null, $start = null, $keyword = null, $kode_unit = null){
+    public function read_kuitansi_tup_pengembalian($limit = null, $start = null, $keyword = null, $kode_unit = null, $jenis = null)
+    {
+        $added_query = "1 ";
+
         if($kode_unit!=null){
             $unit = 'AND substr(kode_unit,1,2)="'.$kode_unit.'"';
         }else{
@@ -35,10 +44,58 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+            $query = $this->db->query("SELECT * FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
+            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
+            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
+        }
+
+        return $query;
+
+    }
+
+    function read_kuitansi_spm($limit = null, $start = null, $keyword = null, $kode_unit = null,$jenis = null){
+         $added_query = "1 ";
+
+        if ($jenis != null){
+            $added_query .= "AND jenis='$jenis'";
+        }
+
+        if($kode_unit!=null){
+            $unit = 'AND substr(kode_unit,1,2)="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
             (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit GROUP BY str_nomor_trx_spm ORDER BY str_nomor_trx_spm ASC, no_bukti ASC LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 AND flag_proses_akuntansi=0 AND
+            $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
+            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC GROUP BY str_nomor_trx_spm");
+        }
+        return $query;
+    }
+
+    function read_kuitansi_spm_tup_pengembalian($limit = null, $start = null, $keyword = null, $kode_unit = null,$jenis = null){
+         $added_query = "1 ";
+
+        if ($jenis != null){
+            $added_query .= "AND jenis='$jenis'";
+        }
+
+        if($kode_unit!=null){
+            $unit = 'AND substr(kode_unit,1,2)="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
+            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit GROUP BY str_nomor_trx_spm ORDER BY str_nomor_trx_spm ASC, no_bukti ASC LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
             (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC GROUP BY str_nomor_trx_spm");
         }
         return $query;
@@ -313,41 +370,39 @@ class Kuitansi_model extends CI_Model {
         return $hasil;
     }
 
-	public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail)
+    public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail,$jenis = nul)
     {
-    	$this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
 
-    	$hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
+        $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
         $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);
 
-    	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
-    	$hasil['akun_debet'] = $hasil['kode_akun'];
+        $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
+        $hasil['akun_debet'] = $hasil['kode_akun'];
+
+        $query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
+        $hasil['jumlah_debet'] = $this->db->query($query)->row_array()['pengeluaran'];
 
 
-
-    	$query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
-    	$hasil['jumlah_debet'] = $this->db->query($query)->row_array()['pengeluaran'];
-
-
-    	$hasil['tanggal'] = $this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm']);
+        $hasil['tanggal'] = $this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm'],$jenis);
         $hasil['tanggal_bukti'] = $hasil['tgl_kuitansi'];
-    	$hasil['no_spm'] = $hasil['str_nomor_trx_spm'];
-    	$hasil['kode_kegiatan'] = $hasil['kode_usulan_belanja'];
-    	$hasil['unit_kerja'] = $hasil['kode_unit'];
+        $hasil['no_spm'] = $hasil['str_nomor_trx_spm'];
+        $hasil['kode_kegiatan'] = $hasil['kode_usulan_belanja'];
+        $hasil['unit_kerja'] = $hasil['kode_unit'];
 
-    	$field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');
-    	$field_asal = array_keys($hasil);
+        $field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');
+        $field_asal = array_keys($hasil);
 
-    	foreach ($field_asal as $field) {
-    		if (!in_array($field, $field_tujuan)){
-    			unset($hasil[$field]);
-    		}
-    	}
+        foreach ($field_asal as $field) {
+            if (!in_array($field, $field_tujuan)){
+                unset($hasil[$field]);
+            }
+        }
 
 
-    	return $hasil;
+        return $hasil;
     }
 
     public function get_kuitansi_jadi($id_kuitansi_jadi)
@@ -441,19 +496,23 @@ class Kuitansi_model extends CI_Model {
 
     public function get_tabel_by_jenis($jenis)
     {
-    	if ($jenis == 'GP') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
     		return 'rsa_kuitansi';
     	}elseif ($jenis == 'L3') {
     		return 'rsa_kuitansi_lsphk3';
-    	}
+    	}elseif ($jenis == 'TUP_PENGEMBALIAN') {
+            return 'rsa_kuitansi_pengembalian';
+        }
     }
     public function get_tabel_detail_by_jenis($jenis)
     {
-    	if ($jenis == 'GP') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
     		return 'rsa_kuitansi_detail';
     	}elseif ($jenis == 'L3') {
     		return 'rsa_kuitansi_detail_lsphk3';
-    	}
+    	}elseif ($jenis == 'TUP_PENGEMBALIAN') {
+            return 'rsa_kuitansi_detail_pengembalian';
+        }
     }
 
     public function get_kuitansi_posting($id_kuitansi_jadi)

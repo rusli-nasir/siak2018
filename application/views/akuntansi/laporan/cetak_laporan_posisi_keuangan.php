@@ -44,110 +44,33 @@
 					<th>Selisih/Kenaikan</th>
 					<th>%</th>
 				</tr>
+				<?php foreach ($parse as $key => $entry): ?>
+					<tr <?php if ($entry['type'] == 'sum'): ?>
+						style="background-color: #8DB4E2";
+					<?php endif ?> >
+						<td></td>
+						<td>
+							<?php 
+							for ($i=0; $i < $entry['level']; $i++) { 
+								echo "&nbsp";
+							}
+
+							 ?>
+							<?php echo $entry['nama'] ?>
+							</td>
+						<td>
+							<?php echo eliminasi_negatif($entry['jumlah_now']) ?>
+						</td>
+						<td><?php echo eliminasi_negatif($entry['jumlah_last']) ?></td>
+						<td><?php echo eliminasi_negatif($entry['selisih']) ?></td>
+						<td><?php echo $entry['persentase'] ?></td>
+						
+					</tr>
+					
+				<?php endforeach ?>
 			</thead>
 			<tbody>
-				<?php $i=0;$j=0;$index=0;
-				foreach ($akun as $key_1 => $akun_1) {
-					foreach($nama_lvl_1[$key_1] as $key=>$value){ 
-						$jumlah_sekarang[$index] = 0;
-						$jumlah_awal[$index] = 0;
-						$jumlah_selisih[$index] = 0;
-						$namanya = $value; ?>
-					<tr>
-						<td></td>
-						<td class="tab0"><?php echo $value; ?></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<?php foreach($nama_lvl_2[$key_1] as $key=>$value){ ?>
-						<tr>
-							<td></td>
-							<td class="tab1"><?php echo $value; ?></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<?php if($level==3){
-								$counter=0;foreach($nama_lvl_3[$key_lvl_2[$i]] as $key=>$value){ 
-									$jumlah_sekarang[$index] += $saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter];
-									$jumlah_awal[$index] += $saldo_awal_lvl_3[$key_lvl_2[$i]][$counter];
-									?>
-									<tr>
-										<td></td>
-										<td class="tab2"><?php echo $value; ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$key_lvl_2[$i]][$counter]); ?></td>
-										<td align="right"><?php $selisih = $saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter] - $saldo_awal_lvl_3[$key_lvl_2[$i]][$counter];
-										echo eliminasi_negatif($selisih); 
-										$jumlah_selisih[$index] += abs($selisih);
-										?></td>
-										<td align="right">
-											<?php 
-											if($saldo_awal_lvl_3[$key_lvl_2[$i]][$counter]>0){ 
-												if ($saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter] != 0) {
-													$persen = ($selisih/$saldo_sekarang_lvl_3[$key_lvl_2[$i]][$counter])*100; 
-												} else {
-													$persen = 0;
-												}
-												echo abs(number_format($persen)).'%';
-											} 
-											?></td>
-									</tr>
-						<?php  $counter++; }
-							}else{ 
-								foreach($nama_lvl_3[$key_lvl_2[$i]] as $key=>$value){ ?>
-									<tr>
-										<td></td>
-										<td class="tab2"><?php echo $value; ?></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-							<?php $counter=0;foreach($nama_lvl_4[$key_lvl_3[$j]] as $key=>$value){ 
-								$jumlah_sekarang[$index] += $saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter];
-								$jumlah_awal[$index] += $saldo_awal_lvl_4[$key_lvl_3[$j]][$counter];
-								?>
-									<tr>
-										<td></td>
-										<td class="tab3"><?php echo $value; ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter]); ?></td>
-										<td align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_4[$key_lvl_3[$j]][$counter]); ?></td>
-										<td align="right"><?php $selisih = $saldo_sekarang_lvl_4[$key_lvl_3[$j]][$counter] - $saldo_awal_lvl_4[$key_lvl_3[$j]][$counter];
-										echo eliminasi_negatif($selisih); 
-										$jumlah_selisih[$index] += abs($selisih);
-										?></td>
-										<td align="right">
-											<?php 
-											if($saldo_awal_lvl_4[$key_lvl_3[$j]][$counter]>0){ 
-												if ($saldo_awal_lvl_4[$key_lvl_3[$j]][$counter] != 0){
-													$persen = ($selisih/$saldo_awal_lvl_4[$key_lvl_3[$j]][$counter])*100; 
-												}else {
-													$persen = 0;
-												}
-												echo abs(number_format($persen)).'%';
-											} 
-											?></td>
-									</tr>
-							<?php 	$counter++; } 
-								$j++;
-								}
-							} ?>
-					<?php 	$i++; } ?>
-					<tr style="background-color:#F7F2AF">
-						<td></td>
-						<td class="tab0">JUMLAH <?php echo $namanya; ?></td>
-						<td align="right"><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></td>
-						<td align="right"><?php echo eliminasi_negatif($jumlah_awal[$index]); ?></td>
-						<td align="right"><?php echo eliminasi_negatif($jumlah_selisih[$index]); ?></td>
-						<td></td>
-					</tr>
-				<?php	
-					}
-				} ?>	
+				
 			</tbody>
 		</table>
 	</body>
@@ -157,8 +80,8 @@
 function eliminasi_negatif($value)
 {
     if ($value < 0) 
-    	return number_format(abs($value),2,',','.');
-        // return "(". number_format(abs($value),2,',','.') .")";
+    	// return number_format(abs($value),2,',','.');
+        return "(". number_format(abs($value),2,',','.') .")";
     else
         return number_format($value,2,',','.');
 }

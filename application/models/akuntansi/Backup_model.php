@@ -44,6 +44,7 @@ class Backup_model extends CI_Model {
 
 	public function restore_rsa()
 	{
+		set_time_limit(0);
 		$this->load->model('akuntansi/Spm_model', 'Spm_model');
 
 		$array_primary = array (
@@ -66,8 +67,8 @@ class Backup_model extends CI_Model {
 
 		foreach ($data as $tabel => $ids) {
 			foreach ($ids as $id) {
-				echo "update tabel $tabel dengan id : $id <br/>";
-				// $this->db->where($array_primary[$tabel],$id)->set('flag_proses_akuntansi',1)->update($tabel);
+				// echo "update tabel $tabel dengan id : $id <br/>";
+				$this->db->where($array_primary[$tabel],$id)->set('flag_proses_akuntansi',1)->update($tabel);
 			}
 		}
 

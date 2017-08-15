@@ -734,7 +734,7 @@ class Laporan_model extends CI_Model {
             $data['debet'] = $sum_debet;
             $data['kredit'] = $sum_kredit;
             // $data['saldo'] = $sum_saldo;
-            print_r($array_akun[0]);die();
+            // print_r($array_akun[0]);die();
             $case_hutang = in_array(substr($array_akun[0],0,1),[2,3,4,6]);
 
             if ($case_hutang) {

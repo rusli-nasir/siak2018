@@ -12,29 +12,35 @@ class Pajak_model extends CI_Model {
 
     public function get_tabel_by_jenis($jenis)
     {
-        if ($jenis == 'GP') {
+        if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
             return 'rsa_kuitansi_detail_pajak';
         }elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
             return 'rsa_kuitansi_detail_pajak_lsphk3';
+        }elseif ($jenis == 'TUP_PENGEMBALIAN') {
+            return 'rsa_kuitansi_detail_pajak_pengembalian';
         }
     }
 
     public function get_tabel_detail_by_jenis($jenis)
     {
-        if ($jenis == 'GP') {
+        if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
             return 'rsa_kuitansi_detail';
         }elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
             return 'rsa_kuitansi_detail_lsphk3';
+        }elseif ($jenis == 'TUP_PENGEMBALIAN') {
+            return 'rsa_kuitansi_detail_pengembalian';
         }
     }
 
     public function get_tabel_utama_by_jenis($jenis)
     {
-    	if ($jenis == 'GP') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
     		return 'rsa_kuitansi';
     	}elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
     		return 'rsa_kuitansi_lsphk3';
-    	}
+    	}elseif ($jenis == 'TUP_PENGEMBALIAN') {
+            return 'rsa_kuitansi_pengembalian';
+        }
     }
 
     // public function get_detail_pajak($no_bukti,$jenis)

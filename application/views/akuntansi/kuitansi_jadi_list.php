@@ -66,6 +66,7 @@ tbody td, thead th {
   <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_NIHIL/1'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab7)){ if($tab7==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi_ls'); ?>">LS- 3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab10)){ if($tab10==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_PENGEMBALIAN/1'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_pengembalian_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian_jadi; ?></span></a></li>
 </ul>
 <div class="row">
 	<div class="col-sm-9">
@@ -295,8 +296,10 @@ function get_nama_unit($unit){
 
 function get_tabel_by_jenis($jenis)
 {
-	if ($jenis == 'GP') {
+	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
 		return 'rsa_kuitansi_detail_pajak';
+	}elseif ($jenis == 'TUP_PENGEMBALIAN') {
+		return 'rsa_kuitansi_detail_pajak_pengembalian';
 	}elseif ($jenis == 'L3') {
 		return 'rsa_kuitansi_detail_pajak_lsphk3';
 	}

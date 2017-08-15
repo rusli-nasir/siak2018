@@ -15,6 +15,17 @@ class Spm_model extends CI_Model {
 	
 	public function get_tanggal_spm($no_spm,$jenis = null)
 	{
+    // die($jenis);
+    if ($jenis == 'TUP_NIHIL') {
+      $data = $this->db->get_where('trx_spm_tup_data',array('str_nomor_trx' => $no_spm))->row_array();
+      return $data['tgl_spm'];
+    }
+
+    if ($jenis == 'TUP_PENGEMBALIAN') {
+      $data = $this->db->get_where('trx_spm_tup_data',array('str_nomor_trx' => $no_spm))->row_array();
+      return $data['tgl_spm'];
+    }
+
 		if ($jenis != 'NK'){
 			$data = $this->rsa_gup_model->get_data_spm($no_spm);
         	return $data->tgl_spm;
@@ -38,7 +49,7 @@ class Spm_model extends CI_Model {
 						'GUP' => 'trx_spm_gup_data',
 						'TUP' => 'trx_spm_tambah_tup_data',
 						'PUP' => 'trx_spm_tambah_up_data',
-						'TUP_NIHIL' => 'trx_spm_tup_data',
+						'TUP_NIHIL' => 'rsa_kuitansi',
 						'LSPHK3' => 'trx_spm_lsphk3_data',
 		);
 	}

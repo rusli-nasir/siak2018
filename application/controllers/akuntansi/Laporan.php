@@ -1301,13 +1301,17 @@ class Laporan extends MY_Controller {
         $year = gmdate('Y');
         $start_date = "$year-01-01";
         $end_date = "$year-31-12";
+        // $array_akun = array(532111);
         $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo');
+
         $tabel_akun = array(
             1 => 'aset',
             2 => 'hutang',
             3 => 'aset_bersih',
         );
         $akun = array();
+
+        // print_r($data);die();
 
         // $array_akun = array(
         //     array(
@@ -1452,12 +1456,12 @@ class Laporan extends MY_Controller {
                         foreach ($akun_3 as $key_4 => $akun_4) {
                             $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
                             $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
-                            if ($this->case_hutang($key_4)) {
-                                $saldo_sekarang = $kredit - $debet;
-                            } else {
-                                $saldo_sekarang = $debet - $kredit;
-                            }
                             $saldo_awal = (isset($rekap[$key_4]['saldo_awal'])) ? $rekap[$key_4]['saldo_awal'] : 0 ;
+                            if ($this->case_hutang($key_4)) {
+                                $saldo_sekarang = $saldo_awal + $kredit - $debet;
+                            } else {
+                                $saldo_sekarang = $saldo_awal + $debet - $kredit;
+                            }
                             $nama = $akun_4['nama'];
                             $data['nama_lvl_4'][$key_3][] = $nama;
                             $data['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
@@ -1473,8 +1477,8 @@ class Laporan extends MY_Controller {
                                'sum_negatif' => null,
                                'start_sum' => null,
                                'end_sum' => null,
-                               'jumlah_now' => $this->eliminasi_negatif($saldo_sekarang),
-                               'jumlah_last' => $this->eliminasi_negatif($saldo_awal),
+                               'jumlah_now' => $saldo_sekarang,
+                               'jumlah_last' => $saldo_awal,
                                'selisih' => abs($saldo_sekarang - $saldo_awal),
                                'persentase' => ($saldo_awal == 0 or $saldo_sekarang == 0) ? 0 : abs($saldo_sekarang - $saldo_awal) / $saldo_awal * 100 ,
                             );
@@ -1484,12 +1488,12 @@ class Laporan extends MY_Controller {
                     } else {
                         $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
                         $kredit = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['kredit'] : 0 ;
-                        if ($this->case_hutang($key_3)) {
-                            $saldo_sekarang = $kredit - $debet;
-                        } else {
-                            $saldo_sekarang = $debet - $kredit;
-                        }
                         $saldo_awal = (isset($rekap[$key_3]['saldo_awal'])) ? $rekap[$key_3]['saldo_awal'] : 0 ;
+                        if ($this->case_hutang($key_3)) {
+                            $saldo_sekarang = $saldo_awal + $kredit - $debet;
+                        } else {
+                            $saldo_sekarang = $saldo_awal + $debet - $kredit;
+                        }
                         $nama = $akun_3['nama'];
                         $data['nama_lvl_3'][$key_2][] = $nama;
                         $data['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
@@ -1506,8 +1510,8 @@ class Laporan extends MY_Controller {
                            'sum_negatif' => null,
                            'start_sum' => null,
                            'end_sum' => null,
-                           'jumlah_now' => $this->eliminasi_negatif($saldo_sekarang),
-                           'jumlah_last' => $this->eliminasi_negatif($saldo_awal),
+                           'jumlah_now' => $saldo_sekarang,
+                           'jumlah_last' => $saldo_awal,
                            'selisih' => abs($saldo_sekarang - $saldo_awal),
                            'persentase' => ($saldo_awal == 0 or $saldo_sekarang == 0) ? 0 : abs($saldo_sekarang - $saldo_awal) / $saldo_awal * 100 ,
                         );
@@ -1517,27 +1521,94 @@ class Laporan extends MY_Controller {
                 }
             }
         }
+
+        // public function add_after_parse(&$parse,$jenis,$nama = null,$after,$array_akun,$level,$start_date,$end_date,$special_case = null)
+
+        $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
+        $array_akun = array();
+        $data_aktivitas = array();
+
+        $array_pembatasan = array(
+            'tidak_terikat' => array(61,73,79),
+            'terikat_temporer' => array(62,73,79),
+            'terikat_permanen' => array(61,621,623,624,626,627,628,629,73,79)
+        );
+
+        $array_akun[6] = array(
+            'tidak_terikat' => array(6),
+            'terikat_temporer' => array(6),
+            'terikat_permanen' => array(6)
+        );
+
+        $array_akun[7] = array(
+            'tidak_terikat' => array(7),
+            'terikat_temporer' => array(7),
+            'terikat_permanen' => array(7)
+        );
+
+        foreach ($array_akun as $key => $akun) {
+            foreach ($akun as $jenis_pembatasan => $entry) {
+                $data_aktivitas[$key][$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$key][$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'sum',$jenis_pembatasan);
+            }
+        }
+
+        // foreach ($sumber_dana as $jenis_pembatasan) {
+        //     $data_aktivitas[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'sum',$jenis_pembatasan);         
+        // }
+
+        // print_r($data_aktivitas);die();
+
+        // change_value_entry(&$parse,$jenis,$akun,$tipe,$parameter,$value)
+        //public function change_value_entry(&$parse,$jenis,$akun,$tipe,$parameter,$value)
+
+        $this->remove_parse($parsed,113);
+        $this->remove_parse($parsed,124);
+        // $this->remove_parse($parsed,121);
+
+        if ($level == 3){
+            $this->add_after_parse($parsed,'lpk','Piutang Netto',112,array(1131,1132),3,$start_date,$end_date,array('pengurang' => 1133));        
+            $this->add_after_parse($parsed,'lpk','',122,array(1241),3,$start_date,$end_date);
+            $this->add_after_parse($parsed,'lpk','',123,array(1242),3,$start_date,$end_date);
+            $this->change_value_entry($parsed,'lpk',311,'add','jumlah_now',$data_aktivitas[6]['tidak_terikat']['balance'] - $data_aktivitas[7]['tidak_terikat']['balance']);
+            $this->change_value_entry($parsed,'lpk',321,'replace','jumlah_now',$data_aktivitas[6]['terikat_temporer']['balance'] - $data_aktivitas[7]['terikat_temporer']['balance']);
+            $this->change_value_entry($parsed,'lpk',322,'replace','jumlah_now',$data_aktivitas[6]['terikat_permanen']['balance'] - $data_aktivitas[7]['terikat_permanen']['balance']);
+        }
+        elseif ($level == 4){
+            $this->add_after_parse($parsed,'lpk','Piutang Netto',1121,array(1131,1132),3,$start_date,$end_date,array('pengurang' => 1133));        
+            $this->add_after_parse($parsed,'lpk','',1221,array(1241),3,$start_date,$end_date);
+            $this->add_after_parse($parsed,'lpk','',1231,array(1242),3,$start_date,$end_date);
+            $this->change_value_entry($parsed,'lpk',3111,'add','jumlah_now',$data_aktivitas[6]['tidak_terikat']['balance'] - $data_aktivitas[7]['tidak_terikat']['balance']);
+            $this->change_value_entry($parsed,'lpk',3211,'replace','jumlah_now',$data_aktivitas[6]['terikat_temporer']['balance'] - $data_aktivitas[7]['terikat_temporer']['balance']);
+            $this->change_value_entry($parsed,'lpk',3221,'replace','jumlah_now',$data_aktivitas[6]['terikat_permanen']['balance'] - $data_aktivitas[7]['terikat_permanen']['balance']);
+        }
+
+        $this->add_jumlah_for($parsed,2,'lpk',"JUMLAH LIABILITAS");
+        $this->add_jumlah_for($parsed,3,'lpk',"JUMLAH ASET BERSIH");
+        $this->add_jumlah_for($parsed,11,'lpk',"JUMLAH ASET LANCAR");
+        $this->add_jumlah_for($parsed,12,'lpk',"JUMLAH ASET TIDAK LANCAR");
+        $this->add_jumlah_for($parsed,21,'lpk',"JUMLAH LIABILITAS JANGKA PENDEK");
+        $this->add_jumlah_for($parsed,22,'lpk',"JUMLAH LIABILITAS JANGKA PANJANG");
+        $this->add_jumlah_after($parsed,"sum.12",'lpk','akun',"JUMLAH ASET",array("sum.11","sum.12"),array("sum.11","sum.12"));
+        $this->add_jumlah_after($parsed,"sum.3",'lpk','akun',"JUMLAH LIABILITAS DAN ASET BERSIH",array("sum.2","sum.3"),array("sum.2","sum.3"));
+        // $this->add_jumlah_after($parsed,322,'lpk','akun',"JUMLAH ASET BERSIH",array(311),array(322));
+        // $this->add_jumlah_after($parsed,"sum_after_322",'lpk','akun',"JUMLAH ASET BERSIH",array(311),array(322));
+
         // foreach ($parsed as $val) {
         //     $entry = $val;
         //     for ($i=0; $i < $val['level']; $i++) { 
         //         echo "&nbsp;&nbsp;";
         //     }
-        //     echo $entry['nama'] ." ". $entry['jumlah_now']  ." ". $entry['jumlah_last']  ."<br/> ";
+        //     echo  $entry['nama'] ." ". $entry['jumlah_now']  ." ". $entry['jumlah_last'] ." - ". $entry['akun'] ."<br/> ";
         // }
         // die();
 
-        // public function add_after_parse(&$parse,$jenis,$nama = null,$after,$array_akun,$level,$start_date,$end_date,$special_case = null)
 
-        $this->add_after_parse($parsed,'lpk','Piutang Netto',112,array(1131,1132),3,$start_date,$end_date,array('pengurang' => 1133));
-
-        $this->remove_parse($parsed,113);
-        $this->remove_parse($parsed,121);
-
-        print_r($parsed);die();
+        // print_r($parsed);die();
 
 
         unset($data['posisi']);
         unset($data['saldo']);
+        $data['parse'] = $parsed;
         $data['atribut'] = $parse_data;
         $data['level'] = $level;
         $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
@@ -1734,7 +1805,7 @@ class Laporan extends MY_Controller {
         $array_investasi['fluk_penyertaan_ke_unit_usaha'] = array(121);
         $array_investasi['perolehan_aset_tetap'] = array(531,532,533,534,535,536);
         $array_investasi['hasil_penjualan_aset_tetap'] = array('penjualan aset tetap');
-        $array_investasi['perolehan_persediaan'] = array(52111,52121,521214,521215,521216,521217);
+        $array_investasi['perolehan_persediaan'] = array(52111,521211,521214,521215,521216,521217);
         /*$array_investasi['lima_tiga'] = array(53);
         $array_investasi['lima_dua_satu'] = array(521);*/
         $array_investasi['penambahan_hasil_tak_berwujud'] = array(5371);
@@ -1838,7 +1909,7 @@ class Laporan extends MY_Controller {
             if (isset($array_uraian_investasi[$nama])){
                 $array_kata = $array_uraian_investasi[$nama];
             }
-            $data_investasi[$nama] = $this->Laporan_model->get_rekap($akun,$array_not,'akrual',null,'sum',null,$start_date,$end_date,$array_kata);
+            $data_investasi[$nama] = $this->Laporan_model->get_rekap($akun,$array_not,'kas',null,'sum',null,$start_date,$end_date,$array_kata);
         }
 
         // print_r($data_investasi['investasi']);die();
@@ -2362,7 +2433,7 @@ class Laporan extends MY_Controller {
 
             $entry_added = array(
                'order' => 'xx',
-               'level' => 0,
+               'level' => $level,
                'akun' => $array_akun[0],
                'type' => 'index',
                'nama' => $nama,
@@ -2399,16 +2470,203 @@ class Laporan extends MY_Controller {
     {
         for ($i=0; $i < count($parse); $i++) { 
             if (isset($parse[$i])) {
-                if ($parse[$i]['akun'] == $akun) {
+                if (substr($parse[$i]['akun'],0,strlen($akun)) == $akun) {
                     unset($parse[$i]);
                 }
             }
         }
+        $parse = array_values($parse);
     }
 
-    public function add_jumlah($jenis,$nama,$after,$start,$end)
+    public function change_value_entry(&$parse,$jenis,$akun,$tipe,$parameter,$value)
     {
-        # code...
+        $posisi = 0;
+        for ($i=0; $i < count($parse); $i++) { 
+            if (isset($parse[$i])) {
+                if (substr($parse[$i]['akun'],0,strlen($akun)) == $akun) {
+                    $posisi = $i;
+                    break;
+                }
+            }
+        }
+
+        if ($posisi != 0){
+            if ($tipe == 'replace'){
+                $parse[$posisi][$parameter] = $value;            
+            } elseif ($tipe == 'add') {
+                $parse[$posisi][$parameter] += $value;
+            }
+
+            if ($jenis == 'lpk') {
+                $parse[$posisi]['selisih'] = abs($parse[$posisi]['jumlah_now'] - $parse[$posisi]['jumlah_last']);
+                $parse[$posisi]['persentase'] = ($parse[$posisi]['jumlah_last'] == 0 or $parse[$posisi]['jumlah_now'] == 0) ? 0 : abs($parse[$posisi]['jumlah_now'] - $parse[$posisi]['jumlah_last']) / $parse[$posisi]['jumlah_last'] * 100;
+            }
+        }
+
+
+        // echo $value;
+        // print_r($parse[$posisi]);die();
+    }
+
+    public function add_jumlah_after(&$parse,$after,$jenis,$tipe,$nama,$start,$end)
+    {
+        $posisi = 0;
+        if ($jenis == 'lpk'){
+            $jumlah_now = 0;
+            $jumlah_last = 0;
+            $selisih = 0;
+            $persentase = 0;
+
+            if ($tipe == 'akun') {
+                for ($i=0; $i < count($start); $i++) { 
+                    $pos1 = 0;
+                    $pos2 = 0;
+                    $j = 0;
+                    $k = 0;
+                    while ($j < count($parse) and $pos1 == 0) {
+                        if ($parse[$j]['akun'] == $start[$i]) {
+                            $pos1 = $j;
+                        }
+                        ++$j;
+                    }
+                    $j--;
+                    $k = $j;
+                    $pos2 = $pos1;
+                    while ($k < count($parse) and $pos2 == $pos1) {
+                        // if (substr($parse[$k]['akun'],0,strlen($end[$i])) != $end[$i]) {
+                        if (isset($parse[$k+1]) and $parse[$k+1]['akun'] != $end[$i]) { //kalau next udah enggak berarti dia list terakhir
+                            $pos2 = $k;
+                        }
+                        ++$k;
+                    }
+
+                    // $pos2--;
+                    // echo $pos1.'-'.$pos2."\n";
+
+                    for ($l=$pos1; $l <= $pos2; $l++) { 
+                        $jumlah_now += $parse[$l]['jumlah_now'];
+                        $jumlah_last += $parse[$l]['jumlah_last'];
+                        $selisih += $parse[$l]['selisih'];
+                    }
+                }
+            } elseif ($tipe == 'indeks') {
+                for ($i=0; $i < count($start); $i++) { 
+                    $pos1 = $start[$i];
+                    $pos2 = $end[$i];
+
+                    for ($l=$pos1; $l <= $pos2; $l++) { 
+                        $jumlah_now += $parse[$l]['jumlah_now'];
+                        $jumlah_last += $parse[$l]['jumlah_last'];
+                        $selisih += $parse[$l]['selisih'];
+                    }
+
+                }
+            }
+            $entry_added = array(
+               'order' => 'xx',
+               'level' => 0,
+               'akun' => 'sum_after_'.$after,
+               'type' => 'sum',
+               'nama' => $nama,
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'jumlah_now' => $jumlah_now,
+               'jumlah_last' => $jumlah_last,
+               'selisih' => abs($jumlah_now - $jumlah_last),
+               'persentase' => ($jumlah_now == 0 or $jumlah_last == 0) ? 0 : abs($jumlah_now - $jumlah_last) / $jumlah_now * 100 ,
+            );
+
+        }
+
+        while ($i < count($parse) and $posisi == 0) {
+            if ($parse[$i]['akun'] == $after) {
+                $posisi = $i;
+            }
+            ++$i;
+        }
+        // print_r($entry_added);die();
+
+        array_splice($parse, $posisi+1, 0, array($entry_added));
+    }
+
+    public function add_jumlah_for(&$parse,$akun,$jenis,$nama = null)
+    {
+        $tabel_akun = array(
+            1 => 'aset',
+            2 => 'hutang',
+            3 => 'aset_bersih',
+            4 => 'lra',
+            5 => 'akun_belanja',
+            6 => 'lra',
+            7 => 'akun_belanja'
+        );
+
+        if ($nama == null) {
+            $nama = "JUMLAH ".$this->Akun_model->get_nama_akun_by_level($nama,strlen($nama),$tabel_akun[substr($akun,0,1)]);
+        }
+        $posisi = 0;
+        if ($jenis == 'lpk'){
+            $jumlah_now = 0;
+            $jumlah_last = 0;
+            $selisih = 0;
+            $persentase = 0;
+
+            $start = 0;
+            $end = 0;
+
+            $j = 0;
+
+            while ($j < count($parse) and $start == 0) {
+                if (substr($parse[$j]['akun'],0,strlen($akun)) == $akun) {
+                // if ($parse[$j]['akun'] == $akun) {
+                    $start = $j;
+                }
+                ++$j;
+            }
+
+            $j--;
+
+            while ($j < count($parse) and $end == 0) {
+
+                if (!isset($parse[$j+1]) or substr($parse[$j+1]['akun'],0,strlen($akun)) != $akun) {
+                    $end = $j;
+                }
+
+                ++$j;
+            }
+
+            // $end;
+            // echo $start .' - '. $end ."<br/>";
+            // die();
+
+            for ($l=$start; $l <= $end; $l++) { 
+                $jumlah_now += $parse[$l]['jumlah_now'];
+                $jumlah_last += $parse[$l]['jumlah_last'];
+                $selisih += $parse[$l]['selisih'];
+            }
+
+            $entry_added = array(
+               'order' => 'xx',
+               'level' => 0,
+               'akun' => "sum.$akun",
+               'type' => 'sum',
+               'nama' => $nama,
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'jumlah_now' => $jumlah_now,
+               'jumlah_last' => $jumlah_last,
+               'selisih' => abs($jumlah_now - $jumlah_last),
+               'persentase' => ($jumlah_now == 0 or $jumlah_last == 0) ? 0 : abs($jumlah_now - $jumlah_last) / $jumlah_now * 100 ,
+            );
+
+        }
+
+        $posisi = $end+1; // J udah ditambah 1 di while
+        // print_r($entry_added);die();
+
+        array_splice($parse, $posisi, 0, array($entry_added));
     }
 
 

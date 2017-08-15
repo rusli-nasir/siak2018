@@ -142,12 +142,13 @@
 					</td>
 				</tr>
 				<?php 
-					$total_investasi += ($value['saldo'] + $value['debet'] - $value['kredit']);
+					// $total_investasi += ($value['saldo'] + $value['debet'] - $value['kredit']);
+					$total_investasi += $jumlah_investasi;
 				} 
 				?>
 				<tr style="background-color:#F7F2AF">
 					<td></td>
-					<td><b>KAS BERSIH DIGUNAKAN DARI AKTIVITAS OPERASI</b></td>
+					<td><b>KAS BERSIH DIGUNAKAN DARI AKTIVITAS INVESTASI</b></td>
 					<td align="right"><?php echo eliminasi_negatif($total_investasi); ?></td>
 				</tr>
 				<tr>
