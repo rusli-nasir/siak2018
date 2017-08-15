@@ -16,15 +16,15 @@
    
    
     <link href="<?php echo base_url(); ?>frontpage/css/custom.css" rel="stylesheet" />
-	
+    
     <link media="screen" rel="stylesheet" href="<?php echo base_url(); ?>frontpage/plugins/jvalidation/css/validationEngine.jquery.css" />
     
     <link href="<?php echo base_url(); ?>frontpage/plugins/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     
-	<!--<link href="<?php echo base_url(); ?>frontpage/css/bootstrap-datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet"/>-->
+    <!--<link href="<?php echo base_url(); ?>frontpage/css/bootstrap-datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet"/>-->
 
     <link href="<?php echo base_url(); ?>frontpage/plugins/datepicker/css/datepicker.css" rel="stylesheet"/>
-	
+    
     <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
 
     <!--<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-2.2.4/jquery-2.2.4.min.js"></script>-->
@@ -76,11 +76,13 @@
 
     <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/datepicker/js/bootstrap-datepicker.js"></script>
 
+    <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/jquery.visible.js"></script>
+
     
     
     <!--<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/custom.js"></script>-->
-	
-	
+    
+    
 
     <!--<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/KeyTable.js"></script>-->
     
@@ -222,8 +224,8 @@
             </div>
         </div>
         <!-- /. NAV TOP  -->
-	
-	
+    
+    
 
     <?php // echo (isset($message))?$message:'';?>
 
@@ -260,6 +262,7 @@
                         </ul>
                     </div>
                     <?php if($_SESSION['rsa_kode_unit_subunit'] == '99'): ?>
+                        <?php if($_SESSION['rsa_level'] == '11'): ?>
                     <div class="col-md-6">
                         <div class="panel panel-danger" style="margin-bottom: 0;">
                             <div class="panel-heading">
@@ -270,6 +273,7 @@
                             </div>
                         </div>
                     </div>
+                        <?php endif; ?>
                     <?php else: ?>
                     <div class="col-md-6">
                     <ul class="list-group" style="margin:0 0 5px;">
@@ -309,11 +313,11 @@
         </div>
         
         <?php endif; ?>
-	
+    
     <?php echo (isset($main_content))?$main_content:'';?>
       
      
-		
+        
     <div class="footer">
       
     
@@ -361,46 +365,46 @@
 $pengumuman = 0;
 if($pengumuman !=0){
 ?>
-	<!-- modal maintenance by andys -->
-	<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-				</button>
-				 <h4 class="modal-title" id="memberModalLabel">Maintenance System!</h4>
-			</div>
-			<div class="modal-body">
-				<p>
-				Terima kasih telah menjadi inspirasi kami untuk selalu berusaha meningkatkan performa system setiap saat. 
-				Oleh karena itu, kami akan melakukan proses maintenance pada: 
-				<br/><br/>
-				<b>Rabu, 5 Mei 2017</b> mulai pukul <b>12:00 WIB</b> sampai dengan pukul <b>13:00 WIB</b>.
-				<br/><br/>
-				Kami mohon maaf atas ketidaknyamanannya dan pastikan Anda Tidak menggunakan system di luar jam di atas.
-				</p>
-				<br>
-				<p>
-					Terima kasih<br><br>
-					ttd<br>
-					Ka. Subbag Data. & Applikasi
-				<p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-	</div>
-	<!-- modal -->
-	<!-- END MODAL -->
-	<?php if(!empty($_SESSION['rsa_kode_unit_subunit'])){ ?>
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$('#infoModal').modal('show');
-		});
-	</script>
-	<?php } ?>
+    <!-- modal maintenance by andys -->
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                 <h4 class="modal-title" id="memberModalLabel">Maintenance System!</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                Terima kasih telah menjadi inspirasi kami untuk selalu berusaha meningkatkan performa system setiap saat. 
+                Oleh karena itu, kami akan melakukan proses maintenance pada: 
+                <br/><br/>
+                <b>Rabu, 5 Mei 2017</b> mulai pukul <b>12:00 WIB</b> sampai dengan pukul <b>13:00 WIB</b>.
+                <br/><br/>
+                Kami mohon maaf atas ketidaknyamanannya dan pastikan Anda Tidak menggunakan system di luar jam di atas.
+                </p>
+                <br>
+                <p>
+                    Terima kasih<br><br>
+                    ttd<br>
+                    Ka. Subbag Data. & Applikasi
+                <p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- modal -->
+    <!-- END MODAL -->
+    <?php if(!empty($_SESSION['rsa_kode_unit_subunit'])){ ?>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#infoModal').modal('show');
+        });
+    </script>
+    <?php } ?>
 <?php } ?>
 <!-- END MODAL -->
         
@@ -421,13 +425,13 @@ if($pengumuman !=0){
     ajaxStart: function() { $('.modal_ajax_loading').show();  },
     ajaxStop: function() { $('.modal_ajax_loading').hide(); }
     });
-	$(document).ready(function(e){
-		$('a, button').tooltip({
-			delay:0,
-			template:'<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width:200px;min-width:150px;"></div></div>',
-			trigger: 'hover'
-		});
-	});
+    $(document).ready(function(e){
+        $('a, button').tooltip({
+            delay:0,
+            template:'<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width:200px;min-width:150px;"></div></div>',
+            trigger: 'hover'
+        });
+    });
 </script>
 </body>
 </html>

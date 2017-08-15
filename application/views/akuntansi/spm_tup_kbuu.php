@@ -296,10 +296,10 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                         var rel = $(this).attr('rel');
                         $.ajax({
                             type:"POST",
-                            url :"<?=site_url("kuitansi/get_data_kuitansi")?>",
+                            url :"<?=site_url("akuntansi/kuitansi_unsession/get_data_kuitansi")?>",
                             data:'id=' + rel,
                             success:function(data){
-//                                    console.log(data);
+                                   console.log(data.kuitansi);
                                     var obj = jQuery.parseJSON(data);
                                     var kuitansi = obj.kuitansi ;
                                     var kuitansi_detail = obj.kuitansi_detail ;
@@ -2478,7 +2478,7 @@ function terbilang(bilangan) {
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->jml_bruto, 0, ",", ".")?></td>
                                 -->
 
-                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data_rekap_bruto[$data_pajak][$i]->jml_bruto, 0, ",", ".")?><?php var_dump(); ?></td>
+                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data_rekap_bruto[$data_pajak][$i]->jml_bruto, 0, ",", ".")?></td>
 
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPN, 0, ",", ".")?></td>
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh21, 0, ",", ".")?></td>

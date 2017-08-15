@@ -1,6 +1,6 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-Class Kuitansi extends CI_Controller {
+Class Kuitansi_unsession extends CI_Controller {
     
     private $cur_tahun = '' ;
 	
@@ -10,7 +10,6 @@ Class Kuitansi extends CI_Controller {
             
             $this->cur_tahun = $this->setting_model->get_tahun();
             
-            if ($this->check_session->user_session()){
 		/*	Load library, helper, dan Model	*/
 		$this->load->library(array('form_validation','option'));
 		$this->load->helper('form');
@@ -20,9 +19,6 @@ Class Kuitansi extends CI_Controller {
 		$this->load->model('unit_model');
 		$this->load->model('subunit_model');
 		$this->load->model('master_unit_model'); 
-            }else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
 	}
 	
 /* -------------- Method ------------- */

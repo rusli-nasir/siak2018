@@ -320,6 +320,34 @@ input[readonly]
     margin: 0 auto;
 }
 
+#kuitansi_showpengembalian tr td:first-child { padding-left: 10px }
+#kuitansi_showpengembalian tr td:last-child  { padding-right: 10px }
+
+#kuitansi_showpengembalian {
+    margin: 0 auto;
+}
+
+#kuitansipengembalian tr td:first-child { padding-left: 10px }
+#kuitansipengembalian tr td:last-child  { padding-right: 10px }
+
+#kuitansipengembalian {
+    margin: 0 auto;
+}
+
+#kuitansi_pengembalian tr td:first-child { padding-left: 10px }
+#kuitansi_pengembalian tr td:last-child  { padding-right: 10px }
+
+#kuitansi_pengembalian {
+    margin: 0 auto;
+}
+
+#kuitansipengembalian tr td:first-child { padding-left: 10px }
+#kuitansipengembalian tr td:last-child  { padding-right: 10px }
+
+#kuitansipengembalian {
+    margin: 0 auto;
+}
+
 #spp_up tr td:first-child { padding-left: 10px }
 #spp_up tr td:last-child  { padding-right: 10px }
 
