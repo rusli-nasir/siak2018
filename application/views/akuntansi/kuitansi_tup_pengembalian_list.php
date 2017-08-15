@@ -169,7 +169,7 @@ tbody td, thead th {
 				<tr>
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_kbuu/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/TUP_PENGEMBALIAN'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 						<?php }else if($this->session->userdata('level')==2){ ?>
