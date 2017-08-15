@@ -202,6 +202,11 @@
 	
 	<div id="mycontent" class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main" style="padding-bottom:10px;">
 	<?php echo $content;?>
+	<?php 
+	if(isset($bukti)){
+		echo $main_content;
+	}
+	?>
 	</div>	<!--/.main-->
 
 	<!-- <script src="<?php echo base_url();?>/assets/akuntansi/js/jquery-1.11.1.min.js"></script>

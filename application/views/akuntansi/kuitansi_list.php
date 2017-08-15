@@ -168,8 +168,12 @@ tbody td, thead th {
 				<?php foreach($query->result() as $result){ ?>
 				<tr>
 					<td style="width:4% !important"><?php echo $no; ?></td>
-					<td>						
+					<td>	
+					<?php if($result->jenis=='TP'){ ?>
+						<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_kbuu/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+					<?php }else{ ?>					
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+					<?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1) or isset($tab8)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi)."/$jenis_isi"; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
