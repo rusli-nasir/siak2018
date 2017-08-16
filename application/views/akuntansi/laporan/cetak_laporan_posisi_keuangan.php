@@ -1,3 +1,12 @@
+<?php 
+if($atribut['cetak']){ 
+	header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+	header("Content-Disposition: attachment; filename=laporan_posisi_keuangan.xls");  //File name extension was wrong
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	header("Cache-Control: private",false);
+}
+?>
 <!DOCTYPE>
 <html>
 	<head>
@@ -24,8 +33,19 @@
 		</style>
 		<script type="text/javascript">
 		</script>
+		<link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet">
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
+		<?php if($atribut['cetak']=='cetak'){ ?>
+		<?php }else{ ?>
+		<form action="<?php echo site_url('akuntansi/laporan/lainnya') ?>" method="post">
+			<input type="hidden" name="jenis_laporan" value="Posisi Keuangan">
+			<input type="hidden" name="level" value="<?php echo $level; ?>">
+			<input type="hidden" name="daterange" value="<?php if(isset($daterange)) echo 'daterange'; ?>">
+			<input type="hidden" name="cetak" value="cetak">
+			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button>
+		</form>
+		<?php } ?>
 		<div align="center">
 			<div style="font-weight:bold">
 				UNIVERSITAS DIPONEGORO<br/>
@@ -58,12 +78,12 @@
 							 ?>
 							<?php echo $entry['nama'] ?>
 							</td>
-						<td>
+						<td align="right">
 							<?php echo eliminasi_negatif($entry['jumlah_now']) ?>
 						</td>
-						<td><?php echo eliminasi_negatif($entry['jumlah_last']) ?></td>
-						<td><?php echo eliminasi_negatif($entry['selisih']) ?></td>
-						<td><?php echo $entry['persentase'] ?></td>
+						<td  align="right"><?php echo eliminasi_negatif($entry['jumlah_last']) ?></td>
+						<td  align="right"><?php echo eliminasi_negatif($entry['selisih']) ?></td>
+						<td  align="right"><?php echo number_format($entry['persentase'],2); ?></td>
 						
 					</tr>
 					
