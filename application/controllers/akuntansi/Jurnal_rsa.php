@@ -159,7 +159,11 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
 
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+
                 $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
+
+                // print_r($isian['pajak']);die();
 
             }
             else if ($jenis == 'TUP_PENGEMBALIAN'){
@@ -263,6 +267,8 @@ class Jurnal_rsa extends MY_Controller {
 
         $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
         $isian['komentar'] = $query_riwayat['komentar'];
+        $isian['akun_sal_debet'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+        $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_rekening_by_unit('all')->result();
         // print_r($isian['akun_kas']);die();
         // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
         $this->data['content'] = $this->load->view('akuntansi/detail_kuitansi_jadi',$isian,true);
@@ -368,6 +374,14 @@ class Jurnal_rsa extends MY_Controller {
 
             }
 
+            if ($kuitansi['jenis'] == 'TUP_PENGEMBALIAN') {
+                $entry['akun_debet'] = $entry['kas_akun_debet'];
+                unset($entry['kas_akun_debet']);
+            }
+
+            // print_r($entry);die();
+
+
             $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
 
             if ($kuitansi['status'] == 'posted') {
@@ -414,6 +428,8 @@ class Jurnal_rsa extends MY_Controller {
             $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($kode_unit)->result();
             $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($kode_unit));
             $isian['akun_sal'][] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+            $isian['akun_sal_debet'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+            $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_rekening_by_unit('all')->result();  
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
             $this->data['content'] = $this->load->view('akuntansi/edit_kuitansi_jadi',$isian,true);

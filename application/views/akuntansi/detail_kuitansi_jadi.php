@@ -135,8 +135,15 @@
   <div class="form-group">
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
     <div class="col-md-3">
-    <input id="kas_akun_debet" name="kas_akun_debet" value="<?=$akun_debet_kas?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
-      
+      <?php if ($jenis == 'TUP_PENGEMBALIAN'): ?>
+        <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" disabled="">
+            <option value="<?php echo $akun_sal_debet['akun_6'] ?>"  ><?php echo $akun_sal_debet['akun_6']. " - ".$akun_sal_debet['nama'] ?></option>
+
+        ?>
+        </select>
+      <?php else: ?>
+          <input id="kas_akun_debet" name="kas_akun_debet" value="<?=$akun_debet_kas?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>        
+      <?php endif ?>
     </div>
 
     

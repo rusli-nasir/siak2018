@@ -128,8 +128,15 @@
   <div class="form-group">
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
     <div class="col-md-3">
-    <input id="kas_akun_debet" name="kas_akun_debet" value="<?=$akun_debet_kas?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>
-      
+      <?php if ($jenis == 'TUP_PENGEMBALIAN'): ?>
+        <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
+            <option value="<?php echo $akun_sal_debet['akun_6'] ?>"  ><?php echo $akun_sal_debet['akun_6']. " - ".$akun_sal_debet['nama'] ?></option>
+
+        ?>
+        </select>
+      <?php else: ?>
+          <input id="kas_akun_debet" name="kas_akun_debet" value="<?=$akun_debet_kas?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>        
+      <?php endif ?>
     </div>
 
     
@@ -141,8 +148,43 @@
 
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
-      <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
+          <option value="">Pilih Akun</option>
+          <?php if ($jenis == 'TUP_PENGEMBALIAN'): ?>
+            <?php foreach ($akun_debet_akrual_tup_pengembalian as $akun) {
+              ?>
+              <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
+              <?php
+            }
+            ?>
+
+          <?php else: ?>
+              <?php foreach($query_1->result() as $result){ ?>
+                <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
+              <?php } ?>
+              <?php foreach($query_2->result() as $result){ ?>
+                <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
+              <?php } ?>
+              <option value="">
+               <?php foreach ($akun_belanja as $akun) {
+                $akun['kode_akun'][0] = 7;
+                ?>
+                <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - ';
+                $uraian_akun = explode(' ', $akun['nama_akun']);
+                if($uraian_akun[0]!='beban'){
+                  $uraian_akun[0] = 'Beban';
+                }
+                $hasil_uraian = implode(' ', $uraian_akun);
+                echo $hasil_uraian;
+                ?></option>
+                <?php
+              }
+              ?>         
+          <?php endif ?>
+      </select> 
+
+      <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
+      <!-- <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
           <option value="">Pilih Akun</option>
           <?php foreach($query_1->result() as $result){ ?>
             <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
@@ -158,7 +200,7 @@
             <?php
           }
           ?> 
-      </select> 
+      </select>  -->
         
     </div>
 
