@@ -120,7 +120,7 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 
-		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'GP');
+		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'TP');
 		$total = $total_data->num_rows();
 		//pagination
 		if($this->uri->segment('4')==null){
@@ -1329,12 +1329,22 @@ class Kuitansi extends MY_Controller {
 			substr(kode_unit,1,2)='".$kode_unit."' ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
 		$gup = $gup->num_rows();
 
+		//gup
+		$tup_pengembalian = $this->db->query("SELECT * FROM rsa_kuitansi_pengembalian WHERE cair=1 AND flag_proses_akuntansi=0 AND
+			substr(kode_unit,1,2)='".$kode_unit."' ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
+		$tup_pengembalian = $tup_pengembalian->num_rows();
+
 		//pup
 		$pup = $this->db->query("SELECT * FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx 
 			AND substr(trx_tambah_up.kode_unit_subunit,1,2)='".$kode_unit."'");
 		$pup = $pup->num_rows();
 
 		//tup
+		$tup = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx
+			AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'");
+		$tup = $tup->num_rows();
+
+		//tup nihil
 		$tup = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx
 			AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'");
 		$tup = $tup->num_rows();
@@ -1348,7 +1358,7 @@ class Kuitansi extends MY_Controller {
 		$lspg = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.flag_proses_akuntansi=0 AND S.proses=5 AND P.unitsukpa=".$kode_unit."");
 		$lspg = $lspg->num_rows();
 
-		return $up+$gup+$gu+$pup+$tup+$ls3+$lspg;
+		return $up+$gup+$gu+$pup+$tup+$ls3+$lspg+$tup_pengembalian;
 	}
     
     /****************** RUPIAH MURNI ************************/
