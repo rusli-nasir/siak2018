@@ -1882,13 +1882,9 @@ function terbilang(bilangan) {
             <div class="alert alert-warning" style="text-align:center">
                
                 <?php if($doc_up == 'SPM-FINAL-VERIFIKATOR'){ ?>
-                    <a href="#" class="btn btn-warning" id="" data-toggle="modal" data-target="#myModalKas"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Setujui SPM</a>
-                    <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#myModalTolakSPMPPK"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tolak SPM</a>
                     <!--<a href="#" class="btn btn-success" id="down_2"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</a>-->
                     <button type="button" class="btn btn-info" id="cetak-spm" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                 <?php }else{ ?> 
-                    <a href="#" class="btn btn-warning" disabled="disabled" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Setujui SPM</a>
-                    <a href="#" class="btn btn-warning" disabled="disabled"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tolak SPM</a>
                     <!--<a href="#" class="btn btn-success" id="down_2"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</a>-->
                     <button type="button" class="btn btn-info" id="cetak-spm" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                 <?php } ?>
