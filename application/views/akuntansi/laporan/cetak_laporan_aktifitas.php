@@ -169,6 +169,24 @@
 				</tr>
 			</tfoot>
 		</table>
+		<br/>
+		<table width="1300px;">
+			<tbody>
+				<tr>
+					<td colspan="4" width="600px;"></td>
+					<td colspan="4">
+						<?php 
+					    $pejabat = get_pejabat('all','rektor');
+					    $teks_kpa = "Rektor";
+					    $teks_unit = "UNIVERSITAS DIPONEGORO";
+						echo 'Semarang, '.$atribut['periode_ttd'].'<br/>'.$teks_kpa.'<br/>';
+						echo $teks_unit.'<br/><br/><br/><br/>';
+						echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];
+						?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</body>
 </html>
 
@@ -180,5 +198,11 @@ function eliminasi_negatif($value)
         // return "(". number_format(abs($value),2,',','.') .")";
     else
         return number_format($value,2,',','.');
+}
+function get_pejabat($unit, $jabatan){
+	$ci =& get_instance();
+	$ci->db->where('unit', $unit);
+	$ci->db->where('jabatan', $jabatan);
+	return $ci->db->get('akuntansi_pejabat')->row_array();
 }
 ?>

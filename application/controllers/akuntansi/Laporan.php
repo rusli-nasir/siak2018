@@ -58,6 +58,7 @@ class Laporan extends MY_Controller {
                 $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_awal']) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
             }
             $data['teks_periode'] = $teks_periode;
+            $data['periode_ttd'] = $this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
             if($this->input->post('jenis_laporan')=='Aktifitas'){
                 $this->get_lapak($level, $data);
             }else if($this->input->post('jenis_laporan')=='Posisi Keuangan'){
