@@ -1,7 +1,7 @@
 <?php 
 if($atribut['cetak']){ 
 	header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-	header("Content-Disposition: attachment; filename=laporan_posisi_keuangan.xls");  //File name extension was wrong
+	header("Content-Disposition: attachment; filename=laporan_arus_kas.xls");  //File name extension was wrong
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("Cache-Control: private",false);
@@ -38,9 +38,9 @@ if($atribut['cetak']){
 		<?php if($atribut['cetak']=='cetak'){ ?>
 		<?php }else{ ?>
 		<form action="<?php echo site_url('akuntansi/laporan/lainnya') ?>" method="post">
-			<input type="hidden" name="jenis_laporan" value="Posisi Keuangan">
+			<input type="hidden" name="jenis_laporan" value="Arus Kas">
 			<input type="hidden" name="level" value="<?php echo $level; ?>">
-			<input type="hidden" name="daterange" value="<?php if(isset($daterange)) echo 'daterange'; ?>">
+			<input type="hidden" name="daterange" value="<?php if(isset($atribut['daterange'])) echo $atribut['daterange']; ?>">
 			<input type="hidden" name="cetak" value="cetak">
 			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button>
 		</form>
@@ -50,7 +50,7 @@ if($atribut['cetak']){
 				UNIVERSITAS DIPONEGORO<br/>
 				LAPORAN PERUBAHAN ARUS KAS<br/>
 				UNTUK TAHUN-TAHUN YANG BERAKHIR<br/>
-				<?php echo $atribut['teks_periode']; ?><br/>
+				<?php echo $atribut['daterange']; ?><br/>
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>

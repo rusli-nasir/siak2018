@@ -41,7 +41,7 @@ if($atribut['cetak']){
 		<form action="<?php echo site_url('akuntansi/laporan/lainnya') ?>" method="post">
 			<input type="hidden" name="jenis_laporan" value="Posisi Keuangan">
 			<input type="hidden" name="level" value="<?php echo $level; ?>">
-			<input type="hidden" name="daterange" value="<?php if(isset($daterange)) echo 'daterange'; ?>">
+			<input type="hidden" name="daterange" value="<?php if(isset($atribut['daterange'])) echo $atribut['daterange']; ?>">
 			<input type="hidden" name="cetak" value="cetak">
 			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button>
 		</form>
@@ -50,7 +50,7 @@ if($atribut['cetak']){
 			<div style="font-weight:bold">
 				UNIVERSITAS DIPONEGORO<br/>
 				Laporan Posisi Keuangan<br/>
-				<?php echo $atribut['teks_periode']; ?><br/>
+				<?php echo $atribut['daterange']; ?><br/>
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
