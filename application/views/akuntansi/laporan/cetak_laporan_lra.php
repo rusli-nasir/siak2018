@@ -40,7 +40,7 @@ if($atribut['cetak']){
 		<form action="<?php echo site_url('akuntansi/laporan/lainnya') ?>" method="post">
 			<input type="hidden" name="jenis_laporan" value="Realisasi Anggaran">
 			<input type="hidden" name="level" value="<?php echo $level; ?>">
-			<input type="hidden" name="daterange" value="<?php if(isset($atribut['daterange'])) echo $atribut['daterange']; ?>">
+			<input type="hidden" name="daterange" value="<?php if(isset($atribut['parsing_date'])) echo $atribut['parsing_date']; ?>">
 			<input type="hidden" name="cetak" value="cetak">
 			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button>
 		</form>
@@ -162,7 +162,12 @@ if($atribut['cetak']){
 						<td align="right"><?php echo eliminasi_negatif($jumlah_awal[$index]); ?></td>
 						<td align="right"><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></td>
 						<td align="right"><?php echo eliminasi_negatif($jumlah_selisih[$index]); ?></td>
-						<td></td>
+						<td>
+							<?php
+							$persen_total = ($jumlah_sekarang[$index]/$jumlah_awal[$index])*100;
+							echo number_format($persen_total,0).'%';
+							?>
+						</td>
 					</tr>
 				<?php	
 					}

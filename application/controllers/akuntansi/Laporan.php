@@ -59,6 +59,7 @@ class Laporan extends MY_Controller {
             }
             $data['level'] = $level;
             $data['daterange'] = "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
+            $data['parsing_date'] = $daterange;
             $data['teks_periode'] = $teks_periode;
             $data['periode_ttd'] = $this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
 
