@@ -1,3 +1,6 @@
+<?php 
+$ci =& get_instance();
+ ?>
 <style type="text/css">
 table {
         width: 100% !important;
@@ -186,7 +189,11 @@ tbody td, thead th {
 							<a href="#"><button type="button" class="btn btn-sm btn-success">Posting</button></a>
 						<?php } ?>
 					</td>
-					<td><?php echo date("d/m/Y", strtotime($result->tgl_kuitansi)); ?></td>
+					<td><?php
+							$ci->load->model('akuntansi/Spm_model', 'Spm_model');
+							$result->tgl_kuitansi = $ci->Spm_model->get_tanggal_spm($result->str_nomor_trx_spm,$result->jenis);
+					 		echo date("d/m/Y", strtotime($result->tgl_kuitansi)); 
+					 ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
 					<td><?php echo $result->str_nomor_trx_spm; ?></td>
 					<td><?php echo $result->jenis; ?></td>

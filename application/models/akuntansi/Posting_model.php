@@ -9,9 +9,9 @@ class Posting_model extends CI_Model {
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->load->model('akuntansi/Relasi_kuitansi_akun_model', 'Relasi_kuitansi_akun_model');
 
-        $this->load->spark('curl/1.2.1');
-        $this->load->spark('restclient/2.1.0');
-        $this->load->library('rest');
+        // $this->load->spark('curl/1.2.1');
+        // $this->load->spark('restclient/2.1.0');
+        // $this->load->library('rest');
 
 	    $config = array('server'  => 'http://localhost/lapakuntansi/index.php/api/kuitansi/',
 	                //'api_key'         => 'Setec_Astronomy'
@@ -22,7 +22,7 @@ class Posting_model extends CI_Model {
 	                //'ssl_verify_peer' => TRUE,
 	                //'ssl_cainfo'      => '/certs/cert.pem'
 	    );
-		$this->rest->initialize($config);
+		// $this->rest->initialize($config);
     }
 
     public function posting_kuitansi_full($id_kuitansi_jadi){
