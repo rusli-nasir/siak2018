@@ -53,146 +53,51 @@ if($atribut['cetak']){
 		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
-					<th width="30px">No</th>
+					<th width="30px">No.</th>
 					<th width="750px">URAIAN</th>
-					<th>TAHUN 20X1</th>
-					<th>TAHUN 20X0</th>
+					<th>TAHUN <?php echo $tahun_ini ?></th>
+					<th>TAHUN <?php echo $tahun_lalu ?></th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php $i=0;$j=0;$index=0;$index_atas=0;$total_semua_sekarang=0;$total_semua_awal=0;		
-				foreach($jenis_pembatasan as $key=>$value_pembatasan){ ?>
-					<tr>
-						<td colspan="4" align="center" style="background-color:#e6e6e6"><?php echo $value_pembatasan; ?></td>
-					</tr>
-				<?php foreach ($akun as $key_1 => $akun_1) {
-						$jumlah_sekarang[$index] = 0;
-						$jumlah_awal[$index] = 0;
-						foreach($nama_lvl_1[$value_pembatasan][$key_1] as $key=>$value){ 
-							$nama_level_1 = $value;
-						?>
-						<tr>
-							<td></td>
-							<td class="tab0"><?php echo strtoupper($value); ?></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<?php foreach($nama_lvl_2[$value_pembatasan][$key_1] as $key=>$value){ ?>
-							<tr>
-								<td></td>
-								<td class="tab1"><?php echo strtoupper($value.' '.str_replace('_', ' ', ($value_pembatasan))); ?></td>
-								<td></td>
-								<td></td>
-							</tr>	
-							<?php if($level==3){
-								$counter=0;foreach($nama_lvl_3[$value_pembatasan][$key_lvl_2[$i]] as $key=>$value){ 
-									$jumlah_sekarang[$index] += $saldo_sekarang_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter];
-									$jumlah_awal[$index] += $saldo_awal_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter];
-									?>
-									<tr>
-										<td></td>
-										<td class="tab2"><?php echo strtoupper($value); ?></td>
-										<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter]); ?></td>
-										<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_3[$value_pembatasan][$key_lvl_2[$i]][$counter]); ?></td>
-									</tr>
-						<?php  $counter++; }								
-							}else{ ?>
-								<?php foreach($nama_lvl_3[$value_pembatasan][$key_lvl_2[$i]] as $key=>$value){ ?>
-									<tr>
-										<td></td>
-										<td class="tab2"><?php echo strtoupper($value); ?></td>
-										<?php
-										$total_sekarang = 0;
-										$total_awal = 0;
-										$counter=0;
-										foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){
-											$total_sekarang += $saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-											$total_awal += $saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-											$counter++;
-										}
-										?>
-										<td align="right"><?php echo eliminasi_negatif($total_sekarang); ?></td>
-										<td align="right"><?php echo eliminasi_negatif($total_awal); ?></td>
-									</tr>
-								<?php $counter=0;foreach($nama_lvl_4[$value_pembatasan][$key_lvl_3[$j]] as $key=>$value){ 
-										$jumlah_sekarang[$index] += $saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-										$jumlah_awal[$index] += $saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter];
-										?>
-										<tr>
-											<td></td>
-											<td class="tab3"><?php echo strtoupper($value); ?></td>
-											<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_sekarang_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter]); ?></td>
-											<td class="tab2" align="right"><?php echo eliminasi_negatif($saldo_awal_lvl_4[$value_pembatasan][$key_lvl_3[$j]][$counter]); ?></td>
-										</tr>
-								<?php 	$counter++; 
-										} 
-										$j++;
-									}				
-								}				
-							$i++;
-							} ?>
-							<tr style="background-color:#F7F2AF">
-								<td colspan="2" class="tab2"><b>JUMLAH <?php echo strtoupper(str_replace('_', ' ', $nama_level_1.' '.$value_pembatasan)); ?></b></td>
-								<td align="right"><b><?php echo eliminasi_negatif($jumlah_sekarang[$index]); ?></b></td>
-								<td align="right"><b><?php echo eliminasi_negatif($jumlah_awal[$index]); ?></b></td>
-							</tr>
-						<?php
-					  	}
-					  	$index++;
-					}
-					?>
-					<tr style="background-color:#8D76E4">
-						<td colspan="2" class="tab2"><b>JUMLAH KENAIKAN(PENURUNAN) ASET BERSIH <?php echo strtoupper(str_replace('_', ' ', $value_pembatasan)); ?></b></td>
-						<td align="right"><b>
+				<?php
+					$no = 0; 
+					 foreach ($parse as $key => $entry): ?>
+					<tr 
+						<?php if ($entry['type'] == 'sum'): ?>
+						style="background-color: #8DB4E2";
+						<?php endif ?> 
+						<?php if ($entry['type'] == 'index'): ?>
+							style="text-decoration: bold"
+						<?php endif ?>
+					>
+						<td>&nbsp;<?php echo ++$no ?></td>
+						<td>
 							<?php 
-							$total_semua_sekarang += (abs($jumlah_sekarang[$index-2])-abs($jumlah_sekarang[$index-1]));
-							echo eliminasi_negatif(abs($jumlah_sekarang[$index-2])-abs($jumlah_sekarang[$index-1])); 
-							?></b></td>
-						<td align="right"><b>
-							<?php 
-							$total_semua_awal += (abs($jumlah_awal[$index-2])-abs($jumlah_awal[$index-1]));
-							echo eliminasi_negatif(abs($jumlah_awal[$index-2])-abs($jumlah_awal[$index-1])); 
-							?></b></td>
+							for ($i=0; $i < $entry['level']; $i++) { 
+								echo "&nbsp;&nbsp";
+							}
+
+							 ?>
+							<?php echo $entry['nama'] ?>
+						</td>
+						<td align="right">
+							<?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['jumlah_now']) ?>
+						</td>
+						<td align="right">
+							<?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['jumlah_last']) ?>
+						</td>
+						<!-- <td  align="right"><?php echo eliminasi_negatif($entry['jumlah_last']) ?></td>						 -->
 					</tr>
-					<?php
-				} ?>	
-				<tr style="background-color:#B1E9F2">
-					<td colspan="2">KENAIKAN DAN (PENURUNAN) ASET BERSIH TAHUN BERJALAN</td>
-					<td align="right"><?php echo eliminasi_negatif($total_semua_sekarang); ?></td>
-					<td align="right"><?php echo eliminasi_negatif($total_semua_awal); ?></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab1">ASET BERSIH AWAL TAHUN:</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Aset Bersih Kekayaan Awal PTN Badan Hukum</td>
-					<td align="right"><?php $total_ekuitas = 3109370974259; echo eliminasi_negatif($total_ekuitas); ?></td>
-					<td align="right">0,00</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td class="tab2">Kenaikan (Penurunan) Aset Bersih Tahun Lalu</td>
-					<td align="right">0</td>
-					<td align="right">0,00</td>
-				</tr>
+					
+				<?php endforeach ?>
 			</tbody>
-			<tfoot>
-				<tr style="background-color:#B1E9F2">
-					<td colspan="2">ASET BERSIH AKHIR TAHUN</td>
-					<td align="right"><?php echo eliminasi_negatif($total_semua_sekarang+$total_ekuitas); ?></td>
-					<td align="right"><?php echo eliminasi_negatif($total_semua_awal); ?></td>
-				</tr>
-			</tfoot>
 		</table>
 		<br/>
-		<table width="1300px;">
+		<table width="100%;">
 			<tbody>
 				<tr>
-					<td colspan="4" width="600px;"></td>
+					<td colspan="4" width="60%;"></td>
 					<td colspan="4">
 						<?php 
 					    $pejabat = get_pejabat('all','rektor');

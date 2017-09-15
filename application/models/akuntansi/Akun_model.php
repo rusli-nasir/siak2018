@@ -59,6 +59,16 @@ class Akun_model extends CI_Model {
 		
 	}
 
+	public function get_konversi_akun_5($kode_akun)
+	{
+		$konversi = $this->db->get_where('akuntansi_akun_konversi',array('dari' => $kode_akun))->row_array();
+		if ($konversi == null) {
+			return substr_replace($kode_akun,7,0,1);
+		}else {
+			return $konversi['ke'];
+		}
+	}
+
 	public function get_akun_by_level($kode_akun,$level,$tabel,$array_not_akun = null)
 	{
 		$replacer = 0;

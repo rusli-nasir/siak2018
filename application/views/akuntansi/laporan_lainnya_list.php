@@ -1,6 +1,7 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/vue.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
 
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
@@ -93,43 +94,45 @@
     <?php echo form_open('akuntansi/laporan/lainnya',array("class"=>"form-horizontal","id" => "form_pop")); ?>
 	<!-- Text input-->
     <div class="form-group">
-      <label class="col-md-2 control-label">Unit</label>  
-      <div class="col-md-6">
-          <?php if($this->session->userdata('level')==1 or $this->session->userdata('level')==2 or $this->session->userdata('level')==5){ ?>
-          <?php foreach($query_unit->result() as $unit){
-            if($unit->kode_unit==$this->session->userdata('kode_unit')){
-              $nama_unit = $unit->nama_unit;
-            }
-          }
-          ?>
-          <input type="hidden" class="form-control" name="unit" value="<?php echo $this->session->userdata('kode_unit') ?>">
-          <input type="text" class="form-control" value="<?php echo $nama_unit; ?>" readonly>
-          <?php }else{ ?>
-          <select id="unit_list" name="unit" class="form-control" required="">
-              <option value="all" selected=""> Semua</option>
-            <?php foreach($query_unit->result() as $unit): ?>
-              <option value="<?php echo $unit->kode_unit ?>"><?= $unit->alias." - ".$unit->nama_unit ?></option>
-            <?php endforeach; ?>
-            <option value="9999">Penerimaan</option>
-          </select>
-          <?php } ?>
-      </div>
-    </div>
-    <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
       <div class="col-md-6">
         <input class="form-control" type="text" name="daterange">
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-md-2 control-label">Jenis Laporan</label>  
-      <div class="col-md-6">
-          <select id="jenis_laporan" name="jenis_laporan" class="form-control" required="">
-            <option value="Aktifitas">Aktifitas</option>
-            <option value="Posisi Keuangan">Posisi Keuangan</option>
-            <option value="Realisasi Anggaran">Realisasi Anggaran</option>
-            <option value="Arus Kas">Arus Kas</option>
-          </select>
+    <div id="vue_unit">
+      <div class="form-group">
+        <label class="col-md-2 control-label">Jenis Laporan</label>  
+        <div class="col-md-6">
+            <select v-model="jenis_laporan" id="jenis_laporan" name="jenis_laporan" class="form-control" required="">
+              <option value="Aktifitas" >Aktifitas</option>
+              <option value="Posisi Keuangan"  >Posisi Keuangan</option>
+              <option value="Realisasi Anggaran" >Realisasi Anggaran</option>
+              <option value="Arus Kas" >Arus Kas</option>
+            </select>
+        </div>
+      </div>
+      <div class="form-group" v-show="jenis_laporan == 'Realisasi Anggaran'">
+         <label class="col-md-2 control-label">Unit</label>  
+          <div class="col-md-6">
+              <?php if($this->session->userdata('level')==1 or $this->session->userdata('level')==2 or $this->session->userdata('level')==5){ ?>
+              <?php foreach($query_unit->result() as $unit){
+                if($unit->kode_unit==$this->session->userdata('kode_unit')){
+                  $nama_unit = $unit->nama_unit;
+                }
+              }
+              ?>
+              <input type="hidden" class="form-control" name="unit" value="<?php echo $this->session->userdata('kode_unit') ?>">
+              <input type="text" class="form-control" value="<?php echo $nama_unit; ?>" readonly>
+              <?php }else{ ?>
+              <select v-model="unit" id="unit_list" name="unit" class="form-control" required="">
+                  <option value="all" selected=""> Semua</option>
+                <?php foreach($query_unit->result() as $unit): ?>
+                  <option value="<?php echo $unit->kode_unit ?>"><?= $unit->alias." - ".$unit->nama_unit ?></option>
+                <?php endforeach; ?>
+                <option value="9999">Penerimaan</option>
+              </select>
+              <?php } ?>
+          </div>
       </div>
     </div>
     <div class="row">
@@ -171,6 +174,30 @@
 	</div>
 </div>
 </div>
+
+
+<script type="text/javascript">
+      vue_unit = new Vue({
+        el : "#vue_unit",
+        data : {
+                  jenis_laporan : "Aktifitas",
+                  unit : 'all',
+                },
+        methods : {
+
+        },
+        computed : {
+
+        },
+        watch : {
+          jenis_laporan :function(val,oldVal) {
+            if (val != 'Realisasi Anggaran'){
+              this.unit = 'all';
+            }
+          }
+        }
+      });
+</script>
 
 <script type="text/javascript">
   var myForm = document.getElementById('form_pop');
@@ -230,7 +257,9 @@
           showDropdowns: true
         }
     );
+
 </script>
+
 
 <?php
 function get_pengeluaran($id_kuitansi){

@@ -504,7 +504,7 @@ class Laporan_model extends CI_Model {
         $year = date("Y");
         if ($start_date == null AND $end_date == null) {
             $start_date = "$year-01-01";  
-            $end_date = "$year-06-30";      
+            $end_date = "$year-12-31";      
         }
 
         $kolom = array(
@@ -751,7 +751,11 @@ class Laporan_model extends CI_Model {
         if ($laporan == 'anggaran') {
             $tahun = $year;
             $anggaran = array();
-            $query_max_unit_revisi  = "SELECT max(revisi) as max_revisi,LEFT(kode_usulan_belanja,2) as unit FROM `detail_belanja_` WHERE 1 GROUP BY LEFT(kode_usulan_belanja,2)";
+            $query_unit = '';
+            if ($unit != null){
+                $query_unit .= "AND LEFT(kode_usulan_belanja,2) = '$unit'";
+            }
+            $query_max_unit_revisi  = "SELECT max(revisi) as max_revisi,LEFT(kode_usulan_belanja,2) as unit FROM `detail_belanja_` WHERE 1 $query_unit GROUP BY LEFT(kode_usulan_belanja,2)";
             $max_revisi = $this->db2->query($query_max_unit_revisi)->result_array();
             $revisi_unit = array();
             $anggaran_temp = array();
@@ -1042,6 +1046,7 @@ class Laporan_model extends CI_Model {
 
         $query = array_merge($query,$query2);
 
+
         $i = 0;
         $data = array();
         foreach ($query as $entry) {
@@ -1056,6 +1061,7 @@ class Laporan_model extends CI_Model {
                 //     print_r($in_query);
                 //     die();
                 // }
+
 
 
                 if ($entry['tipe'] == 'pajak') {
@@ -1095,6 +1101,14 @@ class Laporan_model extends CI_Model {
                 }
             }
             $i++;
+        }
+
+        // print_r(end($data));die();
+
+        foreach ($data as $indeks => $entry) {
+            if (!isset($entry['akun'])){
+                unset($data[$indeks]);
+            }
         }
 
         return $data;

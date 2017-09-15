@@ -54,36 +54,43 @@ if($atribut['cetak']){
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
-		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
+		<table style="width:1100px;font-size:10pt;margin:0; auto" class="border">
 			<thead>
-				<tr style="background-color:#ECF379;height:45px">
-					<th width="30px"></th>
-					<th width="550px">URAIAN</th>
-					<th>31 Des 20X1</th>
-					<th>31 Des 20X0</th>
-					<th>Selisih/Kenaikan</th>
-					<th>%</th>
+				<tr style="background-color:#ECF379;height:45px;">
+					<th  style="text-align:center" width="30px">No</th>
+					<th style="text-align:center" width="550px">URAIAN</th>
+					<th style="text-align:center"> <?php echo $atribut['daterange'];?></th>
+					<th style="text-align:center" >31 Des <?php echo gmdate('Y')-1 ?></th>
+					<th style="text-align:center">Selisih/Kenaikan</th>
+					<th style="text-align:center">%</th>
 				</tr>
-				<?php foreach ($parse as $key => $entry): ?>
-					<tr <?php if ($entry['type'] == 'sum'): ?>
+				<?php
+					$no = 0; 
+					foreach ($parse as $key => $entry): ?>
+					<tr 
+						<?php if ($entry['type'] == 'sum'): ?>
 						style="background-color: #8DB4E2";
-					<?php endif ?> >
-						<td></td>
+						<?php endif ?> 
+						<?php if ($entry['type'] == 'index'): ?>
+							style="text-decoration: bold"
+						<?php endif ?>
+					>
+						<td>&nbsp;<?php echo ++$no; ?></td>
 						<td>
 							<?php 
 							for ($i=0; $i < $entry['level']; $i++) { 
-								echo "&nbsp";
+								echo "&nbsp;&nbsp;";
 							}
 
 							 ?>
 							<?php echo $entry['nama'] ?>
 							</td>
 						<td align="right">
-							<?php echo eliminasi_negatif($entry['jumlah_now']) ?>
+							<?php  if ($entry['type'] != "index") echo eliminasi_negatif($entry['jumlah_now']) ?>
 						</td>
-						<td  align="right"><?php echo eliminasi_negatif($entry['jumlah_last']) ?></td>
-						<td  align="right"><?php echo eliminasi_negatif($entry['selisih']) ?></td>
-						<td  align="right"><?php echo number_format($entry['persentase'],2); ?></td>
+						<td  align="right"><?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['jumlah_last']) ?></td>
+						<td  align="right"><?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['selisih']) ?></td>
+						<td  align="right"><?php if ($entry['type'] != "index") echo number_format($entry['persentase'],2); ?></td>
 						
 					</tr>
 					

@@ -16,7 +16,7 @@ class Spm_model extends CI_Model {
 	public function get_tanggal_spm($no_spm,$jenis = null)
 	{
     // die($jenis);
-    if ($jenis == 'TUP_NIHIL') {
+    if ($jenis == 'TP' or $jenis == 'TUP_NIHIL') {
       $data = $this->db->get_where('trx_spm_tup_data',array('str_nomor_trx' => $no_spm))->row_array();
       return $data['tgl_spm'];
     }
