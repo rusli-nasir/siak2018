@@ -419,6 +419,75 @@ class Kuitansi_model extends CI_Model {
 
     }
 
+    public function get_kuitansi_jadi_by_kode_kegiatan($kode_kegiatan)
+    {
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->db->where("tipe <> 'pajak' AND tipe <> 'pengembalian'");
+        $this->db->where('kode_kegiatan',$kode_kegiatan);
+
+        $data = $this->db->get('akuntansi_kuitansi_jadi')->result_array();
+        // ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
+        $array_multi_akun = array('memorial','jurnal_umum','penerimaan','pengembalian');
+        foreach ($data as $key => $entry) {
+            $temp_detail = array();
+            $detail = array();
+            if (!in_array($entry['tipe'],$array_multi_akun)) {
+                $detail['akun'] = $entry['akun_debet_akrual'];
+                $detail['tipe'] = 'debet';
+                $detail['jumlah'] = $entry['jumlah_debet'];
+                $detail['jenis'] = 'akrual';
+
+                $temp_detail[] = $detail;
+
+                $detail['akun'] = $entry['akun_debet'];
+                $detail['jenis'] = 'kas';
+
+                $temp_detail[] = $detail;
+
+                $detail['akun'] = $entry['akun_kredit_akrual'];
+                $detail['tipe'] = 'kredit';
+                $detail['jumlah'] = $entry['jumlah_kredit'];
+                $detail['jenis'] = 'akrual';
+
+                $temp_detail[] = $detail;
+
+                $detail['akun'] = $entry['akun_kredit'];
+                $detail['jenis'] = 'kas';
+
+                $temp_detail[] = $detail;
+            } else {
+                $this->db->where('id_kuitansi_jadi',$entry['id_kuitansi_jadi']);
+                $this->db->select('akun,tipe,jumlah,jenis');
+                $temp_detail = $this->db->get('akuntansi_relasi_kuitansi_akun')->result_array();
+            }
+            $data[$key]['detail'] = $temp_detail;
+
+            if ($entry['id_pajak'] != 0){
+                $this->db->where('id_kuitansi_jadi',$entry['id_pajak']);
+                $this->db->select('akun,tipe,jumlah,jenis');
+                $data[$key]['pajak'] = $this->db->get('akuntansi_relasi_kuitansi_akun')->result_array();
+            }else {
+                $data[$key]['pajak'] = null;
+            }
+
+            if ($entry['id_pengembalian'] != 0){
+                $this->db->where('id_kuitansi_jadi',$entry['id_pengembalian']);
+                $this->db->select('akun,tipe,jumlah,jenis');
+                $data[$key]['pengembalian'] = $this->db->get('akuntansi_relasi_kuitansi_akun')->result_array();
+            }else {
+                $data[$key]['pengembalian'] = null;
+            }
+
+            unset($data[$key]['akun_debet']);
+            unset($data[$key]['akun_debet_akrual']);
+            unset($data[$key]['akun_kredit']);
+            unset($data[$key]['akun_kredit_akrual']);
+            unset($data[$key]['jumlah_debet']);
+            unset($data[$key]['jumlah_kredit']);
+        }
+        return $data;
+    }
+
     public function get_kuitansi_nk($id_spmls)
     {
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');

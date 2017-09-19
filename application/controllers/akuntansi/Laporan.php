@@ -370,7 +370,7 @@ class Laporan extends MY_Controller {
         $teks_tahun_anggaran = "TAHUN ANGGARAN $teks_tahun";
 
         if ($periode_awal != null and $periode_akhir != null){
-            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+            $teks_periode .= $this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
         }
 
 
@@ -935,7 +935,7 @@ class Laporan extends MY_Controller {
         $teks_tahun_anggaran = "TAHUN ANGGARAN $teks_tahun";
 
         if ($periode_awal != null and $periode_akhir != null){
-            $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
+            $teks_periode .= $this->Jurnal_rsa_model->reKonversiTanggal($periode_awal) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
         }
 
 
@@ -2753,6 +2753,7 @@ class Laporan extends MY_Controller {
         // $this->remove_parse($parsed,113);
         // $this->remove_parse($parsed,124);
         // $this->remove_parse($parsed,121);
+
 
         $this->add_jumlah_for($parsed,4,'lra',"Jumlah Pendapatan");
         $this->add_jumlah_for($parsed,5,'lra',"Jumlah Beban");

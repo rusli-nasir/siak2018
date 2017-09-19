@@ -47,6 +47,16 @@ class Coba extends MY_Controller {
         print_r($this->Akun_belanja_rsa_model->get_all_akun_belanja());
     }
 
+    public function coba_api()
+    {
+        // $user = json_decode(
+        //     file_get_contents('http://admin:1234@example.com/index.php/api/user/id/1/format/json')
+        //     file_get_contents('http://4P1_undip:q1w2e3r4asdf@localhost/rsa/index.php/akuntansi/api/kuitansi_by_kode_kegiatan/id/haii/')
+        // );
+
+        echo file_get_contents('http://4P1_undip:q1w2e3r4asdf@localhost/rsa/index.php/akuntansi/api/kuitansi_by_kode_kegiatan/id/haii/');
+    }
+
     
 
     public function cek_memori($value='')

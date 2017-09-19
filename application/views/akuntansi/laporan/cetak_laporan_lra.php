@@ -1,4 +1,5 @@
 <?php 
+
 if($atribut['cetak']){ 
 	header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
 	header("Content-Disposition: attachment; filename=laporan_lra.xls");  //File name extension was wrong
@@ -81,10 +82,10 @@ if($atribut['cetak']){
 							 ?>
 							<?php echo $entry['nama'] ?>
 							</td>
-						<td align="right"><?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['anggaran']) ?></td>
-						<td  align="right"><?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['realisasi']) ?></td>
-						<td  align="right"><?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['selisih']) ?></td>
-						<td  align="right"><?php if ($entry['type'] != "index") echo number_format($entry['persentase'],2); ?></td>
+						<td align="right"><?php  echo eliminasi_negatif($entry['anggaran']) ?></td>
+						<td  align="right"><?php  echo eliminasi_negatif($entry['realisasi']) ?></td>
+						<td  align="right"><?php  echo eliminasi_negatif($entry['selisih']) ?></td>
+						<td  align="right"><?php  echo number_format($entry['persentase'],2); ?></td>
 						
 					</tr>
 					
@@ -118,7 +119,7 @@ function eliminasi_negatif($value)
     if ($value < 0) 
     	return number_format(abs($value),2,',','.');
         // return "(". number_format(abs($value),2,',','.') .")";
-    elseif ($value = null)
+    elseif ($value == null)
     	return '';
     else
         return number_format($value,2,',','.');
