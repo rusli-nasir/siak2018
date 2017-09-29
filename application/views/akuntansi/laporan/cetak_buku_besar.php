@@ -40,6 +40,11 @@ if(isset($excel)){
 			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
 			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+			<input type="hidden" name="tujuan" value="<?php echo $this->input->post('tujuan') ?>">
+			<input type="hidden" name="sasaran" value="<?php echo $this->input->post('sasaran') ?>">
+			<input type="hidden" name="program" value="<?php echo $this->input->post('program') ?>">
+			<input type="hidden" name="kegiatan" value="<?php echo $this->input->post('kegiatan') ?>">
+			<input type="hidden" name="subkegiatan" value="<?php echo $this->input->post('subkegiatan') ?>">
 			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
 			<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
 		</form>
@@ -53,6 +58,11 @@ if(isset($excel)){
 			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
 			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+			<input type="hidden" name="tujuan" value="<?php echo $this->input->post('tujuan') ?>">
+			<input type="hidden" name="sasaran" value="<?php echo $this->input->post('sasaran') ?>">
+			<input type="hidden" name="program" value="<?php echo $this->input->post('program') ?>">
+			<input type="hidden" name="kegiatan" value="<?php echo $this->input->post('kegiatan') ?>">
+			<input type="hidden" name="subkegiatan" value="<?php echo $this->input->post('subkegiatan') ?>">
 			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
 			<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
 		</form>
@@ -62,11 +72,46 @@ if(isset($excel)){
 			BUKU BESAR<br/>
 			<?php echo $periode_text; ?>
 		</div>
+		<?php if ($string_tujuan != null): ?>
+			<hr/>
+			<table style="font-size:10pt;">
+				<tr>
+					<td width="15%x" style="font-weight:bold;">Tujuan</td>
+					<td colspan="7"><?php echo $string_tujuan ?></td>
+				</tr>
+				<?php if ($string_sasaran != null): ?>
+					<tr>
+						<td style="font-weight:bold;">Output</td>
+						<td colspan="7"><?php echo $string_sasaran ?>'</td>
+					</tr>					
+				<?php endif ?>
+				<?php if ($string_program != null): ?>
+					<tr>
+						<td style="font-weight:bold;">Program</td>
+						<td colspan="7"><?php echo $string_program ?>'</td>
+					</tr>					
+				<?php endif ?>
+				<?php if ($string_kegiatan != null): ?>
+					<tr>
+						<td style="font-weight:bold;">Kegiatan</td>
+						<td colspan="7"><?php echo $string_kegiatan ?>'</td>
+					</tr>					
+				<?php endif ?>
+				<?php if ($string_subkegiatan != null): ?>
+					<tr>
+						<td style="font-weight:bold;">Subkegiatan</td>
+						<td colspan="7"><?php echo $string_subkegiatan ?>'</td>
+					</tr>					
+				<?php endif ?>
+			</table>		
+			<hr/>	
+		<?php endif ?>
 		<?php
 		$baris = 4;
 		$item = 1;
 		$total_data = 4;//count($query); 
 		$break = 'on';
+
 		foreach ($query as $key=>$entry){
 			echo '<table style="font-size:10pt;">
 					<tr>

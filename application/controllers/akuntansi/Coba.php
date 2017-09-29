@@ -26,6 +26,14 @@ class Coba extends MY_Controller {
         echo $this->Akun_model->get_nama_akun('111111');
     }
 
+    public function coba_123()
+    {
+        $hasil = $this->db->get('akuntansi_aset_6')->result_array();
+        foreach ($hasil as $key => $entry) {
+            echo $entry['nama']." - ".$entry['akun_6']."<br/>";
+        }
+    }
+
     public function cek_129()
     {
         $array_akun = array(129);

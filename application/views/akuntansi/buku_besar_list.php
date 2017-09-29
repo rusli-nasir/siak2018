@@ -1,7 +1,11 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/vue.js"></script>
+<!-- <script src="<?php echo base_url();?>/assets/akuntansi/js/vue-selectize.js"></script> -->
+<script src="<?php echo base_url();?>/assets/akuntansi/js/vue-multiselect.min.js"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+<link href="<?php echo base_url();?>/assets/akuntansi/css/vue-multiselect.min.css" rel="stylesheet">
 
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
@@ -23,6 +27,7 @@
         $('#akun_kas_list').selectize();
         $('#akun_akrual_list').selectize();
         $('#unit_list').selectize();
+        // $('#pilih_program').selectize();
         
         $('#basis').on('change', function (e) {         
             var optionSelected = $('#basis').find(':selected').text();
@@ -142,15 +147,63 @@
           </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-md-2 control-label">Akun</label>  
-      <div class="col-md-6">
-          <div id="akun_list">
-              
+    <div id="app_select">
+      <div v-show="state == 0">
+        <div class="form-group">
+        <label class="col-md-2 control-label">Akun</label>  
+        <div class="col-md-6">
+            <div id="akun_list">
+                
+            </div>
+            <div id="akun_list_pajak">
+                
+            </div>
+        </div>
+        </div>
+      </div>
+      <div v-if="state == 1">
+        <div class="form-group">
+          <label class="col-md-2 control-label">Tujuan</label>  
+          <div class="col-md-6">
+              <multiselect id="pilih_tujuan" v-model="selected_tujuan" deselect-label="Can't remove this value" track-by="kode_kegiatan" label="nama_kegiatan" placeholder="Select one" :options="items.tujuan" :searchable="true" :allow-empty="true"></multiselect>
+              <input v-if="selected_tujuan" type="hidden" id="tujuan_terpilih" name="tujuan" v-model="selected_tujuan.kode_kegiatan">
           </div>
-          <div id="akun_list_pajak">
-              
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">Sasaran</label>  
+          <div class="col-md-6">
+              <multiselect id="pilih_output" v-model="selected_sasaran" deselect-label="Can't remove this value" track-by="kode_output" label="nama_output" placeholder="Select one" :options="filteredSasaran" :searchable="true" :allow-empty="true"></multiselect>
+              <input v-if="selected_sasaran" type="hidden" id="sasaran_terpilih" name="sasaran" v-model="selected_sasaran.kode_output">
           </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">Program</label>  
+          <div class="col-md-6">
+              <multiselect id="pilih_program" v-model="selected_program" deselect-label="Can't remove this value" track-by="kode_program" label="nama_program" placeholder="Select one" :options="filteredProgram" :searchable="true" :allow-empty="true"></multiselect>
+              <input v-if="selected_program" type="hidden" id="program_terpilih" name="program" v-model="selected_program.kode_program">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">Kegiatan</label>  
+          <div class="col-md-6">
+              <multiselect id="pilih_kegiatan" v-model="selected_kegiatan" deselect-label="Can't remove this value" track-by="kode_komponen" label="nama_komponen" placeholder="Select one" :options="filteredKegiatan" :searchable="true" :allow-empty="true"></multiselect>
+              <input v-if="selected_kegiatan" type="hidden" id="kegiatan_terpilih" name="kegiatan" v-model="selected_kegiatan.kode_komponen">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">Sub Kegiatan</label>  
+          <div class="col-md-6">
+              <multiselect id="pilih_subkegiatan" v-model="selected_subkegiatan" deselect-label="Can't remove this value" track-by="kode_subkomponen" label="nama_subkomponen" placeholder="Select one" :options="filteredSubkegiatan" :searchable="true" :allow-empty="true"></multiselect>
+              <input v-if="selected_subkegiatan" type="hidden" id="subkegiatan_terpilih" name="subkegiatan" v-model="selected_subkegiatan.kode_subkomponen">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-2 control-label"></label>  
+        <div class="col-md-6">
+            <button type="button" class="btn btn-default" v-show="state == 0" v-on:click="resetToProgram">Ganti ke program </button>
+            <button type="button" class="btn btn-default" v-show="state == 1" v-on:click="resetToAkun">Ganti ke Akun </button>
+        </div>
       </div>
     </div>
     <!-- Button (Double) -->
@@ -178,6 +231,81 @@
 		<?php //} ?>
 	</div>
 </div>
+
+<script type="text/javascript">
+  var data = {
+    state : 1,
+    items : <?php echo json_encode($program) ?>,
+    selected_tujuan : {kode_kegiatan : null},
+    selected_sasaran : {kode_output : null},
+    selected_program : {kode_program : null},
+    selected_kegiatan : {kode_komponen : null},
+    selected_subkegiatan : {kode_subkomponen: null},
+  }
+  // require('vue-multiselect');
+  // Vue.use('vue-multiselect');
+
+  // Vue.component(Multiselect);
+
+  new Vue({
+    components: {
+      Multiselect: window.VueMultiselect.default
+    },
+    el : '#app_select',
+    data : data,
+    computed : {
+      filteredSasaran : function() {
+        if (typeof data.selected_tujuan.kode_kegiatan == 'undefined') {
+          return data.items.sasaran;
+        } else {
+          return data.items.sasaran.filter(function(el){
+              return el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+      filteredProgram : function() {
+        if (typeof data.selected_sasaran.kode_output == 'undefined') {
+          return data.items.program;
+        } else {
+          return data.items.program.filter(function(el){
+              return el.kode_output == data.selected_sasaran.kode_output && el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+      filteredKegiatan : function() {
+        if ( typeof data.selected_program.kode_program == 'undefined') {
+          return data.items.kegiatan;
+        } else {
+          return data.items.kegiatan.filter(function(el){
+              return el.kode_program == data.selected_program.kode_program && el.kode_output == data.selected_sasaran.kode_output && el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+      filteredSubkegiatan : function() {
+        if ( typeof data.selected_kegiatan.kode_komponen == 'undefined') {
+          return data.items.subkegiatan;
+        } else {
+          return data.items.subkegiatan.filter(function(el){
+              return el.kode_komponen == data.selected_kegiatan.kode_komponen && el.kode_program == data.selected_program.kode_program && el.kode_output == data.selected_sasaran.kode_output && el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+    },
+    methods : {
+      resetToAkun : function() {
+        data.state = 0;
+        data.selected_tujuan = {kode_kegiatan : null};
+        data.selected_sasaran = {kode_output : null};
+        data.selected_program = {kode_program : null};
+        data.selected_kegiatan = {kode_komponen : null};
+        data.selected_subkegiatan = {kode_subkomponen: null};
+      },
+      resetToProgram : function() {
+        data.state = 1;
+      }
+    }
+  })
+</script>
 
 <script type="text/javascript">
   var myForm = document.getElementById('form_pop');

@@ -266,7 +266,7 @@ class Laporan_model extends CI_Model {
         return $data;
     }
 
-    public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
+    public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null)
     {
         if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
             $mode = 'saldo';
@@ -284,6 +284,10 @@ class Laporan_model extends CI_Model {
             $array_jenis = array('akrual','kas');
         }else {
             $array_jenis[] = $jenis;
+        }
+
+        if ($tingkat != null) {
+            $array_akun = array(5);
         }
 
         // $array_jenis = array('akrual','kas');
@@ -307,7 +311,7 @@ class Laporan_model extends CI_Model {
         $debet = 0;
         $kredit = 0;
 
-        if ($mode == 'saldo') {
+        if ($mode == 'saldo' and $tingkat == null) {
             $array_saldo = $this->Akun_model->get_saldo_awal_batch($array_akun);
             foreach ($array_saldo as $akun => $saldo) {
                 $entry = array();
@@ -333,6 +337,23 @@ class Laporan_model extends CI_Model {
             }
         }
 
+        
+        if ($tingkat != null) {
+            $chart_length_tingkat = array();
+            $chart_length_tingkat['tujuan'] = 2;
+            $chart_length_tingkat['sasaran'] = 4;
+            $chart_length_tingkat['program'] = 6;
+            $chart_length_tingkat['kegiatan'] = 8;
+            $chart_length_tingkat['subkegiatan'] = 10;
+
+            $length_kegiatan = $chart_length_tingkat[$tingkat];
+
+        }
+
+
+
+        
+
         // return $query1;
         // $query1 = array();
 
@@ -346,7 +367,12 @@ class Laporan_model extends CI_Model {
             foreach ($array_jenis as $jenis) {
                 foreach ($array_akun as $akun) {
                     $cari = $kolom[$tipe][$jenis];
-                    $this->db_laporan->select("*, $cari as akun, sum(jumlah_debet) as jumlah");
+                    $added_select = null;
+                    if ($tingkat != null ) {
+                        $group_tingkat = "substring(kode_kegiatan,7,$length_kegiatan)";
+                        $added_select = "substring(kode_kegiatan,7,$length_kegiatan) as tingkat,";
+                    }
+                    $this->db_laporan->select("*,$added_select $cari as akun, sum(jumlah_debet) as jumlah");
                     $this->db_laporan
                         ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
                         // ->order_by('no_bukti')
@@ -365,13 +391,25 @@ class Laporan_model extends CI_Model {
                     }
 
                     if ($unit != null) {
-                            $this->db_laporan->where('unit_kerja',$unit);
-                        }
+                        $this->db_laporan->where('unit_kerja',$unit);
+                    }   
+
+                    if ($tingkat != null){
+                        $this->db_laporan->where("kode_kegiatan <> ''");
+                    }
+
+                    // if ($regex_kegiatan != null){
+                    //     $this->db_laporan->where("kode_kegiatan REGEXP '$regex_kegiatan'");   
+                    // }
+
 
                     // $this->db_laporan->where('unit_kerja',$unit);
 
                     $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
+                    if ($tingkat != null){
+                        $this->db_laporan->group_by($group_tingkat);
+                    }
                     // echo $this->db_laporan->get_compiled_select();die();
 
                     $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
@@ -380,8 +418,13 @@ class Laporan_model extends CI_Model {
 
                     for ($i=0; $i < count($hasil); $i++) { 
                         $hasil[$i]['tipe'] = $tipe;
-                        $query1[$hasil[$i]['akun']][] = $hasil[$i];
+                        if ($tingkat != null){
+                            $query1[$hasil[$i]['tingkat']][$hasil[$i]['akun']][] = $hasil[$i];
+                        }else {
+                            $query1[$hasil[$i]['akun']][] = $hasil[$i];                        
+                        }
                     }
+
 
                 }
             }
@@ -402,6 +445,15 @@ class Laporan_model extends CI_Model {
                     foreach ($array_akun as $akun) {
                         $added_query = "";
 
+                        $added_select = null;
+                        $added_group = null;
+                        if ($tingkat != null ) {
+                            $group_tingkat = "substring(kode_kegiatan,7,$length_kegiatan)";
+                            $added_select = "substring(kode_kegiatan,7,$length_kegiatan) as tingkat,";
+                            $added_group = ",substring(kode_kegiatan,7,$length_kegiatan)";
+                            $added_query .= "AND tu.kode_kegiatan <> ''";
+                        }
+
                         if ($unit != null){
                             $added_query .= "AND tu.unit_kerja = '$unit'";
                         }
@@ -415,18 +467,21 @@ class Laporan_model extends CI_Model {
                             $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
                         }
 
+                        // if ($regex_kegiatan != null){
+                        //     $added_query .= "AND kode_kegiatan REGEXP '$regex_kegiatan'";   
+                        // }
+
                         $query_pajak1 = "OR tu.tipe = 'pajak'";
                         $query_pajak2 = "or tr.jenis = 'pajak'";
                         // $query_pajak1 = "";
                         // $query_pajak2 = "";
 
-                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak, sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak,$added_select sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
                                  AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
                                  AND (tr.tipe = '$tipe' $query_pajak2)
-                                 GROUP BY tr.akun
-
+                                 GROUP BY tr.akun $added_group
                         ";
 
                         // echo $query."\n";
@@ -446,7 +501,11 @@ class Laporan_model extends CI_Model {
                                 else
                                     $query1[$hasil[$i]['akun']][1] = $hasil[$i];        
                             } else {
-                                $query1[$hasil[$i]['akun']][] = $hasil[$i];                            
+                                if ($tingkat != null){
+                                    $query1[$hasil[$i]['tingkat']][$hasil[$i]['akun']][] = $hasil[$i];
+                                }else {
+                                    $query1[$hasil[$i]['akun']][] = $hasil[$i];                        
+                                }
                             }
                             // print_r($query1);die();
                         }
@@ -838,7 +897,7 @@ class Laporan_model extends CI_Model {
     }
 
 
-    public function get_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null)
+    public function get_buku_besar($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$regex_kegiatan = null)
     {
         // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();
         $array_tipe  = array('debet','kredit');
@@ -883,6 +942,10 @@ class Laporan_model extends CI_Model {
 
                     if ($sumber_dana != null){
                         $this->db_laporan->where('jenis_pembatasan_dana',$sumber_dana);
+                    }
+
+                    if ($regex_kegiatan != null){
+                        $this->db_laporan->where("kode_kegiatan REGEXP '$regex_kegiatan'");   
                     }
 
                     if ($start_date != null and $end_date != null){
@@ -930,6 +993,10 @@ class Laporan_model extends CI_Model {
                         }
                         if ($start_date != null and $end_date != null){
                             $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
+                        }                        
+
+                        if ($regex_kegiatan != null){
+                            $added_query .= "AND kode_kegiatan REGEXP '$regex_kegiatan'";   
                         }
 
                         $query = "SELECT tr.akun,tu.*,tr.jumlah,tu.tipe as jenis_pajak FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE

@@ -14,6 +14,7 @@ class Laporan extends MY_Controller {
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
+        $this->load->model('akuntansi/Program_model', 'Program_model');
         $this->load->model('akuntansi/Pejabat_model', 'Pejabat_model');        
         $this->data['db2'] = $this->load->database('rba',TRUE);
         setlocale(LC_NUMERIC, 'Indonesian');
@@ -33,6 +34,7 @@ class Laporan extends MY_Controller {
         $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
+        $this->data['program'] = $this->Program_model->get_select_program();
 
         $temp_data['content'] = $this->load->view('akuntansi/buku_besar_list',$this->data,true);
         $this->load->view('akuntansi/content_template',$temp_data,false);
@@ -119,6 +121,7 @@ class Laporan extends MY_Controller {
         $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
+        $this->data['program'] = $this->Program_model->get_select_program();
 
 		$temp_data['content'] = $this->load->view('akuntansi/neraca_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -816,18 +819,80 @@ class Laporan extends MY_Controller {
         while (ob_get_level()) ob_end_flush();
         ob_implicit_flush(true);
 
+
         $tipe = $this->input->post('tipe');
         $akun = $this->input->post('akun')[0];
         $basis = $this->input->post('basis');
         $unit = $this->input->post('unit');
         $sumber_dana = $this->input->post('sumber_dana');
         $data['sumber'] = 'get_buku_besar';
+        // print_r($this->input->post());die();
         
         $daterange = $this->input->post('daterange');
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
-        $periode_akhir = strtodate($date_t[1]) or null;    
+        $periode_akhir = strtodate($date_t[1]) or null; 
+        $string_regex = null;   
+        $data['string_tujuan'] = null;   
+        $data['string_sasaran'] = null;   
+        $data['string_program'] = null;   
+        $data['string_kegiatan'] = null;   
+        $data['string_subkegiatan'] = null;   
 
+        if ($this->input->post('tujuan')){
+            $tujuan = $this->input->post('tujuan');
+            $data['string_tujuan'] = $this->Program_model->get_nama_tujuan($tujuan);
+            $sasaran = $this->input->post('sasaran');
+            $data['string_sasaran'] = $this->Program_model->get_nama_sasaran($tujuan,$sasaran);
+            $program = $this->input->post('program');
+            $data['string_program'] = $this->Program_model->get_nama_program($tujuan,$sasaran,$program);
+            $kegiatan = $this->input->post('kegiatan');
+            $data['string_kegiatan'] = $this->Program_model->get_nama_kegiatan($tujuan,$sasaran,$program,$kegiatan);
+            $subkegiatan = $this->input->post('subkegiatan');
+            $data['string_subkegiatan'] = $this->Program_model->get_nama_subkegiatan($tujuan,$sasaran,$program,$kegiatan,$subkegiatan);
+
+            // echo $data['string_tujuan']."<br/>";
+            // echo $data['string_sasaran']."<br/>";
+            // echo $data['string_program']."<br/>";
+            // echo $data['string_kegiatan']."<br/>";
+            // echo $data['string_subkegiatan']."<br/>";
+            // die();
+            $akun = 'tujuan';
+            $string_regex = '^.{6}';
+            $string_regex .= $tujuan;
+            
+            if ($sasaran != null) {
+                $string_regex .= $sasaran;
+            }else {
+                $string_regex .= '.{2}';
+            }
+            
+            if ($program != null) {
+                $string_regex .= $program;
+            }else {
+                $string_regex .= '.{2}';
+            }
+            
+            if ($kegiatan != null) {
+                $string_regex .= $kegiatan;
+            }else {
+                $string_regex .= '.{2}';
+            }
+
+            if ($subkegiatan != null) {
+                $string_regex .= $sasaran;
+            }else {
+                $string_regex .= '.{2}';
+            }
+
+            $string_regex .= '.{8}$';
+
+        }
+
+        // $string_regex = '^.{6}0404010301.{8}$';
+        // print_r($string_regex);echo "\n";
+        // print_r($akun);echo "\n";
+        // print_r($this->input->post());die();
 
         if ($unit == 'all') {
             $unit = null;
@@ -859,6 +924,8 @@ class Laporan extends MY_Controller {
             foreach ($query_pajak as $result) {
                 $array_akun[] = $result->kode_akun;
             }
+        }elseif ($akun == 'tujuan') {
+            $array_akun = array(5);
         }
         else {
             $array_akun[] = $akun;
@@ -890,7 +957,7 @@ class Laporan extends MY_Controller {
         // die($mode);
 
         // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
-        $data['query'] = $this->Laporan_model->get_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
+        $data['query'] = $this->Laporan_model->get_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode,$string_regex);
         // print_r($data['query']);die();
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_buku_besar',$data);
@@ -1017,11 +1084,196 @@ class Laporan extends MY_Controller {
             $data['teks_unit'] = strtoupper(str_replace('Fak.', "Fakultas ", $data['teks_unit']));
         }
 
+        $string_regex = null;
+        $length_kegiatan = null;
+
+        $tingkat = $this->input->post('tingkat');
+
+        // $tingkat = 'sasaran';
+
+        // $teks = $this->Program_model->get_nama_composite('0403010207');
+
+
+
+        // if ($this->input->post('tujuan')){
+        //     $tujuan = $this->input->post('tujuan');
+        //     $data['string_tujuan'] = $this->Program_model->get_nama_tujuan($tujuan);
+        //     $sasaran = $this->input->post('sasaran');
+        //     $data['string_sasaran'] = $this->Program_model->get_nama_sasaran($tujuan,$sasaran);
+        //     $program = $this->input->post('program');
+        //     $data['string_program'] = $this->Program_model->get_nama_program($tujuan,$sasaran,$program);
+        //     $kegiatan = $this->input->post('kegiatan');
+        //     $data['string_kegiatan'] = $this->Program_model->get_nama_kegiatan($tujuan,$sasaran,$program,$kegiatan);
+        //     $subkegiatan = $this->input->post('subkegiatan');
+        //     $data['string_subkegiatan'] = $this->Program_model->get_nama_subkegiatan($tujuan,$sasaran,$program,$kegiatan,$subkegiatan);
+
+        //     $length_kegiatan = 2;
+
+        //     // echo $data['string_tujuan']."<br/>";
+        //     // echo $data['string_sasaran']."<br/>";
+        //     // echo $data['string_program']."<br/>";
+        //     // echo $data['string_kegiatan']."<br/>";
+        //     // echo $data['string_subkegiatan']."<br/>";
+        //     // die();
+        //     $akun = 'tujuan';
+        //     $string_regex = '^.{6}';
+        //     $string_regex .= $tujuan;
+            
+        //     if ($sasaran != null) {
+        //         $length_kegiatan += 2;
+        //         $string_regex .= $sasaran;
+        //     }else {
+        //         $string_regex .= '.{2}';
+        //     }
+            
+        //     if ($program != null) {
+        //         $length_kegiatan += 2;
+        //         $string_regex .= $program;
+        //     }else {
+        //         $string_regex .= '.{2}';
+        //     }
+            
+        //     if ($kegiatan != null) {
+        //         $string_regex .= $kegiatan;
+        //     }else {
+        //         $string_regex .= '.{2}';
+        //     }
+
+        //     if ($subkegiatan != null) {
+        //         $string_regex .= $sasaran;
+        //     }else {
+        //         $string_regex .= '.{2}';
+        //     }
+
+        //     $string_regex .= '.{8}$';
+
+        // }
+
+
         // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
-        $data['query'] = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
-        // print_r($data['query']);
+        $data['query'] = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca',$tingkat);
+        // print_r($data['query']);die();
+
+        if ($tingkat != null) {
+            foreach ($data['query'] as $header => $temp_entry) {
+                // $level = 4;
+                if ($level == 3) {
+                    $entry = reset($temp_entry);
+                    $temp_akun = substr($entry[0]['akun'],0,$level);
+                    $sum_inner = $entry[0]['jumlah'];
+                    $inner_entry = $entry;
+                    // $sum_inner = 0;
+                    // $last_entry = $entry;
+                    $inner_data = array();
+
+                    $temp_entry = array_values($temp_entry);
+
+                    for ($iter=0; $iter < count($temp_entry); $iter++) { 
+                        $inner_entry = $temp_entry[$iter];
+                        if ($iter+1 < count($temp_entry)){
+                            $next_entry = $temp_entry[$iter+1];
+
+                            if (substr($next_entry[0]['akun'],0,$level) != substr($inner_entry[0]['akun'],0,$level)){
+                                $entry_jadi = $inner_entry;
+                                $entry_jadi[0]['jumlah'] = $sum_inner;
+                                $entry_jadi[0]['akun'] = $temp_akun;
+
+                                $inner_data[$temp_akun] = $entry_jadi;
+
+                                $temp_akun = substr($next_entry[0]['akun'],0,$level);
+                                $sum_inner = 0;
+                            }elseif (substr($next_entry[0]['akun'],0,$level) == substr($inner_entry[0]['akun'],0,$level)){
+                                $sum_inner += $inner_entry[0]['jumlah'];
+                            }
+                            
+                        }else{
+                                $sum_inner += $next_entry[0]['jumlah'];
+                                $entry_jadi = $inner_entry;
+                                $entry_jadi[0]['jumlah'] = $sum_inner;
+                                $entry_jadi[0]['akun'] = $temp_akun;
+
+                                $inner_data[$temp_akun] = $entry_jadi;
+                        }
+                    }
+                    $temp = array();
+                    $temp['header'] = $this->Program_model->get_nama_composite($header);
+                    $temp['data'] = $inner_data;
+                    $data['query_tingkat'][] = $temp;
+
+                    // UBAH BASIS PAKAI NEXT ENTRY AJA, KALAU PAKAI CURRENT ENTRY KETIKA GANTI SATU LANGSUNG GANTI LAGI DIA TIDAK KEDETECT
+                    // print_r($temp_entry);die();/
+                    // for ($iter=0; $iter < count($temp_entry); $iter++){
+                    //     // echo "aa";
+                    //     $in_temp = array();
+                    //     $inner_entry = $temp_entry[$iter];
+                    //     $last_entry = $temp_entry[$iter];
+
+                    //     print_r($iter);
+                    //     // echo $temp_akun."-".substr($inner_entry[0]['akun'],0,$level)."<br/>";
+                    //     // $temp_entry[0];
+                    //     // print_r($iter);
+                    //     // print_r($temp_entry);die();
+                    //     // print_r($temp_akun == substr($inner_entry[0]['akun'],0,$level));
+                    //     if (($temp_akun != substr($inner_entry[0]['akun'],0,$level)) or ($iter >= count($temp_entry)-1)) {
+                    //         $entry_jadi = $inner_entry;
+                    //         $entry_jadi[0]['jumlah'] = $sum_inner;
+                    //         $entry_jadi[0]['akun'] = $temp_akun;
+
+
+                    //         $inner_data[$temp_akun] = $entry_jadi;
+
+                    //         $temp_akun = substr($inner_entry[0]['akun'],0,$level);
+                    //         $sum_inner = $inner_entry[0]['jumlah'];
+
+                    //         echo "|change";
+                    //         // echo "cc";
+                    //         // print_r($inner_data);
+                    //     }elseif ($temp_akun == substr($inner_entry[0]['akun'],0,$level)){
+                    //         if (count($temp_entry) <= 1) {
+                    //             $sum_inner += $inner_entry[0]['jumlah'];                            
+                    //         }
+                    //         if ($iter < count($temp_entry)-2)){
+                    //             $last_entry = $temp_entry[$iter];
+
+                    //         }
+                    //         // echo "bb";
+                            
+                    //     }
+                    //         // print_r($inner_entry);
+                    //     echo "|".count($temp_entry)."=".$temp_akun."-".substr($inner_entry[0]['akun'],0,$level)."<br/>";
+                        
+                    // }
+                    // $temp = array();
+                    // $temp['header'] = $this->Program_model->get_nama_composite($header);
+                    // $temp['data'] = $inner_data;
+                    // $data['query_tingkat'][] = $temp;
+                    // $level = 4;
+                    // print_r($data['query_tingkat']);die();
+                }else {
+                    $temp = array();
+                    $temp['header'] = $this->Program_model->get_nama_composite($header);
+                    $temp['data'] = $temp_entry;
+                    $data['query_tingkat'][] = $temp;
+                }
+            }
+        }
         // die();
+
+        if ($level == 3){
+            $level = 4;
+        }
+        // print_r($data['query_tingkat']);die();
+
+
+
+        // print_r($data['query_tingkat']);die();
+
+        // if ($tingkat != null){
+        //     $data['query'] = null;
+        //     die();        
+        // }
+
         
         ksort($data['query']);
 
@@ -1071,6 +1323,7 @@ class Laporan extends MY_Controller {
         $data['unit'] = $unit;
         $data['periode_akhir'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_akhir);
         $data['level'] = $level;
+        $data['tingkat'] = $tingkat;
 
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_neraca_saldo',$data);
@@ -1078,7 +1331,11 @@ class Laporan extends MY_Controller {
             $data['excel'] = true;
             $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
         }else{
-            $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);
+            if ($tingkat != null){
+                $this->load->view('akuntansi/laporan/cetak_neraca_saldo_program',$data);
+            }else {
+                $this->load->view('akuntansi/laporan/cetak_neraca_saldo',$data);            
+            }
         }
     }
 

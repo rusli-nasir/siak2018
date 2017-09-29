@@ -1,7 +1,11 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/vue.js"></script>
+<!-- <script src="<?php echo base_url();?>/assets/akuntansi/js/vue-selectize.js"></script> -->
+<script src="<?php echo base_url();?>/assets/akuntansi/js/vue-multiselect.min.js"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap-datepicker.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker.css" rel="stylesheet">
+<link href="<?php echo base_url();?>/assets/akuntansi/css/vue-multiselect.min.css" rel="stylesheet">
 
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
@@ -107,6 +111,20 @@
       </div>
     </div>
     <div class="form-group">
+      <label class="col-md-2 control-label">Tingkat</label>  
+      <div class="col-md-6">
+          <select id="tingkat" name="tingkat" class="form-control">
+            <option value="">Pilih</option>
+            <option value="tujuan">Tujuan</option>
+            <option value="output">Output / Sasaran</option>
+            <option value="program">Program</option>
+            <option value="kegiatan">Kegiatan</option>
+            <option value="subkegiatan">Sub Kegiatan</option>
+          </select>
+      </div>
+    </div>
+    
+    <div class="form-group">
       <label class="col-md-2 control-label">Level Laporan</label>  
       <div class="col-md-3">
           <select id="level" name="level" class="form-control" required="">
@@ -140,6 +158,81 @@
 		<?php //} ?>
 	</div>
 </div>
+
+<script type="text/javascript">
+  var data = {
+    state : 1,
+    items : <?php echo json_encode($program) ?>,
+    selected_tujuan : {kode_kegiatan : null},
+    selected_sasaran : {kode_output : null},
+    selected_program : {kode_program : null},
+    selected_kegiatan : {kode_komponen : null},
+    selected_subkegiatan : {kode_subkomponen: null},
+  }
+  // require('vue-multiselect');
+  // Vue.use('vue-multiselect');
+
+  // Vue.component(Multiselect);
+
+  new Vue({
+    components: {
+      Multiselect: window.VueMultiselect.default
+    },
+    el : '#app_select',
+    data : data,
+    computed : {
+      filteredSasaran : function() {
+        if (typeof data.selected_tujuan.kode_kegiatan == 'undefined') {
+          return data.items.sasaran;
+        } else {
+          return data.items.sasaran.filter(function(el){
+              return el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+      filteredProgram : function() {
+        if (typeof data.selected_sasaran.kode_output == 'undefined') {
+          return data.items.program;
+        } else {
+          return data.items.program.filter(function(el){
+              return el.kode_output == data.selected_sasaran.kode_output && el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+      filteredKegiatan : function() {
+        if ( typeof data.selected_program.kode_program == 'undefined') {
+          return data.items.kegiatan;
+        } else {
+          return data.items.kegiatan.filter(function(el){
+              return el.kode_program == data.selected_program.kode_program && el.kode_output == data.selected_sasaran.kode_output && el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+      filteredSubkegiatan : function() {
+        if ( typeof data.selected_kegiatan.kode_komponen == 'undefined') {
+          return data.items.subkegiatan;
+        } else {
+          return data.items.subkegiatan.filter(function(el){
+              return el.kode_komponen == data.selected_kegiatan.kode_komponen && el.kode_program == data.selected_program.kode_program && el.kode_output == data.selected_sasaran.kode_output && el.kode_kegiatan == data.selected_tujuan.kode_kegiatan;
+          })
+        }
+      },
+    },
+    methods : {
+      resetToAkun : function() {
+        data.state = 0;
+        data.selected_tujuan = {kode_kegiatan : null};
+        data.selected_sasaran = {kode_output : null};
+        data.selected_program = {kode_program : null};
+        data.selected_kegiatan = {kode_komponen : null};
+        data.selected_subkegiatan = {kode_subkomponen: null};
+      },
+      resetToProgram : function() {
+        data.state = 1;
+      }
+    }
+  })
+</script>
 
 <script type="text/javascript">
   var myForm = document.getElementById('form_pop');

@@ -13,6 +13,7 @@ class Api extends REST_Controller {
 
     public function kuitansi_get()
     {
+    	header("Access-Control-Allow-Origin: *");
 
     	$kode_kegiatan = $this->get('kode_kegiatan');
     	$data = $this->Kuitansi_model->get_kuitansi_jadi_by_kode_kegiatan($kode_kegiatan);
