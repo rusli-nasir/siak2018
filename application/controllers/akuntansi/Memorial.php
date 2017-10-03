@@ -6,6 +6,7 @@ class Memorial extends MY_Controller {
 	public function __construct(){
         parent::__construct();
         $this->data['menu5'] = true;
+        $this->db2 = $this->load->database('rba',TRUE);
         $this->cek_session_in();
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->load->model('akuntansi/Riwayat_model', 'Riwayat_model');
@@ -691,6 +692,36 @@ class Memorial extends MY_Controller {
         echo '<option value="">Pilih Program</option>';
         foreach($query->result() as $result){
             echo '<option value="'.$result->kode_program.'">'.$result->kode_program.' - '.$result->nama_program.'</option>';
+        }
+    }
+
+    public function get_komponen($kode_kegiatan,$kode_output,$kode_program)
+    {
+        // $query = $this->Memorial_model->read_program($kode_kegiatan, $kode_output);
+        $this->db2->where('kode_program',$kode_program);
+        $this->db2->where('kode_output',$kode_output);
+        $this->db2->where('kode_kegiatan',$kode_kegiatan);
+
+        $query = $this->db2->get('komponen_input');
+
+        echo '<option value="">Pilih Program</option>';
+        foreach($query->result() as $result){
+            echo '<option value="'.$result->kode_komponen.'">'.$result->kode_komponen.' - '.$result->nama_komponen.'</option>';
+        }
+    }
+
+    public function get_subkomponen($kode_kegiatan,$kode_output,$kode_program,$kode_komponen)
+    {
+        $this->db2->where('kode_program',$kode_program);
+        $this->db2->where('kode_output',$kode_output);
+        $this->db2->where('kode_kegiatan',$kode_kegiatan);
+        $this->db2->where('kode_komponen',$kode_komponen);
+
+        $query = $this->db2->get('subkomponen_input');
+
+        echo '<option value="">Pilih Program</option>';
+        foreach($query->result() as $result){
+            echo '<option value="'.$result->kode_subkomponen.'">'.$result->kode_subkomponen.' - '.$result->nama_subkomponen.'</option>';
         }
     }
 

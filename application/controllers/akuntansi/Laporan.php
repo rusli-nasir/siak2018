@@ -1257,12 +1257,14 @@ class Laporan extends MY_Controller {
                     $data['query_tingkat'][] = $temp;
                 }
             }
+
+            
+            if ($level == 3){
+                $level = 4;
+            }
         }
         // die();
 
-        if ($level == 3){
-            $level = 4;
-        }
         // print_r($data['query_tingkat']);die();
 
 

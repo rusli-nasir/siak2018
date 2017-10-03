@@ -37,6 +37,33 @@ $(document).ready(function(){
     })
   })
 
+  $("#program").change(function(){
+    var kode_kegiatan = $("#kegiatan").val();
+    var kode_output = $("#output").val();
+    var kode_program = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_komponen/'+kode_kegiatan+'/'+kode_output+'/'+kode_program,
+      data:{},
+      success:function(data){
+        $("#komponen").html(data);
+      }
+    })
+  })
+
+  $("#komponen").change(function(){
+    var kode_kegiatan = $("#kegiatan").val();
+    var kode_output = $("#output").val();
+    var kode_program = $("#program").val();
+    var kode_komponen = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_subkomponen/'+kode_kegiatan+'/'+kode_output+'/'+kode_program+'/'+kode_program,
+      data:{},
+      success:function(data){
+        $("#subkomponen").html(data);
+      }
+    })
+  })
+
   $("#tambah_pajak_btn").click(function(){
     $.ajax({
       url:host+'akuntansi/memorial/add_pajak',
@@ -177,6 +204,27 @@ $(document).ready(function(){
   <label class="col-md-2 control-label">Program</label>  
   <div class="col-md-6">
       <select id="program" name="program" class="form-control" required="">
+        <option value="">----</option>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Komponen (kegiatan)</label>  
+  <div class="col-md-6">
+      <select id="komponen" name="komponen" class="form-control" required="">
+        <option value="">----</option>
+      </select>
+    
+  </div>
+</div>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Subkomponen (subkegiatan)</label>  
+  <div class="col-md-6">
+      <select id="subkegiatan" name="subkegiatan" class="form-control" required="">
         <option value="">----</option>
       </select>
     
