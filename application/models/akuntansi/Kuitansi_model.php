@@ -100,6 +100,15 @@ class Kuitansi_model extends CI_Model {
         }
         return $query;
     }
+
+    public function get_no_spp_ls($no_spm)
+    {
+        $hasil = $this->db->where('str_nomor_trx_spm',$no_spm)->select('str_nomor_trx')->get('rsa_kuitansi')->row_array();
+
+        // var_dump($hasil);
+        // die();
+        return $hasil['str_nomor_trx'];
+    }
     
     function read_up($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
@@ -370,7 +379,7 @@ class Kuitansi_model extends CI_Model {
         return $hasil;
     }
 
-    public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail,$jenis = nul)
+    public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail,$jenis = null)
     {
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
@@ -565,7 +574,7 @@ class Kuitansi_model extends CI_Model {
 
     public function get_tabel_by_jenis($jenis)
     {
-    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'LN'or $jenis == 'LK') {
     		return 'rsa_kuitansi';
     	}elseif ($jenis == 'L3') {
     		return 'rsa_kuitansi_lsphk3';
@@ -575,7 +584,7 @@ class Kuitansi_model extends CI_Model {
     }
     public function get_tabel_detail_by_jenis($jenis)
     {
-    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL'  or $jenis == 'LN'or $jenis == 'LK') {
     		return 'rsa_kuitansi_detail';
     	}elseif ($jenis == 'L3') {
     		return 'rsa_kuitansi_detail_lsphk3';

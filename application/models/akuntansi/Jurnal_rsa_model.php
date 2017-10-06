@@ -68,6 +68,70 @@ class Jurnal_rsa_model extends CI_Model {
 
 
         $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);
+        $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
+        $hasil['tanggal_bukti'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));
+        $tgl = strtotime($this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm'],$jenis));
+        // print_r($tgl);die();
+        $hasil['tanggal'] = $this->reKonversiTanggal(date('Y-m-d', $tgl));
+
+        $hasil['jenis'] = $jenis;
+
+        $hasil['akun_debet_kas'] = $hasil['kode_akun'] . " - ". $this->db->get_where('akun_belanja',array('kode_akun'=>$hasil['kode_akun']))->row_array()['nama_akun'];
+
+        $query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
+        $hasil['pengeluaran'] = number_format($this->db->query($query)->row_array()['pengeluaran'],2,',','.');
+
+        // print_r($hasil);
+        // print_r($tabel_detail);
+
+        // die($jenis);
+
+        return $hasil;
+    }
+
+    public function get_kuitansi_lsnk($id_kuitansi)
+    {
+        $tabel = 'rsa_kuitansi';
+        $tabel_detail = 'rsa_kuitansi_detail';
+        $jenis = "LN";
+
+        $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
+
+
+
+        $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);
+        $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
+        $hasil['tanggal_bukti'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));
+        $tgl = strtotime($this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm'],$jenis));
+        // print_r($tgl);die();
+        $hasil['tanggal'] = $this->reKonversiTanggal(date('Y-m-d', $tgl));
+
+        $hasil['jenis'] = $jenis;
+
+        $hasil['akun_debet_kas'] = $hasil['kode_akun'] . " - ". $this->db->get_where('akun_belanja',array('kode_akun'=>$hasil['kode_akun']))->row_array()['nama_akun'];
+
+        $query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
+        $hasil['pengeluaran'] = number_format($this->db->query($query)->row_array()['pengeluaran'],2,',','.');
+
+        // print_r($hasil);
+        // print_r($tabel_detail);
+
+        // die($jenis);
+
+        return $hasil;
+    }
+
+    public function get_kuitansi_lsk($id_kuitansi)
+    {
+        $tabel = 'rsa_kuitansi';
+        $tabel_detail = 'rsa_kuitansi_detail';
+        $jenis = "LK";
+
+        $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
+
+
+
+        $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);
     	$hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
         $hasil['tanggal_bukti'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));
         $tgl = strtotime($this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm'],$jenis));
@@ -83,7 +147,7 @@ class Jurnal_rsa_model extends CI_Model {
 
         // print_r($hasil);
         // print_r($tabel_detail);
-
+// 
         // die($jenis);
 
     	return $hasil;

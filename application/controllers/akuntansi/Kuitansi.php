@@ -132,7 +132,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_tup_nihil');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -157,6 +157,130 @@ class Kuitansi extends MY_Controller {
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'TP', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'TP', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['jenis_isi'] = "TUP_NIHIL";
+		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);
+	}
+
+	public function index_lnk($id = 0){
+		$this->data['tab12'] = true;
+		//level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			$kode_unit = null;
+		}
+
+		//search
+		if(isset($_POST['keyword'])){
+			$keyword = $this->input->post('keyword');
+			$this->session->set_userdata('keyword', $keyword);		
+		}else{
+			if($this->session->userdata('keyword')!=null){
+				$keyword = $this->session->userdata('keyword');
+			}else{
+				$keyword = '';
+			}
+		}
+
+		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'LN');
+		$total = $total_data->num_rows();
+		//pagination
+		if($this->uri->segment('4')==null){
+			$id = 0;
+			$this->data['no'] = $id+1;
+		}else{
+			$id = ($id-1)*20;
+			$this->data['no'] = $id+1;
+		}
+		$this->load->library('pagination');
+		$config['total_rows'] = $total;
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_lnk');
+	 	$config['per_page'] = '20';
+	 	$config['use_page_numbers'] = TRUE;
+		$config['first_link'] = 'Pertama';
+		$config['next_link'] = 'Lanjut';
+		$config['prev_link'] = 'Sebelum';
+		$config['last_link'] = 'Terakhir';
+		$config['full_tag_open'] = "<ul class=\"pagination\">";
+		$config['first_tag_open'] = $config['next_tag_open'] = $config['last_tag_open'] = "<li>";
+		$config['prev_tag_open'] = $config['num_tag_open'] = "<li>";
+		$config['cur_tag_open'] = '<li class="active"><a>';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_tag_close'] = $config['next_tag_close'] = $config['last_tag_close'] = "<li>";
+		$config['prev_tag_close'] = $config['num_tag_close'] = "</li>";
+		$config['full_tag_close'] = "</ul>";
+
+		$this->pagination->initialize($config); 
+		$this->data['halaman'] = $this->pagination->create_links();
+
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit,'LN');
+		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm($config['per_page'], $id, null, $kode_unit,'LN');
+
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'LN', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'LN', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['jenis_isi'] = "LN";
+		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);
+	}
+
+	public function index_lk($id = 0){
+		$this->data['tab11'] = true;
+		//level unit
+		if($this->session->userdata('kode_unit')!=null){
+			$kode_unit = $this->session->userdata('kode_unit');
+		}else{
+			$kode_unit = null;
+		}
+
+		//search
+		if(isset($_POST['keyword'])){
+			$keyword = $this->input->post('keyword');
+			$this->session->set_userdata('keyword', $keyword);		
+		}else{
+			if($this->session->userdata('keyword')!=null){
+				$keyword = $this->session->userdata('keyword');
+			}else{
+				$keyword = '';
+			}
+		}
+
+		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'LK');
+		$total = $total_data->num_rows();
+		//pagination
+		if($this->uri->segment('4')==null){
+			$id = 0;
+			$this->data['no'] = $id+1;
+		}else{
+			$id = ($id-1)*20;
+			$this->data['no'] = $id+1;
+		}
+		$this->load->library('pagination');
+		$config['total_rows'] = $total;
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_lk');
+	 	$config['per_page'] = '20';
+	 	$config['use_page_numbers'] = TRUE;
+		$config['first_link'] = 'Pertama';
+		$config['next_link'] = 'Lanjut';
+		$config['prev_link'] = 'Sebelum';
+		$config['last_link'] = 'Terakhir';
+		$config['full_tag_open'] = "<ul class=\"pagination\">";
+		$config['first_tag_open'] = $config['next_tag_open'] = $config['last_tag_open'] = "<li>";
+		$config['prev_tag_open'] = $config['num_tag_open'] = "<li>";
+		$config['cur_tag_open'] = '<li class="active"><a>';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_tag_close'] = $config['next_tag_close'] = $config['last_tag_close'] = "<li>";
+		$config['prev_tag_close'] = $config['num_tag_close'] = "</li>";
+		$config['full_tag_close'] = "</ul>";
+
+		$this->pagination->initialize($config); 
+		$this->data['halaman'] = $this->pagination->create_links();
+
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit,'LK');
+		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm($config['per_page'], $id, null, $kode_unit,'LK');
+
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'LK', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'LK', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['jenis_isi'] = "LK";
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
@@ -194,7 +318,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_tup_pengembalian');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -777,6 +901,9 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
             $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
             $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            if ($this->data['query'][$key]['jenis'] == 'LK' or $this->data['query'][$key]['jenis'] == 'LN' ) {
+	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_ls($this->data['query'][$key]['no_spm']);        	
+            }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
 
@@ -801,6 +928,12 @@ class Kuitansi extends MY_Controller {
         	$this->data['tab5'] = true;
         }else if($jenis=='TUP_NIHIL'){
         	$this->data['tab6'] = true;
+        }else if($jenis=='TUP_PENGEMBALIAN'){
+        	$this->data['tab10'] = true;
+        }else if($jenis=='LK'){
+        	$this->data['tab11'] = true;
+        }else if($jenis=='LN'){
+        	$this->data['tab12'] = true;
         }
 
         $this->data['jenis'] = $jenis;
@@ -1067,6 +1200,9 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
             $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
             $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            if ($this->data['query'][$key]['jenis'] == 'LK' or $this->data['query'][$key]['jenis'] == 'LN' ) {
+	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_ls($this->data['query'][$key]['no_spm']);        	
+            }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
         
@@ -1085,6 +1221,12 @@ class Kuitansi extends MY_Controller {
         	$this->data['tab5'] = true;
         }else if($jenis=='TUP_NIHIL'){
         	$this->data['tab6'] = true;
+        }else if($jenis=='TUP_PENGEMBALIAN'){
+        	$this->data['tab10'] = true;
+        }else if($jenis=='LK'){
+        	$this->data['tab11'] = true;
+        }else if($jenis=='LN'){
+        	$this->data['tab12'] = true;
         }
 
         $this->data['jenis'] = $jenis;

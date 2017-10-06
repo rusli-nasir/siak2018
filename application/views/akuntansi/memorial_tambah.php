@@ -56,7 +56,7 @@ $(document).ready(function(){
     var kode_program = $("#program").val();
     var kode_komponen = $(this).val();
     $.ajax({
-      url:host+'akuntansi/memorial/get_subkomponen/'+kode_kegiatan+'/'+kode_output+'/'+kode_program+'/'+kode_program,
+      url:host+'akuntansi/memorial/get_subkomponen/'+kode_kegiatan+'/'+kode_output+'/'+kode_program+'/'+kode_komponen,
       data:{},
       success:function(data){
         $("#subkomponen").html(data);
@@ -224,7 +224,7 @@ $(document).ready(function(){
 <div class="form-group">
   <label class="col-md-2 control-label">Subkomponen (subkegiatan)</label>  
   <div class="col-md-6">
-      <select id="subkegiatan" name="subkegiatan" class="form-control" required="">
+      <select id="subkomponen" name="subkomponen" class="form-control" required="">
         <option value="">----</option>
       </select>
     

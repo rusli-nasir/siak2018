@@ -79,8 +79,12 @@
 
 		</div><!-- /.container-fluid -->
 	</nav>
+	<br/>
 
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<ul class="nav menu">
+			<li> <br/> </li>
+		</ul>
 		<ul class="nav menu">
 			<?php if($this->session->userdata('level')==1){ ?>
             	<li class="<?php if(isset($menu1)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Kuitansi <?php if(isset($jumlah_notifikasi->kuitansi)) { ?><span class="badge <?= $jumlah_notifikasi->kuitansi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->kuitansi; ?></span> <?php } ?></a></li>

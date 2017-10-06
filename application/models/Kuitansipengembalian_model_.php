@@ -1,6 +1,6 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-class Kuitansi_model extends CI_Model{
+class Kuitansipengembalian_model extends CI_Model{
 /* -------------- Constructor ------------- */
     public function __construct()
     {
@@ -8,10 +8,10 @@ class Kuitansi_model extends CI_Model{
     }
     function insert_data_kuitansi($data){
 
-        $this->db->insert('rsa_kuitansi',$data);
+        $this->db->insert('rsa_kuitansi_pengembalian',$data);
 
         //$customerID=$db->insert_id;
-        $q = $this->db->query("SELECT MAX(id_kuitansi) AS id_k FROM rsa_kuitansi WHERE kode_unit='{$data['kode_unit']}' AND tahun='{$data['tahun']}' AND sumber_dana='{$data['sumber_dana']}'");
+        $q = $this->db->query("SELECT MAX(id_kuitansi) AS id_k FROM rsa_kuitansi_pengembalian WHERE kode_unit='{$data['kode_unit']}' AND tahun='{$data['tahun']}' AND sumber_dana='{$data['sumber_dana']}'");
         $row = $q->row();
 
         return $row->id_k;
@@ -19,10 +19,10 @@ class Kuitansi_model extends CI_Model{
 
     function insert_data_usulan($data){
 
-        $this->db->insert('rsa_kuitansi_detail',$data);
+        $this->db->insert('rsa_kuitansi_detail_pengembalian',$data);
 
         //$customerID=$db->insert_id;
-        $q = $this->db->query("SELECT MAX(id_kuitansi_detail) AS id_k FROM rsa_kuitansi_detail WHERE id_kuitansi='{$data['id_kuitansi']}' AND kode_usulan_belanja='{$data['kode_usulan_belanja']}' ");
+        $q = $this->db->query("SELECT MAX(id_kuitansi_detail) AS id_k FROM rsa_kuitansi_detail_pengembalian WHERE id_kuitansi='{$data['id_kuitansi']}' AND kode_usulan_belanja='{$data['kode_usulan_belanja']}' ");
         $row = $q->row();
 
         return $row->id_k;
@@ -37,7 +37,9 @@ class Kuitansi_model extends CI_Model{
     function get_next_id($data){
       //  echo  "SELECT IFNULL(MAX(RIGHT(no_bukti,5)),0) AS next_no_bukti FROM rsa_kuitansi WHERE LEFT(no_bukti,3) = '{$data['alias']}' AND tahun = '{$data['tahun']}' "; exit;
 //        $q = $this->db->query("SELECT IFNULL(MAX(RIGHT(no_bukti,5)),0) AS next_no_bukti FROM rsa_kuitansi WHERE LEFT(no_bukti,3) = '{$data['alias']}' AND jenis = '{$data['jenis']}' AND sumber_dana = '{$data['sumber_dana']}' AND tahun = '{$data['tahun']}'");
-        $q = $this->db->query("SELECT IFNULL(MAX(RIGHT(no_bukti,5)),0) AS next_no_bukti FROM rsa_kuitansi WHERE SUBSTR(no_bukti,1,3) = '{$data['alias']}' AND tahun = '{$data['tahun']}' ");
+        $q = $this->db->query("SELECT IFNULL(MAX(RIGHT(no_bukti,5)),0) AS next_no_bukti FROM rsa_kuitansi_pengembalian WHERE SUBSTR(no_bukti,1,3) = '{$data['alias']}' AND tahun = '{$data['tahun']}' ");
+
+
         $row = $q->row();
 
         $x = intval($row->next_no_bukti) + 1;
@@ -57,7 +59,7 @@ class Kuitansi_model extends CI_Model{
                         $x = $x;
         }
 
-        return $data['alias'].$x;
+        return $data['alias'].$x.'P';
 
     }
 
@@ -67,13 +69,13 @@ class Kuitansi_model extends CI_Model{
         
         $stts = '' ;
         if($status == 'AKTIF'){
-            $stts = "AND ( rsa.rsa_kuitansi.aktif = '1' AND rsa.rsa_kuitansi.cair = '0' ) " ;
+            $stts = "AND ( rsa.rsa_kuitansi_pengembalian.aktif = '1' AND rsa.rsa_kuitansi_pengembalian.cair = '0' ) " ;
         }
         elseif($status == 'BATAL'){
-            $stts = "AND ( rsa.rsa_kuitansi.aktif = '0' AND rsa.rsa_kuitansi.cair = '0' ) " ;
+            $stts = "AND ( rsa.rsa_kuitansi_pengembalian.aktif = '0' AND rsa.rsa_kuitansi_pengembalian.cair = '0' ) " ;
         }
         elseif($status == 'CAIR'){
-            $stts = "AND ( rsa.rsa_kuitansi.aktif = '1' AND rsa.rsa_kuitansi.cair = '1' ) " ;
+            $stts = "AND ( rsa.rsa_kuitansi_pengembalian.aktif = '1' AND rsa.rsa_kuitansi_pengembalian.cair = '1' ) " ;
         }
         $str1 = "SELECT rsa.rsa_kuitansi.id_kuitansi,rsa.rsa_kuitansi.tgl_kuitansi,rba.akun_belanja.nama_akun5digit,"
                 . "rsa.rsa_kuitansi.kode_akun5digit,rsa.rsa_kuitansi_detail.kode_akun_tambah,"
@@ -94,17 +96,17 @@ class Kuitansi_model extends CI_Model{
                 . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
                 . "GROUP BY rsa.rsa_kuitansi.id_kuitansi";
 
-        $str = "SELECT rsa.rsa_kuitansi.id_kuitansi,rsa.rsa_kuitansi.kode_unit,rsa.rsa_kuitansi.no_bukti,"
-                . "rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.uraian,"
-                . "SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_kuitansi.str_nomor_trx,rsa.rsa_kuitansi.str_nomor_trx_spm,rsa.rsa_kuitansi.aktif,rsa.rsa_kuitansi.cair "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
+        $str = "SELECT rsa.rsa_kuitansi_pengembalian.id_kuitansi,rsa.rsa_kuitansi_pengembalian.kode_unit,rsa.rsa_kuitansi_pengembalian.no_bukti,"
+                . "rsa.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa.rsa_kuitansi_pengembalian.uraian,"
+                . "SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
+                . "rsa.rsa_kuitansi_pengembalian.str_nomor_trx,rsa.rsa_kuitansi_pengembalian.str_nomor_trx_spm,rsa.rsa_kuitansi_pengembalian.aktif,rsa.rsa_kuitansi_pengembalian.cair "
+                . "FROM rsa.rsa_kuitansi_pengembalian "
+                . "JOIN rsa.rsa_kuitansi_detail_pengembalian ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "WHERE SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "AND rsa.rsa_kuitansi_pengembalian.jenis = '{$jenis}' "
                 . $stts
-                . "GROUP BY rsa.rsa_kuitansi.id_kuitansi "
-                . "ORDER BY rsa.rsa_kuitansi.tgl_kuitansi DESC";
+                . "GROUP BY rsa.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "ORDER BY rsa.rsa_kuitansi_pengembalian.tgl_kuitansi DESC";
 
        // print_r($str);die;
 
@@ -220,28 +222,28 @@ class Kuitansi_model extends CI_Model{
     }
 
     function get_data_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.tahun,rsa.rsa_kuitansi.jenis,rsa.rsa_kuitansi.no_bukti,"
+        $str = "SELECT rsa.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa.rsa_kuitansi_pengembalian.jenis,rsa.rsa_kuitansi_pengembalian.tahun,rsa.rsa_kuitansi_pengembalian.no_bukti,"
                 . "rba.akun_belanja.nama_akun,"
-                . "SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_kuitansi.uraian,rba.subkomponen_input.nama_subkomponen,"
-                . "rsa.rsa_kuitansi.penerima_uang,rsa.rsa_kuitansi.penerima_uang_nip,rsa.rsa_kuitansi.penerima_barang,rsa.rsa_kuitansi.penerima_barang_nip,"
-                . "rsa.rsa_kuitansi.nmpppk,rsa.rsa_kuitansi.nippppk,rsa.rsa_kuitansi.nmbendahara,rsa.rsa_kuitansi.nipbendahara,rsa.rsa_kuitansi.nmpumk,rsa.rsa_kuitansi.nippumk,rsa.rsa_kuitansi.penerima_uang,rsa.rsa_kuitansi.aktif,rsa.rsa_kuitansi.str_nomor_trx "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail "
-                . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun5digit = rsa.rsa_kuitansi.kode_akun5digit "
-                . "AND rba.akun_belanja.kode_akun = rsa.rsa_kuitansi.kode_akun "
-                . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi.sumber_dana "
-                . "JOIN rba.subkomponen_input ON rba.subkomponen_input.kode_kegiatan = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,2) "
-                . "AND rba.subkomponen_input.kode_output = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,9,2) "
-                . "AND rba.subkomponen_input.kode_program = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,11,2) "
-                . "AND rba.subkomponen_input.kode_komponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,13,2) "
-                . "AND rba.subkomponen_input.kode_subkomponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,15,2) "
-                . "LEFT JOIN rsa.rsa_kuitansi_detail_pajak "
-                . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                . "WHERE rsa.rsa_kuitansi.id_kuitansi = '{$id_kuitansi}' "
-                . "AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "GROUP BY rsa.rsa_kuitansi.id_kuitansi";
+                . "SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
+                . "rsa.rsa_kuitansi_pengembalian.uraian," // rba.subkomponen_input.nama_subkomponen,"
+                . "rsa.rsa_kuitansi_pengembalian.penerima_uang,rsa.rsa_kuitansi_pengembalian.penerima_uang_nip,rsa.rsa_kuitansi_pengembalian.penerima_barang,rsa.rsa_kuitansi_pengembalian.penerima_barang_nip,"
+                . "rsa.rsa_kuitansi_pengembalian.nmpppk,rsa.rsa_kuitansi_pengembalian.nippppk,rsa.rsa_kuitansi_pengembalian.nmbendahara,rsa.rsa_kuitansi_pengembalian.nipbendahara,rsa.rsa_kuitansi_pengembalian.nmpumk,rsa.rsa_kuitansi_pengembalian.nippumk,rsa.rsa_kuitansi_pengembalian.penerima_uang,rsa.rsa_kuitansi_pengembalian.aktif,rsa.rsa_kuitansi_pengembalian.str_nomor_trx "
+                . "FROM rsa.rsa_kuitansi_pengembalian "
+                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun5digit = rsa.rsa_kuitansi_pengembalian.kode_akun5digit "
+                . "AND rba.akun_belanja.kode_akun = rsa.rsa_kuitansi_pengembalian.kode_akun "
+                . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi_pengembalian.sumber_dana "
+                // . "JOIN rba.subkomponen_input ON rba.subkomponen_input.kode_kegiatan = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,2) "
+                // . "AND rba.subkomponen_input.kode_output = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,9,2) "
+                // . "AND rba.subkomponen_input.kode_program = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,11,2) "
+                // . "AND rba.subkomponen_input.kode_komponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,13,2) "
+                // . "AND rba.subkomponen_input.kode_subkomponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,15,2) "
+                . "LEFT JOIN rsa.rsa_kuitansi_detail_pajak_pengembalian "
+                . "ON rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
+                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
+                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "GROUP BY rsa.rsa_kuitansi_pengembalian.id_kuitansi";
 
 //            var_dump($str);die;
 
@@ -256,17 +258,17 @@ class Kuitansi_model extends CI_Model{
     }
 
     function get_data_detail_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi_detail.id_kuitansi_detail,rsa.rsa_kuitansi_detail.deskripsi,rsa.rsa_kuitansi_detail.volume,"
-                . "rsa.rsa_kuitansi_detail.satuan,rsa.rsa_kuitansi_detail.harga_satuan,(rsa.rsa_kuitansi_detail.volume * rsa.rsa_kuitansi_detail.harga_satuan) AS bruto "
+        $str = "SELECT rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail,rsa.rsa_kuitansi_detail_pengembalian.deskripsi,rsa.rsa_kuitansi_detail_pengembalian.volume,"
+                . "rsa.rsa_kuitansi_detail_pengembalian.satuan,rsa.rsa_kuitansi_detail_pengembalian.harga_satuan,(rsa.rsa_kuitansi_detail_pengembalian.volume * rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS bruto "
                 . "" //,GROUP_CONCAT(rsa_kuitansi_detail_pajak.jenis_pajak SEPARATOR '<br>') AS pajak_nom "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail "
-                . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "LEFT JOIN rsa.rsa_kuitansi_detail_pajak "
-                . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                . "WHERE rsa.rsa_kuitansi.id_kuitansi = '{$id_kuitansi}' "
-                . "AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "GROUP BY rsa.rsa_kuitansi_detail.id_kuitansi_detail";
+                . "FROM rsa.rsa_kuitansi_pengembalian "
+                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "LEFT JOIN rsa.rsa_kuitansi_detail_pajak_pengembalian "
+                . "ON rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
+                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
+                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "GROUP BY rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail";
 
 //            var_dump($str);die;
 
@@ -281,16 +283,16 @@ class Kuitansi_model extends CI_Model{
     }
 
     function get_data_detail_pajak_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail,rsa.rsa_kuitansi_detail_pajak.jenis_pajak,rsa.rsa_kuitansi_detail_pajak.persen_pajak,"
-                . "rsa.rsa_kuitansi_detail_pajak.dpp,rsa.rsa_kuitansi_detail_pajak.rupiah_pajak "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail "
-                . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail_pajak "
-                . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                . "WHERE rsa.rsa_kuitansi.id_kuitansi = '{$id_kuitansi}' "
-                . "AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "GROUP BY rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail_pajak";
+        $str = "SELECT rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail,rsa.rsa_kuitansi_detail_pajak_pengembalian.jenis_pajak,rsa.rsa_kuitansi_detail_pajak_pengembalian.persen_pajak,"
+                . "rsa.rsa_kuitansi_detail_pajak_pengembalian.dpp,rsa.rsa_kuitansi_detail_pajak_pengembalian.rupiah_pajak "
+                . "FROM rsa.rsa_kuitansi_pengembalian "
+                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "JOIN rsa.rsa_kuitansi_detail_pajak_pengembalian "
+                . "ON rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
+                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
+                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "GROUP BY rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail_pajak";
 
 //            var_dump($str);die;
 
@@ -318,7 +320,7 @@ class Kuitansi_model extends CI_Model{
         $str = "SELECT SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) AS rka,
         SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,1,6) AS kdunit,rsa.rsa_kuitansi.no_bukti,rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.uraian,rba.akun_belanja.nama_akun,rsa.rsa_kuitansi.kode_akun5digit,rsa.rsa_kuitansi.kode_akun,rsa.rsa_kuitansi_detail.id_kuitansi_detail,rsa.rsa_kuitansi_detail.kode_akun_tambah,rsa.rsa_kuitansi_detail.deskripsi,rsa.rsa_kuitansi_detail.volume,"
                 . "rsa.rsa_kuitansi_detail.satuan,rsa.rsa_kuitansi_detail.harga_satuan,(rsa.rsa_kuitansi_detail.volume * rsa.rsa_kuitansi_detail.harga_satuan) AS bruto,"
-                . "GROUP_CONCAT(IF((rsa_kuitansi_detail_pajak.persen_pajak = '99') OR (rsa_kuitansi_detail_pajak.persen_pajak = '98') OR (rsa_kuitansi_detail_pajak.persen_pajak = '89') OR (rsa_kuitansi_detail_pajak.persen_pajak = '97') OR (rsa_kuitansi_detail_pajak.persen_pajak = '96') OR (rsa_kuitansi_detail_pajak.persen_pajak = '95') OR (rsa_kuitansi_detail_pajak.persen_pajak = '94'),rsa_kuitansi_detail_pajak.jenis_pajak,CONCAT(rsa_kuitansi_detail_pajak.jenis_pajak,' [ ',rsa_kuitansi_detail_pajak.persen_pajak,'% ] ')) SEPARATOR ',<br>') AS pajak_nom,"
+                . "GROUP_CONCAT(IF((rsa_kuitansi_detail_pajak.persen_pajak = '99') OR (rsa_kuitansi_detail_pajak.persen_pajak = '98'),rsa_kuitansi_detail_pajak.jenis_pajak,CONCAT(rsa_kuitansi_detail_pajak.jenis_pajak,' [ ',rsa_kuitansi_detail_pajak.persen_pajak,'% ] ')) SEPARATOR ',<br>') AS pajak_nom,"
                 . "SUM(rsa_kuitansi_detail_pajak.rupiah_pajak) AS total_pajak "
                 . "FROM rsa.rsa_kuitansi "
                 . "JOIN rsa.rsa_kuitansi_detail "
@@ -405,14 +407,16 @@ class Kuitansi_model extends CI_Model{
     }
 
     function get_pengeluaran_by_array_id($data){
+        
+        $pengembalian = 0 ;
 
-        $pengeluaran = 0 ;
+        // var_dump($data['array_id_pengembalian']); die;
 
         $id_kuitansi = '' ;
 
-        if(count($data['array_id']) > 0){
-
-            foreach($data['array_id'] as $id){
+        if(count($data['array_id_pengembalian']) > 0){
+            
+            foreach($data['array_id_pengembalian'] as $id){
 
                 $id_kuitansi = $id_kuitansi . '"' .$id . '",' ;
 
@@ -428,60 +432,27 @@ class Kuitansi_model extends CI_Model{
 
         $lenkode = strlen($data['kode_unit_subunit']);
 
-        $str = "SELECT SUM(rsa.rsa_detail_belanja_.volume*rsa.rsa_detail_belanja_.harga_satuan) AS pengeluaran "
-            . "FROM rsa.rsa_kuitansi "
-            . "JOIN rsa.rsa_kuitansi_detail "
-            . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-            . "JOIN rsa.rsa_detail_belanja_ "
-            . "ON rsa.rsa_detail_belanja_.kode_usulan_belanja = rsa.rsa_kuitansi_detail.kode_usulan_belanja "
-            . "AND rsa.rsa_detail_belanja_.kode_akun_tambah = rsa.rsa_kuitansi_detail.kode_akun_tambah "
-            . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$lenkode}) = '{$data['kode_unit_subunit']}' "
-            . "AND rsa.rsa_kuitansi.id_kuitansi IN ({$id_kuitansi}) "
-            . "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' "
-            . "GROUP BY SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$lenkode})" ;
+        $str = "SELECT SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengembalian "
+                . "FROM rsa.rsa_kuitansi_pengembalian "
+                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa.rsa_kuitansi_pengembalian.id_kuitansi = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi "
+                . "WHERE SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenkode}) = '{$data['kode_unit_subunit']}' "
+                . "AND rsa.rsa_kuitansi_pengembalian.id_kuitansi IN ({$id_kuitansi}) "
+                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$data['tahun']}' "
+                . "GROUP BY rsa.rsa_kuitansi_pengembalian.kode_unit";
 
-       // echo $str;die;
+
+        // echo $str ; die ;
 
         $q = $this->db->query($str);
-//            var_dump($q->num_rows());die;
+
         if($q->num_rows() > 0){
-               $pengeluaran = $pengeluaran + $q->row()->pengeluaran ;
+               $pengembalian = $pengembalian + $q->row()->pengembalian ;
         }
 
-        return $pengeluaran;
+        // echo $pengembalian ; die ;
 
-    }
-
-    function get_data_by_array_id($data){
-
-        $id_kuitansi = '' ;
-
-        if(count($data['array_id']) > 0){
-
-            foreach($data['array_id'] as $id){
-
-                $id_kuitansi = $id_kuitansi . '"' .$id . '",' ;
-
-            }
-
-            $id_kuitansi = substr($id_kuitansi, 0, -1) ; 
-
-        }else{
-
-            $id_kuitansi = "''";
-
-        }
-
-        $str = "SELECT * FROM rsa_kuitansi_detail WHERE rsa_kuitansi_detail.id_kuitansi IN ({$id_kuitansi}) AND rsa_kuitansi_detail.tahun = '{$data['tahun']}' " ;
-
-        $q = $this->db->query($str);
-//            var_dump($q->num_rows());die;
-        if($q->num_rows() > 0){
-            return $q->result() ;
-        }else{
-            return array();
-        }
-
+        return $pengembalian;
     }
 
     function get_rekap_pajak_by_array_id($data){
@@ -577,24 +548,22 @@ class Kuitansi_model extends CI_Model{
 
     function insert_spp($data){
 
-        $rel_kuitansi = json_decode($data['rel_kuitansi']);
-        if(!empty($rel_kuitansi)){
-            foreach($rel_kuitansi as $rel){
-                $this->db->where('id_kuitansi', $rel);
-                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-            }
+        $rel_kuitansi = json_decode($data['rel_kuitansi_pengembalian']);
+
+        foreach($rel_kuitansi as $rel){
+            $this->db->where('id_kuitansi', $rel);
+            $this->db->update('rsa_kuitansi_pengembalian', array('str_nomor_trx'=>$data['str_nomor_trx']));
         }
 
     }
     
     function insert_spm($data){
 
-        $rel_kuitansi = json_decode($data['rel_kuitansi']);
-        if(!empty($rel_kuitansi)){
-            foreach($rel_kuitansi as $rel){
-                $this->db->where('id_kuitansi', $rel);
-                $this->db->update('rsa_kuitansi', array('str_nomor_trx_spm'=>$data['str_nomor_trx_spm']));
-            }
+        $rel_kuitansi = json_decode($data['rel_kuitansi_pengembalian']);
+
+        foreach($rel_kuitansi as $rel){
+            $this->db->where('id_kuitansi', $rel);
+            $this->db->update('rsa_kuitansi_pengembalian', array('str_nomor_trx_spm'=>$data['str_nomor_trx_spm']));
         }
 
     }
@@ -602,29 +571,13 @@ class Kuitansi_model extends CI_Model{
     function tolak_spp($data){
 
         $rel_kuitansi = json_decode($data['rel_kuitansi']);
-        
-        $str = '' ;
 
-        if(count($rel_kuitansi)>0){
-            foreach($rel_kuitansi as $rel){
-                // $query = "UPDATE rsa_kuitansi_pengembalian SET str_nomor_trx = NULL,str_nomor_trx_spm = NULL WHERE id_kuitansi = '{$rel}'";
-                // $this->db->query($query);
-    //            $this->db->where('id_kuitansi', $rel);
-    //            $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>''));//array('str_nomor_trx'=>$data['str_nomor_trx']));
-
-                $str .= "'". $rel . "'," ;
-
-            }
-
-            $str = substr($str, 0, -1);
-
-            $query = "UPDATE rsa_kuitansi SET str_nomor_trx = NULL WHERE id_kuitansi IN ({$str})";
-        
+        foreach($rel_kuitansi as $rel){
+            $query = "UPDATE rsa_kuitansi SET str_nomor_trx = NULL WHERE id_kuitansi = '{$rel}'";
             $this->db->query($query);
-
+//            $this->db->where('id_kuitansi', $rel);
+//            $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>''));//array('str_nomor_trx'=>$data['str_nomor_trx']));
         }
-
-        
 
     }
     
@@ -632,28 +585,12 @@ class Kuitansi_model extends CI_Model{
 
         $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-        $str = '' ;
-
-        if(count($rel_kuitansi)>0){
-            foreach($rel_kuitansi as $rel){
-                // $query = "UPDATE rsa_kuitansi_pengembalian SET str_nomor_trx = NULL,str_nomor_trx_spm = NULL WHERE id_kuitansi = '{$rel}'";
-                // $this->db->query($query);
-    //            $this->db->where('id_kuitansi', $rel);
-    //            $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>''));//array('str_nomor_trx'=>$data['str_nomor_trx']));
-
-                $str .= "'". $rel . "'," ;
-
-            }
-
-            $str = substr($str, 0, -1);
-
-            $query = "UPDATE rsa_kuitansi SET str_nomor_trx = NULL,str_nomor_trx_spm = NULL WHERE id_kuitansi IN ({$str})";
-        
+        foreach($rel_kuitansi as $rel){
+            $query = "UPDATE rsa_kuitansi SET str_nomor_trx = NULL,str_nomor_trx_spm = NULL WHERE id_kuitansi = '{$rel}'";
             $this->db->query($query);
-
+//            $this->db->where('id_kuitansi', $rel);
+//            $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>''));//array('str_nomor_trx'=>$data['str_nomor_trx']));
         }
-
-        
 
     }
     
@@ -661,11 +598,9 @@ class Kuitansi_model extends CI_Model{
 
         $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-        if(count($rel_kuitansi) > 0){
-            foreach($rel_kuitansi as $rel){
-                $this->db->where('id_kuitansi', $rel);
-                $this->db->update('rsa_kuitansi', array('cair'=>'1'));
-            }
+        foreach($rel_kuitansi as $rel){
+            $this->db->where('id_kuitansi', $rel);
+            $this->db->update('rsa_kuitansi', array('cair'=>'1'));
         }
 
     }
@@ -862,56 +797,15 @@ class Kuitansi_model extends CI_Model{
         return $this->db->update('rsa_kuitansi',$data);
     }
 
-    function get_id_detail_by_str_nomor_spp($nomor_trx,$jenis = 'GUP'){
+    function get_id_detail_by_str_nomor_spp($nomor_trx){
         $this->db->where('str_nomor_trx',$nomor_trx);
-        $q = '';
-        if($jenis == 'GUP'){
-                $q = $this->db->get('trx_spp_gup_data');
-        }else if($jenis == 'TUP'){
-                $q = $this->db->get('trx_spp_tup_data');
-        }else if($jenis == 'LSNK'){
-                $q = $this->db->get('trx_spp_lsnk_data');
-        }else if($jenis == 'LSK'){
-                $q = $this->db->get('trx_spp_lsk_data');
-        }else if($jenis == 'KS'){
-                $q = $this->db->get('trx_spp_ks_data');
-        }
-
-        
-        //var_dump($q);die;
+        $q = $this->db->get('rsa_kuitansi_pengembalian');
+		//var_dump($q);die;
         if($q->num_rows() > 0){
-            $str = $q->row()->data_kuitansi;
-            $data_kuitansi = json_decode($str);
-            // var_dump($data_kuitansi);die;
-            $s_ = '';
-            if(!empty($data_kuitansi)){
-                foreach($data_kuitansi as $d){
-                    $s_ = $s_ . $d . ',' ;
-                }
-                $s_ = substr($s_, 0, -1);
-
-                $query = "SELECT * FROM rsa_kuitansi WHERE id_kuitansi IN ({$s_}) ";
-
-                $q = $this->db->query($query);
-
-                if($q->num_rows() > 0){
-                        return $q->result();
-                }else{
-                     return '';
-                }
-            }else{
-                 return '';
-            }
-
-
+            return $q->result();
          }else{
              return '';
          }
-
-
-        // $q = $this->db->get('rsa_kuitansi');
-		//var_dump($q);die;
-        
     }
 	
 	function insert_data_kuitansi_kontrak($dt){
@@ -975,40 +869,40 @@ class Kuitansi_model extends CI_Model{
 
         if(count($array_id) > 0){
 
-            foreach($array_id as $id){
-               
-    //            $q = $this->db->get('rsa_kuitansi');
-                //var_dump($q);die;
-                // $result[] = $q->row();
-                $id_kuitansi = $id_kuitansi . '"' .$id . '",' ;
+        foreach($array_id as $id){
+           
+//            $q = $this->db->get('rsa_kuitansi');
+            //var_dump($q);die;
+            // $result[] = $q->row();
+            $id_kuitansi = $id_kuitansi . '"' .$id . '",' ;
 
-               } 
+           } 
 
-               $id_kuitansi = substr($id_kuitansi, 0, -1) ;
-            
-
-             $str = "SELECT rsa.rsa_kuitansi.id_kuitansi,rsa.rsa_kuitansi.no_bukti,"
-                    . "rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.uraian,"
-                    . "SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
-                    . "rsa.rsa_kuitansi.str_nomor_trx,rsa.rsa_kuitansi.str_nomor_trx_spm,rsa.rsa_kuitansi.aktif,rsa.rsa_kuitansi.cair "
-                    . "FROM rsa.rsa_kuitansi "
-                    . "JOIN rsa.rsa_kuitansi_detail ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                    . "WHERE rsa.rsa_kuitansi.id_kuitansi IN ({$id_kuitansi}) GROUP BY rsa.rsa_kuitansi.id_kuitansi";
-
-           // print_r($str);die;
-
-            $q = $this->db->query($str);
-
-            if($q->num_rows() > 0){
-
-                return $q->result() ;
-
-            }else{
-                return array();
-            }
-        }else{
-                return array();
+           $id_kuitansi = substr($id_kuitansi, 0, -1) ;
         }
+
+         $str = "SELECT rsa.rsa_kuitansi_pengembalian.id_kuitansi,rsa.rsa_kuitansi_pengembalian.no_bukti,"
+                . "rsa.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa.rsa_kuitansi_pengembalian.uraian,"
+                . "SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
+                . "rsa.rsa_kuitansi_pengembalian.str_nomor_trx,rsa.rsa_kuitansi_pengembalian.str_nomor_trx_spm,rsa.rsa_kuitansi_pengembalian.aktif,rsa.rsa_kuitansi_pengembalian.cair "
+                . "FROM rsa.rsa_kuitansi_pengembalian "
+                . "JOIN rsa.rsa_kuitansi_detail_pengembalian ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi IN ({$id_kuitansi}) GROUP BY rsa.rsa_kuitansi_pengembalian.id_kuitansi";
+
+       // print_r($str);die;
+
+        $q = $this->db->query($str);
+
+        if($q->num_rows() > 0){
+
+            // var_dump($q->result_array()); die;
+
+            return $q->result() ;
+
+        }else{
+            return array();
+        }
+
     }
 	//copy dr idris alaik
 	function get_pekerjaan_by_array_id($data){
@@ -1148,60 +1042,6 @@ class Kuitansi_model extends CI_Model{
             
         }
 
-        function get_lsnk_akun_before_by_spm($nomor_spm_cair_before){
-            
-            $tahun = substr($nomor_spm_cair_before,-4,4);
-            
-            $kdunit = substr($nomor_spm_cair_before,6,3);
-//            echo $kdunit ; die;
-            $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
-                    . "JOIN rsa_kuitansi ON rsa_kuitansi.str_nomor_trx_spm = t1.str_nomor_trx_spm "
-                    . "WHERE SUBSTR(t1.str_nomor_trx_spm,7,3) = '{$kdunit}' AND t1.jenis_trx = 'LSNK' AND t1.tahun = '{$tahun}' "
-                    . "AND tgl_proses < ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.str_nomor_trx_spm = '{$nomor_spm_cair_before}' ) " ;
-//                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
-            
-           // echo $str; die;
-                    
-            $q = $this->db->query($str);
-            
-//            var_dump($q->result());die;
-            
-//                var_dump($q->num_rows());die;
-                if($q->num_rows() > 0){
-                   return $q->result();
-                }else{
-                    return '';
-                }
-            
-        }
-
-        function get_lsk_akun_before_by_spm($nomor_spm_cair_before){
-            
-            $tahun = substr($nomor_spm_cair_before,-4,4);
-            
-            $kdunit = substr($nomor_spm_cair_before,6,3);
-//            echo $kdunit ; die;
-            $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
-                    . "JOIN rsa_kuitansi ON rsa_kuitansi.str_nomor_trx_spm = t1.str_nomor_trx_spm "
-                    . "WHERE SUBSTR(t1.str_nomor_trx_spm,7,3) = '{$kdunit}' AND t1.jenis_trx = 'LSK' AND t1.tahun = '{$tahun}' "
-                    . "AND tgl_proses < ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.str_nomor_trx_spm = '{$nomor_spm_cair_before}' ) " ;
-//                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
-            
-           // echo $str; die;
-                    
-            $q = $this->db->query($str);
-            
-//            var_dump($q->result());die;
-            
-//                var_dump($q->num_rows());die;
-                if($q->num_rows() > 0){
-                   return $q->result();
-                }else{
-                    return '';
-                }
-            
-        }
-
 
         function get_gup_akun_before_by_spp($nomor_spp_cair_before){
             
@@ -1259,52 +1099,6 @@ class Kuitansi_model extends CI_Model{
         }
 
         function get_tup_akun_before_by_unit($kode_unit_subunit,$tahun){
-//            $tahun = substr($nomor_spm_cair_before,-4,4);
-            $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
-                    . "JOIN rsa_kuitansi ON rsa_kuitansi.str_nomor_trx_spm = t1.str_nomor_trx_spm "
-                    . "WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " ; // AND t1.jenis_trx = 'TUP'
-//                    . "AND tgl_proses < ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'GUP' AND t2.tahun = '{$tahun}' ) " ;
-//                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
-            
-           // echo $str; die;
-                    
-            $q = $this->db->query($str);
-            
-//            var_dump($q->result());die;
-            
-//                var_dump($q->num_rows());die;
-                if($q->num_rows() > 0){
-                   return $q->result();
-                }else{
-                    return '';
-                }
-            
-        }
-
-        function get_lsnk_akun_before_by_unit($kode_unit_subunit,$tahun){
-//            $tahun = substr($nomor_spm_cair_before,-4,4);
-            $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
-                    . "JOIN rsa_kuitansi ON rsa_kuitansi.str_nomor_trx_spm = t1.str_nomor_trx_spm "
-                    . "WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " ; // AND t1.jenis_trx = 'TUP'
-//                    . "AND tgl_proses < ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'GUP' AND t2.tahun = '{$tahun}' ) " ;
-//                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
-            
-           // echo $str; die;
-                    
-            $q = $this->db->query($str);
-            
-//            var_dump($q->result());die;
-            
-//                var_dump($q->num_rows());die;
-                if($q->num_rows() > 0){
-                   return $q->result();
-                }else{
-                    return '';
-                }
-            
-        }
-
-        function get_lsk_akun_before_by_unit($kode_unit_subunit,$tahun){
 //            $tahun = substr($nomor_spm_cair_before,-4,4);
             $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
                     . "JOIN rsa_kuitansi ON rsa_kuitansi.str_nomor_trx_spm = t1.str_nomor_trx_spm "

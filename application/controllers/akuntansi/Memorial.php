@@ -135,7 +135,10 @@ class Memorial extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
-            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program').$this->input->post('komponen').$this->input->post('subkomponen');
+
+            // print_r($entry);die();
+
 
 
             $entry['tanggal_posting'] = date('Y-m-d H:i:s');
@@ -150,6 +153,8 @@ class Memorial extends MY_Controller {
             unset($entry['kegiatan']);
             unset($entry['output']);
             unset($entry['program']);
+            unset($entry['komponen']);
+            unset($entry['subkomponen']);
 
             $akun = $this->input->post();
 
@@ -284,11 +289,18 @@ class Memorial extends MY_Controller {
 
 		if($this->form_validation->run())     
         {   
+            // print_r($this->input->post());die();
+            $hapus_kas = 0;
+            if ($this->input->post('is_kosong_kas') == 'on'){
+                $hapus_kas = 1;
+            }
+
             //hapus relasi lama
             $delete_relasi_lama = $this->db->query("DELETE FROM akuntansi_relasi_kuitansi_akun WHERE id_kuitansi_jadi='".$id_kuitansi_jadi."'");
 
             $entry = $this->input->post();
             unset($entry['simpan']);
+            unset($entry['is_kosong_kas']);
             $entry['id_kuitansi'] = null;
             //$entry['no_bukti'] = $this->Memorial_model->generate_nomor_bukti();
             $entry['akun_debet'] = $entry['akun_debet_kas'][0];
@@ -309,16 +321,19 @@ class Memorial extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
-            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program');
+            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program').$this->input->post('komponen').$this->input->post('subkomponen');
 
             unset($entry['kegiatan']);
             unset($entry['output']);
             unset($entry['program']);
+            unset($entry['komponen']);
+            unset($entry['subkomponen']);
 
             unset($entry['jumlah']);
             unset($entry['jenis_pajak']);
             unset($entry['id_pajak']);
             unset($entry['persen_pajak']);
+
 
             $akun = $this->input->post();
 
@@ -363,31 +378,35 @@ class Memorial extends MY_Controller {
                 $entry_relasi[] = $relasi;
             }
 
-            if ($akun['akun_debet_kas'][1] != null) {
-                for ($i=1; $i < count($akun['akun_debet_kas']); $i++) { 
-                    $relasi['akun'] = $akun['akun_debet_kas'][$i];
-                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
-                    $relasi['tipe'] = 'debet';
-                    $relasi['no_bukti'] = $entry['no_bukti'];
-                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
-                    $relasi['jenis'] = 'kas';
+            if (!$hapus_kas) {
+                if ($akun['akun_debet_kas'][1] != null) {
+                    for ($i=1; $i < count($akun['akun_debet_kas']); $i++) { 
+                        $relasi['akun'] = $akun['akun_debet_kas'][$i];
+                        $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
+                        $relasi['tipe'] = 'debet';
+                        $relasi['no_bukti'] = $entry['no_bukti'];
+                        $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                        $relasi['jenis'] = 'kas';
 
-                    $entry_relasi[] = $relasi;
+                        $entry_relasi[] = $relasi;
+                    }
                 }
+
+                if ($akun['akun_kredit_kas'][1] != null) {
+                    for ($i=1; $i < count($akun['akun_kredit_kas']); $i++) { 
+                        $relasi['akun'] = $akun['akun_kredit_kas'][$i];
+                        $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
+                        $relasi['tipe'] = 'kredit';
+                        $relasi['no_bukti'] = $entry['no_bukti'];
+                        $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                        $relasi['jenis'] = 'kas';
+
+                        $entry_relasi[] = $relasi;
+                    }
+                }
+                
             }
 
-            if ($akun['akun_kredit_kas'][1] != null) {
-                for ($i=1; $i < count($akun['akun_kredit_kas']); $i++) { 
-                    $relasi['akun'] = $akun['akun_kredit_kas'][$i];
-                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
-                    $relasi['tipe'] = 'kredit';
-                    $relasi['no_bukti'] = $entry['no_bukti'];
-                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
-                    $relasi['jenis'] = 'kas';
-
-                    $entry_relasi[] = $relasi;
-                }
-            }
 
             // print_r($entry_relasi);die();
 
@@ -438,6 +457,10 @@ class Memorial extends MY_Controller {
             $this->data['output'] = $this->Memorial_model->read_output(substr($this->data['kode_kegiatan'],8,2));
             //kode program
             $this->data['program'] = $this->Memorial_model->read_program(substr($this->data['kode_kegiatan'],8,2), substr($this->data['kode_kegiatan'],10,2));
+
+            $this->data['komponen'] = $this->Memorial_model->read_komponen(substr($this->data['kode_kegiatan'],8,2), substr($this->data['kode_kegiatan'],10,2), substr($this->data['kode_kegiatan'],12,2));
+
+            $this->data['subkomponen'] = $this->Memorial_model->read_subkomponen(substr($this->data['kode_kegiatan'],8,2), substr($this->data['kode_kegiatan'],10,2), substr($this->data['kode_kegiatan'],12,2), substr($this->data['kode_kegiatan'],14,2));
 
             $query_kas_kredit = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'kredit','jenis'=>'kas'))->result();
             $query_kas_debet = $this->Memorial_model->read_akun_relasi(array('id_kuitansi_jadi'=>$id_kuitansi_jadi, 'tipe'=>'debet','jenis'=>'kas'))->result();

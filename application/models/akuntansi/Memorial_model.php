@@ -54,6 +54,31 @@ class Memorial_model extends CI_Model {
 		return $query;
 	}
 
+	public function read_komponen($kode_kegiatan, $kode_output, $kode_program)
+	{
+		$this->db2->where('kode_kegiatan',$kode_kegiatan);
+		$this->db2->where('kode_output',$kode_output);
+		$this->db2->where('kode_program',$kode_program);
+
+		$query = $this->db2->get('komponen_input');
+
+		return $query;
+	}
+
+	public function read_subkomponen($kode_kegiatan, $kode_output, $kode_program, $kode_komponen)
+	{
+		$this->db2->where('kode_kegiatan',$kode_kegiatan);
+		$this->db2->where('kode_output',$kode_output);
+		$this->db2->where('kode_program',$kode_program);
+		$this->db2->where('kode_komponen',$kode_program);
+
+		$query = $this->db2->get('subkomponen_input');
+
+		return $query;
+	}
+
+
+
 	public function read_akun_relasi($cond){
 		$this->db->where($cond);
 		$query = $this->db->get('akuntansi_relasi_kuitansi_akun');

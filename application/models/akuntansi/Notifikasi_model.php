@@ -56,6 +56,8 @@ class Notifikasi_model extends CI_Model {
                 $result['gup_nihil_posting'] = 0;
                 $result['pup_posting'] = 0;
                 $result['tup_pengembalian_posting'] = 0;
+                $result['lk_posting'] = 0;
+                $result['ln_posting'] = 0;
                 
                 foreach($query2->result_array() as $sub_query){
                     $key = $sub_query['jenis'];
@@ -68,6 +70,8 @@ class Notifikasi_model extends CI_Model {
                     else if($key == 'GUP_NIHIL') $result['gup_nihil_posting'] = $sub_query['c'];
                     else if($key == 'L3') $result['ls_posting'] = $sub_query['c'];
                     else if($key == 'NK') $result['spm_posting'] = $sub_query['c'];
+                    else if($key == 'LK') $result['lk_posting'] = $sub_query['c'];
+                    else if($key == 'LN') $result['ln_posting'] = $sub_query['c'];
                     else if($key == 'TUP_PENGEMBALIAN') $result['tup_pengembalian_posting'] = $sub_query['c'];
                 }
                 
@@ -84,16 +88,20 @@ class Notifikasi_model extends CI_Model {
             (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS ls,
             (SELECT COUNT(*) FROM rsa_kuitansi_pengembalian WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS tup_pengembalian,
             (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1  AND jenis='TP' AND flag_proses_akuntansi=$level $unit ) AS tup_nihil,
+            (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1  AND jenis='LN' AND flag_proses_akuntansi=$level $unit ) AS ln,
+            (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1  AND jenis='LK' AND flag_proses_akuntansi=$level $unit ) AS lk,
             (SELECT COUNT(*) FROM `kepeg_tr_spmls` WHERE `flag_proses_akuntansi` =$level AND `proses` = 5 AND substr(unitsukpa,1,2) $subunit) AS spm");
         $result =  array_merge($result, $query->row_array());
         
-        $result['kuitansi'] = $result['up'] +$result['pup'] + $result['gup'] + $result['gu'] + $result['gup_nihil']  +$result['tup'] +$result['tup_nihil'] + $result['ls'] + $result['spm'] + $result['tup_pengembalian'];
+        $result['kuitansi'] = $result['up'] +$result['pup'] + $result['gup'] + $result['gu'] + $result['gup_nihil']  +$result['tup'] +$result['tup_nihil'] + $result['ls']+ $result['lk']+ $result['ln'] + $result['spm'] + $result['tup_pengembalian'];
         
         $query2 = $this->db->query("SELECT jenis, COUNT(jenis) as c FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND $condstr $unit_jadi GROUP BY jenis");
                                 
         $result['gup_jadi'] = 0;
         $result['gu_jadi'] = 0;
         $result['ls_jadi'] = 0;
+        $result['lk_jadi'] = 0;
+        $result['ln_jadi'] = 0;
         $result['spm_jadi'] = 0;
         $result['tup_jadi'] = 0;
         $result['up_jadi'] = 0;
@@ -112,11 +120,13 @@ class Notifikasi_model extends CI_Model {
             else if($key == 'TUP_NIHIL') $result['tup_nihil_jadi'] = $sub_query['c'];
             else if($key == 'GUP_NIHIL') $result['gup_nihil_jadi'] = $sub_query['c'];
             else if($key == 'L3') $result['ls_jadi'] = $sub_query['c'];
+            else if($key == 'LK') $result['lk_jadi'] = $sub_query['c'];
+            else if($key == 'LN') $result['ln_jadi'] = $sub_query['c'];
             else if($key == 'NK') $result['spm_jadi'] = $sub_query['c'];
             else if($key == 'TUP_PENGEMBALIAN') $result['tup_pengembalian_jadi'] = $sub_query['c'];
         }
         
-        $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['gu_jadi'] + $result['ls_jadi'] + $result['spm_jadi'] + $result['tup_jadi'] + $result['up_jadi'] + $result['tup_nihil_jadi'] + $result['gup_nihil_jadi'] + $result['pup_jadi'] + $result['tup_pengembalian_jadi'];
+        $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['gu_jadi'] + $result['ls_jadi'] + $result['lk_jadi'] + $result['ln_jadi'] + $result['spm_jadi'] + $result['tup_jadi'] + $result['up_jadi'] + $result['tup_nihil_jadi'] + $result['gup_nihil_jadi'] + $result['pup_jadi'] + $result['tup_pengembalian_jadi'];
         return (object)$result;
 	}
 

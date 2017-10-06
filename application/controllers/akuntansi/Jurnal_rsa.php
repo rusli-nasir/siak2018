@@ -34,7 +34,9 @@ class Jurnal_rsa extends MY_Controller {
             $entry = $this->input->post();
 
             $array_spm = $this->Spm_model->get_jenis_spm();
-            if ($jenis == 'TUP_NIHIL') {
+
+            // print_r($array_spm);die();
+            if ($jenis == 'TUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN' ) {
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
             }
             else if ($jenis == 'TUP_PENGEMBALIAN') {
@@ -61,6 +63,12 @@ class Jurnal_rsa extends MY_Controller {
             if ($jenis == 'TUP_NIHIL') {
                 $entry['jenis'] = $kuitansi['jenis'] = 'TUP_NIHIL';
             } 
+            if ($jenis == 'LK') {
+                $entry['jenis'] = $kuitansi['jenis'] = 'LK';
+            } 
+            if ($jenis == 'LN') {
+                $entry['jenis'] = $kuitansi['jenis'] = 'LN';
+            } 
             if ($jenis == 'TUP_PENGEMBALIAN') {
                 $entry['jenis'] = $kuitansi['jenis'] = 'TUP_PENGEMBALIAN';
             } 
@@ -82,7 +90,7 @@ class Jurnal_rsa extends MY_Controller {
                 $array_pajak = $this->Pajak_model->get_transfer_pajak($q1);
                 $this->Pajak_model->insert_pajak($q1,$array_pajak);
             }
-            else if ($jenis == 'TUP_NIHIL') {
+            else if ($jenis == 'TUP_NIHIL'  or $jenis == 'LK' or $jenis == 'LN' ) {
                 $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($kuitansi['jenis']),$updater);
                 $array_pajak = $this->Pajak_model->get_transfer_pajak($q1);
                 $this->Pajak_model->insert_pajak($q1,$array_pajak);
@@ -145,6 +153,14 @@ class Jurnal_rsa extends MY_Controller {
                 $direct_url = 'akuntansi/kuitansi/index_gup';
             }else if($jenis=='TUP'){
                 $direct_url = 'akuntansi/kuitansi/index_tup';
+            }else if($jenis=='LK'){
+                $direct_url = 'akuntansi/kuitansi/index_lk';
+            }else if($jenis=='LN'){
+                $direct_url = 'akuntansi/kuitansi/index_lnk';
+            }else if($jenis=='TUP_NIHIL'){
+                $direct_url = 'akuntansi/kuitansi/index_tup_nihil';
+            }else if($jenis=='TUP_PENGEMBALIAN'){
+                $direct_url = 'akuntansi/kuitansi/index_tup_pengembalian';
             }
             redirect($direct_url);
 
@@ -155,7 +171,7 @@ class Jurnal_rsa extends MY_Controller {
                 $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
                 $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
                 $akun_debet_akrual = $isian['kode_akun'];
-                $akun_debet_akrual[0] = 7;
+                $akun_debet_akrual = $this->Akun_model->get_konversi_akun_5($akun_debet_akrual);
                 $isian['akun_debet_akrual'] = $akun_debet_akrual;
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
@@ -179,6 +195,33 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
 
                 // print_r($isian);die();
+            }
+            else if ($jenis == 'LK'){
+                $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
+                $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
+                $akun_debet_akrual = $isian['kode_akun'];
+                $akun_debet_akrual = $this->Akun_model->get_konversi_akun_5($akun_debet_akrual);
+                $isian['akun_debet_akrual'] = $akun_debet_akrual;
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+
+                $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
+            }
+            else if ($jenis == 'LN'){
+                
+                $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
+                $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
+                $akun_debet_akrual = $isian['kode_akun'];
+                $akun_debet_akrual = $this->Akun_model->get_konversi_akun_5($akun_debet_akrual);
+                $isian['akun_debet_akrual'] = $akun_debet_akrual;
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+
+                $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
             }
             else if (in_array($jenis,$this->Spm_model->get_jenis_spm())){
                 $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
@@ -341,6 +384,10 @@ class Jurnal_rsa extends MY_Controller {
             $direct_url = 'akuntansi/kuitansi/jadi/TUP/1';
         }else if($jenis=='TUP_NIHIL'){
             $direct_url = 'akuntansi/kuitansi/jadi/TUP_NIHIL/1';
+        }else if($jenis=='LK'){
+            $direct_url = 'akuntansi/kuitansi/jadi/LK/1';
+        }else if($jenis=='LN'){
+            $direct_url = 'akuntansi/kuitansi/jadi/LN/1';
         }
         redirect($direct_url);
 

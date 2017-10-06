@@ -103,7 +103,10 @@ if($jenis=='NK'){
       <option value="terikat">Tidak Terikat</option>
       <option value="tidak_terikat">Terikat Temporer</option>
       <option value="terikat_permanen">Terikat Permanen</option> -->
-      <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'tidak_terikat' OR $jenis=='NK'): ?> selected <?php endif ?> value="tidak_terikat" >Tidak Terikat</option>
+<!--       <?php if ($jenis == 'TUP'): ?>
+          <script type="text/javascript">alert('aaaa');</script>
+      <?php endif ?> -->
+      <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'tidak_terikat' OR $jenis=='NK' OR $jenis=='TUP'): ?> selected <?php endif ?> <?php if ($jenis == 'TUP'): ?> selected <?php endif ?> value="tidak_terikat" >Tidak Terikat</option>
       <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'terikat_temporer'): ?> selected <?php endif ?> value="terikat_temporer">Terikat Temporer</option>
       <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'terikat_permanen'): ?> selected <?php endif ?> value="terikat_permanen">Terikat Permanen</option>
     </select>

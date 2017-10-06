@@ -59,7 +59,7 @@ class Rsa_tup_model extends CI_Model {
 
         function check_dokumen_tup_by_str_trx($no_str_trx){
 
-            $query = "SELECT t1.posisi "
+            $query = "SELECT posisi "
                     . "FROM trx_nomor_tup AS tt1 "
                     . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
                     . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
@@ -67,45 +67,10 @@ class Rsa_tup_model extends CI_Model {
                         . "SELECT MAX(t2.tgl_proses) FROM trx_tup AS t2 "
                         . "WHERE t2.id_trx_nomor_tup = t1.id_trx_nomor_tup )" ;
 
-
             $q = $this->db->query($query);
 //            var_dump($q->num_rows());die;
             if($q->num_rows() > 0){
-
-                // echo $q->row()->posisi ; die;
-
-                $pre_post = $q->row()->posisi ;
-
-               if($q->row()->posisi == 'SPP-FINAL'){
-                    $query = "SELECT str_nomor_trx_spm FROM trx_spp_spm WHERE str_nomor_trx_spp = '{$no_str_trx}' " ;
-
-                     $q = $this->db->query($query);
-
-                     if($q->num_rows() > 0){
-
-                        $str_ = $q->row()->str_nomor_trx_spm ;
-                        
-                        $query = "SELECT t1.posisi "
-                            . "FROM trx_nomor_tup AS tt1 "
-                            . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
-                            . "WHERE tt1.str_nomor_trx = '{$str_}' "
-                            . "AND t1.tgl_proses IN ( "
-                                . "SELECT MAX(t2.tgl_proses) FROM trx_tup AS t2 "
-                                . "WHERE t2.id_trx_nomor_tup = t1.id_trx_nomor_tup )" ;
-
-                        $q = $this->db->query($query);
-                        if($q->num_rows() > 0){
-                            return $q->row()->posisi;
-                        }
-                        
-                     }else{
-                        return $pre_post;
-                     }
-
-                    
-               }else{
-                        return $q->row()->posisi;
-               }
+               return $q->row()->posisi ;
             }else{
                 return '';
             }
@@ -121,10 +86,10 @@ class Rsa_tup_model extends CI_Model {
             }
         }
 
-        function lihat_ket_by_str_trx($no_str_trx){
-            // $q = $this->db->query("SELECT ket FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
+        function lihat_ket_by_str_trx($str_trx){
+            // $q = $this->db->query("SELECT ket FROM trx_tup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
 
-            $query = "SELECT t1.posisi,t1.ket "
+            $query = "SELECT ket "
                     . "FROM trx_nomor_tup AS tt1 "
                     . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
                     . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
@@ -136,34 +101,7 @@ class Rsa_tup_model extends CI_Model {
 
 //            var_dump($q->num_rows());die;
             if($q->num_rows() > 0){
-               if($q->row()->posisi == 'SPP-FINAL'){
-                    $query = "SELECT str_nomor_trx_spm FROM trx_spp_spm WHERE str_nomor_trx_spp = '{$no_str_trx}' " ;
-
-                     $q = $this->db->query($query);
-
-                     if($q->num_rows() > 0){
-
-                        $str_ = $q->row()->str_nomor_trx_spm ;
-                        
-                        $query = "SELECT t1.posisi,t1.ket "
-                            . "FROM trx_nomor_tup AS tt1 "
-                            . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
-                            . "WHERE tt1.str_nomor_trx = '{$str_}' "
-                            . "AND t1.tgl_proses IN ( "
-                                . "SELECT MAX(t2.tgl_proses) FROM trx_tup AS t2 "
-                                . "WHERE t2.id_trx_nomor_tup = t1.id_trx_nomor_tup )" ;
-
-                        $q = $this->db->query($query);
-                        if($q->num_rows() > 0){
-                            return $q->row()->ket;
-                        }
-                        
-                     }
-
-                    
-               }else{
-                        return $q->row()->ket;
-               }
+               return $q->row()->ket ;
             }else{
                 return '';
             }
@@ -222,7 +160,7 @@ class Rsa_tup_model extends CI_Model {
             
             
             $this->db->where('tahun', $data['tahun']);
-            $this->db->where('aktif', '2');
+            $this->db->where('aktif', '1');
             $this->db->where('kd_unit', $kode_unit);
             $this->db->update('kas_bendahara', array('aktif'=>'0'));
             
@@ -712,60 +650,25 @@ class Rsa_tup_model extends CI_Model {
         
         function get_daftar_spp($kode_unit_subunit,$tahun){
             
-            $query2 = "SELECT tt1.str_nomor_trx AS str_nomor_trx_spp,t3.str_nomor_trx_spm AS str_nomor_trx_spm,t1.tgl_spp,t2.jumlah_bayar, t1.posisi "
+            $query = "SELECT *,t1.tgl_proses AS tgl_proses_status "
                     . "FROM trx_nomor_tup AS tt1 "
                     . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
-                    . "JOIN trx_spp_tup_data AS t2 ON tt1.id_trx_nomor_tup = t2.nomor_trx_spp "
-                    . "LEFT JOIN trx_spp_spm AS t3 ON t1.id_trx_nomor_tup = t3.nomor_trx_spp "
                     . "WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' "
                     . "AND jenis = 'SPP' "
-                    . "AND t3.jenis_trx = 'TUP' "
                     . "AND tt1.tahun = '{$tahun}' "
                     . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t22.tgl_proses) FROM trx_tup AS t22 "
-                        . "WHERE t22.id_trx_nomor_tup = t1.id_trx_nomor_tup GROUP BY t22.kode_unit_subunit)" ;
-
-            $query = "SELECT t1.str_nomor_trx AS str_nomor_trx_spp,t2.str_nomor_trx_spm,t3.posisi AS posisi_spp,t4.posisi AS posisi_spm,t1.tgl_spp,t1.jumlah_bayar 
-FROM trx_spp_tup_data AS t1
-JOIN trx_spp_spm AS t2
-ON t1.str_nomor_trx = t2.str_nomor_trx_spp
-JOIN (
-    SELECT t31.kode_unit_subunit,t31.id_trx_nomor_tup,t31.posisi,t31.tgl_proses
-    FROM trx_tup AS t31
-    WHERE t31.kode_unit_subunit = '{$kode_unit_subunit}' AND t31.tahun = '{$tahun}' 
-    AND t31.tgl_proses IN (
-        SELECT MAX(t311.tgl_proses) AS tgl_proses 
-        FROM trx_tup AS t311
-        WHERE t311.kode_unit_subunit = '{$kode_unit_subunit}' AND t311.tahun = '{$tahun}' 
-        GROUP BY t311.id_trx_nomor_tup
-    )
-
-) AS t3
-ON t1.nomor_trx_spp = t3.id_trx_nomor_tup
-JOIN (
-    SELECT t41.kode_unit_subunit,t41.id_trx_nomor_tup,t41.posisi,t41.tgl_proses
-    FROM trx_tup AS t41
-    WHERE t41.kode_unit_subunit = '{$kode_unit_subunit}' AND t41.tahun = '{$tahun}' 
-    AND t41.tgl_proses IN (
-        SELECT MAX(t411.tgl_proses) AS tgl_proses 
-        FROM trx_tup AS t411
-        WHERE t411.kode_unit_subunit = '{$kode_unit_subunit}' AND t411.tahun = '{$tahun}' 
-        GROUP BY t411.id_trx_nomor_tup
-    )
-
-) AS t4
-ON t2.nomor_trx_spm = t4.id_trx_nomor_tup
-WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " ;
+                        . "SELECT MAX(t2.tgl_proses) FROM trx_tup AS t2 "
+                        . "WHERE t2.id_trx_nomor_tup = t1.id_trx_nomor_tup )" ;
                         
-                       // echo $query; die;
+//                        echo $query; die;
 
                 $q = $this->db->query($query);
 
-        $result = $q->result();
+		$result = $q->result();
                 
 //                var_dump($result);die;
 
-        return $result ;
+		return $result ;
         }
 
         function get_daftar_spm($kode_unit_subunit,$tahun){
@@ -834,109 +737,97 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
         
         function proses_tup_spp_rka($data){
 
-            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // if(count($rel_kuitansi)>0){
-
-                // foreach($rel_kuitansi as $rel){
-    //                $this->db->where('id_kuitansi', $rel);
-    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                        $query = "UPDATE rsa_detail_belanja_ "
-                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                            . "SET rsa_detail_belanja_.proses = '43' "
-                            . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
-    //                echo $query ; die;
-                    $this->db->query($query);
-                // }
-            // }
+            foreach($rel_kuitansi as $rel){
+//                $this->db->where('id_kuitansi', $rel);
+//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                    $query = "UPDATE rsa_detail_belanja_ "
+                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                        . "SET rsa_detail_belanja_.proses = '41' "
+                        . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
+//                echo $query ; die;
+                $this->db->query($query);
+            }
 
         }
         
         function tolak_tup_spp_rka($data){
 
-            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // if(count($rel_kuitansi)>0){
-                // foreach($rel_kuitansi as $rel){
-    //                $this->db->where('id_kuitansi', $rel);
-    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                        $query = "UPDATE rsa_detail_belanja_ "
-                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                            . "SET rsa_detail_belanja_.proses = '33' "
-                            . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
-    //                echo $query ; die;
-                    $this->db->query($query);
-                // }
-            // }
+            foreach($rel_kuitansi as $rel){
+//                $this->db->where('id_kuitansi', $rel);
+//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                    $query = "UPDATE rsa_detail_belanja_ "
+                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                        . "SET rsa_detail_belanja_.proses = '31' "
+                        . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
+//                echo $query ; die;
+                $this->db->query($query);
+            }
 
         }
         
         function proses_tup_spm_rka($data){
 
-            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // if(count($rel_kuitansi)>0){
-                // foreach($rel_kuitansi as $rel){
-    //                $this->db->where('id_kuitansi', $rel);
-    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                        $query = "UPDATE rsa_detail_belanja_ "
-                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                            . "SET rsa_detail_belanja_.proses = '53' "
-                            . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
-    //                echo $query ; die;
-                    $this->db->query($query);
-                // }
-            // }
+            foreach($rel_kuitansi as $rel){
+//                $this->db->where('id_kuitansi', $rel);
+//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                    $query = "UPDATE rsa_detail_belanja_ "
+                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                        . "SET rsa_detail_belanja_.proses = '51' "
+                        . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
+//                echo $query ; die;
+                $this->db->query($query);
+            }
 
         }
         
         function proses_tup_cair_rka($data){
 
-            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // if(count($rel_kuitansi)>0){
-
-                // foreach($rel_kuitansi as $rel){
-    //                $this->db->where('id_kuitansi', $rel);
-    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                    $nw = date('Y-m-d H:i:s');
-                        $query = "UPDATE rsa_detail_belanja_ "
-                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                            . "SET rsa_detail_belanja_.proses = '63', rsa_detail_belanja_.tanggal_transaksi = '{$nw}' "
-                            . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
-    //                echo $query ; die;
-                    $this->db->query($query);
-                // }
-            // }
+            foreach($rel_kuitansi as $rel){
+//                $this->db->where('id_kuitansi', $rel);
+//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                $nw = date('Y-m-d H:i:s');
+                    $query = "UPDATE rsa_detail_belanja_ "
+                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                        . "SET rsa_detail_belanja_.proses = '61', rsa_detail_belanja_.tanggal_transaksi = '{$nw}' "
+                        . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
+//                echo $query ; die;
+                $this->db->query($query);
+            }
 
         }
         
         function tolak_tup_spm_rka($data){
 
-            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // if(count($rel_kuitansi)>0){
-                // foreach($rel_kuitansi as $rel){
-    //                $this->db->where('id_kuitansi', $rel);
-    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                        $query = "UPDATE rsa_detail_belanja_ "
-                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                            . "SET rsa_detail_belanja_.proses = '33' "
-                            . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
-    //                echo $query ; die;
-                    $this->db->query($query);
-                // }
-            // }       
+            foreach($rel_kuitansi as $rel){
+//                $this->db->where('id_kuitansi', $rel);
+//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                    $query = "UPDATE rsa_detail_belanja_ "
+                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                        . "SET rsa_detail_belanja_.proses = '31' "
+                        . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
+//                echo $query ; die;
+                $this->db->query($query);
+            }
 
         }
         
@@ -970,8 +861,8 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
         
         function get_nomer_spm_cair_lalu($kode_unit_subunit,$tahun){
             $str = "SELECT t1.str_nomor_trx_spm FROM trx_urut_spm_cair AS t1 "
-                    . "WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.jenis_trx = 'TUP-NIHIL' AND t1.tahun = '{$tahun}' "
-                    . "AND tgl_proses = ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'TUP-NIHIL' AND t2.tahun = '{$tahun}' ) " ;
+                    . "WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.jenis_trx = 'GUP' AND t1.tahun = '{$tahun}' "
+                    . "AND tgl_proses = ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'GUP' AND t2.tahun = '{$tahun}' ) " ;
 //                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
             
 //                    echo $str; die;
@@ -1019,7 +910,7 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
                             // echo $str_unit ; die ;
 
-                            $query = "SELECT COUNT(posisi) AS jml FROM trx_tup WHERE posisi = 'SPM-DRAFT-KPA' AND SUBSTR(kode_unit_subunit,1,2) IN ({$str_unit}) AND aktif = '1' " ; 
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_tup WHERE posisi = 'SPM-DRAFT-KPA' AND kode_unit_subunit IN ({$str_unit}) AND aktif = '1' " ; 
 
                            // echo $query ; die ;
 
@@ -1042,34 +933,14 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
         function tup_to_nihil($data_tup_to_nihil){
 
-                // var_dump($data_tup_to_nihil) ; die ;
-
 
                 $this->db->where('tahun', $data_tup_to_nihil['tahun']);
                 $this->db->where('status', '1');
-                $this->db->where('kode_unit_subunit', $data_tup_to_nihil['kode_unit_subunit']);
+                $this->db->where('kd_unit_subunit', $data_tup_to_nihil['kode_unit_subunit']);
 
                 return $this->db->update("trx_tambah_tup_to_nihil",$data_tup_to_nihil);
 
             }
-
-
-        function get_last_spp($kode_unit,$tahun){
-            $query = "SELECT t1.*
-FROM
-trx_spp_tup_data AS t1
-WHERE t1.kode_unit_subunit = '{$kode_unit}' AND t1.tahun = '{$tahun}'
-AND t1.id_trx_spp_tup_data = (SELECT MAX(id_trx_spp_tup_data) FROM trx_spp_tup_data AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit}' AND t2.tahun = '{$tahun}' GROUP BY t2.kode_unit_subunit )" ;
-
-            $q = $this->db->query($query);
-            if($q->num_rows() > 0){
-               return $q->row();
-            }else{
-                return array();
-            }
-
-        }
-
 
 
 

@@ -41,6 +41,34 @@ $(document).ready(function(){
     })
   })
 
+  $("#program").change(function(){
+    var kode_kegiatan = $("#kegiatan").val();
+    var kode_output = $("#output").val();
+    var kode_program = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_komponen/'+kode_kegiatan+'/'+kode_output+'/'+kode_program,
+      data:{},
+      success:function(data){
+        $("#komponen").html(data);
+      }
+    })
+  })
+
+  $("#komponen").change(function(){
+    var kode_kegiatan = $("#kegiatan").val();
+    var kode_output = $("#output").val();
+    var kode_program = $("#program").val();
+    var kode_komponen = $(this).val();
+    $.ajax({
+      url:host+'akuntansi/memorial/get_subkomponen/'+kode_kegiatan+'/'+kode_output+'/'+kode_program+'/'+kode_komponen,
+      data:{},
+      success:function(data){
+        $("#subkomponen").html(data);
+      }
+    })
+  })
+
+
   //get akun
   var id_kuitansi_jadi = <?=$id_kuitansi_jadi?>;
   var id_pajak = <?=$id_pajak?>;
@@ -374,6 +402,46 @@ $(document).ready(function(){
   </div>
 </div>
 
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Komponen (kegiatan)</label>  
+  <div class="col-md-6">
+      <select id="komponen" name="komponen" class="form-control" required="">
+        <option value="">--</option>
+        <?php if (substr($kode_kegiatan,12,2) != null): ?>
+          <?php foreach ($komponen->result() as $result) {
+            ?>
+            <option value="<?=$result->kode_komponen;?>" <?php if(substr($kode_kegiatan,14,2)==$result->kode_komponen) echo 'selected'; ?>><?=$result->kode_komponen.' - '.$result->nama_komponen?></option>
+            <?php
+          }
+          ?>
+        <?php endif ?>
+      </select>
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label">Subkomponen (subkegiatan)</label>  
+  <div class="col-md-6">
+      <select id="subkomponen" name="subkomponen" class="form-control" required="">
+          <option value="">--</option>
+        <?php if (substr($kode_kegiatan,14,2) != null): ?>
+          <?php 
+             foreach ($subkomponen->result() as $result) {
+            ?>
+            <option value="<?=$result->kode_subkomponen;?>" <?php if(substr($kode_kegiatan,16,2)==$result->kode_subkomponen) echo 'selected'; ?>><?=$result->kode_subkomponen.' - '.$result->nama_subkomponen?></option>
+            <?php
+          }
+          ?>
+        <?php endif ?>
+      </select>
+    
+  </div>
+</div>
+
 <!-- Textarea -->
 <div class="form-group">
   <label class="col-md-2 control-label" for="uraian">Uraian</label>
@@ -404,7 +472,7 @@ $(document).ready(function(){
 </div>
 
 <div class="form-group checkbox" align="center">
-    <label><input type="checkbox" id="no-kas">  Kosongkan Kas</label>
+    <label><input type="checkbox" name="is_kosong_kas" id="no-kas">  Kosongkan Kas</label>
 </div>
 <hr>
 <!-- Text input-->

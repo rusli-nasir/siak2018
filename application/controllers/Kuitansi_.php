@@ -558,9 +558,6 @@ Class Kuitansi extends CI_Controller {
                             $this->load->model('tor_model');
 
                             $subdata['pppk']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
-
-                            $subdata['ppk']                = $this->tor_model->get_ppk(substr($this->check_session->get_unit(),0,2));
-
                             $subdata['pic_kuitansi']        = $this->tor_model->get_pic_kuitansi($this->check_session->get_unit());
                             $subdata['tahun']               = $this->cur_tahun ;
                             // $subdata['alias']               = $this->tor_model->get_alias_unit($this->check_session->get_unit());
@@ -666,24 +663,8 @@ Class Kuitansi extends CI_Controller {
                             $subdata['jenis'] = $jenis;
                             $subdata['k_tab'] = 'k-batal';
                             $subdata['tsite'] = "kuitansi/daftar_kuitansi_batal" ;
-
                             $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'BATAL');
-
-                            $subdata['daftar_kuitansi_pengembalian']          = $this->kuitansipengembalian_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'BATAL');
-
-                            // echo '<pre>'; var_dump($subdata); die;
-
                             $subdata['daftar_kuitansi_unit']          = $this->kuitansi_model->get_kuitansi_unit($jenis,$kode_unit_subunit,$tahun,'BATAL');
-
-                            $this->load->model('tor_model');
-
-                            $subdata['pppk']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
-                            $subdata['pic_kuitansi']        = $this->tor_model->get_pic_kuitansi($this->check_session->get_unit());
-                            $subdata['tahun']               = $this->cur_tahun ;
-                            // $subdata['alias']               = $this->tor_model->get_alias_unit($this->check_session->get_unit());
-
-                            $subdata['kode_unit'] = $kode_unit_subunit ;
-                            $subdata['sumber_dana'] = 'SELAIN-APBN' ;
 
                             $dg = $this->input->get();
 
@@ -789,16 +770,6 @@ Class Kuitansi extends CI_Controller {
                             $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'CAIR');
                             $subdata['daftar_kuitansi_unit']          = $this->kuitansi_model->get_kuitansi_unit($jenis,$kode_unit_subunit,$tahun,'CAIR');
 
-                            $this->load->model('tor_model');
-
-                            $subdata['pppk']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
-                            $subdata['pic_kuitansi']        = $this->tor_model->get_pic_kuitansi($this->check_session->get_unit());
-                            $subdata['tahun']               = $this->cur_tahun ;
-                            // $subdata['alias']               = $this->tor_model->get_alias_unit($this->check_session->get_unit());
-
-                            $subdata['kode_unit'] = $kode_unit_subunit ;
-                            $subdata['sumber_dana'] = 'SELAIN-APBN' ;
-
                             $dg = $this->input->get();
 
                             if(!empty($dg)){
@@ -860,7 +831,7 @@ Class Kuitansi extends CI_Controller {
                     }
 
                     /* check session    */
-                    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4)||($this->check_session->get_level()==17)||($this->check_session->get_level()==11))){
+                    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4)||($this->check_session->get_level()==17))){
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
                             $subdata['kode_unit_subunit']           = $kode_unit_subunit;
                             $subdata['cur_tahun']           = $tahun;
@@ -949,7 +920,6 @@ Class Kuitansi extends CI_Controller {
                 }
                 
                 function get_data_kuitansi(){
-                    $_POST['id'] = 14778;
                     if($this->input->post('id')){
                         $data_kuitansi = $this->kuitansi_model->get_data_kuitansi($this->input->post('id'),$this->cur_tahun);
                         $data_detail_kuintansi = $this->kuitansi_model->get_data_detail_kuitansi($this->input->post('id'),$this->cur_tahun);
@@ -1036,24 +1006,6 @@ Class Kuitansi extends CI_Controller {
                         }
                     }
                 }
-
-
-                function proses_kuitansi_pengembalian(){
-                    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
-                        if($this->input->post()){
-                            // var_dump($data); die;
-                            $data = array(
-                                'aktif' => '0'
-                            );
-                            if($this->kuitansipengembalian_model->proses_kuitansi($data,$this->input->post('id'))){
-                                echo 'sukses';
-                            }else{
-                                echo 'gagal';
-                            }
-                        }
-                    }
-                }
-
 		//tambahan alaik
 		        
         function submit_kuitansi2(){

@@ -1,5 +1,6 @@
 <?php 
 $ci =& get_instance();
+$tahun = gmdate('Y');
  ?>
 <style type="text/css">
 table {
@@ -67,7 +68,8 @@ tbody td, thead th {
   <li role="presentation" class="<?php if(isset($tab7)){ if($tab7==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_nihil'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup_nihil'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_ls'); ?>">LS- 3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab11)){ if($tab11==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_lk'); ?>">LS-K&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->lk ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->lk; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab12)){ if($tab12==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_lnk'); ?>">LS-NK&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ln ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ln; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab10)){ if($tab10==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup_pengembalian'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_pengembalian ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian; ?></span></a></li>
 </ul>
@@ -173,12 +175,16 @@ tbody td, thead th {
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>	
 					<?php if($result->jenis=='TP'){ ?>
-						<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_kbuu/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+						<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>	
+					<?php }elseif($result->jenis=='LK'){ ?>
+						<a href="<?php echo site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+					<?php }elseif($result->jenis=='LN'){ ?>
+						<a href="<?php echo site_url('akuntansi/rsa_lsnk/spm_lsnk_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php }else{ ?>					
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
-							<?php if(isset($tab1) or isset($tab8)){ ?>
+							<?php if(isset($tab1) or isset($tab8) or isset($tab11) or isset($tab12)){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi)."/$jenis_isi"; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 							<?php }else{ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/L3'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
@@ -192,6 +198,7 @@ tbody td, thead th {
 					<td><?php
 							$ci->load->model('akuntansi/Spm_model', 'Spm_model');
 							$result->tgl_kuitansi = $ci->Spm_model->get_tanggal_spm($result->str_nomor_trx_spm,$result->jenis);
+							// echo $result->tgl_kuitansi;
 					 		echo date("d/m/Y", strtotime($result->tgl_kuitansi)); 
 					 ?></td>
 					<td><?php echo $result->no_bukti; ?></td>
@@ -255,7 +262,7 @@ function get_nama_unit($unit){
 
 function get_tabel_by_jenis($jenis)
 {
-	if (in_array($jenis,array('GP','TP'))) {
+	if (in_array($jenis,array('GP','TP','LK','LN'))) {
 		return 'rsa_kuitansi_detail_pajak';
 	}elseif ($jenis == 'L3') {
 		return 'rsa_kuitansi_detail_pajak_lsphk3';
