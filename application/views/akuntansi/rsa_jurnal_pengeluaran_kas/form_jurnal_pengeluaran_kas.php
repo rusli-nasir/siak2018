@@ -220,8 +220,7 @@ if($jenis=='NK'){
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
         <?php if (!in_array($jenis,$array_spm) or $jenis == 'LSPHK3' or $jenis != 'NK'): ?>
           <option value="<?php echo $akun_sal['akun_6'] ?>" selected><?php echo $akun_sal['akun_6']. " - ".$akun_sal['nama'] ?></option>
-        <?php endif ?>
-        <?php if (in_array($jenis,$array_spm) and $jenis != 'LSPHK3' and $jenis != 'NK'): ?>
+        <?php elseif (in_array($jenis,$array_spm) and $jenis != 'LSPHK3' and $jenis != 'NK'): ?>
           <option value="<?php echo $akun_kredit ?>" selected><?php echo $kas_akun_kredit?></option>
         <?php endif ?>
       </select>

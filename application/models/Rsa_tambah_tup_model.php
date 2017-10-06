@@ -66,6 +66,27 @@ class Rsa_tambah_tup_model extends CI_Model {
                 return '';
             }
         }
+
+        function lihat_ket_by_str_trx($str_trx){
+            // $q = $this->db->query("SELECT ket FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
+
+            $query = "SELECT ket "
+                    . "FROM trx_nomor_tambah_tup AS tt1 "
+                    . "JOIN trx_tambah_tup AS t1 ON t1.id_trx_nomor_tambah_tup = tt1.id_trx_nomor_tambah_tup "
+                    . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
+                    . "AND t1.tgl_proses IN ( "
+                        . "SELECT MAX(t2.tgl_proses) FROM trx_tambah_tup AS t2 "
+                        . "WHERE t2.id_trx_nomor_tambah_tup = t1.id_trx_nomor_tambah_tup )" ;
+
+            $q = $this->db->query($query);
+
+//            var_dump($q->num_rows());die;
+            if($q->num_rows() > 0){
+               return $q->row()->ket ;
+            }else{
+                return '';
+            }
+        }
         
         function proses_nomor_spp_tambah_tup($kode_unit,$data){
             
@@ -636,6 +657,22 @@ class Rsa_tambah_tup_model extends CI_Model {
 
             }
 
+            function get_spm_tup_nihil_by_spm_tambah_tup($str_nomor_trx_spm_tambah_tup){
+
+                $query = "SELECT str_nomor_trx_spm_tup FROM trx_tambah_tup_to_nihil WHERE str_nomor_trx_spm_tambah_tup = '{$str_nomor_trx_spm_tambah_tup}' " ;
+
+                // echo $query ; die;
+
+                $q = $this->db->query($query);
+
+                if($q->num_rows() > 0){
+                   return $q->row()->str_nomor_trx_spm_tup ;
+                }else{
+                    return '';
+                } 
+
+            }
+
             function get_unit_under_verifikator($id_user_verifikator){
             $query = "SELECT kode_unit_subunit FROM rsa_verifikator_unit WHERE id_user_verifikator = '{$id_user_verifikator}' " ;
 
@@ -668,7 +705,7 @@ class Rsa_tambah_tup_model extends CI_Model {
 
                             // echo $str_unit ; die ;
 
-                            $query = "SELECT COUNT(posisi) AS jml FROM trx_tambah_tup WHERE posisi = 'SPM-DRAFT-KPA' AND kode_unit_subunit IN ({$str_unit}) AND aktif = '1' " ; 
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_tambah_tup WHERE posisi = 'SPM-DRAFT-KPA' AND SUBSTR(kode_unit_subunit,1,2) IN ({$str_unit}) AND aktif = '1' " ; 
 
                            // echo $query ; die ;
 
@@ -688,6 +725,83 @@ class Rsa_tambah_tup_model extends CI_Model {
                     }
 
         }
+
+        function get_spm_by_spp($str_nomor_trx_spp){
+            
+            $this->db->where('str_nomor_trx_spp',$str_nomor_trx_spp);
+            $q = $this->db->get('trx_spp_spm');
+            
+            if($q->num_rows() > 0){
+                return $q->row()->str_nomor_trx_spm; 
+            }else{
+                return ''; 
+            }
+            
+            
+        }
+        
+        function get_spp_by_spm($str_nomor_trx_spm){
+            
+            $this->db->where('str_nomor_trx_spm',$str_nomor_trx_spm);
+            $q = $this->db->get('trx_spp_spm');
+            
+            if($q->num_rows() > 0){
+                return $q->row()->str_nomor_trx_spp; 
+            }else{
+                return ''; 
+            }
+            
+            
+        }
+
+        function get_aktif_spp($kode_unit_subunit,$tahun){
+            $this->db->where('kode_unit_subunit',$kode_unit_subunit);
+            $this->db->where('tahun',$tahun);
+            $this->db->where('aktif','1');
+            $this->db->where('jenis','SPP');
+            $q = $this->db->get('trx_nomor_tambah_tup');
+            
+            if($q->num_rows() > 0){
+                return $q->row()->str_nomor_trx; 
+            }else{
+                return ''; 
+            }
+        }
+
+        function get_aktif_spm($kode_unit_subunit,$tahun){
+            $this->db->where('kode_unit_subunit',$kode_unit_subunit);
+            $this->db->where('tahun',$tahun);
+            $this->db->where('aktif','1');
+            $this->db->where('jenis','SPM');
+            $q = $this->db->get('trx_nomor_tambah_tup');
+            
+            if($q->num_rows() > 0){
+                return $q->row()->str_nomor_trx; 
+            }else{
+                return ''; 
+            }
+        }
+
+
+        function check_dokumen_tambah_tup_by_str_trx($no_str_trx){
+
+            $query = "SELECT posisi "
+                    . "FROM trx_nomor_tambah_tup AS tt1 "
+                    . "JOIN trx_tambah_tup AS t1 ON t1.id_trx_nomor_tambah_tup = tt1.id_trx_nomor_tambah_tup "
+                    . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
+                    . "AND t1.tgl_proses IN ( "
+                        . "SELECT MAX(t2.tgl_proses) FROM trx_tambah_tup AS t2 "
+                        . "WHERE t2.id_trx_nomor_tambah_tup = t1.id_trx_nomor_tambah_tup )" ;
+
+            $q = $this->db->query($query);
+//            var_dump($q->num_rows());die;
+            if($q->num_rows() > 0){
+               return $q->row()->posisi ;
+            }else{
+                return '';
+            }
+        }
+        
 	
 	
 	

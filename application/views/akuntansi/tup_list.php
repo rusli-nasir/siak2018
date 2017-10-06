@@ -1,3 +1,6 @@
+<?php 
+$tahun = gmdate('Y');
+ ?>
 <style type="text/css">
 table {
         width: 100% !important;
@@ -138,7 +141,8 @@ tbody td, thead th {
 				</tr>
 			</thead>
 			<tbody style="font-size:12pt;">
-				<?php foreach($query->result() as $result){ ?>
+				<?php foreach($query->result() as $result){?>
+
 				<tr>
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>						
@@ -146,7 +150,7 @@ tbody td, thead th {
                         <?php if(isset($tab1)){ ?>
                         <a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }else{ ?>
-                        <a href="<?php echo site_url('akuntansi/rsa_gup/tup/'.$result->kode_unit_subunit.'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1)){ ?>

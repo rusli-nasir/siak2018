@@ -193,7 +193,9 @@ class Jurnal_rsa_model extends CI_Model {
         $array_tampil = array(
                             'NK' => 'LS-PGW',
                             'GP' => 'GUP',
-                            'GUP' => 'GU'
+                            'GUP' => 'GU',
+                            'LK' => 'LS-Kontrak',
+                            'LN' => 'LS-Non Kontrak'
                         );
 
         foreach ($array_tampil as $key => $tampil) {

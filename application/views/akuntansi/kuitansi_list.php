@@ -146,6 +146,81 @@ tbody td, thead th {
 	    	</div>		
 		</form>
 		<?php } ?>
+		<?php if(isset($tab11)){ ?>
+		<form action="<?php echo site_url('akuntansi/kuitansi/index_lk'); ?>" method="post">
+			<div class="input-group">
+	      		<select name="keyword" class="form-control">
+					<option value="">Tampil Semua SPM</option>
+					<?php 
+					foreach($query_spm->result_array() as $result){ 
+					?>
+					<option value="<?php echo $result['str_nomor_trx_spm']; ?>"
+						<?php 
+						if($this->session->userdata('keyword')){
+							if($result['str_nomor_trx_spm']==$this->session->userdata('keyword')){
+								echo 'selected';
+							} 
+						}
+						?>
+						><?php echo $result['str_nomor_trx_spm']; ?></option>
+					<?php } ?>
+				</select>
+	      		<span class="input-group-btn">
+	        		<button class="btn btn-default" type="submit">Filter</button>
+	      		</span>
+	    	</div>		
+		</form>
+		<?php } ?>
+		<?php if(isset($tab12)){ ?>
+		<form action="<?php echo site_url('akuntansi/kuitansi/index_lnk'); ?>" method="post">
+			<div class="input-group">
+	      		<select name="keyword" class="form-control">
+					<option value="">Tampil Semua SPM</option>
+					<?php 
+					foreach($query_spm->result_array() as $result){ 
+					?>
+					<option value="<?php echo $result['str_nomor_trx_spm']; ?>"
+						<?php 
+						if($this->session->userdata('keyword')){
+							if($result['str_nomor_trx_spm']==$this->session->userdata('keyword')){
+								echo 'selected';
+							} 
+						}
+						?>
+						><?php echo $result['str_nomor_trx_spm']; ?></option>
+					<?php } ?>
+				</select>
+	      		<span class="input-group-btn">
+	        		<button class="btn btn-default" type="submit">Filter</button>
+	      		</span>
+	    	</div>		
+		</form>
+		<?php } ?>
+		<?php if(isset($tab8)){ ?>
+		<form action="<?php echo site_url('akuntansi/kuitansi/index_tup_nihil'); ?>" method="post">
+			<div class="input-group">
+	      		<select name="keyword" class="form-control">
+					<option value="">Tampil Semua SPM</option>
+					<?php 
+					foreach($query_spm->result_array() as $result){ 
+					?>
+					<option value="<?php echo $result['str_nomor_trx_spm']; ?>"
+						<?php 
+						if($this->session->userdata('keyword')){
+							if($result['str_nomor_trx_spm']==$this->session->userdata('keyword')){
+								echo 'selected';
+							} 
+						}
+						?>
+						><?php echo $result['str_nomor_trx_spm']; ?></option>
+					<?php } ?>
+				</select>
+	      		<span class="input-group-btn">
+	        		<button class="btn btn-default" type="submit">Filter</button>
+	      		</span>
+	    	</div>		
+		</form>
+		<?php } ?>
 	</div>
 </div>
 <br/>
@@ -180,6 +255,8 @@ tbody td, thead th {
 						<a href="<?php echo site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php }elseif($result->jenis=='LN'){ ?>
 						<a href="<?php echo site_url('akuntansi/rsa_lsnk/spm_lsnk_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+					<?php }elseif($result->jenis=='TUP'){ ?>
+						<a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php }else{ ?>					
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php } ?>

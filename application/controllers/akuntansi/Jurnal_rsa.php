@@ -228,10 +228,10 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
                 if ($jenis == 'LSPHK3') {
                     $akun_debet_akrual = $isian['akun_debet'];
-                    $akun_debet_akrual[0] = 7;
+                    $akun_debet_akrual = $this->Akun_model->get_konversi_akun_5($akun_debet_akrual);
                     $isian['akun_debet_akrual'] = $akun_debet_akrual;
                     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
-                }
+                } 
             }
             else if ($jenis != 'NK'){
 			    $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));

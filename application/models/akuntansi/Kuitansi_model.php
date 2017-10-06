@@ -9,6 +9,21 @@ class Kuitansi_model extends CI_Model {
         $this->db2 = $this->load->database('rba',TRUE);
         $this->db_laporan = $this->load->database('laporan',TRUE);
     }
+
+    public function konversi_jenis_view($asal)
+    {
+        switch ($asal) {
+            case 'LK':
+                    return "LS-Kontrak";
+                break;
+            case 'LN':
+                    return "LS-Non kontrak";
+                break;            
+            default:
+                    return $asal;
+                break;
+        }
+    }
 	
 	function read_kuitansi($limit = null, $start = null, $keyword = null, $kode_unit = null, $jenis = null){
         $added_query = "1 ";

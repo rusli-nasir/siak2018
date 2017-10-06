@@ -142,7 +142,7 @@ $tahun = gmdate('Y');
 							<?php if(isset($tab1)){ ?>
 								<a href="<?php $r=up_get_details($result->no_spm); echo site_url('akuntansi/rsa_gup/up/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab5)){ ?>
-								<a href="<?php $r=tup_get_details($result->no_spm); echo site_url('akuntansi/rsa_gup/tup/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab6) or isset($tab10)){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab11)){ ?>

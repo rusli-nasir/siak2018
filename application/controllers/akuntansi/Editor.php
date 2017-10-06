@@ -17,7 +17,7 @@ class Editor extends MY_Controller {
 		$crud->where("tipe != 'memorial' AND tipe != 'jurnal_umum' AND tipe != 'pajak' AND tipe != 'penerimaan' AND tipe != 'pengembalian'");
 		// $crud->set_theme('datatables');
 
-		$crud->unset_edit();
+		// $crud->unset_edit();
 		$crud->unset_add();
 		$crud->unset_read();
 		$crud->unset_delete();
@@ -33,10 +33,10 @@ class Editor extends MY_Controller {
 
 		$crud->field_type('unit_kerja','dropdown',$array_unit);
 
-		$crud->add_action('Edit', 'ui-icon-pencil', 'akuntansi/jurnal_rsa/edit_kuitansi_jadi','ui-icon-pencil');
+		// $crud->add_action('Edit', 'ui-icon-pencil', 'akuntansi/jurnal_rsa/edit_kuitansi_jadi','ui-icon-pencil');
 
         $output = $crud->render(); 
-        $output->title = 'Pejabat';
+        $output->title = 'Edit Khusus untuk transaksi non multi-akun';
         $output->menu12 = true;
         $temp_data['content'] = $this->load->view('akuntansi/crud/manage',$output,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);   
