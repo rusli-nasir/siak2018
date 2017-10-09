@@ -203,7 +203,7 @@ class Jurnal_rsa extends MY_Controller {
                 $akun_debet_akrual = $this->Akun_model->get_konversi_akun_5($akun_debet_akrual);
                 $isian['akun_debet_akrual'] = $akun_debet_akrual;
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
-                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
 
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
 
@@ -217,7 +217,7 @@ class Jurnal_rsa extends MY_Controller {
                 $akun_debet_akrual = $this->Akun_model->get_konversi_akun_5($akun_debet_akrual);
                 $isian['akun_debet_akrual'] = $akun_debet_akrual;
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
-                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
 
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
 
@@ -232,6 +232,9 @@ class Jurnal_rsa extends MY_Controller {
                     $isian['akun_debet_akrual'] = $akun_debet_akrual;
                     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
                 } 
+                if ($jenis == 'TUP'){
+                    $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');  
+                }
             }
             else if ($jenis != 'NK'){
 			    $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));

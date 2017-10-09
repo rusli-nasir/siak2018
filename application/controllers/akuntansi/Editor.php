@@ -22,6 +22,8 @@ class Editor extends MY_Controller {
 		$crud->unset_read();
 		$crud->unset_delete();
 		$crud->unset_export();
+		$crud->unset_texteditor('uraian','untuk');
+		$crud->unset_fields('id_pajak','id_pengembalian');
 		$crud->unset_print();
 
 		$unit = $this->db2->get('unit')->result_array();

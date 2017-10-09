@@ -10,7 +10,7 @@ if($atribut['cetak']){
 <!DOCTYPE>
 <html>
 	<head>
-		<title>Laporan Aktifitas</title>
+		<title>Laporan Posisi Keuangan</title>
 		<style type="text/css">
 		@page{
 			size:landscape;

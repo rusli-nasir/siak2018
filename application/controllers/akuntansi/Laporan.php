@@ -971,6 +971,9 @@ class Laporan extends MY_Controller {
     }
 
     public function cetak_rekap_jurnal(){
+        while (ob_get_level()) ob_end_flush();
+        ob_implicit_flush(true);
+
         $tipe = $this->input->post('tipe');
         $basis = $this->input->post('basis');
         $unit = $this->input->post('unit');
