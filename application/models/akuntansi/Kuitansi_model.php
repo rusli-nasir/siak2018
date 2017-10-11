@@ -374,6 +374,11 @@ class Kuitansi_model extends CI_Model {
             $filter_unit = '';
         }
 
+        // print_r($this->session->userdata());die();
+        if ($this->session->userdata('kode_user') == 'RM' and $tipe == 'jurnal_umum'){
+            $filter_unit = '';   
+        }
+
         $date_now = gmdate('Y');
 
         if($limit!=null OR $start!=null){
@@ -510,6 +515,52 @@ class Kuitansi_model extends CI_Model {
             unset($data[$key]['jumlah_kredit']);
         }
         return $data;
+    }
+
+    public function get_kuitansi_aset_by_kode_kegiatan($kode_usulan_belanja,$kode_akun_tambah=null)
+    {
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->db->select('id_kuitansi');
+        $this->db->select('jenis');
+        $this->db->select('kode_akun as akun');
+        $this->db->select('str_nomor_trx_spm');
+        $this->db->select('kode_akun_tambah');
+
+        $this->db->join('rsa_detail_belanja_','rsa_detail_belanja_.kode_usulan_belanja = rsa_kuitansi.kode_usulan_belanja');
+
+        if ($kode_akun_tambah != null){
+            $this->db->where('kode_akun_tambah',$kode_akun_tambah);
+        }
+
+
+
+        // $this->db->select('jumlah');
+        $this->db->where("(jenis = 'LN' or jenis = 'LK')");
+        $this->db->where("cair = 1");
+        $this->db->where('rsa_kuitansi.kode_usulan_belanja',$kode_usulan_belanja);
+
+        // echo $this->db->get_compiled_select();die();
+
+        $data = $this->db->get('rsa_kuitansi')->result_array();
+        // print_r($data);die();
+
+        $hasil = array();
+        foreach ($data as $entry) {
+            $jenis = $entry['jenis'];
+            $temp_data = $this->get_kuitansi_transfer($entry['id_kuitansi'],$this->get_tabel_by_jenis($jenis),$this->get_tabel_detail_by_jenis($jenis),$jenis);
+            $temp_data['pajak'] = $this->Pajak_model->get_detail_pajak($entry['id_kuitansi'],$jenis);
+            $temp_data['detail'][] = array(
+                                        'akun' => $temp_data['akun_debet'],
+                                        'jumlah' => $temp_data['jumlah_debet'],
+                                    );
+            $temp_data['no_spm'] = $entry['str_nomor_trx_spm'];
+            $temp_data['tanggal'] = $this->Spm_model->get_tanggal_spm($entry['str_nomor_trx_spm'],$jenis);
+            unset($temp_data['akun_debet']);
+            unset($temp_data['jumlah_debet']);
+            $hasil[] = $temp_data;
+        }
+
+        return $hasil;
     }
 
     public function get_kuitansi_nk($id_spmls)

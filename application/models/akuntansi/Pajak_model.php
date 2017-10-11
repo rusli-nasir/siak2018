@@ -278,6 +278,8 @@ class Pajak_model extends CI_Model {
         $tabel_utama = $this->get_tabel_utama_by_jenis($jenis);
         $tabel_pajak = $this->get_tabel_by_jenis($jenis);
 
+        // print_r($jenis);die();
+
 
         $query = "SELECT tp.jenis_pajak,tp.persen_pajak,SUM(tp.rupiah_pajak) as jumlah FROM $tabel_utama as tu, $tabel_detail as td, $tabel_pajak as tp WHERE tu.id_kuitansi='$id_kuitansi' AND td.id_kuitansi = tu.id_kuitansi AND td.id_kuitansi_detail=tp.id_kuitansi_detail AND tp.rupiah_pajak > 0 GROUP BY tp.jenis_pajak";
 

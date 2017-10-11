@@ -77,6 +77,39 @@ class Jurnal_umum extends MY_Controller {
 
 
         $objWorksheet = $objPHPExcel->getActiveSheet();
+        $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+
+        //Verifikasi tanggal dulu, batal upload kalau tanggal tidak memenuhi regex 2017-XX-XX
+
+        $report_tanggal = array();
+        $awal_tahun = gmdate('Y')."-01-01";
+        $akhir_tahun = gmdate('Y')."-12-31";
+
+        for ($row=11; $row <= $highestRow; $row++) { 
+            if($objWorksheet->getCellByColumnAndRow(5,$row)->getValue()!=null){
+                $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
+                if(substr($tanggal, 0,1)=="'"){
+                    $tanggal=substr($tanggal, 1);              
+                }
+                $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+                if ($tanggal < $awal_tahun or $tanggal > $akhir_tahun){
+                    $temp_report_tanggal = array();
+                    $temp_report_tanggal['uraian'] = $objWorksheet->getCellByColumnAndRow(5,$row)->getValue();
+                    $temp_report_tanggal['tanggal'] = $tanggal;
+                    $report_tanggal[] = $temp_report_tanggal;
+                }
+            }
+        }
+
+        if ($report_tanggal != null){
+            echo "Tanggal entry dibawah tidak sesuai kriteria input : <br/>";
+            foreach ($report_tanggal as $entry) {
+                echo "<hr/>";
+                echo "Uraian : ".$entry['uraian']."<br/>";
+                echo "Tanggal terdeteksi : ".$entry['tanggal']."<br/><hr/>";
+            }
+            die();
+        }
 
         //verifikasi akun dulu, batal upload kalau ada akun yang tidak terdeteksi
 
@@ -175,6 +208,8 @@ class Jurnal_umum extends MY_Controller {
             $array_pajak = array();
             $array_pengembalian = array();
             $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getValue();
+            // $tanggal = $objWorksheet->getCellByColumnAndRow(2,$row)->getOldCalculatedValue();
+            // print_r($tanggal);die();
             //$tanggal = DateTime::createFromFormat('d-m-Y', $tanggal);
             /*if($objWorksheet->getCellByColumnAndRow(2,$row)->getValue()!=null){
                 $arr_tgl = explode('/', $tanggal);
@@ -187,6 +222,7 @@ class Jurnal_umum extends MY_Controller {
             if(substr($tanggal, 0,1)=="'"){
                 $tanggal=substr($tanggal, 1);              
             }
+
             
             $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
             if(substr($tanggal, 0,4)!='2017'){
@@ -338,19 +374,19 @@ class Jurnal_umum extends MY_Controller {
                     }
 
                 }
-            $data[$row]['entry'] = $entry;
-            $data[$row]['relasi'] = $array_relasi;
-            $data[$row]['pajak'] = $array_pajak;
-            $data[$row]['pengembalian'] = $array_pengembalian;
-            // print_r($array_pajak);
-            // echo (count($array_pajak));
-            
-            // echo $start_potongan .'-'.$end_potongan;
+                $data[$row]['entry'] = $entry;
+                $data[$row]['relasi'] = $array_relasi;
+                $data[$row]['pajak'] = $array_pajak;
+                $data[$row]['pengembalian'] = $array_pengembalian;
+                // print_r($array_pajak);
+                // echo (count($array_pajak));
+                
+                // echo $start_potongan .'-'.$end_potongan;
 
-            // print_r($data);die();
+                // print_r($data);die();
 
+            }
         }
-    }
 
         foreach ($data as $entry_data) {
 
@@ -668,7 +704,7 @@ class Jurnal_umum extends MY_Controller {
                     for ($i=0; $i < count($akun['akun_kredit_pengembalian']); $i++) { 
                         $pengembalian['akun'] = $akun['akun_kredit_pengembalian'][$i];
                         $pengembalian['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_pengembalian'][$i]);
-                        $pengembalian['tipe'] = 'debit';
+                        $pengembalian['tipe'] = 'debet';
                         $pengembalian['no_bukti'] = $entry['no_bukti'];
                         $pengembalian['id_kuitansi_jadi'] = $id_kuitansi_pengembalian;
                         $pengembalian['jenis'] = 'kas';
@@ -694,7 +730,7 @@ class Jurnal_umum extends MY_Controller {
                     for ($i=0; $i < count($akun['akun_kredit_pengembalian_akrual']); $i++) { 
                         $pengembalian['akun'] = $akun['akun_kredit_pengembalian_akrual'][$i];
                         $pengembalian['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_pengembalian_akrual'][$i]);
-                        $pengembalian['tipe'] = 'debit';
+                        $pengembalian['tipe'] = 'debet';
                         $pengembalian['no_bukti'] = $entry['no_bukti'];
                         $pengembalian['id_kuitansi_jadi'] = $id_kuitansi_pengembalian;
                         $pengembalian['jenis'] = 'akrual';
@@ -715,7 +751,12 @@ class Jurnal_umum extends MY_Controller {
                         $array_pengembalian[] = $pengembalian;
                     }
                 }
+                // print_r($array_pengembalian);die();
                 $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($array_pengembalian);
+                $updater = array();
+                $updater['id_pengembalian'] = $id_kuitansi_pengembalian;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+                $q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_pengembalian);
             }
 
             $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
@@ -875,6 +916,7 @@ class Jurnal_umum extends MY_Controller {
 
 		if($this->form_validation->run())     
         {   
+            // print_r($this->input->post());die();
             $delete_relasi_lama = $this->db->query("DELETE FROM akuntansi_relasi_kuitansi_akun WHERE id_kuitansi_jadi='".$id_kuitansi_jadi."'");
             
              $entry = $this->input->post();
@@ -895,6 +937,16 @@ class Jurnal_umum extends MY_Controller {
             $entry['jumlah_kredit'] = array_sum($entry['jumlah_akun_kredit_akrual']);
             unset($entry['jumlah_akun_kredit_akrual']);
             unset($entry['jumlah_akun_kredit_kas']);
+
+            unset($entry['akun_kredit_pengembalian']);
+            unset($entry['akun_kredit_pengembalian_akrual']);
+            unset($entry['akun_debet_pengembalian']);
+            unset($entry['akun_debet_pengembalian_akrual']);
+            unset($entry['jumlah_akun_kredit_pengembalian']);
+            unset($entry['jumlah_akun_kredit_pengembalian_akrual']);
+            unset($entry['jumlah_akun_debet_pengembalian']);
+            unset($entry['jumlah_akun_debet_pengembalian_akrual']);
+
             $entry['tipe'] = 'jurnal_umum';
             $entry['flag'] = 3;
             $entry['status'] = 4;
@@ -910,6 +962,8 @@ class Jurnal_umum extends MY_Controller {
             unset($entry['id_pajak']);
             unset($entry['persen_pajak']);
             unset($entry['id_pengembalian']);
+
+            // print_r($entry);die();
 
 
             $akun = $this->input->post();
@@ -929,6 +983,62 @@ class Jurnal_umum extends MY_Controller {
                     $array_pajak[] = $entry_pajak;
                 }
             }
+
+            $entry_pengembalian = array();
+            if ($akun['akun_kredit_pengembalian'][0] != null) {
+                // $id_kuitansi_pengembalian = $this->Pengembalian_model->insert_pengembalian($id_kuitansi_jadi);
+                for ($i=0; $i < count($akun['akun_kredit_pengembalian']); $i++) { 
+
+
+                    $pengembalian['akun'] = $akun['akun_kredit_pengembalian'][$i];
+                    $pengembalian['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_pengembalian'][$i]);
+                    $pengembalian['tipe'] = 'kredit';
+                    $pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $pengembalian['id_kuitansi_jadi'] = $id_kuitansi_pengembalian;
+                    $pengembalian['jenis'] = 'kas';
+
+                    $array_pengembalian[] = $pengembalian;
+                }
+
+                for ($i=0; $i < count($akun['akun_debet_pengembalian']); $i++) { 
+
+
+
+                    $pengembalian['akun'] = $akun['akun_debet_pengembalian'][$i];
+                    $pengembalian['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_pengembalian'][$i]);
+                    $pengembalian['tipe'] = 'debet';
+                    $pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $pengembalian['id_kuitansi_jadi'] = $id_kuitansi_pengembalian;
+                    $pengembalian['jenis'] = 'kas';
+
+                    $array_pengembalian[] = $pengembalian;
+                }
+
+                for ($i=0; $i < count($akun['akun_kredit_pengembalian_akrual']); $i++) { 
+
+                    $pengembalian['akun'] = $akun['akun_kredit_pengembalian_akrual'][$i];
+                    $pengembalian['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_pengembalian_akrual'][$i]);
+                    $pengembalian['tipe'] = 'kredit';
+                    $pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $pengembalian['id_kuitansi_jadi'] = $id_kuitansi_pengembalian;
+                    $pengembalian['jenis'] = 'akrual';
+
+                    $array_pengembalian[] = $pengembalian;
+                }
+
+                for ($i=0; $i < count($akun['akun_kredit_pengembalian_akrual']); $i++) { 
+
+                    $pengembalian['akun'] = $akun['akun_debet_pengembalian_akrual'][$i];
+                    $pengembalian['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_pengembalian_akrual'][$i]);
+                    $pengembalian['tipe'] = 'debet';
+                    $pengembalian['no_bukti'] = $entry['no_bukti'];
+                    $pengembalian['id_kuitansi_jadi'] = $id_kuitansi_pengembalian;
+                    $pengembalian['jenis'] = 'akrual';
+
+                    $array_pengembalian[] = $pengembalian;
+                }
+            }
+
 
             $q1 = $this->Kuitansi_model->edit_kuitansi_jadi($entry, $id_kuitansi_jadi);
 
@@ -1000,6 +1110,25 @@ class Jurnal_umum extends MY_Controller {
 
                 $q6 = $this->Posting_model->posting_kuitansi_full($q4);
             } else {
+                $updater = array();
+                $updater['id_pajak'] = 0;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+            }
+
+            if ($temp_kuitansi['id_pengembalian'] != 0){
+                $this->Pengembalian_model->hapus_pengembalian($temp_kuitansi['id_pengembalian']);
+            }
+
+            if ($array_pengembalian != null) {
+                $updater = array();
+                $q7 = $this->Pengembalian_model->insert_pengembalian_with_array($id_kuitansi_jadi,$array_pengembalian);
+                $updater['id_pengembalian'] = $q7;
+                $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
+
+                $q8 = $this->Posting_model->posting_kuitansi_full($q7);
+
+            }else{
+                $updater = array();
                 $updater['id_pajak'] = 0;
                 $q5 = $this->Kuitansi_model->edit_kuitansi_jadi($updater,$id_kuitansi_jadi);
             }

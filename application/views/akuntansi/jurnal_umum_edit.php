@@ -202,14 +202,14 @@ $(document).ready(function(){
   //Pengembalian
   //pengembalian kas kredit
   $.ajax({
-    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/debit/kas',
+    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/kredit/kas',
     data:{},
     success:function(data){
       if(data['hasil'][0]['akun']==""){
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
       }
       $.each(data['hasil'], function(index, val){
         var template = $("#template_akun_kas").clone();
@@ -238,22 +238,22 @@ $(document).ready(function(){
       });
     },
     error: function (request, status, error) {
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
     }
   })
 //pengembalian kas debet
   $.ajax({
-    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/kredit/kas',
+    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/debet/kas',
     data:{},
     success:function(data){
       if(data['hasil'][0]['akun']==""){
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
       }
       $.each(data['hasil'], function(index, val){
         var template = $("#template_akun_kas").clone();
@@ -282,25 +282,25 @@ $(document).ready(function(){
       });
     },
     error: function (request, status, error) {
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
     }
   })
   //pengembalian akrual kredit
   $.ajax({
-    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/debit/akrual',
+    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/kredit/akrual',
     data:{},
     success:function(data){
       if(data['hasil'][0]['akun']==""){
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
       }
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_kas").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_pengembalian_akrual').append(template);
@@ -326,25 +326,25 @@ $(document).ready(function(){
       });
     },
     error: function (request, status, error) {
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
     }
   })
 //pengembalian akrual debet
   $.ajax({
-    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/kredit/akrual',
+    url:host+'akuntansi/jurnal_umum/get_kas_debet/'+id_pengembalian+'/debet/akrual',
     data:{},
     success:function(data){
       if(data['hasil'][0]['akun']==""){
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
       }
       $.each(data['hasil'], function(index, val){
-        var template = $("#template_akun_kas").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_pengembalian_akrual').append(template);
@@ -370,10 +370,10 @@ $(document).ready(function(){
       });
     },
     error: function (request, status, error) {
-        $('#group-kas').attr('style', 'display:none');
-        $('#group-akrual').attr('class', 'col-md-12');
-        no_kas = true;
-        $("#no-kas").prop('checked', true);
+        // $('#group-kas').attr('style', 'display:none');
+        // $('#group-akrual').attr('class', 'col-md-12');
+        // no_kas = true;
+        // $("#no-kas").prop('checked', true);
     }
   })
 })
@@ -442,6 +442,7 @@ $(document).ready(function(){
       <option <?php if ($jenis == 'GP'): ?> selected <?php endif ?> value="GP" >GUP</option>
       <option <?php if ($jenis == 'LS-Gaji'): ?> selected <?php endif ?> value="LS-Gaji">LS-Gaji</option>
       <option <?php if ($jenis == 'TUP'): ?> selected <?php endif ?> value="TUP">TUP</option>
+      <option <?php if ($jenis == 'jurnal_umum'): ?> selected <?php endif ?> value="jurnal_umum">Jurnal Umum</option>
     </select>
   </div>
     
@@ -824,17 +825,21 @@ $(document).ready(function(){
 //
 //  var $select2 = $('.akun_kredit_akrual').selectize();  // This initializes the selectize control
 
-var $select1 = $('.akun_debet_pengembalian').selectize();  // This initializes the selectize control
-  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  var $select2 = $('.akun_kredit_pengembalian').selectize();  // This initializes the selectize control
-  var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  var $select1 = $('.akun_debet_pengembalian_akrual').selectize();  // This initializes the selectize control
-  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  // var $select1 = $('.akun_debet_pengembalian').selectize();  // This initializes the selectize control
+  // var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  var $select2 = $('.akun_kredit_pengembalian_akrual').selectize();  // This initializes the selectize control
-  var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
+  // var $select2 = $('.akun_kredit_pengembalian').selectize();  // This initializes the selectize control
+  // var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  // var $select1 = $('.akun_debet_pengembalian_akrual').selectize();  // This initializes the selectize control
+  // var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  // var $select2 = $('.akun_kredit_pengembalian_akrual').selectize();  // This initializes the selectize control
+  // var selectize2 = $select2.selectize; // This stores the selectize object to a variable (with name 'selectize')
+
+  // alert('hai');
   
 
 
@@ -854,6 +859,8 @@ var $select1 = $('.akun_debet_pengembalian').selectize();  // This initializes t
         $(inputan).number(true,2);
 
   });
+
+
     
   $('#add-akunDebet_kas').click(function () {
         var template = $("#template_akun_kas").clone();
@@ -908,7 +915,7 @@ var $select1 = $('.akun_debet_pengembalian').selectize();  // This initializes t
         template.removeAttr("style");
         $('#group-akunKredit_pengembalian').append(template);
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_pengembalian');
-        template.find('select').attr('name', 'akun_kredit_kas[]');
+        template.find('select').attr('name', 'akun_kredit_pengembalian[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_pengembalian');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_pengembalian[]');
         template.find('select').selectize();
@@ -923,7 +930,7 @@ var $select1 = $('.akun_debet_pengembalian').selectize();  // This initializes t
         template.removeAttr("style");
         $('#group-akunDebet_pengembalian').append(template);
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_pengembalian');
-        template.find('select').attr('name', 'akun_debet_kas[]');
+        template.find('select').attr('name', 'akun_debet_pengembalian[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_pengembalian');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_pengembalian[]');
         template.find('select').selectize();
@@ -933,12 +940,12 @@ var $select1 = $('.akun_debet_pengembalian').selectize();  // This initializes t
   });
 
   $('#add-akunKredit_pengembalian_akrual').click(function () {
-        var template = $("#template_akun_kas").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunKredit_pengembalian_akrual').append(template);
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_kredit_pengembalian_akrual');
-        template.find('select').attr('name', 'akun_kredit_kas[]');
+        template.find('select').attr('name', 'akun_kredit_pengembalian_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_kredit_pengembalian_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_kredit_pengembalian_akrual[]');
         template.find('select').selectize();
@@ -948,12 +955,12 @@ var $select1 = $('.akun_debet_pengembalian').selectize();  // This initializes t
   });
     
   $('#add-akunDebet_pengembalian_akrual').click(function () {
-        var template = $("#template_akun_kas").clone();
+        var template = $("#template_akun_akrual").clone();
         template.removeAttr("id");
         template.removeAttr("style");
         $('#group-akunDebet_pengembalian_akrual').append(template);
         template.find('select').attr('class', template.find('select').attr('class') + ' akun_debet_pengembalian_akrual');
-        template.find('select').attr('name', 'akun_debet_kas[]');
+        template.find('select').attr('name', 'akun_debet_pengembalian_akrual[]');
         template.find('.input-md').attr('class', template.find('.input-md').attr('class') + ' jumlah_akun_debet_pengembalian_akrual');
         template.find('.input-md').attr('name', 'jumlah_akun_debet_pengembalian_akrual[]');
         template.find('select').selectize();

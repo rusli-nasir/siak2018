@@ -232,7 +232,7 @@ class Jurnal_rsa extends MY_Controller {
                     $isian['akun_debet_akrual'] = $akun_debet_akrual;
                     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
                 } 
-                if ($jenis == 'TUP'){
+                if ($jenis == 'TUP' or $jenis == 'GUP'){
                     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');  
                 }
             }

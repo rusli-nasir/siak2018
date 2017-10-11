@@ -463,61 +463,122 @@ class Penerimaan extends MY_Controller {
 	{
 		$this->load->library('form_validation');
 
-		$this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
-		$this->form_validation->set_rules('akun_kredit_akrual','Akun kredit (Akrual)','required');
-		$this->form_validation->set_rules('akun_kredit','Akun kredit (Kas)','required');
-		$this->form_validation->set_rules('tanggal','Tanggal','required');
-		// $this->form_validation->set_rules('unit_kerja','unit_kerja','required');
-		$this->form_validation->set_rules('uraian','uraian','required');
-		$this->form_validation->set_rules('kas_akun_debet','Akun debet (kas)','required');
-		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (akrual)','required');
-		$this->form_validation->set_rules('akun_debet_akrual','Akun debet (kas)','required');
-		$this->form_validation->set_rules('jumlah_akun_debet','Jumlah Akun Debet','required');
-		$this->form_validation->set_rules('jumlah_akun_kredit','Jumlah Akun Kredit','required');
+        $this->form_validation->set_rules('jenis_pembatasan_dana','Jenis Pembatasan Dana','required');
+        $this->form_validation->set_rules('tanggal','Tanggal','required');
+        $this->form_validation->set_rules('uraian','uraian','required');
 
 		if($this->form_validation->run())     
         {   
+            $temp_kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
             $entry = $this->input->post();
+            // print_r($entry);die();
+            $akun = $entry;
+            $relas = array();
+
+            $delete_relasi_lama = $this->db->query("DELETE FROM akuntansi_relasi_kuitansi_akun WHERE id_kuitansi_jadi='".$id_kuitansi_jadi."'");
+
             unset($entry['simpan']);
+            unset($entry['akun_debet_kas']);
+            unset($entry['jumlah_akun_debet_kas']);
+            unset($entry['akun_kredit_kas']);
+            unset($entry['jumlah_akun_kredit_kas']);
+            unset($entry['akun_debet_akrual']);
+            unset($entry['jumlah_akun_debet_akrual']);
+            unset($entry['akun_kredit_akrual']);
+            unset($entry['jumlah_akun_kredit_akrual']);
+
+            $entry['no_bukti'] = $temp_kuitansi['no_bukti'];
             $entry['id_kuitansi'] = null;
             $entry['no_spm'] = null;
-            $entry['jenis'] = null;
+            $entry['jenis'] = 'penerimaan';
             $entry['kode_kegiatan'] = null;
-            $entry['akun_debet'] = $entry['kas_akun_debet'];
-            unset($entry['kas_akun_debet']);
-            $entry['jumlah_debet'] = $this->normal_number($entry['jumlah_akun_debet']);
-            unset($entry['jumlah_akun_debet']);
-            $entry['jumlah_kredit'] = $this->normal_number($entry['jumlah_akun_kredit']);
-            unset($entry['jumlah_akun_kredit']);
             $entry['tipe'] = 'penerimaan';
+            $entry['flag'] =3;
+            $entry['status'] = 4;
             $entry['unit_kerja'] = 9999;
+            $date_penerimaan = date('Y-m-d H:i:s');
+            $entry['tanggal_posting'] = $date_penerimaan;
+            $entry['tanggal_verifikasi'] = $date_penerimaan;
+            $entry['tanggal_jurnal'] = $date_penerimaan;
 
-            
-            if ($mode == 'revisi'){
-                $riwayat = array();
-                $kuitansi = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
-                $riwayat['flag'] = $kuitansi['flag'];
-                $riwayat['status'] = 5;
-                $riwayat['id_kuitansi_jadi'] = $id_kuitansi_jadi;
-                $riwayat['komentar'] ='';
+            $q1 = $this->Kuitansi_model->edit_kuitansi_jadi($entry, $id_kuitansi_jadi);
 
-                $entry['status'] = 5;
-                $this->Riwayat_model->add_riwayat($riwayat);
 
+            // $id_kuitansi_jadi = $q1;
+
+            for ($i=0; $i < count($akun['akun_debet_akrual']); $i++) { 
+                if ($akun['jumlah_akun_debet_akrual'][$i] != null){
+                    $relasi['akun'] = $akun['akun_debet_akrual'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_akrual'][$i]);
+                    $relasi['tipe'] = 'debet';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'akrual';
+
+                    $entry_relasi[] = $relasi;
+                }
             }
 
-            $q2 = $this->Kuitansi_model->update_kuitansi_jadi($id_kuitansi_jadi,$entry);
+            for ($i=0; $i < count($akun['akun_kredit_akrual']); $i++) { 
+                if ($akun['jumlah_akun_kredit_akrual'][$i] != null){
+                    $relasi['akun'] = $akun['akun_kredit_akrual'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_akrual'][$i]);
+                    $relasi['tipe'] = 'kredit';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'akrual';
 
-            $q2 = $q2 and $this->Posting_model->hapus_posting_full($id_kuitansi_jadi);
+                    $entry_relasi[] = $relasi;
+                }
+            }
 
-            $q2 = $q2 and $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+            for ($i=0; $i < count($akun['akun_debet_kas']); $i++) { 
+                if ($akun['jumlah_akun_debet_kas'][$i]){
+                    $relasi['akun'] = $akun['akun_debet_kas'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_debet_kas'][$i]);
+                    $relasi['tipe'] = 'debet';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
 
-            if ($q2)
-                $this->session->set_flashdata('success','Berhasil menyimpan !');
-            else
-                $this->session->set_flashdata('warning','Gagal menyimpan !');
+                    $entry_relasi[] = $relasi;
+                }
+            }
+
+            for ($i=0; $i < count($akun['akun_kredit_kas']); $i++) { 
+                if ($akun['jumlah_akun_kredit_kas'][$i]){
+                    $relasi['akun'] = $akun['akun_kredit_kas'][$i];
+                    $relasi['jumlah'] = $this->normal_number($akun['jumlah_akun_kredit_kas'][$i]);
+                    $relasi['tipe'] = 'kredit';
+                    $relasi['no_bukti'] = $entry['no_bukti'];
+                    $relasi['id_kuitansi_jadi'] = $id_kuitansi_jadi;
+                    $relasi['jenis'] = 'kas';
+
+                    $entry_relasi[] = $relasi;
+                }
+            }
+// 
+            // print_r($entry);
+            // print_r($entry_relasi);
+            // die();
+
+            $q2 = $this->Relasi_kuitansi_akun_model->insert_relasi_kuitansi_akun($entry_relasi);
+
+            $this->Posting_model->hapus_posting_full($id_kuitansi_jadi);
+            
+            $q3 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
+
+            $riwayat = array();
+            $riwayat['id_kuitansi_jadi'] = $q1;
+            $riwayat['status'] = 4;
+            $riwayat['flag'] = 3;
+
+            $this->Riwayat_model->add_riwayat($riwayat);
 
             redirect('akuntansi/penerimaan');
+
+
+
 
         } else {
         	$this->data = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);

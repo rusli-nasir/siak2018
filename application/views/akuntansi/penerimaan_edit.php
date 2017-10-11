@@ -252,6 +252,7 @@ var host = "<?=site_url('/')?>";
         <div class="form-group" style="display:none"> 
           <div class="col-md-5">
             <select name="akun_debet_kas[]" class="form-control akun_debet_kas">
+                <option value="">Pilih Akun</option>
                 <option value="911101">911101 - SAL</option>
                 <?php foreach ($akun_kas_akrual as $akun) {
                   ?>
@@ -334,7 +335,7 @@ var host = "<?=site_url('/')?>";
           </div>
 
           <div class="col-md-6">
-          <input name="jumlah_akun_debet_akrual[]" type="text" class="form-control input-md jumlah_akun_debet_akrual" required="">
+          <input name="jumlah_akun_debet_akrual[]" type="text" class="form-control input-md jumlah_akun_debet_akrual">
           </div>
 
         </div>
@@ -368,7 +369,7 @@ var host = "<?=site_url('/')?>";
           </div>
 
           <div class="col-md-6">
-            <input name="jumlah_akun_kredit_akrual[]" type="text" class="form-control input-md jumlah_akun_kredit_akrual" required="">
+            <input name="jumlah_akun_kredit_akrual[]" type="text" class="form-control input-md jumlah_akun_kredit_akrual" >
           </div>
 
         </div>
@@ -398,6 +399,7 @@ var host = "<?=site_url('/')?>";
 <div class="form-group" id="template_akun_kas_debet" style="display:none;"> 
   <div class="col-md-5">
     <select class="form-control">
+        <option value="">Pilih Akun</option>
         <option value="911101">911101 - SAL</option>
         <?php foreach ($akun_kas_akrual as $akun) {
           ?>

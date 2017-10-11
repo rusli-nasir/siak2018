@@ -66,8 +66,9 @@ $(document).ready(function(){
   <select id="jenis" name="jenis" class="form-control" required="">
       <option value="">Pilih Jenis</option>
       <option value="GP" >GUP</option>
-      <option value="LS-Gaji" selected>LS-Gaji</option>
+      <option value="LS-Gaji" >LS-Gaji</option>
       <option value="TUP">TUP</option>
+      <option value="jurnal_umum" selected>Jurnal Umum</option>
     </select>
   </div>
     

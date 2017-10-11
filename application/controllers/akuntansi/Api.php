@@ -31,5 +31,23 @@ class Api extends REST_Controller {
 
     }
 
+    public function kuitansi_aset_get()
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        $kode_kegiatan = $this->get('kode_kegiatan');
+        $kode_akun_tambah = $this->get('kode_akun_tambah');
+        $data = $this->Kuitansi_model->get_kuitansi_aset_by_kode_kegiatan($kode_kegiatan,$kode_akun_tambah);
+
+        if ($data != null){
+            $this->set_response($data,REST_Controller::HTTP_OK);
+        }else {
+            $this->set_response([
+                'status' => FALSE,
+                'message' => 'Kuitansi tidak ditemukan'
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
 	
 }

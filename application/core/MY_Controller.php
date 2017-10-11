@@ -15,6 +15,7 @@ class MY_Controller extends CI_Controller{
 	}
 
 	public function cek_session_in(){
+		// print_r($this->session->userdata());die();
 		if($this->session->userdata('id')==null){
 			redirect(site_url('akuntansi/login/index'));
 		}

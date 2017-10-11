@@ -30,7 +30,7 @@ class rsa_gup extends MY_Controller{
         }
     }
     
-    function jurnal($id_kw){
+    function jurnal($id_kw = null){
         $this->data['id_kw'] = $id_kw;
         $no_spm = urldecode($this->input->get('spm'));
         // echo $no_spm;die();
