@@ -524,7 +524,7 @@ class Kuitansi_model extends CI_Model {
         $this->db->select('jenis');
         $this->db->select('kode_akun as akun');
         $this->db->select('str_nomor_trx_spm');
-        $this->db->select('kode_akun_tambah');
+        $this->db->select('rsa_detail_belanja_.kode_akun_tambah');
 
         $this->db->join('rsa_detail_belanja_','rsa_detail_belanja_.kode_usulan_belanja = rsa_kuitansi.kode_usulan_belanja');
 
@@ -548,13 +548,14 @@ class Kuitansi_model extends CI_Model {
         foreach ($data as $entry) {
             $jenis = $entry['jenis'];
             $temp_data = $this->get_kuitansi_transfer($entry['id_kuitansi'],$this->get_tabel_by_jenis($jenis),$this->get_tabel_detail_by_jenis($jenis),$jenis);
+            $temp_data['no_spm'] = $entry['str_nomor_trx_spm'];
+            $temp_data['kode_akun_tambah'] = $entry['kode_akun_tambah'];
+            $temp_data['tanggal'] = $this->Spm_model->get_tanggal_spm($entry['str_nomor_trx_spm'],$jenis);
             $temp_data['pajak'] = $this->Pajak_model->get_detail_pajak($entry['id_kuitansi'],$jenis);
             $temp_data['detail'][] = array(
                                         'akun' => $temp_data['akun_debet'],
                                         'jumlah' => $temp_data['jumlah_debet'],
                                     );
-            $temp_data['no_spm'] = $entry['str_nomor_trx_spm'];
-            $temp_data['tanggal'] = $this->Spm_model->get_tanggal_spm($entry['str_nomor_trx_spm'],$jenis);
             unset($temp_data['akun_debet']);
             unset($temp_data['jumlah_debet']);
             $hasil[] = $temp_data;
