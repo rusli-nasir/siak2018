@@ -32,7 +32,7 @@
 		<form class="form-horizontal" action="<?php echo site_url('akuntansi/laporan/rekap_spm'); ?>" method="post">
 			<div class="form-group">
 			    <div class="col-md-5">
-			    	<select id="unit_list" name="unit" class="form-control" required="">
+			    	<select id="unit_list" name="unit" class="form-control" required="" <?php if (in_array($this->session->userdata('level'),$array_unit)): ?> disabled <?php endif ?>>
 		              <option value="all" selected=""> Semua</option>
 			            <?php foreach($query_unit->result() as $unit): ?>
 			              <option value="<?php echo $unit->kode_unit ?>" <?php if(isset($kode_unit)){ if($kode_unit==$unit->kode_unit) echo 'selected'; } ?>><?= $unit->alias." - ".$unit->nama_unit ?></option>
@@ -72,6 +72,7 @@
 		<table class="table">
 			<thead>
 				<tr>
+					<th></th>
 					<th>No</th>
 					<th>Jenis</th>
 					<th>Tanggal</th>
@@ -89,6 +90,13 @@
 					}else{
 						echo '<tr>';
 					}?>			
+					<td>
+						<?php if ($result->flag_proses_akuntansi==1): ?>
+							<span class="glyphicon glyphicon-ok text-success"></span>
+						<?php else: ?>
+							<span class="glyphicon glyphicon-remove text-danger"></span>
+						<?php endif ?>
+					</td>
 					<td><?php echo $no; ?>.</td>
 					<td>UP</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
@@ -103,7 +111,14 @@
 						echo '<tr style="background-color:#DAEEF3">';
 					}else{
 						echo '<tr>';
-					}?>			
+					}?>	
+					<td>
+						<?php if ($result->flag_proses_akuntansi==1): ?>
+							<span class="glyphicon glyphicon-ok text-success"></span>
+						<?php else: ?>
+							<span class="glyphicon glyphicon-remove text-danger"></span>
+						<?php endif ?>
+					</td>
 					<td><?php echo $no; ?>.</td>
 					<td>GU</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
@@ -118,7 +133,14 @@
 						echo '<tr style="background-color:#DAEEF3">';
 					}else{
 						echo '<tr>';
-					}?>			
+					}?>	
+					<td>
+						<?php if ($result->flag_proses_akuntansi==1): ?>
+							<span class="glyphicon glyphicon-ok text-success"></span>
+						<?php else: ?>
+							<span class="glyphicon glyphicon-remove text-danger"></span>
+						<?php endif ?>
+					</td>		
 					<td><?php echo $no; ?>.</td>
 					<td>PUP</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
@@ -134,6 +156,13 @@
 					}else{
 						echo '<tr>';
 					}?>			
+					<td>
+						<?php if ($result->flag_proses_akuntansi==1): ?>
+							<span class="glyphicon glyphicon-ok text-success"></span>
+						<?php else: ?>
+							<span class="glyphicon glyphicon-remove text-danger"></span>
+						<?php endif ?>
+					</td>
 					<td><?php echo $no; ?>.</td>
 					<td>TUP</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
@@ -164,6 +193,13 @@
 					}else{
 						echo '<tr>';
 					}?>			
+					<td>
+						<?php if ($result->flag_proses_akuntansi==1): ?>
+							<span class="glyphicon glyphicon-ok text-success"></span>
+						<?php else: ?>
+							<span class="glyphicon glyphicon-remove text-danger"></span>
+						<?php endif ?>
+					</td>
 					<td><?php echo $no; ?>.</td>
 					<td>LSPG</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tanggal)); ?></td>

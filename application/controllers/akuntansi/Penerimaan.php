@@ -28,6 +28,7 @@ class Penerimaan extends MY_Controller {
 
     public function do_upload($alert = null,$notice = null)
     {
+        // die('aaaa');
         
         $config['upload_path'] = './assets/akuntansi/upload';
         $config['allowed_types'] = 'xlsx|xls';
@@ -53,6 +54,7 @@ class Penerimaan extends MY_Controller {
 
     public function import_penerimaan_backend($file)
     {
+        // die('aaa');
         
         $inputFileType = PHPExcel_IOFactory::identify($file);
 
@@ -63,14 +65,21 @@ class Penerimaan extends MY_Controller {
         $sal_penerimaan = $this->Akun_model->get_kode_sal_penerimaan();
         $waktu_penerimaan = date('Y-m-d H:i:s');
 
+        $awal_tahun = gmdate('Y')."-01-01";
+        $akhir_tahun = gmdate('Y')."-12-31";
+
         $i = 0;
 
         $data = array();
         $array_akun = array();
+        $report_tanggal = array();
 
         $start_akun = $end_akun = 4;
         while ($objPHPExcel->setActiveSheetIndex($i)){
             $objWorksheet = $objPHPExcel->getActiveSheet();
+            $title = $objWorksheet->getTitle();
+
+
 
             $array_akun[] = $objWorksheet->getTitle();
             $val = $objWorksheet->getCellByColumnAndRow($end_akun,1)->getValue();
@@ -78,6 +87,25 @@ class Penerimaan extends MY_Controller {
                 $array_akun[] = $val;
                 $end_akun++;
                 $val = $objWorksheet->getCellByColumnAndRow($end_akun,1)->getValue();
+            }
+
+            $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+            echo $highestRow." ";
+            for ($iter_tgl=2; $iter_tgl <= $highestRow ; $iter_tgl++) { 
+                // $tanggal = $objWorksheet->getCellByColumnAndRow(1,$iter_tgl)->getValue();
+                $tanggal = $this->tanggal_excel_normalisasi($objWorksheet->getCellByColumnAndRow(1,$iter_tgl)->getValue());
+                if(substr($tanggal, 0, 1)=='-'){
+                    $tanggal = $objWorksheet->getCellByColumnAndRow(1,$iter_tgl)->getCalculatedValue();
+                    $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+                }
+                if ($tanggal < $awal_tahun or $tanggal > $akhir_tahun){
+                    $temp_tanggal = array();
+                    $temp_tanggal['nilai'] = $tanggal;
+                    $temp_tanggal['uraian'] = $objWorksheet->getCellByColumnAndRow(2,$iter_tgl)->getValue();
+                    $temp_tanggal['no'] = $objWorksheet->getCellByColumnAndRow(0,$iter_tgl)->getValue();
+                    $temp_tanggal['judul'] = $title;
+                    $report_tanggal[] = $temp_tanggal;
+                }
             }
 
             if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
@@ -92,7 +120,21 @@ class Penerimaan extends MY_Controller {
                 $array_non_akun[] = $entry;
             }
         }
+
+        if ($report_tanggal != null){
+            echo "Terdapat error pada notasi tanggal / format dokumen<br/>";
+            foreach ($report_tanggal as $entry_tanggal) {
+                extract($entry_tanggal,EXTR_PREFIX_ALL,'et');
+                echo "tanggal : $et_nilai | uraian : $et_uraian | sheet excel : $et_judul | no entry : $et_no <br/>";
+            }
+            echo "<a href='".$_SERVER['HTTP_REFERER']."''>kembali</a>";
+            unlink($file);
+            die();
+
+        }
         // print_r($array_akun);
+        // print_r($report_tanggal);die();
+
 
         if (count($array_non_akun) > 0) {
             echo "Akun di bawah ini tidak terdeteksi : <br/>";
@@ -100,6 +142,7 @@ class Penerimaan extends MY_Controller {
                 echo "$entry<br/>";
             }
             echo "<a href='".$_SERVER['HTTP_REFERER']."''>kembali</a>";
+            unlink($file);
             die();
         }
 
@@ -239,6 +282,7 @@ class Penerimaan extends MY_Controller {
             if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
 
         }
+        // print_r($data);die();
 
         foreach ($data as $entry_data) {
 
@@ -257,6 +301,8 @@ class Penerimaan extends MY_Controller {
             $q6 = $this->Posting_model->posting_kuitansi_full($id_kuitansi_jadi);
 
         }
+
+        unlink($file);
 
         if ($id_kuitansi_jadi) {
             redirect('akuntansi/penerimaan');
@@ -630,7 +676,11 @@ class Penerimaan extends MY_Controller {
 
     public function tanggal_excel_normalisasi($tanggal){
         $arr_tgl = explode('/', $tanggal);
-        $tanggal_normal = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+        if (!isset($arr_tgl[2])){
+            $tanggal_normal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
+        }else{
+            $tanggal_normal = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+        }
         return $tanggal_normal;
     }
 }

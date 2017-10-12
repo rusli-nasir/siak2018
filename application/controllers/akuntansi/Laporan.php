@@ -3064,6 +3064,11 @@ class Laporan extends MY_Controller {
     }
 
     public function rekap_spm($cetak = null){
+        $array_unit = array(1,2,6);
+
+        if (in_array($this->session->userdata('level'),$array_unit)){
+            $_POST['unit'] = $this->session->userdata('kode_unit');
+        }
         if($this->input->post('unit')==null or $this->input->post('unit')=='all'){
             $filter_unit_gu = '';
             $filter_unit_up = '';
@@ -3122,7 +3127,8 @@ class Laporan extends MY_Controller {
             $filter_unit_tup $filter_periode");
 
         //ls3
-        $this->data['ls3'] = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1
+        $this->data['ls3'] = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1 
+            AND FALSE
             $filter_unit_lsphk3 $filter_periode");
 
         //lspg
@@ -3133,6 +3139,7 @@ class Laporan extends MY_Controller {
 
         $this->db2 = $this->load->database('rba', true);
         $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
+        $this->data['array_unit'] = $array_unit;
 
         if($cetak==null){
             $temp_data['content'] = $this->load->view('akuntansi/rekap_spm',$this->data,true);
