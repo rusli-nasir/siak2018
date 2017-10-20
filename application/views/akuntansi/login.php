@@ -9,6 +9,13 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/datepicker3.css" rel="stylesheet">
 <link href="<?php echo base_url();?>/assets/akuntansi/css/styles.css" rel="stylesheet">
 <link href="<?php echo base_url();?>/assets/akuntansi/css/my_style.css" rel="stylesheet">
+<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
+
+<style type="text/css">
+	body {
+	  zoom: 120%;
+	}
+</style>
 
 <!--[if lt IE 9]>
 <script src="js/html5shiv.js"></script>
@@ -22,11 +29,11 @@
 		<div class="row">
 			<center>
 				<img src="<?php echo base_url('assets/akuntansi/assets/images/logo_undip.png'); ?>"><br/>
-				<div style="color:#0665A2;font-size:18pt;font-weight:bold;">
-					PROGRAM AKUNTANSI
+				<div style="color:#0665A2;font-size:24pt;font-weight:bold;">
+					Sistem Akuntansi (SiAk)
 				</div>
-				<div style="font-size:18pt;margin-top:-5px;font-family:calibri;color:#4A4A4A">
-					Universitas Diponegoro Semarang
+				<div style="font-size:20pt;margin-top:-5px;font-family:calibri;color:#4A4A4A">
+					Universitas Diponegoro 
 				</div>
 			</center>
 		</div>
@@ -59,8 +66,34 @@
 		</div><!-- /.row -->
 	</div>	
 	<div style="font-size:8pt;color:#1c1c1c;margin-top:20px;font-weight:bold;" align="center">
-		&copy; 2017 Universitas Diponegoro Semarang
+		&copy; 2017 Universitas Diponegoro 
 	</div>
+
+	
+	<?php if ($is_demo): ?>
+		<div id="myModal" class="modal fade">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title text-danger">PERHATIAN</h4>
+		            </div>
+		            <div class="modal-body">
+		                <p class="text-danger"><strong>Sistem di PAK ini hanya untuk keperluan demo dan testing, untuk sistem yang benar dapat diakses di <a href="http://rsa.apps.undip.ac.id/index.php/akuntansi/login"> SINI </a></strong></p>
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#myModal").modal('show');
+			});
+		</script>
+	<?php endif ?>
 	
 		
 

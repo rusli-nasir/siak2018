@@ -235,6 +235,46 @@ class Akun_model extends CI_Model {
 		return $data;
 	}
 
+
+    public function get_all_akun_biaya()
+    {
+        $hasil = $this->db2->get('ref_akun')->result_array();
+
+        $data = array();
+        $temp_data = array();
+
+        $temp_akun  = array();
+        $temp_nama = array();
+        $temp_regex = array();
+
+        foreach ($hasil as $entry) {
+        	$temp_regex = array();
+        	$temp_akun = array();
+        	$temp_kode = array();
+            $temp_akun['kode_akun'] = $entry['kode_akun'];
+            $temp_akun['kode_akun_sub']  = $entry['kode_akun_sub'];
+            $temp_nama['nama_akun'] = $entry['nama_akun'];
+            $temp_nama['nama_akun_sub'] = $entry['nama_akun_sub'];
+            $regex = $this->db2->distinct()->select('kode_subkomponen_input')->get_where('ket_subkomponen_input_',array('jenis_biaya' => $temp_nama['nama_akun'],'jenis_komponen' => $temp_nama['nama_akun_sub']));
+            while ($ea_regex = $regex->unbuffered_row()) {
+                $string_akun = substr($ea_regex->kode_subkomponen_input, 0, 5);
+                $string_kode = substr($ea_regex->kode_subkomponen_input, 5);
+                $temp_regex[] = '^\\d{6}\\'.$string_kode.'\\d{2}'.$string_akun.'\\$';
+                // $temp_akun[] = $string_akun;
+                // $temp_kode[] = $string_kode;
+
+                // $temp_regex[] = $string_kode.$string_akun;
+            }
+            $temp_data['kode'] = $temp_akun;
+            $temp_data['nama'] = $temp_nama;
+            $temp_data['regex'] = $temp_regex;
+            // $temp_data['string_kode'] = $temp_kode;
+            // $temp_data['string_akun'] = $temp_akun;
+            $data[]=$temp_data;
+        }
+        return $data;
+    }
+
 	public function get_akun_penerimaan()
     {
         $this->db->not_like('nama', 'Operasional');

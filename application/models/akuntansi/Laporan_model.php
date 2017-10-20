@@ -266,7 +266,7 @@ class Laporan_model extends CI_Model {
         return $data;
     }
 
-    public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null)
+    public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null,$sumber = null)
     {
         if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
             $mode = 'saldo';
@@ -274,6 +274,49 @@ class Laporan_model extends CI_Model {
             $mode = null;
         }
         $array_tipe  = array('debet','kredit');
+
+        $placer = 'akun';
+        if ($sumber == 'biaya') {
+            $placer = 'kode_akun_sub';
+            $group_identifier = 'kode_akun_sub';
+            $awal_tahun = gmdate('Y')."-01-01";
+            $akhir_tahun = gmdate('Y')."-12-31";
+            // die("BETWEEN $awal_tahun AND $akhir_tahun");
+        }
+
+        // $sumber = 'biaya';
+
+        if ($sumber == null) {
+            $from = 'akuntansi_kuitansi_jadi';
+            $from_init = 'akuntansi_kuitansi_jadi';
+        }elseif ($sumber == 'biaya') {
+            $this->db_laporan->query("DROP TABLE IF EXISTS `temp_biaya`");
+            $this->db_laporan->query(" CREATE TABLE temp_biaya AS 
+                    (
+                    SELECT DISTINCT tabel_kuitansi.*,
+                        tabel_akun.kode_akun_sub,
+                        tabel_akun.kode_akun as biaya,
+                        max(tabel_input.revisi) as revisi 
+                    FROM
+                        (SELECT *,SUBSTRING(kuitansi.kode_kegiatan,1,16) as kode_subkomponen_input FROM rsa.akuntansi_kuitansi_jadi as kuitansi 
+                            HAVING kode_subkomponen_input <>'' AND LENGTH(kode_subkomponen_input) = 16) 
+                         AS tabel_kuitansi,
+                         rba.ket_subkomponen_input_ as tabel_input,
+                         rba.ref_akun as tabel_akun
+                    WHERE 
+                         (tabel_kuitansi.tanggal BETWEEN '$awal_tahun' AND '$akhir_tahun')
+                         AND tabel_kuitansi.kode_subkomponen_input = tabel_input.kode_subkomponen_input
+                         AND tabel_input.jenis_biaya = tabel_akun.nama_akun
+                         AND tabel_input.jenis_komponen = tabel_akun.nama_akun_sub
+                    GROUP BY
+                        tabel_input.kode_subkomponen_input
+    
+                     )");
+            // die("selesaaai");
+            $from = "temp_biaya";
+            $from_init = "temp_biaya as akuntansi_kuitansi_jadi";
+
+        }
 
         // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();
 
@@ -286,7 +329,7 @@ class Laporan_model extends CI_Model {
             $array_jenis[] = $jenis;
         }
 
-        if ($tingkat != null) {
+        if ($tingkat != null or $sumber != null) {
             $array_akun = array(5);
         }
 
@@ -404,24 +447,32 @@ class Laporan_model extends CI_Model {
 
 
                     // $this->db_laporan->where('unit_kerja',$unit);
+                    if ($sumber != null){
+                        $in_group_identifier = $group_identifier;
+                    }else{
+                        $in_group_identifier = $kolom[$tipe][$jenis];
+                    }
 
-                    $this->db_laporan->group_by($kolom[$tipe][$jenis]);
+                    $this->db_laporan->group_by($in_group_identifier);
 
                     if ($tingkat != null){
                         $this->db_laporan->group_by($group_tingkat);
                     }
                     // echo $this->db_laporan->get_compiled_select();die();
+                    // $this->db_laporan->cache_on();
 
-                    $hasil = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
+                    $hasil = $this->db_laporan->get($from_init)->result_array();
+
+                    // $this->db_laporan->cache_off();
 
                     // print_r($hasil);die();
 
                     for ($i=0; $i < count($hasil); $i++) { 
                         $hasil[$i]['tipe'] = $tipe;
                         if ($tingkat != null){
-                            $query1[$hasil[$i]['tingkat']][$hasil[$i]['akun']][] = $hasil[$i];
+                            $query1[$hasil[$i]['tingkat']][$hasil[$i][$placer]][] = $hasil[$i];
                         }else {
-                            $query1[$hasil[$i]['akun']][] = $hasil[$i];                        
+                            $query1[$hasil[$i][$placer]][] = $hasil[$i];                        
                         }
                     }
 
@@ -476,7 +527,15 @@ class Laporan_model extends CI_Model {
                         // $query_pajak1 = "";
                         // $query_pajak2 = "";
 
-                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak,$added_select sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        if ($sumber != null){
+                            $in_group_identifier = $group_identifier;
+                        }else{
+                            $in_group_identifier = 'tr.akun';
+                        }
+
+                        // $this->db_laporan->cache_on();
+
+                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak,$added_select sum(jumlah) as jumlah FROM $from as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
                                  AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
@@ -488,6 +547,8 @@ class Laporan_model extends CI_Model {
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
+                        // $this->db_laporan->cache_off();
+
                         // print_r($hasil);die();
 
                         for ($i=0; $i < count($hasil); $i++) { 
@@ -497,14 +558,14 @@ class Laporan_model extends CI_Model {
                             // }
                             if ($hasil[$i]['jenis_pajak'] == 'pajak') {
                                 if ($tipe == 'debet') 
-                                    $query1[$hasil[$i]['akun']][0] = $hasil[$i];        
+                                    $query1[$hasil[$i][$placer]][0] = $hasil[$i];        
                                 else
-                                    $query1[$hasil[$i]['akun']][1] = $hasil[$i];        
+                                    $query1[$hasil[$i][$placer]][1] = $hasil[$i];        
                             } else {
                                 if ($tingkat != null){
-                                    $query1[$hasil[$i]['tingkat']][$hasil[$i]['akun']][] = $hasil[$i];
+                                    $query1[$hasil[$i]['tingkat']][$hasil[$i][$placer]][] = $hasil[$i];
                                 }else {
-                                    $query1[$hasil[$i]['akun']][] = $hasil[$i];                        
+                                    $query1[$hasil[$i][$placer]][] = $hasil[$i];                        
                                 }
                             }
                             // print_r($query1);die();
@@ -515,6 +576,10 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
+
+        // if ($sumber == 'biaya'){
+        //     print_r($query1);die();
+        // }
 
         // foreach ($query1 as $key => $value) {
         //     $query1[$key] = array_unique($query1[$key],SORT_REGULAR);
@@ -544,6 +609,31 @@ class Laporan_model extends CI_Model {
 
 
 
+    }
+
+    public function revamp_get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null,$sumber = null)
+    {
+        if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
+            $mode = 'saldo';
+        }else{
+            $mode = null;
+        }
+        $array_tipe  = array('debet','kredit');
+
+        $regex_string = '';
+
+        foreach ($array_akun as $entry_akun) {
+            $regex_string .= "^".$entry_akun."(.*)|";
+        }
+        $regex_string = substr($regex_string,0,-1);
+        die($regex_string);
+
+        $sql = "
+                SELECT 
+                    akuntansi_kuitansi_jadi.*,
+                    CASE 
+                        WHEN akun_debet_akrual = 
+        ";
     }
 
 

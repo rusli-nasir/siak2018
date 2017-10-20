@@ -10,6 +10,10 @@ if(isset($excel)){
 ?>
 <html>
 	<head>
+		<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
+		<link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet">
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
 		<title>Neraca Saldo</title>
 		<style type="text/css">
 		@page{
@@ -39,8 +43,10 @@ if(isset($excel)){
 				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
 				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
 				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-				<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
+				<!-- <input class="btn excel" id="download_excel" type="submit" name="Download excel" value="Download Excel"> -->
 			</form>
+				<a class="btn btn-success" download="neraca_saldo.xls" id="download_excel">Download excel</a>
+				<button class="btn btn-success" type="button" id="print_tabel">Cetak</button>
 			<?php 
 			$arr_sumber = explode('_', $sumber);
 			$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
@@ -55,13 +61,17 @@ if(isset($excel)){
 				<!-- <input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF"> -->
 			</form>
 		<?php } ?>
+		<div id="printed_table">
 		<div align="center" style="font-weight:bold">
 			<?php echo $teks_unit; ?><br/>
 			NERACA SALDO<br/>
+			<?php if ($sumber_laporan != null): ?>
+				Berdasarkan Biaya <br/>
+			<?php endif ?>
 			<?php echo $teks_periode; ?><br/><br/>
 		</div>
 		<?php 
-		if($level!=3){
+		if($level == 6){
 			echo '<table style="font-size:10pt;" class="level_6">
 						<tr>
 							<td width="150px"><b>Unit Kerja</b></td>
@@ -73,7 +83,7 @@ if(isset($excel)){
 						</tr>
 				</table>';
 			echo '<table style="width:1300px;font-size:10pt;" class="border level_6">
-					<thead style="background-color:#ECF379;height:45px">
+					<thead style="background-color:#ECF379;height:45px;text-align:center">
 						<tr style="background-color:#ECF379;">
 							<th rowspan="2">No</th>
 							<th rowspan="2">Kode</th>
@@ -119,7 +129,7 @@ if(isset($excel)){
 	                $debet = $saldo;
 	            }
 
-	            if($level!=3){
+	            if($level==6){
 					echo '<tr>
 							<td>'.$i.'</td>
 							<td>'.str_replace('-pajak', '', $key).'</td>
@@ -166,7 +176,7 @@ if(isset($excel)){
 		    		if ($debet < 0 or $kredit < 0){
 		    			$jumlah_debet += abs($kredit);
 		    			$jumlah_kredit += abs($debet);
-		    			if($level!=3){
+		    			if($level==6){
 							echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
 							<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';
 						}	
@@ -175,7 +185,7 @@ if(isset($excel)){
 		    		} else {
 		    			$jumlah_debet += abs($debet);
 		    			$jumlah_kredit += abs($kredit);
-		    			if($level!=3){
+		    			if($level==6){
 			    			echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
 							<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
 						}
@@ -196,7 +206,7 @@ if(isset($excel)){
 		                $jumlah_neraca_kredit += $saldo_neraca;
 		    //             echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>
 						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>';
-						if($level!=3){
+						if($level ==6){
 			                echo '<td align="right" style="font-size:8pt">0.00</td>';
 			                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
 			            }
@@ -207,14 +217,14 @@ if(isset($excel)){
 		                $jumlah_neraca_debet += $saldo_neraca;
 		    //             echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($debet).'</td>
 						// <td align="right" style="font-size:8pt">'.eliminasi_negatif($kredit).'</td>';
-						if($level!=3){
+						if($level==6){
 			                echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($saldo_neraca).'</td>';
 			                echo '<td align="right" style="font-size:8pt">0.00</td>';
 			            }
 		                $arr_3[$counter]['neraca_debit'] = abs($saldo_neraca);    			
 						$arr_3[$counter]['neraca_kredit'] = 0;
 		            }else{
-		            	if($level!=3){
+		            	if($level==6){
 			            	echo '<td align="right" style="font-size:8pt">0.00</td>';
 			            	echo '<td align="right" style="font-size:8pt">0.00</td>';
 			            }
@@ -222,14 +232,14 @@ if(isset($excel)){
 						$arr_3[$counter]['neraca_kredit'] = 0; 
 		            }
 
-		        if($level!=3){
+		        if($level==6){
 					echo '</tr>';
 				}
 
 				$i++;
 				$counter++;
 			}
-			if($level!=3){
+			if($level==6){
 	    		echo '</tbody>
 		    			<tfoot>
 						 	<tr style="background-color:#B1E9F2;">
@@ -246,7 +256,7 @@ if(isset($excel)){
 				//Men-3-digitkan hasil neraca saldo
 				$result = array();
 				foreach ($arr_3 as $data) {
-				  $kode_akun = substr($data['kode_akun'],0,3);
+				  $kode_akun = substr($data['kode_akun'],0,$level);
 				  $cek_di_pajak = check_di_pajak($data['kode_akun']);
 				  if($cek_di_pajak>0){
 				  	$result[$kode_akun.'-pajak'][] = $data;
@@ -271,8 +281,9 @@ if(isset($excel)){
 						$display_3_digit[$key]['neraca_kredit'] += $inner_data['neraca_kredit'];
 					}
 				}
+				// print_r($display_3_digit);die()
 
-			if($level==3){
+			if($level==3 or $level==4){
 				echo '<table style="font-size:10pt;" class="level_3">
 						<tr>
 							<td width="150px"><b>Unit Kerja</b></td>
@@ -310,7 +321,11 @@ if(isset($excel)){
 					echo '<td>'.$nomor.'</td>';
 					echo '<td>'.str_replace('-pajak', '', $value['kode_akun']).'</td>';
 					echo '<td>';
-					echo get_nama_akun_v((string)$value['kode_akun']);
+					if ($sumber_laporan == 'biaya') {
+						echo get_nama_biaya((string)$value['kode_akun'],$level);
+					}else{
+						echo get_nama_akun_v((string)$value['kode_akun'],$level);
+					}
 					echo '</td>';
 					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['mutasi_debit']).'</td>';
 					echo '<td align="right" style="font-size:8pt">'.eliminasi_negatif($value['mutasi_kredit']).'</td>';
@@ -359,7 +374,22 @@ if(isset($excel)){
 				</tr>
 			</tbody>
 		</table>
+	</div>
 	</body>
+	<script type="text/javascript">
+		$(function(){
+		    $('#download_excel').click(function(){
+		        var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+		        this.href = result;
+		        this.download = "neraca_saldo.xls";
+		        return true;
+		    })
+		    $('#print_tabel').click(function(){
+		        $("#printed_table").print();
+		    })
+		})
+
+	</script>
 </html>
 <?php
 function check_di_pajak($kode_akun)
@@ -386,9 +416,13 @@ function get_nama_unit($kode_unit)
 
 function get_nama_akun_v($kode_akun){
 	$ci =& get_instance();
+	$kode_akun = explode('-',$kode_akun);
+	$count_kode = count($kode_akun);
+	$kode_akun = $kode_akun[0];
+	$level = strlen($kode_akun);
 	if (isset($kode_akun)){
 		if(strlen($kode_akun)>3){
-			if($kode_akun[3]=='-'){
+			if($count_kode > 1){
 				if(substr($kode_akun, 0, 3)=='411'){
 					return 'Pemungutan/Penyetoran Pajak';
 				}else{
@@ -398,10 +432,20 @@ function get_nama_akun_v($kode_akun){
 				}
 			}else{
 				if (substr($kode_akun,0,1) == 5){
-					return $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+					if ($level == 6){
+						$selected = 'kode_akun';
+					}else{
+						$selected = "kode_akun".$level."digit";
+					}
+					return $ci->db->get_where('akun_belanja',array($selected => $kode_akun))->row_array()['nama_akun'];
 				} else if (substr($kode_akun,0,1) == 7){
 					$kode_akun[0] = 5;
-					$nama = $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+					if ($level == 6){
+						$selected = 'kode_akun';
+					}else{
+						$selected = "kode_akun".$level."digit";
+					}
+					$nama = $ci->db->get_where('akun_belanja',array($selected => $kode_akun))->row_array()['nama_akun'];
 					$uraian_akun = explode(' ', $nama);
 					if(isset($uraian_akun[0])){
 			            if($uraian_akun[0]!='beban'){
@@ -412,27 +456,27 @@ function get_nama_akun_v($kode_akun){
 		            return $hasil_uraian;
 				} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
 					$kode_akun[0] = 4;
-					$hasil =  $ci->db->get_where('akuntansi_lra_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+					$hasil =  $ci->db->get_where("akuntansi_lra_$level",array("akun_$level" => $kode_akun))->row_array()["nama"];
 					if ($hasil == null) {
-						$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+						$hasil = $ci->db->get_where("akuntansi_pajak",array("kode_akun" => $kode_akun))->row_array()["nama_akun"];
 					}
 					return $hasil;
 				}else if (substr($kode_akun,0,1) == 8){
-					$hasil =  $ci->db->get_where('akuntansi_pembiayaan_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+					$hasil =  $ci->db->get_where("akuntansi_pembiayaan_$level",array("akun_$level" => $kode_akun))->row_array()["nama"];
 					if ($hasil == null) {
-						$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+						$hasil = $ci->db->get_where("akuntansi_pajak",array("kode_akun" => $kode_akun))->row_array()["nama_akun"];
 					}
 					return $hasil;
 				} else if (substr($kode_akun,0,1) == 9){
-					return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+					return $ci->db->get_where("akuntansi_sal_$level", array("akun_$level" => $kode_akun))->row_array()["nama"];
 				} else if (substr($kode_akun,0,1) == 2){
-					return $ci->db->get_where('akuntansi_hutang_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+					return $ci->db->get_where("akuntansi_hutang_$level", array("akun_$level" => $kode_akun))->row_array()["nama"];
 				} else if (substr($kode_akun,0,1) == 3){
-					return $ci->db->get_where('akuntansi_aset_bersih_6', array('akun_6' => $kode_akun))->row_array()['nama'];
+					return $ci->db->get_where("akuntansi_aset_bersih_$level", array("akun_$level" => $kode_akun))->row_array()["nama"];
 				} else if (substr($kode_akun,0,1) == 1){
-					$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
+					$hasil = $ci->db->get_where("akuntansi_kas_rekening",array("kode_rekening" => $kode_akun))->row_array()["uraian"];
 					if ($hasil == null){
-						$hasil = $ci->db->get_where('akuntansi_aset_6',array('akun_6' => $kode_akun))->row_array()['nama'];
+						$hasil = $ci->db->get_where("akuntansi_aset_$level",array("akun_$level" => $kode_akun))->row_array()["nama"];
 					}
 					// if ($hasil == null){
 					// 	$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
@@ -506,6 +550,13 @@ function get_nama_akun_v($kode_akun){
 			}		
 		}
 	}	
+}
+
+function get_nama_biaya($kode)
+{
+	$ci =& get_instance();
+	$ci->load->model('akuntansi/Biaya_model', 'Biaya_model');
+	return $ci->Biaya_model->get_nama_biaya($kode);
 }
 
 function get_saldo_awal($kode_akun){

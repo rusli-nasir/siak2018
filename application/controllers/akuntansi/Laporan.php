@@ -1046,6 +1046,8 @@ class Laporan extends MY_Controller {
         $periode_akhir = strtodate($date_t[1]) or null;
         $level = $this->input->post('level');
 
+        // print_r($level);die;
+
         // $query_pajak = $this->db->query("SELECT kode_akun FROM akuntansi_pajak")->result();      
 
         // if($basis=='kas'){
@@ -1091,6 +1093,17 @@ class Laporan extends MY_Controller {
         $length_kegiatan = null;
 
         $tingkat = $this->input->post('tingkat');
+
+        // $tingkat = 'biaya';
+
+        if ($tingkat == 'biaya'){
+            $sumber = $tingkat;
+            $tingkat = null;
+            $data['sumber_laporan'] = $sumber;
+        }else{
+            $sumber = null;
+            $data['sumber_laporan'] = $sumber;
+        }
 
         // $tingkat = 'sasaran';
 
@@ -1155,13 +1168,16 @@ class Laporan extends MY_Controller {
 
         // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
-        $data['query'] = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca',$tingkat);
+        // $data['query'] = $this->Laporan_model->revamp_get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca',$tingkat);
+        $data['query'] = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca',$tingkat,$sumber);
+
+        ksort($data['query']);
         // print_r($data['query']);die();
 
         if ($tingkat != null) {
             foreach ($data['query'] as $header => $temp_entry) {
                 // $level = 4;
-                if ($level == 3) {
+                if ($level == 3 or $level == 4) {
                     $entry = reset($temp_entry);
                     $temp_akun = substr($entry[0]['akun'],0,$level);
                     $sum_inner = $entry[0]['jumlah'];
@@ -1263,12 +1279,21 @@ class Laporan extends MY_Controller {
 
             
             if ($level == 3){
-                $level = 4;
+                $level = 6;
             }
         }
+
+        // print_r($temp_data);die();
+        // if ($sumber == 'biaya'){
+        //     foreach ($data['data'] as $entry) {
+        //         $temp_entry = array();
+        //         // $temp_entry
+        //     }
+        // }
         // die();
 
-        // print_r($data['query_tingkat']);die();
+        // var_dump($temp['data']);die();
+        // print_r($data['query']);die();
 
 
 
@@ -1280,7 +1305,7 @@ class Laporan extends MY_Controller {
         // }
 
         
-        ksort($data['query']);
+        // ksort($data['query']);
 
         /*if ($level == 3) {
             $data_3 = array();

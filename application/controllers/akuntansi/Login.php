@@ -6,11 +6,23 @@ class Login extends MY_Controller {
         parent::__construct();    
 
         $this->load->model('akuntansi/login_model', 'login_model');
+        $this->load->helper('url');
     }
 
 	public function index(){
 		$this->cek_session_out();
-		$this->load->view('akuntansi/login');
+		$data= array();
+		$server_uri = base_url(uri_string());
+		// die($server_uri);
+		$data['is_demo'] = (strpos($server_uri,'pak.undip.ac.id') !== false);
+		// $data['is_demo'] = (strpos($server_uri,'localhost') !== false);
+
+		// echo strpos($server_uri,'localhost');
+		// print_r($data);
+		// die();
+
+
+		$this->load->view('akuntansi/login',$data);
 	}
 
 	public function login_proses()

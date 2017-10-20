@@ -115,6 +115,7 @@
       <div class="col-md-6">
           <select id="tingkat" name="tingkat" class="form-control">
             <option value="">Pilih</option>
+            <option value="biaya">Laporan Berdasarkan Biaya</option>
             <option value="tujuan">Tujuan</option>
             <option value="output">Output / Sasaran</option>
             <option value="program">Program</option>
@@ -130,6 +131,7 @@
           <select id="level" name="level" class="form-control" required="">
             <option value="3">Header</option>
             <option value="4">Sub-Header</option>
+            <option value="6">Detail</option>
           </select>
       </div>
     </div>

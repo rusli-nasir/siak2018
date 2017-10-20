@@ -2,7 +2,9 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
+<script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/jquery.dataTables.min.css" />
 <script type="text/javascript">
 	$(document).ready(function(){
 		var host = location.protocol + '//' + location.host + '/sisrenbang/index.php/';
@@ -69,16 +71,16 @@
 </div>
 <div class="row">
 	<div class="col-sm-12">	
-		<table class="table">
+		<table class="table" id="tabel_spm">
 			<thead>
 				<tr>
-					<th></th>
 					<th>No</th>
 					<th>Jenis</th>
 					<th>Tanggal</th>
 					<th>No. SPM</th>
-					<th width="300px !important">Keterangan</th>
+					<th width="40% !important">Keterangan</th>
 					<th>Jumlah</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -90,6 +92,12 @@
 					}else{
 						echo '<tr>';
 					}?>			
+					<td><?php echo $no; ?>.</td>
+					<td>UP</td>
+					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
+					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<td><?php echo $result->untuk_bayar; ?></td>
+					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
 							<span class="glyphicon glyphicon-ok text-success"></span>
@@ -97,12 +105,6 @@
 							<span class="glyphicon glyphicon-remove text-danger"></span>
 						<?php endif ?>
 					</td>
-					<td><?php echo $no; ?>.</td>
-					<td>UP</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
-					<td><?php echo $result->untuk_bayar; ?></td>
-					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 				</tr>
 				<?php $no++; } } ?>
 				<?php if($gu->num_rows() > 0){
@@ -112,6 +114,12 @@
 					}else{
 						echo '<tr>';
 					}?>	
+					<td><?php echo $no; ?>.</td>
+					<td>GU</td>
+					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
+					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<td><?php echo $result->untuk_bayar; ?></td>
+					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
 							<span class="glyphicon glyphicon-ok text-success"></span>
@@ -119,12 +127,6 @@
 							<span class="glyphicon glyphicon-remove text-danger"></span>
 						<?php endif ?>
 					</td>
-					<td><?php echo $no; ?>.</td>
-					<td>GU</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
-					<td><?php echo $result->untuk_bayar; ?></td>
-					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 				</tr>
 				<?php $no++; } } ?>
 				<?php if($pup->num_rows() > 0){
@@ -134,6 +136,12 @@
 					}else{
 						echo '<tr>';
 					}?>	
+					<td><?php echo $no; ?>.</td>
+					<td>PUP</td>
+					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
+					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<td><?php echo $result->untuk_bayar; ?></td>
+					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
 							<span class="glyphicon glyphicon-ok text-success"></span>
@@ -141,12 +149,6 @@
 							<span class="glyphicon glyphicon-remove text-danger"></span>
 						<?php endif ?>
 					</td>		
-					<td><?php echo $no; ?>.</td>
-					<td>PUP</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
-					<td><?php echo $result->untuk_bayar; ?></td>
-					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 				</tr>
 				<?php $no++; } } ?>
 				<?php if($tup->num_rows() > 0){
@@ -156,6 +158,12 @@
 					}else{
 						echo '<tr>';
 					}?>			
+					<td><?php echo $no; ?>.</td>
+					<td>TUP</td>
+					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
+					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<td><?php echo $result->untuk_bayar; ?></td>
+					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
 							<span class="glyphicon glyphicon-ok text-success"></span>
@@ -163,12 +171,6 @@
 							<span class="glyphicon glyphicon-remove text-danger"></span>
 						<?php endif ?>
 					</td>
-					<td><?php echo $no; ?>.</td>
-					<td>TUP</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
-					<td><?php echo $result->untuk_bayar; ?></td>
-					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 				</tr>
 				<?php $no++; } } ?>
 				<?php if($ls3->num_rows() > 0){
@@ -193,6 +195,12 @@
 					}else{
 						echo '<tr>';
 					}?>			
+					<td><?php echo $no; ?>.</td>
+					<td>LSPG</td>
+					<td><?php echo date("d-m-Y", strtotime($result->tanggal)); ?></td>
+					<td><?php echo $result->nomor; ?></td>			
+					<td><?php echo $result->untuk_bayar; ?></td>
+					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
 							<span class="glyphicon glyphicon-ok text-success"></span>
@@ -200,12 +208,6 @@
 							<span class="glyphicon glyphicon-remove text-danger"></span>
 						<?php endif ?>
 					</td>
-					<td><?php echo $no; ?>.</td>
-					<td>LSPG</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tanggal)); ?></td>
-					<td><?php echo $result->nomor; ?></td>			
-					<td><?php echo $result->untuk_bayar; ?></td>
-					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 				</tr>
 				<?php $no++; } } ?>
 			</tbody>
@@ -269,4 +271,18 @@
           showDropdowns: true
         }
     );
+
+  $(document).ready(function(){
+    var t = $('#tabel_spm').DataTable({
+    	paging: false,
+    	scrollY: 800,
+    	pageLength: 50
+    });
+
+    t.on( 'order.dt search.dt', function () {
+        t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+  });
 </script>

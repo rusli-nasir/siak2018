@@ -34,6 +34,11 @@ class Coba extends MY_Controller {
         }
     }
 
+    public function coba_akun_biaya()
+    {
+        print_r($this->Akun_model->get_all_akun_biaya());
+    }
+
 
     public function cek_129()
     {
