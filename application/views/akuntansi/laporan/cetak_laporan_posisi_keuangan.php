@@ -11,29 +11,14 @@ if($atribut['cetak']){
 <html>
 	<head>
 		<title>Laporan Posisi Keuangan</title>
-		<style type="text/css">
-		@page{
-			size:landscape;
-		}
-		.border {
-		    border-collapse: collapse;
-		}
-
-		.border td,
-		.border th{
-		    border: 1px solid black;
-		}
-		.tab0{padding-left:0px !important;font-weight:bold;}
-		.tab1{padding-left:20px !important;font-weight:bold;}
-		.tab2{padding-left:40px !important;}
-		.tab3{padding-left:60px !important;}
-		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
-    	.excel{background-color:#A3A33E;color:#fff;}
-    	.pdf{background-color:#588097;color:#fff;}
-		</style>
+		<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
+		<!-- <link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet" media="screen"> -->
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
+		
 		<script type="text/javascript">
 		</script>
-		<link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet">
+		<!-- <link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet"> -->
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
 		<?php if($atribut['cetak']=='cetak'){ ?>
@@ -43,9 +28,32 @@ if($atribut['cetak']){
 			<input type="hidden" name="level" value="<?php echo $level; ?>">
 			<input type="hidden" name="daterange" value="<?php if(isset($atribut['daterange'])) echo $atribut['daterange']; ?>">
 			<input type="hidden" name="cetak" value="cetak">
-			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button>
+			<!-- <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button> -->
 		</form>
+		<a download="neraca_saldo.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
+		<button class="btn btn-success no-print" type="button" id="print_tabel">Cetak</button>
 		<?php } ?>
+		<div id="printed_table">
+		<style type="text/css">
+			@page{
+				size:landscape;
+			}
+			.border {
+			    border-collapse: collapse;
+			}
+
+			.border td,
+			.border th{
+			    border: 1px solid black;
+			}
+			.tab0{padding-left:0px !important;font-weight:bold;}
+			.tab1{padding-left:20px !important;font-weight:bold;}
+			.tab2{padding-left:40px !important;}
+			.tab3{padding-left:60px !important;}
+			.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
+	    	.excel{background-color:#A3A33E;color:#fff;}
+	    	.pdf{background-color:#588097;color:#fff;}
+		</style>
 		<div align="center">
 			<div style="font-weight:bold">
 				UNIVERSITAS DIPONEGORO<br/>
@@ -54,7 +62,7 @@ if($atribut['cetak']){
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
-		<table style="width:1100px;font-size:10pt;margin:0; auto" class="border">
+		<table align="center" style="width:1100px;font-size:10pt;margin:0 auto;" class="border">
 			<thead>
 				<tr style="background-color:#ECF379;height:45px;">
 					<th  style="text-align:center" width="30px">No</th>
@@ -64,6 +72,8 @@ if($atribut['cetak']){
 					<th style="text-align:center">Selisih/Kenaikan</th>
 					<th style="text-align:center">%</th>
 				</tr>
+			</thead>
+			<tbody>
 				<?php
 					$no = 0; 
 					foreach ($parse as $key => $entry): ?>
@@ -95,9 +105,6 @@ if($atribut['cetak']){
 					</tr>
 					
 				<?php endforeach ?>
-			</thead>
-			<tbody>
-				
 			</tbody>
 		</table>
 		<br/>
@@ -118,7 +125,19 @@ if($atribut['cetak']){
 				</tr>
 			</tbody>
 		</table>
+		</div>
 	</body>
+	<script type="text/javascript">
+		$('#download_excel').click(function(){
+		        var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+		        this.href = result;
+		        this.download = "laporan_posisi_keuangan.xls";
+		        return true;
+		    })
+		    $('#print_tabel').click(function(){
+		        $("#printed_table").print();
+		    })
+	</script>
 </html>
 
 <?php

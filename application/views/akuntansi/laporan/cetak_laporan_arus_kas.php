@@ -11,6 +11,28 @@ if($atribut['cetak']){
 <html>
 	<head>
 		<title>Laporan Arus Kas</title>
+		<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
+		<!-- <link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet" media="screen"> -->
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
+		
+		<script type="text/javascript">
+		</script>
+	</head>
+	<body style="font-family:arial;margin:20px 20px 20px 20px;">
+		<?php if($atribut['cetak']=='cetak'){ ?>
+		<?php }else{ ?>
+		<form action="<?php echo site_url('akuntansi/laporan/lainnya') ?>" method="post">
+			<input type="hidden" name="jenis_laporan" value="Arus Kas">
+			<input type="hidden" name="level" value="<?php echo $level; ?>">
+			<input type="hidden" name="daterange" value="<?php if(isset($atribut['daterange'])) echo $atribut['daterange']; ?>">
+			<input type="hidden" name="cetak" value="cetak">
+			<!-- <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button> -->
+		</form>
+		<a download="neraca_saldo.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
+		<button class="btn btn-success no-print" type="button" id="print_tabel">Cetak</button>
+		<?php } ?>
+		<div id="printed_table">
 		<style type="text/css">
 		@page{
 			size:landscape;
@@ -31,20 +53,6 @@ if($atribut['cetak']){
     	.excel{background-color:#A3A33E;color:#fff;}
     	.pdf{background-color:#588097;color:#fff;}
 		</style>
-		<script type="text/javascript">
-		</script>
-	</head>
-	<body style="font-family:arial;margin:20px 20px 20px 20px;">
-		<?php if($atribut['cetak']=='cetak'){ ?>
-		<?php }else{ ?>
-		<form action="<?php echo site_url('akuntansi/laporan/lainnya') ?>" method="post">
-			<input type="hidden" name="jenis_laporan" value="Arus Kas">
-			<input type="hidden" name="level" value="<?php echo $level; ?>">
-			<input type="hidden" name="daterange" value="<?php if(isset($atribut['daterange'])) echo $atribut['daterange']; ?>">
-			<input type="hidden" name="cetak" value="cetak">
-			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button>
-		</form>
-		<?php } ?>
 		<div align="center">
 			<div style="font-weight:bold">
 				UNIVERSITAS DIPONEGORO<br/>
@@ -58,8 +66,8 @@ if($atribut['cetak']){
 			<thead>
 				<tr style="background-color:#ECF379;height:45px">
 					<th width="30px">No.</th>
-					<th width="750px">URAIAN</th>
-					<th><?php echo gmdate('Y') ?></th>
+					<th width="750px" colspan="4">URAIAN</th>
+					<th colspan="3"><?php echo gmdate('Y') ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -75,7 +83,7 @@ if($atribut['cetak']){
 						<?php endif ?>
 					>
 						<td>&nbsp;<?php echo ++$no; ?></td>
-						<td>
+						<td colspan="4">
 							<?php 
 							for ($i=0; $i < $entry['level']; $i++) { 
 								echo "&nbsp;&nbsp;";
@@ -84,7 +92,7 @@ if($atribut['cetak']){
 							 ?>
 							<?php echo $entry['nama'] ?>
 							</td>
-						<td align="right">
+						<td align="right" colspan="3">
 							<?php if ($entry['type'] != "index") echo eliminasi_negatif($entry['jumlah_now']) ?>
 						</td>
 						<!-- <td  align="right"><?php echo eliminasi_negatif($entry['jumlah_last']) ?></td>						 -->
@@ -111,7 +119,19 @@ if($atribut['cetak']){
 				</tr>
 			</tbody>
 		</table>
+		</div>
 	</body>
+	<script type="text/javascript">
+		$('#download_excel').click(function(){
+		        var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+		        this.href = result;
+		        this.download = "laporan_arus_kas.xls";
+		        return true;
+		    })
+		    $('#print_tabel').click(function(){
+		        $("#printed_table").print();
+		    })
+	</script>
 </html>
 
 <?php

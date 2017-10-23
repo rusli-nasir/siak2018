@@ -10,27 +10,12 @@ if($atribut['cetak']){
 <!DOCTYPE>
 <html>
 	<head>
-		<title>Laporan Aktifitas</title>
-		<style type="text/css">
-		@page{
-			size:landscape;
-		}
-		.border {
-		    border-collapse: collapse;
-		}
+		<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
+		<!-- <link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet" media="screen"> -->
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
 
-		.border td,
-		.border th{
-		    border: 1px solid black;
-		}
-		.tab0{padding-left:0px !important;font-weight:bold;}
-		.tab1{padding-left:20px !important;font-weight:bold;}
-		.tab2{padding-left:40px !important;}
-		.tab3{padding-left:60px !important;}
-		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
-    	.excel{background-color:#A3A33E;color:#fff;}
-    	.pdf{background-color:#588097;color:#fff;}
-		</style>
+		<title>Laporan Aktifitas</title>
 		<script type="text/javascript">
 		</script>
 	</head>
@@ -42,21 +27,49 @@ if($atribut['cetak']){
 			<input type="hidden" name="level" value="<?php echo $level; ?>">
 			<input type="hidden" name="daterange" value="<?php if(isset($atribut['daterange'])) echo $atribut['daterange']; ?>">
 			<input type="hidden" name="cetak" value="cetak">
-			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button>
+			<!-- <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button> -->
 		</form>
+		<a download="neraca_saldo.xls" id="download_excel"><button  class="btn btn-success" type="button">Download excel</button></a>
+		<button class="btn btn-success" type="button" id="print_tabel">Cetak</button>
 		<?php } ?>
-		<div align="center" style="font-weight:bold">
-			UNIVERSITAS DIPONEGORO<br/>
-			Laporan Aktivitas<br/>
-			<?php echo $atribut['daterange']; ?><br/><br/>
-		</div>
-		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
+		<div id="printed_table">
+		<style type="text/css">
+			@page{
+				size: A4 portrait;
+			}
+			.border {
+			    border-collapse: collapse;
+			}
+
+			.border td,
+			.border th{
+			    border: 1px solid black;
+			}
+			.tab0{padding-left:0px !important;font-weight:bold;}
+			.tab1{padding-left:20px !important;font-weight:bold;}
+			.tab2{padding-left:40px !important;}
+			.tab3{padding-left:60px !important;}
+			.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
+	    	.excel{background-color:#A3A33E;color:#fff;}
+	    	.pdf{background-color:#588097;color:#fff;}
+
+		</style>
+		<table style="width:1050px;font-size:10pt;margin:0 auto" class="border">
 			<thead>
+				<tr>
+					<td colspan="4" style="border: none;">
+						<div align="center" style="font-weight:bold;width:1050px;">
+							UNIVERSITAS DIPONEGORO<br/>
+							Laporan Aktivitas<br/>
+							<?php echo $atribut['daterange']; ?><br/><br/>
+						</div>
+					</td>
+				</tr>
 				<tr style="background-color:#ECF379;height:45px">
-					<th width="30px">No.</th>
-					<th width="750px">URAIAN</th>
-					<th>TAHUN <?php echo $tahun_ini ?></th>
-					<th>TAHUN <?php echo $tahun_lalu ?></th>
+					<th width="5%">No.</th>
+					<th width="50%">URAIAN</th>
+					<th width="20%">TAHUN <?php echo $tahun_ini ?></th>
+					<th width="20%">TAHUN <?php echo $tahun_lalu ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -96,9 +109,9 @@ if($atribut['cetak']){
 		<br/>
 		<table width="100%;">
 			<tbody>
-				<tr>
+				<tr style="page-break-inside: avoid;">
 					<td colspan="4" width="60%;"></td>
-					<td colspan="4">
+					<td colspan="4" >
 						<?php 
 					    $pejabat = get_pejabat('all','rektor');
 					    $teks_kpa = "Rektor";
@@ -111,7 +124,19 @@ if($atribut['cetak']){
 				</tr>
 			</tbody>
 		</table>
+		</div>
 	</body>
+	<script type="text/javascript">
+		$('#download_excel').click(function(){
+		        var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+		        this.href = result;
+		        this.download = "laporan_aktifitas.xls";
+		        return true;
+		    })
+		    $('#print_tabel').click(function(){
+		        $("#printed_table").print();
+		    })
+	</script>
 </html>
 
 <?php
