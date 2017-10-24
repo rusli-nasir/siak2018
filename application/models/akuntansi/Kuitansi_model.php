@@ -520,13 +520,13 @@ class Kuitansi_model extends CI_Model {
     public function get_kuitansi_aset_by_kode_kegiatan($kode_usulan_belanja,$kode_akun_tambah=null)
     {
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
-        $this->db->select('id_kuitansi');
+        $this->db->select('rsa_kuitansi.id_kuitansi');
         $this->db->select('jenis');
         $this->db->select('kode_akun as akun');
         $this->db->select('str_nomor_trx_spm');
-        $this->db->select('rsa_detail_belanja_.kode_akun_tambah');
+        $this->db->select('rsa_kuitansi_detail.kode_akun_tambah');
 
-        $this->db->join('rsa_detail_belanja_','rsa_detail_belanja_.kode_usulan_belanja = rsa_kuitansi.kode_usulan_belanja');
+        $this->db->join('rsa_kuitansi_detail','rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi');
 
         if ($kode_akun_tambah != null){
             $this->db->where('kode_akun_tambah',$kode_akun_tambah);

@@ -927,12 +927,15 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='TUP'){
         	$this->data['tab5'] = true;
         }else if($jenis=='TUP_NIHIL'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab6'] = true;
         }else if($jenis=='TUP_PENGEMBALIAN'){
         	$this->data['tab10'] = true;
         }else if($jenis=='LK'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab11'] = true;
         }else if($jenis=='LN'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab12'] = true;
         }
 
@@ -1220,12 +1223,15 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='TUP'){
         	$this->data['tab5'] = true;
         }else if($jenis=='TUP_NIHIL'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab6'] = true;
         }else if($jenis=='TUP_PENGEMBALIAN'){
         	$this->data['tab10'] = true;
         }else if($jenis=='LK'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab11'] = true;
         }else if($jenis=='LN'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab12'] = true;
         }
 

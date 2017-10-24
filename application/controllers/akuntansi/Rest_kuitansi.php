@@ -4,21 +4,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Rest_kuitansi extends MY_Controller {
 	public function __construct(){
         parent::__construct();
-        $this->load->spark('curl/1.2.1');
-        $this->load->spark('restclient/2.1.0');
+        // $this->load->spark('curl/1.2.1');
+        // $this->load->spark('restclient/2.1.0');
         $this->cek_session_in();
-        $this->load->library('rest');
+        // $this->load->library('rest');
 
-	    $config = array('server'  => 'http://localhost/lapakuntansi/index.php/api/kuitansi/',
-	                //'api_key'         => 'Setec_Astronomy'
-	                //'api_name'        => 'X-API-KEY'
-	                'http_user'       => 'rsa',
-	                'http_pass'       => 'TheH4$hslingingslicer',
-	                'http_auth'       => 'digest',
-	                //'ssl_verify_peer' => TRUE,
-	                //'ssl_cainfo'      => '/certs/cert.pem'
-	    );
-		$this->rest->initialize($config);
+	    // $config = array('server'  => 'http://localhost/lapakuntansi/index.php/api/kuitansi/',
+	    //             //'api_key'         => 'Setec_Astronomy'
+	    //             //'api_name'        => 'X-API-KEY'
+	    //             'http_user'       => 'rsa',
+	    //             'http_pass'       => 'TheH4$hslingingslicer',
+	    //             'http_auth'       => 'digest',
+	    //             //'ssl_verify_peer' => TRUE,
+	    //             //'ssl_cainfo'      => '/certs/cert.pem'
+	    // );
+		// $this->rest->initialize($config);
     }
 
 	public function posting_kuitansi($id_kuitansi_jadi){

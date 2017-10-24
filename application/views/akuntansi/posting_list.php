@@ -62,18 +62,18 @@ $tahun = gmdate('Y');
 	    </form>
 	</div>
 	<div class="col-sm-4">
-		<?php if(isset($tab3)){ ?>
-		<form action="<?php echo site_url('akuntansi/kuitansi/posting'); ?>" method="post">
+		<?php if(isset($tab3) or isset($tab6) or isset($tab11) or isset($tab12)){ ?>
+		<form action="<?php echo site_url('akuntansi/kuitansi/posting/'.$jenis); ?>" method="post">
 			<div class="input-group">
-	      		<select name="keyword_jadi_GP_posting" class="form-control">
+	      		<select name="keyword_jadi_<?php echo $jenis ?>_posting" class="form-control">
 					<option value="">Tampil Semua SPM</option>
 					<?php 
 					foreach($query_spm->result_array() as $result){ 
 					?>
 					<option value="<?php echo $result['no_spm']; ?>"
 						<?php 
-						if($this->session->userdata('keyword_jadi_GP_posting')){
-							if($result['no_spm']==$this->session->userdata('keyword_jadi_GP_posting')){
+						if($this->session->userdata('keyword_jadi_'.$jenis.'_posting')){
+							if($result['no_spm']==$this->session->userdata('keyword_jadi_'.$jenis.'_posting')){
 								echo 'selected';
 							} 
 						}
