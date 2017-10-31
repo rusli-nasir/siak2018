@@ -216,6 +216,9 @@ class Kuitansi extends MY_Controller {
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit,'LN');
 		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm($config['per_page'], $id, null, $kode_unit,'LN');
 
+		$this->data['query'] = array();
+		$this->data['query_spm'] = array();
+
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'LN', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'LN', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['jenis_isi'] = "LN";
@@ -277,6 +280,9 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit,'LK');
 		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm($config['per_page'], $id, null, $kode_unit,'LK');
+
+		$this->data['query'] = array();
+		$this->data['query_spm'] = array();
 
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'LK', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'LK', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();

@@ -19,6 +19,7 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/moment-with-locales.js"></script>
 <script src="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.js'); ?>"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/notify.min.js"></script>
     <script>
     moment.locale("id");
     </script>
@@ -258,6 +259,20 @@
 		  $("#sidebar-collapse").css({"margin-top": myheadheight, "margin-bottom": - myheadheight});
 		});
 
+	</script>
+	<script type="text/javascript">
+	<?php if ($this->session->flashdata('warning')): ?>
+		$.notify('<?php echo $this->session->flashdata('warning') ?>',{
+			globalPosition: 'top center',
+			className : 'error'
+		});
+	<?php endif ?>
+	<?php if ($this->session->flashdata('success')): ?>
+		$.notify('<?php echo $this->session->flashdata('success') ?>',{
+			globalPosition: 'top center',
+			className : 'success'
+		});
+	<?php endif ?>
 	</script>
 </body>
 

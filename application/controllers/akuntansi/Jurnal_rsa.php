@@ -31,6 +31,30 @@ class Jurnal_rsa extends MY_Controller {
 
 		if($this->form_validation->run())     
         {   
+            $direct_url = 'akuntansi/kuitansi/index';
+            if($jenis=='NK'){
+                $direct_url = 'akuntansi/kuitansi/index_spm';
+            }else if($jenis=='UP'){
+                $direct_url = 'akuntansi/kuitansi/index_up';
+            }else if($jenis=='PUP'){
+                $direct_url = 'akuntansi/kuitansi/index_pup';
+            }else if($jenis=='GP'){
+                $direct_url = 'akuntansi/kuitansi/index';
+            }else if($jenis=='GUP'){
+                $direct_url = 'akuntansi/kuitansi/index_gup';
+            }else if($jenis=='TUP'){
+                $direct_url = 'akuntansi/kuitansi/index_tup';
+            }else if($jenis=='LK'){
+                $direct_url = 'akuntansi/kuitansi/index_lk';
+            }else if($jenis=='LN'){
+                $direct_url = 'akuntansi/kuitansi/index_lnk';
+            }else if($jenis=='TUP_NIHIL'){
+                $direct_url = 'akuntansi/kuitansi/index_tup_nihil';
+            }else if($jenis=='TUP_PENGEMBALIAN'){
+                $direct_url = 'akuntansi/kuitansi/index_tup_pengembalian';
+            }
+
+
             $entry = $this->input->post();
 
             $array_spm = $this->Spm_model->get_jenis_spm();
@@ -78,7 +102,29 @@ class Jurnal_rsa extends MY_Controller {
             $entry['tipe'] = 'pengeluaran';
             $entry['tanggal_jurnal'] = date('Y-m-d H:i:s');
 
-            // print_r($entry);die();
+            $checker = $entry;
+
+            unset($checker['tanggal_jurnal']);
+            unset($checker['flag']);
+            unset($checker['akun_debet_akrual']);
+            unset($checker['akun_kredit']);
+            unset($checker['akun_kredit_akrual']);
+
+            $date = strtotime($checker['tanggal']);
+            $checker['tanggal'] = date('Y-m-d', $date);
+
+            $date = strtotime($checker['tanggal_bukti']);
+            $checker['tanggal_bukti'] = date('Y-m-d', $date);
+
+            $checker['jumlah_debet'] = substr($checker['jumlah_debet'], 0, -3);
+            $checker['jumlah_kredit'] = substr($checker['jumlah_kredit'], 0, -3);
+
+            // print_r($checker);die();
+            if ($this->Jurnal_rsa_model->check_kuitansi_exist($checker)){
+                $this->session->set_flashdata('warning','Data yang sama sudah ada');
+                redirect($direct_url);
+                
+            }
 
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
@@ -140,28 +186,7 @@ class Jurnal_rsa extends MY_Controller {
 
             echo $jenis;
 
-            $direct_url = 'akuntansi/kuitansi/index';
-            if($jenis=='NK'){
-                $direct_url = 'akuntansi/kuitansi/index_spm';
-            }else if($jenis=='UP'){
-                $direct_url = 'akuntansi/kuitansi/index_up';
-            }else if($jenis=='PUP'){
-                $direct_url = 'akuntansi/kuitansi/index_pup';
-            }else if($jenis=='GP'){
-                $direct_url = 'akuntansi/kuitansi/index';
-            }else if($jenis=='GUP'){
-                $direct_url = 'akuntansi/kuitansi/index_gup';
-            }else if($jenis=='TUP'){
-                $direct_url = 'akuntansi/kuitansi/index_tup';
-            }else if($jenis=='LK'){
-                $direct_url = 'akuntansi/kuitansi/index_lk';
-            }else if($jenis=='LN'){
-                $direct_url = 'akuntansi/kuitansi/index_lnk';
-            }else if($jenis=='TUP_NIHIL'){
-                $direct_url = 'akuntansi/kuitansi/index_tup_nihil';
-            }else if($jenis=='TUP_PENGEMBALIAN'){
-                $direct_url = 'akuntansi/kuitansi/index_tup_pengembalian';
-            }
+            
             redirect($direct_url);
 
         }

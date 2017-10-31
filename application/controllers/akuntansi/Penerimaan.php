@@ -90,7 +90,7 @@ class Penerimaan extends MY_Controller {
             }
 
             $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
-            echo $highestRow." ";
+            // echo $highestRow." ";
             for ($iter_tgl=2; $iter_tgl <= $highestRow ; $iter_tgl++) { 
                 // $tanggal = $objWorksheet->getCellByColumnAndRow(1,$iter_tgl)->getValue();
                 $tanggal = $this->tanggal_excel_normalisasi($objWorksheet->getCellByColumnAndRow(1,$iter_tgl)->getValue());
@@ -111,6 +111,7 @@ class Penerimaan extends MY_Controller {
             if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
         }
 
+
         $array_non_akun = array();
         foreach ($array_akun as $entry) {
             // print_r($entry);die();
@@ -120,6 +121,9 @@ class Penerimaan extends MY_Controller {
                 $array_non_akun[] = $entry;
             }
         }
+
+        // print_r($array_akun);die();
+        // print_r($report_tanggal);die();
 
         if ($report_tanggal != null){
             echo "Terdapat error pada notasi tanggal / format dokumen<br/>";

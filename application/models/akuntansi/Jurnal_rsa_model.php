@@ -27,6 +27,14 @@ class Jurnal_rsa_model extends CI_Model {
         
     }
 
+    public function check_kuitansi_exist($check)
+    {
+        // $this->db->where($check);
+        // $this->db->from('akuntansi_kuitansi_jadi');
+        // echo $this->db->get_compiled_select();die();
+        return $this->db->get_where('akuntansi_kuitansi_jadi',$check)->num_rows() > 0;
+    }
+
     public function get_kuitansi($id_kuitansi,$tabel,$tabel_detail,$jenis = null)
     {
         $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();

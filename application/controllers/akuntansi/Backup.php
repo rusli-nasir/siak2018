@@ -30,6 +30,26 @@ class Backup extends MY_Controller {
 
 	}
 
+	public function backup_lspg(){
+		$data = $this->Backup_model->backup_lspg();
+
+		file_put_contents(FCPATH."assets/akuntansi/backup/backup_lspg.txt", serialize($data));
+
+		// echo FCPATH."assets/akuntansi/backup/backup.txt";
+
+		echo "<br/>Data telah dibackup";
+	}
+
+	public function restore_lspg(){
+
+		// $data1 = $this->Backup_model->backup_rsa();
+
+		// $data = unserialize(file_get_contents(FCPATH."assets/akuntansi/backup/backup.txt"));
+
+		$this->Backup_model->restore_lspg();
+
+	}
+
 	public function list_akun()
 	{
 		$this->data['array_jenis'] = ['akuntansi_aset','akuntansi_hutang','akuntansi_lra','akuntansi_aset_bersih','akuntansi_pembiayaan'];
