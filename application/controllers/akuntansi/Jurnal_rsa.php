@@ -57,6 +57,8 @@ class Jurnal_rsa extends MY_Controller {
 
             $entry = $this->input->post();
 
+            // print_r($entry);die();
+
             $array_spm = $this->Spm_model->get_jenis_spm();
 
             // print_r($array_spm);die();
@@ -120,11 +122,14 @@ class Jurnal_rsa extends MY_Controller {
             $checker['jumlah_kredit'] = substr($checker['jumlah_kredit'], 0, -3);
 
             // print_r($checker);die();
+            // print_r($entry);die();
             if ($this->Jurnal_rsa_model->check_kuitansi_exist($checker)){
                 $this->session->set_flashdata('warning','Data yang sama sudah ada');
                 redirect($direct_url);
                 
             }
+
+
 
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);

@@ -2549,6 +2549,8 @@ function terbilang(bilangan) {
           <br />
           
           <div class="alert alert-warning" style="text-align:center">
+
+              <button type="button" class="btn btn-primary" id="cetak_kuitansi">Cetak kuitansi</button>
                 
               &nbsp;
                 
@@ -3313,4 +3315,25 @@ function terbilang(bilangan) {
           $('button[rel=<?php echo $id_kuitansi ?>]').click();
         }, 0);
     });
+
+    function printData()
+    {
+       var divToPrint=document.getElementById("kuitansi");
+       newWin= window.open("");
+       var htmlToPrint = '' +
+        '<style type="text/css">' +
+        'table th, table td {' +
+        'border: solid #000 !important; border-width: 1px 1px 1px 1px !important;' +
+        'padding;0.5em;' +
+        '}' +
+        '</style>';
+        htmlToPrint += divToPrint.outerHTML;
+       newWin.document.write(htmlToPrint);
+       newWin.print();
+       newWin.close();
+    }
+
+    $('#cetak_kuitansi').on('click',function(){
+    printData();
+    })
 </script>

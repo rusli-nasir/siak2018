@@ -3,6 +3,6 @@
 		<input type="submit" name="del_double" value="HAPUS !!">
 	</form>
 <?php else: ?>
-	<a href = 
+	<a href
 <?php endif ?>
 	
