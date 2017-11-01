@@ -6,7 +6,8 @@ class Editor extends MY_Controller {
         parent::__construct();
         $this->cek_session_in();
         $this->load->library('grocery_CRUD');       
-        $this->db2 = $this->db2 = $this->load->database('rba',TRUE);
+        $this->db2 = $this->load->database('rba',TRUE);
+        $this->db_laporan = $this->load->database('laporan',TRUE);
     }
 
 	public function edit_kuitansi(){
@@ -23,7 +24,7 @@ class Editor extends MY_Controller {
 		$crud->unset_delete();
 		$crud->unset_export();
 		$crud->unset_texteditor('uraian','untuk');
-		$crud->unset_fields('id_pajak','id_pengembalian');
+		$crud->unset_fields('id_pajak','id_pengembalian','tanggal_jurnal','tanggal_verifikasi','tanggal_posting','status');
 		$crud->unset_print();
 
 		$unit = $this->db2->get('unit')->result_array();
@@ -35,6 +36,8 @@ class Editor extends MY_Controller {
 
 		$crud->field_type('unit_kerja','dropdown',$array_unit);
 
+		$crud->callback_after_update(array($this, 'update_kuitansi_posted'));
+
 		// $crud->add_action('Edit', 'ui-icon-pencil', 'akuntansi/jurnal_rsa/edit_kuitansi_jadi','ui-icon-pencil');
 
         $output = $crud->render(); 
@@ -42,6 +45,19 @@ class Editor extends MY_Controller {
         $output->menu12 = true;
         $temp_data['content'] = $this->load->view('akuntansi/crud/manage',$output,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);   
+	}
+
+	public function update_kuitansi_posted($post_array,$primary_key)
+	{
+		$check_posted = $this->db_laporan->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi' => $primary_key))->result_array();
+		// print_r($post_array);die();
+		if ($check_posted != null){
+			$this->db_laporan->where('id_kuitansi_jadi',$primary_key);
+			$this->db_laporan->update('akuntansi_kuitansi_jadi',$post_array);
+			return true;
+		}else{
+			return true;
+		}
 	}
 
 	public function list_akun()

@@ -1425,6 +1425,9 @@ class Kuitansi extends MY_Controller {
     		$this->data['direvisi'][$i] = $this->get_total_data($result->kode_unit, 'direvisi', $periode_awal, $periode_akhir);
     		$i++;
     	}
+
+    	unset($this->data['menu1']);
+    	$this->data['menu_monitor'] = true;
         /*$this->data['tmp'] = $this->db->query("SELECT unit_kerja, COUNT(*) as jumlah FROM akuntansi_kuitansi_jadi WHERE flag=1 AND (status='direvisi' OR status='proses') GROUP BY unit_kerja ORDER BY jumlah ASC");
         foreach($this->data['tmp']->result_array() as $token){
             $this->data['jumlah_verifikasi'][$token['unit_kerja']] = $token['jumlah'];
