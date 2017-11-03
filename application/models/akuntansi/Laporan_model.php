@@ -656,6 +656,7 @@ class Laporan_model extends CI_Model {
             $end_date = "$year-12-31";      
         }
 
+
         $kolom = array(
                 'debet' => array(
                         'kas' => 'akun_debet',
@@ -719,7 +720,7 @@ class Laporan_model extends CI_Model {
                     $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
                     // if ($array_uraian != null) {
-                    //     echo $this->db_laporan->get_compiled_select();die();
+                        // echo $this->db_laporan->get_compiled_select();die();
                     // }
 
 
@@ -773,7 +774,7 @@ class Laporan_model extends CI_Model {
                         }
 
                         if ($start_date != null and $end_date != null){
-                            $added_query .= " and tu.tanggal BETWEEN '$start_date' AND '$end_date' ";
+                            $added_query .= " and (tu.tanggal BETWEEN '$start_date' AND '$end_date' )";
                         }
 
                         if ($array_uraian != null){
@@ -795,6 +796,8 @@ class Laporan_model extends CI_Model {
                                  GROUP BY tr.akun
 
                         ";
+
+                        // die($query);
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
@@ -946,7 +949,7 @@ class Laporan_model extends CI_Model {
                     // print_r($query);die();
 
                     // $anggaran[$akun] = $this->db2->query($query)->row_array()['jumlah'];
-                } elseif (substr($akun,0,1) == 4) {
+                } elseif (substr($akun,0,1) == 4 and false) {
                     if ($unit != null) {
                         $this->db2->where('LEFT(sukpa,2)',$unit);
                     } 

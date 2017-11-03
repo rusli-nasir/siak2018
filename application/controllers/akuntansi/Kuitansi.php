@@ -1461,6 +1461,7 @@ class Kuitansi extends MY_Controller {
 		if($periode_awal!=null AND $periode_akhir!=null){
     		$this->db->where("(tanggal BETWEEN '$periode_awal' AND '$periode_akhir')");
     	}
+    	$this->db->where("tipe <> 'pajak' AND tipe <> 'pengembalian'");
 		$query = $this->db->get('akuntansi_kuitansi_jadi');
 		$q = $query->num_rows();
 		return $q;
@@ -1501,15 +1502,17 @@ class Kuitansi extends MY_Controller {
 			AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'");
 		$tup = $tup->num_rows();
 
+
 		//tup nihil
 		$tup = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx
 			AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'");
 		$tup = $tup->num_rows();
 
 		//ls3
-		$ls3 = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1
-			AND substr(trx_lsphk3.kode_unit_subunit,1,2)='".$kode_unit."'");
-		$ls3 = $ls3->num_rows();
+		// $ls3 = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1
+		// 	AND substr(trx_lsphk3.kode_unit_subunit,1,2)='".$kode_unit."'");
+		// $ls3 = $ls3->num_rows();
+		$ls3 = 0;
 
 		//lspg
 		$lspg = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.flag_proses_akuntansi=0 AND S.proses=5 AND P.unitsukpa=".$kode_unit."");

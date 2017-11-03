@@ -91,9 +91,12 @@ class Jurnal_umum extends MY_Controller {
                 if(substr($tanggal, 0,1)=="'"){
                     $tanggal=substr($tanggal, 1);              
                 }
-                $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+                // $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+                $tanggal = $this->tanggal_excel_normalisasi($tanggal);
                 if ($tanggal < $awal_tahun or $tanggal > $akhir_tahun){
                     $temp_report_tanggal = array();
+
+                    $temp_report_tanggal['no_spm'] = $objWorksheet->getCellByColumnAndRow(1,$row)->getValue();
                     $temp_report_tanggal['uraian'] = $objWorksheet->getCellByColumnAndRow(5,$row)->getValue();
                     $temp_report_tanggal['tanggal'] = $tanggal;
                     $report_tanggal[] = $temp_report_tanggal;
@@ -105,6 +108,7 @@ class Jurnal_umum extends MY_Controller {
             echo "Tanggal entry dibawah tidak sesuai kriteria input : <br/>";
             foreach ($report_tanggal as $entry) {
                 echo "<hr/>";
+                echo "No. SPM : ".$entry['no_spm']."<br/>";
                 echo "Uraian : ".$entry['uraian']."<br/>";
                 echo "Tanggal terdeteksi : ".$entry['tanggal']."<br/><hr/>";
             }
@@ -156,10 +160,11 @@ class Jurnal_umum extends MY_Controller {
 
         $start_akun = $end_akun = 6;
 
-        $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        $val = $objWorksheet->getCellByColumnAndRow($end_akun,5)->getValue();
+        // die($val);
         while ($val == '' or $val == 'DEBET-KREDIT') {
             $end_akun++;
-            $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+            $val = $objWorksheet->getCellByColumnAndRow($end_akun,5)->getValue();
         } 
 
         $start_debet = $start_akun;
@@ -170,10 +175,10 @@ class Jurnal_umum extends MY_Controller {
         // Cari kolom potongan dan pajak 
 
         $start_potongan = $end_akun;
-        $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        $val = $objWorksheet->getCellByColumnAndRow($end_akun,5)->getValue();
         while ($val == '' or $val == 'POTONGAN') {
             $end_akun++;
-            $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+            $val = $objWorksheet->getCellByColumnAndRow($end_akun,5)->getValue();
         } 
 
         $end_potongan = $end_akun - 1;
@@ -181,10 +186,10 @@ class Jurnal_umum extends MY_Controller {
         // Cari kolom pengembalian
 
         $start_pengembalian = $end_akun;
-        $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+        $val = $objWorksheet->getCellByColumnAndRow($end_akun,5)->getValue();
         while ($val == '' or $val == 'PENGEMBALIAN') {
             $end_akun++;
-            $val = $objWorksheet->getCellByColumnAndRow($end_akun,6)->getValue();
+            $val = $objWorksheet->getCellByColumnAndRow($end_akun,5)->getValue();
         } 
 
         $end_pengembalian = $end_akun - 1;
@@ -220,11 +225,12 @@ class Jurnal_umum extends MY_Controller {
                 $tanggal = $tgl_jadi;
             }*/
             if(substr($tanggal, 0,1)=="'"){
-                $tanggal=substr($tanggal, 1);              
+                $tanggal=substr($tanggal, 1);
             }
 
             
-            $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+            // $tanggal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal));
+            $tanggal = $this->tanggal_excel_normalisasi($tanggal);
             if(substr($tanggal, 0,4)!='2017'){
                 $arr_tgl = explode('/', $objWorksheet->getCellByColumnAndRow(2,$row)->getValue());
                 $tgl_jadi = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
@@ -246,6 +252,19 @@ class Jurnal_umum extends MY_Controller {
                 $entry['tanggal_posting'] = $waktu_jurnal_umum;
                 $entry['tanggal_verifikasi'] = $waktu_jurnal_umum;
                 $entry['tanggal_jurnal'] = $waktu_jurnal_umum;
+
+                // print_r($entry);die();
+                // print_r($start_debet);
+                // echo "|";
+                // print_r($end_debet);
+                // echo "==";
+                // print_r($start_potongan);
+                // echo "|";
+                // print_r($end_potongan);
+                // echo "==";
+                // print_r($start_pengembalian);
+                // echo "|";
+                // print_r($end_pengembalian);die();
                 
                 for ($kolom=$start_debet; $kolom <= $end_debet; $kolom++) { 
                     $akun = $objWorksheet->getCellByColumnAndRow($kolom,9)->getValue();
@@ -388,6 +407,17 @@ class Jurnal_umum extends MY_Controller {
             }
         }
 
+        // foreach ($data as $entry_data) {
+        //     $entry = $entry_data['entry'];
+        //     $array_relasi = $entry_data['relasi'];
+        //     $array_pajak = $entry_data['pajak'];
+        //     $array_pengembalian = $entry_data['pengembalian'];
+        //     echo "<pre>";
+        //     print_r($array_relasi);die();
+        //     echo "</pre>";
+        // }
+        // die('aaaa');
+
         foreach ($data as $entry_data) {
 
             $entry = $entry_data['entry'];
@@ -395,7 +425,10 @@ class Jurnal_umum extends MY_Controller {
             $array_pajak = $entry_data['pajak'];
             $array_pengembalian = $entry_data['pengembalian'];
 
+            // print_r($array_relasi);die();
+
             $id_kuitansi_jadi = $this->Kuitansi_model->add_kuitansi_jadi($entry);
+
 
             if ($array_relasi != null) {
                 for ($i=0;$i<count($array_relasi);$i++) {
@@ -1257,5 +1290,15 @@ class Jurnal_umum extends MY_Controller {
             echo json_encode($data);
         }
     }
-	
+
+    public function tanggal_excel_normalisasi($tanggal){
+        $arr_tgl = explode('/', $tanggal);
+        if (!isset($arr_tgl[2])){
+            $tanggal_normal = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($tanggal)); 
+        }else{
+            $tanggal_normal = $arr_tgl[2].'-'.$arr_tgl[1].'-'.$arr_tgl[0];
+        }
+        return $tanggal_normal;
+    }
+    
 }

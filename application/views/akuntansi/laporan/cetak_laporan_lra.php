@@ -45,6 +45,10 @@ if($atribut['cetak']){
 			.border th{
 			    border: 1px solid black;
 			}
+
+			td { 
+			    padding: 4px;
+			}
 			.tab0{padding-left:0px !important;font-weight:bold;}
 			.tab1{padding-left:20px !important;font-weight:bold;}
 			.tab2{padding-left:40px !important;}
@@ -55,39 +59,56 @@ if($atribut['cetak']){
 		</style>
 		<div align="center">
 			<div style="font-weight:bold">
-				<?php echo $nama_unit ?><br/>
+				<?php echo str_replace("Fak.","Fakultas ",$nama_unit); ?><br/>
 				Laporan Realisasi Anggaran<br/>
-				<?php echo $atribut['daterange']; ?><br/>
+				Periode yang berakhir pada <?php echo $tanggal_laporan; ?><br/>
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
-		<table style="width:1100px;font-size:10pt;margin:0 auto" class="border">
+		<table style="width:90%;font-size:10pt;margin:0 auto" class="border">
 			<thead>
-				<tr style="background-color:#ECF379;height:45px">
-					<th width="30px">No.</th>
-					<th width="550px">URAIAN</th>
-					<th>Anggaran</th>
-					<th>Realisasi</th>
-					<th>Realisasi Diatas(Dibawah) Anggaran</th>
-					<th>%</th>
+				<tr style="background-color:#FFC2FF;height:45px">
+					<th >No.</th>
+					<th width="50%">URAIAN</th>
+					<th width="15%">Anggaran</th>
+					<th width="15%">Realisasi</th>
+					<th width="15%">Realisasi Diatas(Dibawah) Anggaran</th>
+					<th width="5%">%</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php
 					$no = 0; 
 					  foreach ($parse as $key => $entry): ?>
-					<tr <?php if ($entry['type'] == 'sum'): ?>
-						style="background-color: #8DB4E2";
-					<?php endif ?> >
-						<td> &nbsp;<?php echo ++$no ?></td>
+					<tr 
+						<?php if ($entry['type'] == 'sum'): ?>
+							style="background-color: #EDED74;font-weight: bold;"
+						<?php elseif ($entry['level'] == $atribut['level']-2): ?>
+							style="background-color: #7CFFFF;font-weight: bold;"
+						<?php elseif ($entry['level'] < $atribut['level']-1): ?>
+							style="background-color: #54FFA9;font-weight: bold;"
+						<?php endif ?>
+					>
+						<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
 						<td>
 							<?php 
-							for ($i=0; $i < $entry['level']; $i++) { 
+							for ($i=0; $i < $entry['level']*2; $i++) { 
 								echo "&nbsp;&nbsp;";
 							}
 
 							 ?>
-							<?php echo $entry['nama'] ?>
+							<?php
+								if ($entry['level'] < $atribut['level']-1) {
+									$entry['nama'] = strtolower($entry['nama']);
+									$entry['nama'] = ucwords($entry['nama']);
+								}
+								$entry['nama'] = str_replace('Apbn', "APBN", $entry['nama']);
+								$entry['nama'] = str_replace('bp Ptnbh', "BP PTNBH", $entry['nama']);
+								$entry['nama'] = str_replace(' Ptn ', " PTN ", $entry['nama']);
+								$entry['nama'] = str_replace(' Bh', " BH", $entry['nama']);
+								$entry['nama'] = str_replace(' Pns', " PNS", $entry['nama']);
+							 	echo $entry['nama'];
+							 ?>
 							</td>
 						<td align="right"><?php  echo eliminasi_negatif($entry['anggaran']) ?></td>
 						<td  align="right"><?php  echo eliminasi_negatif($entry['realisasi']) ?></td>
@@ -100,15 +121,14 @@ if($atribut['cetak']){
 			</tbody>
 		</table>
 		<br/>
-		<table width="1300px;">
+		<table width="100%">
 			<tbody>
 				<tr>
-					<td colspan="4" width="600px;"></td>
+					<td colspan="4" width="70%"></td>
 					<td colspan="4">
 						<?php 
-					    $pejabat = get_pejabat('all','rektor');
-					    $teks_kpa = "Rektor";
-					    $teks_unit = "UNIVERSITAS DIPONEGORO";
+						$pejabat = $kpa;
+					    $teks_unit = str_replace("Fak.","Fakultas ",$nama_unit);
 						echo 'Semarang, '.$atribut['periode_ttd'].'<br/>'.$teks_kpa.'<br/>';
 						echo $teks_unit.'<br/><br/><br/><br/>';
 						echo $pejabat['nama'].'<br/>NIP. '.$pejabat['nip'];

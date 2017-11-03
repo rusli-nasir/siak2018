@@ -239,7 +239,7 @@ class Kuitansi_model extends CI_Model {
 
         if($this->session->userdata('level')==1){
             $verifikasi = "AND ((status='revisi' AND flag=1) OR (status='proses' AND flag=1))";
-            $order = "ORDER BY no_bukti ASC";
+            $order = "ORDER BY status DESC,no_bukti ASC";
             //$order = "ORDER BY FIELD(status, 'revisi', 'proses', 'terima', 'posted')";
         }else{
             $verifikasi = "AND ((status='proses' AND flag=1) OR (status='direvisi' AND flag=1))";
@@ -368,11 +368,13 @@ class Kuitansi_model extends CI_Model {
     /*----------------Penerimaan & memorial ---------------------*/
 
     function read_by_tipe($limit = null, $start = null, $keyword = null, $tipe = 'penerimaan'){
-        if($this->session->userdata('level')==1 || $this->session->userdata('level')==5){
+        if($this->session->userdata('level')==1 || $this->session->userdata('level')==5 || $this->session->userdata('level')==8){
             $filter_unit = "AND unit_kerja='".$this->session->userdata('kode_unit')."'";
         }else{
             $filter_unit = '';
         }
+
+        // echo $filter_unit;die();
 
         // print_r($this->session->userdata());die();
         if ($this->session->userdata('kode_user') == 'RM' and $tipe == 'jurnal_umum'){

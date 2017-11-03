@@ -278,7 +278,10 @@ class Akun_model extends CI_Model {
 	public function get_akun_penerimaan()
     {
         $this->db->not_like('nama', 'Operasional');
-        return $this->db->get('akuntansi_aset_6')->result_array();
+        $result1 =  $this->db->get('akuntansi_aset_6')->result_array();
+        $this->db->like('nama', 'Operasional BBM');
+        $result2 =  $this->db->get('akuntansi_aset_6')->result_array();
+        return array_merge($result1,$result2);
     }
 
 	public function get_kode_sal_penerimaan()

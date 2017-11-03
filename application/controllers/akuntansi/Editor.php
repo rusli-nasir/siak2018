@@ -13,10 +13,18 @@ class Editor extends MY_Controller {
 	public function edit_kuitansi(){
 		$crud = new grocery_CRUD();
 
+		if ($this->session->userdata('level') != 2 and $this->session->userdata('level') != 3){
+			die("akses tidak diperbolehkan");
+		}
+
 		$crud->set_table('akuntansi_kuitansi_jadi');
 		$crud->set_primary_key('id_kuitansi_jadi');
 		$crud->where("tipe != 'memorial' AND tipe != 'jurnal_umum' AND tipe != 'pajak' AND tipe != 'penerimaan' AND tipe != 'pengembalian'");
 		// $crud->set_theme('datatables');
+
+		if ($this->session->userdata('level') == 2){
+			$crud->where('unit_kerja',$this->session->userdata('kode_unit'));
+		}
 
 		// $crud->unset_edit();
 		$crud->unset_add();
@@ -24,7 +32,7 @@ class Editor extends MY_Controller {
 		$crud->unset_delete();
 		$crud->unset_export();
 		$crud->unset_texteditor('uraian','untuk');
-		$crud->unset_fields('id_pajak','id_pengembalian','tanggal_jurnal','tanggal_verifikasi','tanggal_posting','status');
+		$crud->unset_fields('id_pajak','id_pengembalian','tanggal_jurnal','tanggal_verifikasi','tanggal_posting','status','flag','kode_user','tipe','jenis','tanggal','tanggal_bukti','id_kuitansi');
 		$crud->unset_print();
 
 		$unit = $this->db2->get('unit')->result_array();

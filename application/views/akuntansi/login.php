@@ -69,30 +69,31 @@
 		&copy; 2017 Universitas Diponegoro 
 	</div>
 
-	
-	<?php if ($is_demo): ?>
-		<div id="myModal" class="modal fade">
-		    <div class="modal-dialog">
-		        <div class="modal-content">
-		            <div class="modal-header">
-		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                <h4 class="modal-title text-danger">PERHATIAN</h4>
-		            </div>
-		            <div class="modal-body">
-		                <p class="text-danger"><strong>Sistem di PAK ini hanya untuk keperluan demo dan testing, untuk sistem yang benar dapat diakses di <a href="http://rsa.apps.undip.ac.id/index.php/akuntansi/login"> SINI </a></strong></p>
-		            </div>
-		            <div class="modal-footer">
-		                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		            </div>
-		        </div>
-		    </div>
-		</div>
+	<?php if (isset($is_demo)): ?>
+		<?php if ($is_demo): ?>
+			<div id="myModal" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			                <h4 class="modal-title text-danger">PERHATIAN</h4>
+			            </div>
+			            <div class="modal-body">
+			                <p class="text-danger"><strong>Sistem di PAK ini hanya untuk keperluan demo dan testing, untuk sistem yang benar dapat diakses di <a href="http://rsa.apps.undip.ac.id/index.php/akuntansi/login"> SINI </a></strong></p>
+			            </div>
+			            <div class="modal-footer">
+			                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
 
-		<script type="text/javascript">
-			$(document).ready(function(){
-				$("#myModal").modal('show');
-			});
-		</script>
+			<script type="text/javascript">
+				$(document).ready(function(){
+					$("#myModal").modal('show');
+				});
+			</script>
+		<?php endif ?>
 	<?php endif ?>
 	
 		

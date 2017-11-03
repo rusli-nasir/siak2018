@@ -497,6 +497,7 @@ class Penerimaan extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
             // $this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['akun_kas_akrual'] = $this->Akun_model->get_akun_penerimaan();
+            // print_r($this->data['akun_kas_akrual']);die();
             $this->data['akun_kas_akrual'][]= $this->Akun_model->get_akun_sal_penerimaan();
 
             $this->data['sal_penerimaan'][] = $this->Akun_model->get_akun_sal_penerimaan();

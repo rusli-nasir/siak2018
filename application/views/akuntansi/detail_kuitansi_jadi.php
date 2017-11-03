@@ -297,9 +297,9 @@
     <button id="posting" name="posting" class="btn btn-success" type="submit" onclick="return confirm('Yakin memposting ini?')">Posting</button>
     <?php endif ?>
     <?php if($mode=='lihat' AND $this->session->userdata('level')==3){ ?>
-    <a href="<?php echo site_url('akuntansi/kuitansi/send_service/'.$id_kuitansi_jadi); ?>" onclick="return confirm('Kirim data ke aplikasi Laporan Akuntansi?')"><button name="posting" class="btn btn-success" type="button">Posting</button></a>
+    <!-- <a href="<?php echo site_url('akuntansi/kuitansi/send_service/'.$id_kuitansi_jadi); ?>" onclick="return confirm('Kirim data ke aplikasi Laporan Akuntansi?')"><button name="posting" class="btn btn-success" type="button">Posting</button></a> -->
     <?php } ?>
-    <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
+    <a href="<?php echo site_url($direct_url); ?>"><button id="keluar" name="keluar" class="btn btn-danger" type="button">Keluar</button></a>
   </div>
 </div>
 

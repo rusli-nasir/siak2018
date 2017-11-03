@@ -110,6 +110,7 @@
           <div class="col-md-5">
             <select name="akun_kredit_kas[]" class="form-control akun_kredit_kas">
                 <option value="">Pilih Akun</option>
+                <option value="911101">911101 - SAL</option>
                 <?php foreach ($data_akun_debet as $akun) {
                   ?>
                   <option value="<?=$akun['akun_6']?>"><?=$akun['akun_6'].' - '.$akun['nama']?></option>

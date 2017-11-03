@@ -330,6 +330,33 @@ class Jurnal_rsa extends MY_Controller {
 
         $isian = $this->Kuitansi_model->get_kuitansi_jadi($id_kuitansi_jadi);
 
+        $jenis = $isian['jenis'];
+
+        $direct_url = 'akuntansi/kuitansi/jadi';
+        if($jenis=='NK'){
+            $direct_url = 'akuntansi/kuitansi/jadi_spm';
+        }else if($jenis=='UP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/UP/1';
+        }else if($jenis=='PUP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/PUP/1';
+        }else if($jenis=='GP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/GP/1';
+        }else if($jenis=='GUP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/GUP/1';
+        }else if($jenis=='GP_NIHIL'){
+            $direct_url = 'akuntansi/kuitansi/jadi/GP_NIHIL/1';
+        }else if($jenis=='TUP'){
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP/1';
+        }else if($jenis=='TUP_NIHIL'){
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP_NIHIL/1';
+        }else if($jenis=='LK'){
+            $direct_url = 'akuntansi/kuitansi/jadi/LK/1';
+        }else if($jenis=='LN'){
+            $direct_url = 'akuntansi/kuitansi/jadi/LN/1';
+        }else if($jenis=='TUP_PENGEMBALIAN'){
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP_PENGEMBALIAN/1';
+        }
+
         
         $isian['akun_sal'] = array($this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit')));
         $isian['akun_sal'][] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
@@ -348,6 +375,7 @@ class Jurnal_rsa extends MY_Controller {
         $isian['komentar'] = $query_riwayat['komentar'];
         $isian['akun_sal_debet'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
         $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_rekening_by_unit('all')->result();
+        $isian['direct_url'] = $direct_url;
         // print_r($isian['akun_kas']);die();
         // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
         $this->data['content'] = $this->load->view('akuntansi/detail_kuitansi_jadi',$isian,true);

@@ -92,6 +92,56 @@ class Laporan extends MY_Controller {
         }
     }
 
+    public function lra_unit(){
+        $this->data['menu9'] = null;
+
+//      $this->data['query_debet'] = $this->Laporan_model->read_buku_besar_group('akun_debet');
+//      $this->data['query_debet_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_debet_akrual');
+//      $this->data['query_kredit'] = $this->Laporan_model->read_buku_besar_group('akun_kredit');
+//      $this->data['query_kredit_akrual'] = $this->Laporan_model->read_buku_besar_group('akun_kredit_akrual');
+        if($this->input->post('jenis_laporan')!=null){
+            $level = $this->input->post('level');
+            $daterange = $this->input->post('daterange');
+            $date_t = explode(' - ', $daterange);
+            $data['periode_awal'] = strtodate($date_t[0]);
+            $data['periode_akhir'] = strtodate($date_t[1]) or null;
+            $data['sumber_dana'] = $this->input->post('sumber_dana');
+            $teks_periode = "";
+            if ($data['periode_awal'] != null and $data['periode_akhir'] != null){
+                $teks_periode .= "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_awal']) . " - ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
+            }
+            $data['level'] = $level;
+            $data['daterange'] = "PER ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
+            $data['parsing_date'] = $daterange;
+            $data['teks_periode'] = $teks_periode;
+            $data['periode_ttd'] = $this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
+
+            if($this->input->post('cetak')!=null){
+                $data['cetak'] = 'cetak';
+            }else{
+                $data['cetak'] = '';
+            }
+            if($this->input->post('jenis_laporan')=='Aktifitas'){
+                $data['daterange'] = "Periode yang berakhir pada ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
+                $this->get_lapak($level, $data);
+            }else if($this->input->post('jenis_laporan')=='Posisi Keuangan'){
+                $this->get_lpk($level, $data);
+            }else if($this->input->post('jenis_laporan')=='Realisasi Anggaran'){
+                $data['daterange'] = "Tahun berakhir pada 31 Desember ".explode('-',$data['periode_akhir'])[0];
+                $this->get_lra($level, $data);
+            }else if($this->input->post('jenis_laporan')=='Arus Kas'){
+                $data['daterange'] = "Periode yang berakhir pada tanggal ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
+                $this->get_laporan_arus($level, $data);
+            }
+        }else{
+            $this->db2 = $this->load->database('rba', true);
+            $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
+
+            $temp_data['content'] = $this->load->view('akuntansi/laporan_lra_unit_list',$this->data,true);
+            $this->load->view('akuntansi/content_template',$temp_data,false);
+        }
+    }
+
     public function rekap_jurnal($id = 0){
         $this->data['tab1'] = true;
 
@@ -2228,8 +2278,10 @@ class Laporan extends MY_Controller {
         $array_not_investasi = array();
         $array_special_investasi = array();
 
-        $start_date = '2017-01-01';
-        $end_date = '2017-12-31';
+        $year = gmdate('Y');
+
+        $start_date = $year.'-01-01';
+        $end_date = $year.'-12-31';
 
         $daterange = $this->input->post('daterange');
         $date_t = explode(' - ', $daterange);
@@ -2853,7 +2905,24 @@ class Laporan extends MY_Controller {
         if ($unit == 'all'){
             $unit = null;
         }
-        $data = $this->Laporan_model->get_rekap($array_akun,null,'kas',$unit,'anggaran');
+        // $daterange = $this->input->post('daterange');
+        $daterange = $parse_data['parsing_date'];
+        $date_t = explode(' - ', $daterange);
+        $year = gmdate('Y');
+
+        $start_date = "$year-01-01";
+
+        $end_date = strtodate($date_t[1]) or null;
+
+        $tanggal_laporan = $date_t[1];
+
+        // print_r($parse_data);die();
+
+        // print_r($tanggal_laporan);die();
+
+        // $this->Laporan_model->get_rekap($akun,$array_not,'kas',null,'sum',null,$start_date,$end_date,$array_kata);
+                                //    get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null)
+        $data = $this->Laporan_model->get_rekap($array_akun,null,'kas',$unit,'anggaran',null,$start_date,$end_date);
         $tabel_akun = array(
             4 => 'lra',
             5 => 'akun_belanja',
@@ -2977,7 +3046,7 @@ class Laporan extends MY_Controller {
                             $entry_parsed = array(
                                'order' => ++$order,
                                'level' => 3,
-                               'akun' => $key_3,
+                               'akun' => $key_4,
                                'type' => 'entry',
                                'nama' => $nama,
                                'start_sum' => null,
@@ -3033,6 +3102,19 @@ class Laporan extends MY_Controller {
         if ($data['nama_unit'] == '-' or $data['nama_unit'] == 'Penerimaan'){
             $data['nama_unit'] = 'UNIVERSITAS DIPONEGORO';
         }
+        if ($unit == null or $unit == 9999) {
+            $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
+            $teks_kpa = "Rektor";
+        } else {
+            $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+            $teks_kpa = "Pengguna Anggaran";
+        }
+        // print_r($kpa);
+        // echo "<br/>";
+        // print_r($teks_kpa);
+        // die();
+        $data['kpa'] = $kpa;
+        $data['teks_kpa'] = $teks_kpa;
         $data['level'] = $level;
         $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
         $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
@@ -3041,11 +3123,26 @@ class Laporan extends MY_Controller {
         // $this->remove_parse($parsed,124);
         // $this->remove_parse($parsed,121);
 
+        // add_jumlah_for(&$parse,$akun,$jenis,$nama = null,$jenis_pembatasan = null,$prefix_akun = null,$selip = null)
 
+        // print_r($this->add_jumlah_for($parsed,411,'lra',"dummy",null,null,true));die();
         $this->add_jumlah_for($parsed,4,'lra',"Jumlah Pendapatan");
         $this->add_jumlah_for($parsed,5,'lra',"Jumlah Beban");
         $this->add_jumlah_for($parsed,41,'lra',"Jumlah Pendapatan APBN");
         $this->add_jumlah_for($parsed,42,'lra',"Jumlah Pendapatan Selain APBN");
+
+        for ($i=0; $i < count($parsed); $i++) { 
+            if ($parsed[$i]['level'] == $parse_data['level']-2){
+                $temp = 0;
+                $temp = $this->add_jumlah_for($parsed,$parsed[$i]['akun'],'lra',"dummy",null,null,true);
+                $parsed[$i]['anggaran'] = $temp['anggaran'];
+                $parsed[$i]['realisasi'] = $temp['realisasi'];
+                $parsed[$i]['selisih'] = $temp['selisih'];
+                $parsed[$i]['persentase'] = $temp['persentase'];
+            }
+        }
+
+
         // $this->add_jumlah_for($parsed,3,'lpk',"JUMLAH ASET BERSIH");
         // $this->add_jumlah_for($parsed,11,'lpk',"JUMLAH ASET LANCAR");
         // $this->add_jumlah_for($parsed,12,'lpk',"JUMLAH ASET TIDAK LANCAR");
@@ -3053,6 +3150,7 @@ class Laporan extends MY_Controller {
         // $this->add_jumlah_for($parsed,22,'lpk',"JUMLAH LIABILITAS JANGKA PANJANG");
         // $this->add_jumlah_after($parsed,"sum.12",'lpk','akun',"JUMLAH ASET",array("sum.11","sum.12"),array("sum.11","sum.12"));
         // $this->add_jumlah_after($parsed,"sum.3",'lpk','akun',"JUMLAH LIABILITAS DAN ASET BERSIH",array("sum.2","sum.3"),array("sum.2","sum.3"));
+        $data['tanggal_laporan'] = $tanggal_laporan;
         $data['parse'] = $parsed;
 
         // print_r($parsed);die();
@@ -3426,7 +3524,7 @@ class Laporan extends MY_Controller {
         array_splice($parse, $posisi+1, 0, array($entry_added));
     }
 
-    public function add_jumlah_for(&$parse,$akun,$jenis,$nama = null,$jenis_pembatasan = null,$prefix_akun = null)
+    public function add_jumlah_for(&$parse,$akun,$jenis,$nama = null,$jenis_pembatasan = null,$prefix_akun = null,$selip = null)
     {
         $tabel_akun = array(
             1 => 'aset',
@@ -3637,6 +3735,10 @@ class Laporan extends MY_Controller {
                'jenis_pembatasan' => $parse[$l-1]['jenis_pembatasan'],
             );
 
+        }
+
+        if ($selip == true){
+            return $entry_added;
         }
 
         $posisi = $end+1; // J udah ditambah 1 di while
