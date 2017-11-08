@@ -80,42 +80,48 @@ if($atribut['cetak']){
 				<?php
 					$no = 0; 
 					  foreach ($parse as $key => $entry): ?>
-					<tr 
-						<?php if ($entry['type'] == 'sum'): ?>
-							style="background-color: #EDED74;font-weight: bold;"
-						<?php elseif ($entry['level'] == $atribut['level']-2): ?>
-							style="background-color: #7CFFFF;font-weight: bold;"
-						<?php elseif ($entry['level'] < $atribut['level']-1): ?>
-							style="background-color: #54FFA9;font-weight: bold;"
-						<?php endif ?>
-					>
-						<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
-						<td>
-							<?php 
-							for ($i=0; $i < $entry['level']*2; $i++) { 
-								echo "&nbsp;&nbsp;";
-							}
+					  	<?php if ($entry['level'] != 0 or $entry['type'] != 'index' or true): ?>
+							<tr 
+								<?php if ($entry['type'] == 'sum'): ?>
+									style="background-color: #EDED74;font-weight: bold;"
+								<?php elseif ($entry['level'] == $atribut['level']-2): ?>
+									style="background-color: #7CFFFF;font-weight: bold;"
+								<?php elseif ($entry['level'] < $atribut['level']-1): ?>
+									style="background-color: #54FFA9;font-weight: bold;"
+								<?php endif ?>
+							>
+								<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
+								<td>
+									<?php 
+									for ($i=0; $i < $entry['level']*2; $i++) { 
+										echo "&nbsp;&nbsp;";
+									}
 
-							 ?>
-							<?php
-								if ($entry['level'] < $atribut['level']-1) {
-									$entry['nama'] = strtolower($entry['nama']);
-									$entry['nama'] = ucwords($entry['nama']);
-								}
-								$entry['nama'] = str_replace('Apbn', "APBN", $entry['nama']);
-								$entry['nama'] = str_replace('bp Ptnbh', "BP PTNBH", $entry['nama']);
-								$entry['nama'] = str_replace(' Ptn ', " PTN ", $entry['nama']);
-								$entry['nama'] = str_replace(' Bh', " BH", $entry['nama']);
-								$entry['nama'] = str_replace(' Pns', " PNS", $entry['nama']);
-							 	echo $entry['nama'];
-							 ?>
-							</td>
-						<td align="right"><?php  echo eliminasi_negatif($entry['anggaran']) ?></td>
-						<td  align="right"><?php  echo eliminasi_negatif($entry['realisasi']) ?></td>
-						<td  align="right"><?php  echo eliminasi_negatif($entry['selisih']) ?></td>
-						<td  align="right"><?php  echo number_format($entry['persentase'],2); ?></td>
-						
-					</tr>
+									 ?>
+									<?php
+										if ($entry['level'] < $atribut['level']-1) {
+											$entry['nama'] = strtolower($entry['nama']);
+											$entry['nama'] = ucwords($entry['nama']);
+										}
+										$entry['nama'] = str_replace('Apbn', "APBN", $entry['nama']);
+										$entry['nama'] = str_replace('bp Ptnbh', "BP PTNBH", $entry['nama']);
+										$entry['nama'] = str_replace(' Ptn ', " PTN ", $entry['nama']);
+										$entry['nama'] = str_replace(' Bh', " BH", $entry['nama']);
+										$entry['nama'] = str_replace(' Pns', " PNS", $entry['nama']);
+										$entry['nama'] = str_replace(' Beban', " Biaya", $entry['nama']);
+										$entry['nama'] = str_replace('Beban', "Biaya", $entry['nama']);
+										$entry['nama'] = str_replace(' BEBAN', " BIAYA", $entry['nama']);
+										$entry['nama'] = str_replace('bumu', "BUMU", $entry['nama']);
+									 	echo $entry['nama'];
+									 ?>
+									</td>
+								<td align="right"><?php  echo eliminasi_negatif($entry['anggaran']) ?></td>
+								<td  align="right"><?php  echo eliminasi_negatif($entry['realisasi']) ?></td>
+								<td  align="right"><?php  echo eliminasi_negatif($entry['selisih']) ?></td>
+								<td  align="right"><?php  echo number_format($entry['persentase'],2); ?></td>
+								
+							</tr>
+						<?php endif ?>
 					
 				<?php endforeach ?>
 			</tbody>

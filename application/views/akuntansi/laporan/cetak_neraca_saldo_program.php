@@ -11,8 +11,8 @@ if(isset($excel)){
 <html>
 	<head>
 		<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
-		<link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet">
-		<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+		<!-- <link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet"> -->
+		<!-- <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script> -->
 		<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
 		<title>Neraca Saldo</title>
 		<style type="text/css">
@@ -30,12 +30,19 @@ if(isset($excel)){
 		.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
     	.excel{background-color:#A3A33E;color:#fff;}
     	.pdf{background-color:#588097;color:#fff;}
+
+    	td { 
+			    padding: 4px;
+			}
+		thead {
+			text-align: center;
+		}
 		</style>
 	</head>
 	<body style="font-family:arial;margin:20px 20px 20px 20px;">
 		<?php if(!isset($excel)){ ?>
 			&nbsp;&nbsp;
-			<a class="btn btn-success" download="neraca_saldo.xls" id="download_excel">Download excel</a>
+			<a download="neraca_saldo.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
 				<button class="btn btn-success" type="button" id="print_tabel">Cetak</button>
 			<?php echo form_open("akuntansi/laporan/cetak_neraca_saldo/excel",array("class"=>"form-horizontal")); ?>
 				<input type="hidden" name="tipe" value="excel">

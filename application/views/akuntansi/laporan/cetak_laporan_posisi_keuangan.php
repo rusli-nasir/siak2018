@@ -30,7 +30,7 @@ if($atribut['cetak']){
 			<input type="hidden" name="cetak" value="cetak">
 			<!-- <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button> -->
 		</form>
-		<a download="neraca_saldo.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
+		<a download="laporan_posisi_keuangan.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
 		<button class="btn btn-success no-print" type="button" id="print_tabel">Cetak</button>
 		<?php } ?>
 		<div id="printed_table">
@@ -53,6 +53,10 @@ if($atribut['cetak']){
 			.btn{padding:10px;box-shadow:1px 1px 2px #bdbdbd;border:0px;}
 	    	.excel{background-color:#A3A33E;color:#fff;}
 	    	.pdf{background-color:#588097;color:#fff;}
+
+	    	td { 
+			    padding: 4px;
+			}
 		</style>
 		<div align="center">
 			<div style="font-weight:bold">
@@ -62,15 +66,15 @@ if($atribut['cetak']){
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
-		<table align="center" style="width:1100px;font-size:10pt;margin:0 auto;" class="border">
+		<table align="center" style="width:90%;font-size:12pt;margin:0 auto;" class="border">
 			<thead>
-				<tr style="background-color:#ECF379;height:45px;">
-					<th  style="text-align:center" width="30px">No</th>
-					<th style="text-align:center" width="550px">URAIAN</th>
-					<th style="text-align:center"> <?php echo $atribut['daterange'];?></th>
-					<th style="text-align:center" >31 Des <?php echo gmdate('Y')-1 ?></th>
-					<th style="text-align:center">Selisih/Kenaikan</th>
-					<th style="text-align:center">%</th>
+				<tr style="background-color:#FFC2FF;height:45px;">
+					<th  style="text-align:center" width="">No</th>
+					<th style="text-align:center" width="45%">URAIAN</th>
+					<th style="text-align:center" width="15%"> <?php echo $atribut['daterange'];?></th>
+					<th style="text-align:center" width="15%">31 Des <?php echo gmdate('Y')-1 ?></th>
+					<th style="text-align:center" width="15%">Selisih/Kenaikan</th>
+					<th style="text-align:center" width="5%">%</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -79,13 +83,14 @@ if($atribut['cetak']){
 					foreach ($parse as $key => $entry): ?>
 					<tr 
 						<?php if ($entry['type'] == 'sum'): ?>
-						style="background-color: #8DB4E2";
-						<?php endif ?> 
-						<?php if ($entry['type'] == 'index'): ?>
-							style="text-decoration: bold"
+							style="background-color: #EDED74;font-weight: bold;"
+						<?php elseif ($entry['level'] == $atribut['level']-2): ?>
+							style="background-color: #7CFFFF;font-weight: bold;"
+						<?php elseif ($entry['level'] < $atribut['level']-1): ?>
+							style="background-color: #54FFA9;font-weight: bold;"
 						<?php endif ?>
 					>
-						<td>&nbsp;<?php echo ++$no; ?></td>
+						<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
 						<td>
 							<?php 
 							for ($i=0; $i < $entry['level']; $i++) { 
@@ -93,7 +98,22 @@ if($atribut['cetak']){
 							}
 
 							 ?>
-							<?php echo $entry['nama'] ?>
+							<?php 
+							if ($entry['level'] < $atribut['level']-1) {
+									$entry['nama'] = strtolower($entry['nama']);
+									$entry['nama'] = ucwords($entry['nama']);
+								}
+								$entry['nama'] = str_replace('Apbn', "APBN", $entry['nama']);
+								$entry['nama'] = str_replace('bp Ptnbh', "BP PTNBH", $entry['nama']);
+								$entry['nama'] = str_replace(' Ptn ', " PTN ", $entry['nama']);
+								$entry['nama'] = str_replace(' Bh', " BH", $entry['nama']);
+								$entry['nama'] = str_replace(' Pns', " PNS", $entry['nama']);
+								$entry['nama'] = str_replace(' Beban', " Biaya", $entry['nama']);
+								$entry['nama'] = str_replace('Beban', "Biaya", $entry['nama']);
+								$entry['nama'] = str_replace(' BEBAN', " BIAYA", $entry['nama']);
+								$entry['nama'] = str_replace('bumu', "BUMU", $entry['nama']);
+							 	echo $entry['nama'];
+							 ?>
 							</td>
 						<td align="right">
 							<?php  if ($entry['type'] != "index") echo eliminasi_negatif($entry['jumlah_now']) ?>

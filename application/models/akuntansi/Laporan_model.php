@@ -642,6 +642,7 @@ class Laporan_model extends CI_Model {
         $array_tipe  = array('debet','kredit');
 
         // print_r($array_uraian);die();
+        // echo $sumber_dana;
 
         $array_jenis = array();
         if ($jenis == null){
@@ -720,7 +721,7 @@ class Laporan_model extends CI_Model {
                     $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
                     // if ($array_uraian != null) {
-                        // echo $this->db_laporan->get_compiled_select();die();
+                        // echo $this->db_laporan->get_compiled_select();
                     // }
 
 
@@ -797,6 +798,7 @@ class Laporan_model extends CI_Model {
 
                         ";
 
+                        // echo $query;
                         // die($query);
 
                         $hasil = $this->db_laporan->query($query)->result_array();
@@ -907,6 +909,20 @@ class Laporan_model extends CI_Model {
             if ($unit != null){
                 $query_unit .= "AND LEFT(kode_usulan_belanja,2) = '$unit'";
             }
+
+            $tabel_sumber_dana = array(
+                'terikat_temporer' => array('APBN-BPPTNBH','APBN-LAINNYA'),
+                'tidak_terikat' => array('SELAIN-APBN'),
+            );
+
+            $added_query = '';
+
+            if ($sumber_dana != null){
+                $string_sumber_dana = implode("','",$tabel_sumber_dana[$sumber_dana]);
+                $added_query .= " AND rba.detail_belanja_.sumber_dana IN ('$string_sumber_dana')";
+            }
+
+
             $query_max_unit_revisi  = "SELECT max(revisi) as max_revisi,LEFT(kode_usulan_belanja,2) as unit FROM `detail_belanja_` WHERE 1 $query_unit GROUP BY LEFT(kode_usulan_belanja,2)";
             $max_revisi = $this->db2->query($query_max_unit_revisi)->result_array();
             $revisi_unit = array();
@@ -928,7 +944,7 @@ class Laporan_model extends CI_Model {
 
                     foreach ($revisi_unit as $unit => $revisi) {
                         $lenunit = 2;
-                        $query = "SELECT SUM(rba.detail_belanja_.volume*rba.detail_belanja_.harga_satuan) AS jumlah, SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) as akun  FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) LIKE '$akun%' AND  SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.tahun = '{$tahun}' AND rba.detail_belanja_.revisi ='{$revisi}' GROUP BY SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6)";
+                        $query = "SELECT SUM(rba.detail_belanja_.volume*rba.detail_belanja_.harga_satuan) AS jumlah, SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) as akun  FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) LIKE '$akun%' AND  SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.tahun = '{$tahun}' AND rba.detail_belanja_.revisi ='{$revisi}' $added_query GROUP BY SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6)";
                         $anggaran_temp = array_merge($anggaran_temp,$this->db2->query($query)->result_array());
                     }
 

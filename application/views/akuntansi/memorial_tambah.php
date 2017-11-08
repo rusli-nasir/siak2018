@@ -173,10 +173,10 @@ $(document).ready(function(){
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-2 control-label">Kegiatan</label>  
+  <label class="col-md-2 control-label">Tujuan</label>  
   <div class="col-md-6">
       <select id="kegiatan" name="kegiatan" class="form-control" required="">
-        <option value="">Pilih Kegiatan</option>
+        <option value="">Pilih Tujuan</option>
         <?php foreach ($kegiatan->result() as $result) {
           ?>
           <option value="<?=$result->kode_kegiatan;?>"><?=$result->kode_kegiatan.' - '.$result->nama_kegiatan?></option>
@@ -190,7 +190,7 @@ $(document).ready(function(){
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-2 control-label">Output</label>  
+  <label class="col-md-2 control-label">Sasaran</label>  
   <div class="col-md-6">
       <select id="output" name="output" class="form-control" required="">
         <option value="">----</option>
