@@ -89,6 +89,8 @@ class Login extends MY_Controller {
 				redirect(site_url('akuntansi/jurnal_umum'));
 			} else if($this->session->userdata('level')==9){
 				redirect(site_url('akuntansi/user/manage'));
+			}else if($this->session->userdata('level')==10){
+				redirect(site_url('akuntansi/kuitansi/monitor'));
 			}
 		}
 	}

@@ -8,6 +8,7 @@ class Laporan_model extends CI_Model {
         $this->load->database('default', TRUE);
         $this->db2 = $this->load->database('rba',TRUE);
         $this->db_laporan = $this->load->database('laporan',TRUE);
+        $this->db_pendapatan = $this->load->database('pendapatan',TRUE);
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
 
@@ -637,7 +638,7 @@ class Laporan_model extends CI_Model {
     }
 
 
-    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null)
+    public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null,$tingkat = null,$sumber = null)
     {
         $array_tipe  = array('debet','kredit');
 
@@ -674,10 +675,28 @@ class Laporan_model extends CI_Model {
 
         $query1 = array();
 
+        if ($tingkat != null) {
+            $chart_length_tingkat = array();
+            $chart_length_tingkat['tujuan'] = 2;
+            $chart_length_tingkat['sasaran'] = 4;
+            $chart_length_tingkat['program'] = 6;
+            $chart_length_tingkat['kegiatan'] = 8;
+            $chart_length_tingkat['subkegiatan'] = 10;
+
+            $length_kegiatan = $chart_length_tingkat[$tingkat];
+
+        }
+
         foreach ($array_tipe as $tipe) {
             foreach ($array_jenis as $jenis) {
                 foreach ($array_akun as $akun) {
                     $cari = $kolom[$tipe][$jenis];
+                    $added_select = null;
+                    if ($tingkat != null ) {
+                        $group_tingkat = "substring(kode_kegiatan,7,$length_kegiatan)";
+                        $added_select = "substring(kode_kegiatan,7,$length_kegiatan) as tingkat,";
+                        $cari = $group_tingkat;
+                    }
                     $this->db_laporan->select("$cari as akun, sum(jumlah_debet) as jumlah");
                     $this->db_laporan
                         ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
@@ -705,6 +724,17 @@ class Laporan_model extends CI_Model {
                         $this->db_laporan->like($kolom[$tipe][$jenis],$akun,'after');
                     }
 
+                    if ($tingkat != null){
+                        $this->db_laporan->where("kode_kegiatan <> ''");
+                        $this->db_laporan->where("kode_kegiatan NOT LIKE '%0000%'");
+                    }else{
+                        $this->db_laporan->group_by($kolom[$tipe][$jenis]);
+                    }
+
+                    if ($tingkat != null){
+                        $this->db_laporan->group_by($group_tingkat);
+                    }
+
                     if ($array_not_akun != null){
                         foreach ($array_not_akun as $not_akun) {
 
@@ -718,8 +748,12 @@ class Laporan_model extends CI_Model {
 
                     // $this->db_laporan->where('unit_kerja',$unit);
 
-                    $this->db_laporan->group_by($kolom[$tipe][$jenis]);
 
+                    //comment after this
+                    // $this->db_laporan->from('akuntansi_kuitansi_jadi');
+                    // echo $this->db_laporan->get_compiled_select();
+                    // die();
+                    //comment
                     // if ($array_uraian != null) {
                         // echo $this->db_laporan->get_compiled_select();
                     // }
@@ -755,7 +789,18 @@ class Laporan_model extends CI_Model {
         foreach ($array_tipe as $tipe) {
             foreach ($array_jenis as $jenis) {
                     foreach ($array_akun as $akun) {
+
                         $added_query = "";
+
+                        $added_select =',tr.akun';
+                        $added_group = "tr.akun";
+                        if ($tingkat != null ) {
+                            $group_tingkat = "substring(kode_kegiatan,7,$length_kegiatan)";
+                            $added_select = ",substring(kode_kegiatan,7,$length_kegiatan) as akun";
+                            $added_group = "substring(kode_kegiatan,7,$length_kegiatan)";
+                            $added_query .= "AND tu.kode_kegiatan <> '' ";
+                            $added_query .= "AND substring(kode_kegiatan,7,$length_kegiatan) NOT LIKE '%0000%' ";
+                        }
 
                         if ($unit != null){
                             $added_query .= " AND tu.unit_kerja = '$unit'";
@@ -789,12 +834,12 @@ class Laporan_model extends CI_Model {
                         $query_pajak1 = "OR tu.tipe = 'pajak'";
                         $query_pajak2 = "or tr.jenis = 'pajak'";
 
-                        $query = "SELECT tr.akun,tu.tipe as jenis_pajak,sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        $query = "SELECT tu.tipe as jenis_pajak $added_select,sum(jumlah) as jumlah FROM akuntansi_kuitansi_jadi as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
                                  AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
                                  AND (tr.tipe = '$tipe' $query_pajak2)
-                                 GROUP BY tr.akun
+                                 GROUP BY $added_group
 
                         ";
 
@@ -903,6 +948,18 @@ class Laporan_model extends CI_Model {
         }
 
         if ($laporan == 'anggaran') {
+
+            $query_sumber_dana = '';
+            if ($sumber_dana != null){
+                if ($sumber_dana == 'tidak_terikat'){
+                    $query_sumber_dana = "AND sumber_dana='SELAIN-APBN'";
+                }elseif ($sumber_dana == 'terikat_temporer') {
+                    $query_sumber_dana = "AND sumber_dana IN ('APBN-BPPTNBH','APBN-LAINNYA')";
+                }
+            }
+
+            
+
             $tahun = $year;
             $anggaran = array();
             $query_unit = '';
@@ -941,10 +998,20 @@ class Laporan_model extends CI_Model {
                 // ambil dari array akun aja, dikelompokin per akun
                 if (substr($akun, 0,1) == 5) {
 
+                    $group_by = "SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6)";
+                    $selected_query = ",$group_by as akun";
+                    if ($tingkat != null){
+                        $group_by = "SUBSTR(rba.detail_belanja_.kode_usulan_belanja,7,$length_kegiatan)";
+                        $selected_query = ",$group_by as akun";
+                        $added_query = "AND SUBSTR(rba.detail_belanja_.kode_usulan_belanja,7,$length_kegiatan) NOT LIKE '%0000%'";
+
+                    }
+
 
                     foreach ($revisi_unit as $unit => $revisi) {
                         $lenunit = 2;
-                        $query = "SELECT SUM(rba.detail_belanja_.volume*rba.detail_belanja_.harga_satuan) AS jumlah, SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) as akun  FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) LIKE '$akun%' AND  SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.tahun = '{$tahun}' AND rba.detail_belanja_.revisi ='{$revisi}' $added_query GROUP BY SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6)";
+                        $query = "SELECT SUM(rba.detail_belanja_.volume*rba.detail_belanja_.harga_satuan) AS jumlah $selected_query  FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) LIKE '$akun%' AND  SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.tahun = '{$tahun}' AND rba.detail_belanja_.revisi ='{$revisi}' $added_query $query_sumber_dana GROUP BY $group_by";
+                        // die($query);
                         $anggaran_temp = array_merge($anggaran_temp,$this->db2->query($query)->result_array());
                     }
 
@@ -965,16 +1032,16 @@ class Laporan_model extends CI_Model {
                     // print_r($query);die();
 
                     // $anggaran[$akun] = $this->db2->query($query)->row_array()['jumlah'];
-                } elseif (substr($akun,0,1) == 4 and false) {
+                } elseif (substr($akun,0,1) == 4) {
                     if ($unit != null) {
-                        $this->db2->where('LEFT(sukpa,2)',$unit);
+                        $this->db_pendapatan->where('LEFT(sukpa,2)',$unit);
                     } 
-                    $this->db2->like('akun',$akun,'after');
-                    $this->db2->select("SUM(jml_nilai) as jumlah,akun");
-                    $this->db2->group_by('akun');
+                    $this->db_pendapatan->like('akun',$akun,'after');
+                    $this->db_pendapatan->select("SUM(jml_nilai) as jumlah,akun");
+                    $this->db_pendapatan->group_by('akun');
 
                     // $anggaran[$akun] += $this->db2->get('target')->row_array()['jumlah'];
-                    $anggaran_temp = array_merge($anggaran_temp,$this->db2->get('target')->result_array());
+                    $anggaran_temp = array_merge($anggaran_temp,$this->db_pendapatan->get('target')->result_array());
 
                 }
             }

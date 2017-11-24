@@ -174,9 +174,17 @@ class Akun_model extends CI_Model {
 
 	}
 
-	public function get_nama_akun_by_level($kode_akun,$level,$tabel)
+	public function get_nama_akun_by_level($kode_akun,$level,$tabel=null)
 	{
 		$sub_kode = substr($kode_akun,0,1);
+
+		if($tabel == null){
+			if ($sub_kode == 4){
+				$tabel = 'lra';
+			}elseif ($sub_kode == 8) {
+				$tabel = 'pembiayaan';
+			}
+		}
 
 
 		if ($sub_kode == 6) {

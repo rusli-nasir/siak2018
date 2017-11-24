@@ -68,6 +68,24 @@ class Spm_model extends CI_Model {
 		);
 	}
 
+  public function get_array_jenis_spm()
+  {
+    return array(
+            'SPM-UP' => 'trx_spm_up_data',
+            'SPM-GUP' => 'trx_spm_gup_data',
+            'SPP-GUP' => 'trx_spm_gup_data',
+            'SPM-TUP' => 'trx_spm_tambah_tup_data',
+            'SPM-PUP' => 'trx_spm_tambah_up_data',
+            'SPM-TUP-NIHIL' => 'rsa_kuitansi',
+            'SPM-LS PGW' => 'rsa_kuitansi',
+            'SPM-LSK' => 'rsa_kuitansi',
+            'SPM-LS' => 'rsa_kuitansi',
+            'SPM-LSNK' => 'rsa_kuitansi',
+            'SPM-LS K-3 NONKONTRAK' => 'rsa_kuitansi',
+            'SPM-LS PIHAK KE-3' => 'rsa_kuitansi',
+    );
+  }
+
 	public function update_spm($nomor_trx_spm,$updater,$jenis)
 	{
 		$tabel_jenis = $this->get_array_jenis();

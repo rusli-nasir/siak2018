@@ -18,12 +18,66 @@ class Coba extends MY_Controller {
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
         $this->load->model('akuntansi/User_akuntansi_model', 'User_akuntansi_model');
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
+        $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
 	}
 
     public function index()
     {
-        echo $this->Akun_model->get_nama_akun('111111');
+        echo "<pre>";
+        echo $this->Akun_model->get_nama_akun_by_level('4',1);echo "\n";
+        echo $this->Akun_model->get_nama_akun_by_level('5',1);
+    }
+
+    public function rekap_spm_unit()
+    {
+        $list_unit = $this->Unit_kerja_model->get_all_unit_kerja();
+        foreach ($list_unit as $unit) {
+            $kode_unit = $unit['kode_unit'];
+            $nama_unit = $unit['alias'];
+            $query_s = "
+            SELECT
+              rsa.akuntansi_kuitansi_jadi.no_spm,
+              rsa.akuntansi_kuitansi_jadi.tanggal,
+              rsa.akuntansi_kuitansi_jadi.jenis,
+              rsa.akuntansi_kuitansi_jadi.unit_kerja,
+              rsa.akuntansi_kuitansi_jadi.jumlah_debet AS jumlah
+            INTO OUTFILE \"d:/rekap/".$nama_unit."_s.csv\"
+              FIELDS TERMINATED BY ',' 
+                LINES TERMINATED BY \"\\n\"
+            FROM
+              rsa.akuntansi_kuitansi_jadi
+            WHERE
+              rsa.akuntansi_kuitansi_jadi.tanggal BETWEEN '2017-01-01' AND '2017-09-30' AND
+              rsa.akuntansi_kuitansi_jadi.jenis NOT IN ('GP', 'LK', 'LN') AND
+              rsa.akuntansi_kuitansi_jadi.unit_kerja = $kode_unit  AND
+              rsa.akuntansi_kuitansi_jadi.status = 'posted' AND
+              rsa.akuntansi_kuitansi_jadi.tipe = 'pengeluaran'
+            ";
+            $this->db->query($query_s);
+            $query_k = "
+            SELECT
+              rsa.akuntansi_kuitansi_jadi.no_spm,
+              rsa.akuntansi_kuitansi_jadi.tanggal,
+              rsa.akuntansi_kuitansi_jadi.jenis,
+              rsa.akuntansi_kuitansi_jadi.unit_kerja,
+              Sum(rsa.akuntansi_kuitansi_jadi.jumlah_debet) AS jumlah
+            INTO OUTFILE \"d:/rekap/".$nama_unit."_k.csv\"
+              FIELDS TERMINATED BY ',' 
+                LINES TERMINATED BY \"\\n\"
+            FROM
+              rsa.akuntansi_kuitansi_jadi
+            WHERE
+              rsa.akuntansi_kuitansi_jadi.tanggal BETWEEN '2017-01-01' AND '2017-09-30' AND
+              rsa.akuntansi_kuitansi_jadi.jenis IN ('GP', 'LK', 'LN','TUP_PENGEMBALIAN') AND
+              rsa.akuntansi_kuitansi_jadi.unit_kerja = $kode_unit AND
+              rsa.akuntansi_kuitansi_jadi.status = 'posted' AND
+              rsa.akuntansi_kuitansi_jadi.tipe = 'pengeluaran'
+            GROUP BY
+              rsa.akuntansi_kuitansi_jadi.no_spm
+            ";
+            $this->db->query($query_k);
+        }
     }
 
     public function coba_123()

@@ -145,7 +145,8 @@
 						<li class="<?php if(isset($menu12)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/editor/edit_kuitansi'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>Manj. Kuitansi terjurnal RSA</a></li>
 			        </ul>
 			      </li>	
-			      <li class="<?php if(isset($menu16)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_spm'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap SPM</a></li>			
+			      <li class="<?php if(isset($menu16)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_spm'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap SPM</a></li>
+			      <li class="<?php if(isset($menu_koreksi)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/checker/import_cek_spm_siak'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Koreksi SPM</a></li>			
 			<?php }else if($this->session->userdata('level')==4){ ?>
 				<li class="<?php if(isset($menu_monitor)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/monitor'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Monitoring</a></li>	
 				<li class="dropdown">
@@ -208,6 +209,19 @@
 			     <li class="<?php if(isset($menu13)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/user/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. User</a></li>	
 			     <li class="<?php if(isset($menu14)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/pejabat/manage'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. Pejabat</a></li>	
 			     <li class="<?php if(isset($menu15)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/akun/list_akun'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Manj. Akun</a></li>	
+			<?php }else if($this->session->userdata('level')==10){ ?>
+				<li class="<?php if(isset($menu_monitor)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/monitor'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Monitoring</a></li>
+				<li class="dropdown">
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan
+			        <span class="caret"></span></a>
+			        <ul class="dropdown-menu">
+						<li class="<?php if(isset($menu10)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_jurnal'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Buku Jurnal</a></li>
+			          	<li class="<?php if(isset($menu9)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/buku_besar'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Buku Besar</a></li>
+						<li class="<?php if(isset($menu11)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/neraca_saldo'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Neraca Saldo</a></li>			
+			        </ul>
+			      </li>
+			     <li class="<?php if(isset($menu6)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/lainnya'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Laporan Utama</a></li>
+			      <li class="<?php if(isset($menu16)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_spm'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap SPM</a></li>	
 			<?php } ?>
 
 		</ul>

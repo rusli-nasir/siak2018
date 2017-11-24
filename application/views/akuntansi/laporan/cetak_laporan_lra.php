@@ -90,7 +90,11 @@ if($atribut['cetak']){
 									style="background-color: #54FFA9;font-weight: bold;"
 								<?php endif ?>
 							>
-								<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
+								<?php if ($jenis_laporan == 'rekap'): ?>
+									<td> <?php echo ++$no; ?></td>
+								<?php else: ?>
+									<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
+								<?php endif ?>
 								<td>
 									<?php 
 									for ($i=0; $i < $entry['level']*2; $i++) { 

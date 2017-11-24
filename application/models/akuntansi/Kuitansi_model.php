@@ -8,6 +8,8 @@ class Kuitansi_model extends CI_Model {
         $this->load->database('default', TRUE);
         $this->db2 = $this->load->database('rba',TRUE);
         $this->db_laporan = $this->load->database('laporan',TRUE);
+        $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
+        $this->load->model('akuntansi/Spm_model', 'Spm_model');
     }
 
     public function konversi_jenis_view($asal)
@@ -24,6 +26,165 @@ class Kuitansi_model extends CI_Model {
                 break;
         }
     }
+
+    public function cari_kuitansi_dari_rsa($spm,$jumlah)
+    {
+        // print_r(explode('/', $spm));
+        echo "<pre>";
+        $tabel = null;
+        $jenis = explode('/', $spm)[2];
+        $array_jenis = $this->Spm_model->get_array_jenis_spm();
+        if (isset($array_jenis[$jenis])){
+            $tabel = $array_jenis[$jenis];
+        }
+        print_r($this->read_spm_rsa($spm,$jumlah));
+    }
+
+
+    public function read_spm_rsa($spm,$jumlah,$kode_unit=null)
+    {
+        $jenis_spm = explode('/', $spm)[2];
+        $tabel_jenis = array('SPM-UP' => 'up',
+            'SPM-GUP' => 'gup',
+            'SPP-GUP' => 'gup',
+            'SPM-TUP' => 'tambah_tup',
+            'SPM-PUP' => 'tambah_up',
+            'SPM-TUP-NIHIL' => 'tup',
+            'SPM-LS PGW' => 'kepeg_tr_spmls',
+            'SPM-LSK' => 'rsa_kuitansi',
+            'SPM-LS' => 'rsa_kuitansi',
+            'SPM-LSNK' => 'rsa_kuitansi',
+            'SPM-LS K-3 NONKONTRAK' => 'rsa_kuitansi',
+            'SPM-LS PIHAK KE-3' => 'rsa_kuitansi');
+
+        $masuk_spm = array('SPM-UP','SPM-GUP','SPM-TUP','SPM-PUP','SPM-TUP-NIHIL');
+
+        $masuk_pgw = array('SPM-LS PGW');
+
+        $masuk_ls = array('SPM-LS K-3 NONKONTRAK','SPM-LS PIHAK KE-3','SPM-LSK','SPM-LS','SPM-LSNK');
+
+        $status = array();
+
+
+        if (isset($tabel_jenis[$jenis_spm])){
+            $tabel_spm = $tabel_jenis[$jenis_spm];
+            if (in_array($jenis_spm,$masuk_spm)){ // Kalau masuk SPM
+                if($kode_unit!=null){
+                    $unit = 'AND substr(trx_'.$tabel_spm.'.kode_unit_subunit,1,2)="'.$kode_unit.'"';
+                }else{
+                    $unit = '';
+                }
+
+                $string_query = "SELECT posisi,ket,str_nomor_trx as no_spm,jumlah_bayar as jumlah FROM trx_spm_".$tabel_spm."_data, trx_".$tabel_spm." WHERE nomor_trx_spm = id_trx_nomor_".$tabel_spm."  AND 
+                (str_nomor_trx LIKE '$spm') $unit ORDER BY tgl_proses DESC LIMIT 0,1";
+                // die($string_query);
+                $query = $this->db->query($string_query);
+                $status = $query->result_array();
+                if ($status == null){
+                    $status['posisi'] = 'belum ada di rsa';
+                    $status['ket'] = '-';
+                    $status['no_spm'] = '-';
+                    $status['jumlah'] = '-';
+                }else{
+                    $status = $status[0];
+                }
+                $status['sama_nominal'] = 0;
+                return $status;
+            }elseif(in_array($jenis_spm,$masuk_pgw)){ // Kalau masuk LS Pegawai
+                $string_query = "SELECT IF(proses = 5 ,'selesai','belum selesai') as posisi, status as ket, nomor as no_spm, total_sumberdana as jumlah, IF(total_sumberdana = $jumlah AND nomor NOT LIKE '$spm',1,0) as sama_nominal FROM kepeg_tr_spmls WHERE nomor LIKE '$spm' OR total_sumberdana = $jumlah";
+                $query = $this->db->query($string_query);
+                $status = $query->result_array();
+                if ($status == null){
+                    $status['posisi'] = 'belum ada di rsa';
+                    $status['ket'] = '-';
+                    $status['no_spm'] = '-';
+                    $status['jumlah'] = '-';
+                    $status['sama_nominal'] = 0;
+                }else{
+                    $status = $status[0];
+                }
+                return $status;
+
+            }elseif (in_array($jenis_spm, $masuk_ls)) { // Kalau masuk LS pihak ketiga
+                $string_query = "SELECT if(cair=1,'cair','belum cair') as posisi, str_nomor_trx_spm as no_spm, sum(volume*harga_satuan) as jumlah,IF(sum(volume*harga_satuan) = $jumlah AND str_nomor_trx_spm NOT LIKE '$spm',1,0) as sama_nominal FROM rsa_kuitansi,rsa_kuitansi_detail WHERE rsa_kuitansi.id_kuitansi=rsa_kuitansi_detail.id_kuitansi GROUP BY str_nomor_trx_spm HAVING (no_spm LIKE '$spm' OR jumlah=$jumlah)";
+                $query = $this->db->query($string_query);
+                $status = $query->result_array();
+                if ($status == null){
+                    $status['posisi'] = 'belum ada di rsa';
+                    $status['ket'] = '-';
+                    $status['no_spm'] = '-';
+                    $status['jumlah'] = '-';
+                    $status['sama_nominal'] = 0;
+                }else{
+                    $status = $status[0];
+                    $status['ket'] = '-';
+                }
+                return $status;
+            }
+        }else{
+            $status['posisi'] = 'tidak ditemukan';
+            $status['ket'] = '-';
+            $status['no_spm'] = '-';
+            $status['jumlah'] = '-';
+            $status['sama_nominal'] = 0;
+            return $status;
+        }
+    }
+
+    public function read_kuitansi_all($status = null)
+    {
+        $array_hasil = array();
+        $list_unit = $this->Unit_kerja_model->get_all_unit_kerja();
+        foreach ($list_unit as $unit) {
+            $kode_unit = $unit['kode_unit'];
+            $nama_unit = $unit['alias'];
+            $query_s = "
+            SELECT DISTINCT
+              rsa.akuntansi_kuitansi_jadi.no_spm,
+              -- rsa.akuntansi_kuitansi_jadi.tanggal,
+              -- rsa.akuntansi_kuitansi_jadi.jenis,
+              -- rsa.akuntansi_kuitansi_jadi.unit_kerja,
+              rsa.akuntansi_kuitansi_jadi.jumlah_debet AS jumlah
+            FROM
+              rsa.akuntansi_kuitansi_jadi
+            WHERE
+              rsa.akuntansi_kuitansi_jadi.tanggal BETWEEN '2017-01-01' AND '2017-09-30' AND
+              rsa.akuntansi_kuitansi_jadi.jenis NOT IN ('GP', 'LK', 'LN','TUP_PENGEMBALIAN') AND
+              rsa.akuntansi_kuitansi_jadi.unit_kerja = $kode_unit  AND
+              rsa.akuntansi_kuitansi_jadi.status = '$status' AND
+              rsa.akuntansi_kuitansi_jadi.tipe = 'pengeluaran'
+            ";
+            $array_s = $this->db->query($query_s)->result_array();
+            $query_k = "
+            SELECT DISTINCT
+              rsa.akuntansi_kuitansi_jadi.no_spm,
+              -- rsa.akuntansi_kuitansi_jadi.tanggal,
+              -- rsa.akuntansi_kuitansi_jadi.jenis,
+              -- rsa.akuntansi_kuitansi_jadi.unit_kerja,
+              Sum(rsa.akuntansi_kuitansi_jadi.jumlah_debet) AS jumlah
+            FROM
+              rsa.akuntansi_kuitansi_jadi
+            WHERE
+              rsa.akuntansi_kuitansi_jadi.tanggal BETWEEN '2017-01-01' AND '2017-09-30' AND
+              rsa.akuntansi_kuitansi_jadi.jenis IN ('GP', 'LK', 'LN','TUP_NIHIL') AND
+              rsa.akuntansi_kuitansi_jadi.unit_kerja = $kode_unit AND
+              rsa.akuntansi_kuitansi_jadi.status = '$status' AND
+              rsa.akuntansi_kuitansi_jadi.tipe = 'pengeluaran'
+            GROUP BY
+              rsa.akuntansi_kuitansi_jadi.no_spm
+            ";
+            $array_k = $this->db->query($query_k)->result_array();
+            $array_hasil = array_merge($array_hasil,array_merge($array_s,$array_k));
+        }
+        $array_return = array();
+        foreach ($array_hasil as $value) {
+            $value['no_spm'] = str_replace(' ','',$value['no_spm']);
+            $array_return['spm'][] = $value['no_spm'];
+            $array_return['jumlah_spm'][$value['no_spm']] = $value['jumlah'];
+        }
+        return $array_return;
+    }
+
 	
 	function read_kuitansi($limit = null, $start = null, $keyword = null, $kode_unit = null, $jenis = null){
         $added_query = "1 ";
@@ -124,6 +285,7 @@ class Kuitansi_model extends CI_Model {
         // die();
         return $hasil['str_nomor_trx'];
     }
+
     
     function read_up($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){

@@ -11,11 +11,11 @@ class Program_model extends CI_Model {
 	
 	public function get_select_program(){
 		// program -> kegiatan -> sub kegiatan
-		$tujuan = $this->db2->get('kegiatan')->result_array();
-		$sasaran = $this->db2->get('output')->result_array();
-		$program = $this->db2->get('program')->result_array();
-		$kegiatan = $this->db2->get('komponen_input')->result_array();
-		$subkegiatan = $this->db2->get('subkomponen_input')->result_array();
+		$tujuan = $this->db2->order_by('kode_kegiatan')->get('kegiatan')->result_array();
+		$sasaran = $this->db2->order_by('kode_output')->get('output')->result_array();
+		$program = $this->db2->order_by('kode_program')->get('program')->result_array();
+		$kegiatan = $this->db2->order_by('kode_komponen')->get('komponen_input')->result_array();
+		$subkegiatan = $this->db2->order_by('kode_subkomponen')->get('subkomponen_input')->result_array();
 
 		$data = array();
 
@@ -41,7 +41,7 @@ class Program_model extends CI_Model {
 		}elseif ($banyaknya == 4) {
 			return $this->get_nama_kegiatan($param[0],$param[1],$param[2],$param[3]);
 		}elseif ($banyaknya == 5) {
-			return $this->get_nama_kegiatan($param[0],$param[1],$param[2],$param[3],$param[4]);
+			return $this->get_nama_subkegiatan($param[0],$param[1],$param[2],$param[3],$param[4]);
 		}
 	}
 

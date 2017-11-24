@@ -79,19 +79,19 @@
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Laporan</li>
+		<li class="active">Laporan Kinerja</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
 <div class="row">
 	<div class="col-sm-9">
-		<h1 class="page-header">Laporan</h1>
+		<h1 class="page-header">Laporan Kinerja </h1>
 	</div>
 	<div class="col-sm-3" align="right">
 	</div>
 </div><!--/.row-->
 <div class="container-fluid">
-    <?php echo form_open('akuntansi/laporan/lainnya',array("class"=>"form-horizontal","id" => "form_pop")); ?>
+    <?php echo form_open('akuntansi/laporan/lainnya/kinerja',array("class"=>"form-horizontal","id" => "form_pop")); ?>
 	<!-- Text input-->
     <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
@@ -104,11 +104,11 @@
         <label class="col-md-2 control-label">Jenis Laporan</label>  
         <div class="col-md-6">
             <select v-model="jenis_laporan" id="jenis_laporan" name="jenis_laporan" class="form-control" required="">
-              <option value="Aktifitas" >Aktifitas</option>
+              <!-- <option value="Aktifitas" >Aktifitas</option> -->
               <option value="Posisi Keuangan"  >Posisi Keuangan</option>
               <option value="Realisasi Anggaran" >Realisasi Anggaran</option>
-              <option value="Rekap Realisasi Anggaran" >Rekap Realisasi Anggaran</option>
-              <option value="Arus Kas" >Arus Kas</option>
+              <!-- <option value="Rekap Realisasi Anggaran" >Rekap Realisasi Anggaran</option> -->
+              <!-- <option value="Arus Kas" >Arus Kas</option> -->
             </select>
         </div>
       </div>
@@ -181,7 +181,7 @@
       vue_unit = new Vue({
         el : "#vue_unit",
         data : {
-                  jenis_laporan : "Aktifitas",
+                  jenis_laporan : "Posisi Keuangan",
                   unit : 'all',
                 },
         methods : {

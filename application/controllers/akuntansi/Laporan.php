@@ -40,7 +40,7 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/content_template',$temp_data,false);
     }
 
-    public function lainnya(){
+    public function lainnya($tipe = null){
         $this->data['menu9'] = null;
         $this->data['menu15'] = true;
         $this->data['tab1'] = true;
@@ -73,22 +73,39 @@ class Laporan extends MY_Controller {
             }
             if($this->input->post('jenis_laporan')=='Aktifitas'){
                 $data['daterange'] = "Periode yang berakhir pada ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
-                $this->get_lapak($level, $data);
+                $this->get_lapak($level, $data,$tipe);
             }else if($this->input->post('jenis_laporan')=='Posisi Keuangan'){
-                $this->get_lpk($level, $data);
+                if ($tipe == 'kinerja') {
+                    $this->get_lpk_kinerja($level, $data,$tipe);   
+                } else {
+                    $this->get_lpk($level, $data,$tipe);
+                }
             }else if($this->input->post('jenis_laporan')=='Realisasi Anggaran'){
                 $data['daterange'] = "Tahun berakhir pada 31 Desember ".explode('-',$data['periode_akhir'])[0];
-                $this->get_lra($level, $data);
+                if ($tipe == 'kinerja') {
+                    $this->get_lra_kinerja($level, $data,$tipe);   
+                } else {
+                    $this->get_lra($level, $data,$tipe);
+                }
+            }else if($this->input->post('jenis_laporan')=='Rekap Realisasi Anggaran'){
+                $data['daterange'] = "Tahun berakhir pada 31 Desember ".explode('-',$data['periode_akhir'])[0];
+                $this->get_rekap_lra($level, $data,$tipe);
             }else if($this->input->post('jenis_laporan')=='Arus Kas'){
                 $data['daterange'] = "Periode yang berakhir pada tanggal ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
-                $this->get_laporan_arus($level, $data);
+                $this->get_laporan_arus($level, $data,$tipe);
             }
         }else{
             $this->db2 = $this->load->database('rba', true);
             $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
 
-            $temp_data['content'] = $this->load->view('akuntansi/laporan_lainnya_list',$this->data,true);
+            if ($tipe == 'kinerja'){
+                $temp_data['content'] = $this->load->view('akuntansi/laporan_kinerja_list',$this->data,true);
+            }else{
+                $temp_data['content'] = $this->load->view('akuntansi/laporan_lainnya_list',$this->data,true);
+                
+            }
             $this->load->view('akuntansi/content_template',$temp_data,false);
+
         }
     }
 
@@ -1329,6 +1346,7 @@ class Laporan extends MY_Controller {
                 }
             }
 
+
             
             if ($level == 3){
                 $level = 6;
@@ -1653,7 +1671,7 @@ class Laporan extends MY_Controller {
 
     }
 
-    public function get_lpk($level, $parse_data = null)
+    public function get_lpk($level, $parse_data = null,$tipe = null)
     {       
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
@@ -1982,7 +2000,194 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/laporan/cetak_laporan_posisi_keuangan', $data);
     }
 
-    public function get_lapak($level, $parse_data)
+    public function get_lpk_kinerja($level, $parse_data = null,$tipe = null)
+    {       
+        $jumlah_tahun_sekarang = 0;
+        $jumlah_tahun_awal = 0;
+        $array_akun = array(1,2,3);
+        $year = gmdate('Y');
+        $start_date = "$year-01-01";
+        $end_date = "$year-31-12";
+
+        $daterange = $this->input->post('daterange');
+        $date_t = explode(' - ', $daterange);
+        // $start_date = strtodate($date_t[0]);
+        $end_date = strtodate($date_t[1]) or null;
+
+        // $array_akun = array(532111);
+
+        // $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',null,$start_date,$end_date,null,'subkegiatan');
+        $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo',null,$start_date,$end_date,null,'subkegiatan');
+
+        $rekap = array();
+
+        $chart_length_tingkat = array();
+        $chart_length_tingkat['tujuan'] = 2;
+        $chart_length_tingkat['sasaran'] = 4;
+        $chart_length_tingkat['program'] = 6;
+        $chart_length_tingkat['kegiatan'] = 8;
+        $chart_length_tingkat['subkegiatan'] = 10;
+
+        $level = $chart_length_tingkat['subkegiatan'];
+
+        foreach ($data['posisi'] as $kd_akun => $entry) {
+            foreach ($entry as $inner_entry) {
+                $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
+            }
+        }
+
+        foreach ($data['posisi'] as $kd_akun => $entry) {
+            foreach ($entry as $inner_entry) {
+                $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] += $inner_entry['jumlah'];
+            }
+        }
+
+        foreach ($data['saldo'] as $kd_akun => $entry) {
+            $rekap[substr($kd_akun,0,$level)]['saldo_awal'] = 0;
+        }
+
+        foreach ($data['saldo'] as $kd_akun => $entry) {
+            $rekap[substr($kd_akun,0,$level)]['saldo_awal'] += $entry;
+        }
+
+
+        $program_list = $this->Program_model->get_select_program();
+
+        $order = 0;
+        $parsed_data = array();
+
+        // echo "<pre/>";
+        // print_r($rekap);die();
+
+        foreach ($program_list['tujuan'] as $tujuan) {
+            // echo $tujuan['kode_kegiatan']."-".$this->Program_model->get_nama_composite($tujuan['kode_kegiatan'])."\n";
+            $kode_akun = $tujuan['kode_kegiatan'];
+            $entry_parsed = array(
+               'order' => ++$order,
+               'level' => 0,
+               'akun' => $kode_akun,
+               'type' => 'index',
+               'nama' => $tujuan['nama_kegiatan'],
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'jumlah_now' => null,
+               'jumlah_last' => null,
+               'selisih' => null,
+               'persentase' => null,
+            );
+            $parsed[] = $entry_parsed;
+            foreach ($program_list['sasaran'] as $sasaran) {
+                if ($sasaran['kode_kegiatan'] == $tujuan['kode_kegiatan']){
+                    // echo "\t".$sasaran['kode_output']."-".$this->Program_model->get_nama_composite($sasaran['kode_kegiatan'].$sasaran['kode_output'])."\n";  
+                    $kode_akun = $sasaran['kode_kegiatan'].$sasaran['kode_output'];         
+                    $entry_parsed = array(
+                       'order' => ++$order,
+                       'level' => 1,
+                       'akun' => $kode_akun,
+                       'type' => 'index',
+                       'nama' => $sasaran['nama_output'],
+                       'start_sum' => null,
+                       'end_sum' => null,
+                       'sum_negatif' => null,
+                       'jumlah_now' => null,
+                       'jumlah_last' => null,
+                       'selisih' => null,
+                       'persentase' => null,
+                    );
+                    $parsed[] = $entry_parsed;
+                    foreach ($program_list['program'] as $program) {
+                        if ($program['kode_kegiatan'] == $tujuan['kode_kegiatan'] and $program['kode_output'] == $sasaran['kode_output']){
+                            // echo "\t\t".$program['kode_program']."-".$this->Program_model->get_nama_composite($program['kode_kegiatan'].$program['kode_output'].$program['kode_program'])."\n";   
+                            $kode_akun = $program['kode_kegiatan'].$program['kode_output'].$program['kode_program'];
+
+                            $entry_parsed = array(
+                               'order' => ++$order,
+                               'level' => 2,
+                               'akun' => $kode_akun,
+                               'type' => 'index',
+                               'nama' => $program['nama_program'],
+                               'start_sum' => null,
+                               'end_sum' => null,
+                               'sum_negatif' => null,
+                               'jumlah_now' => null,
+                               'jumlah_last' => null,
+                               'selisih' => null,
+                               'persentase' => null,
+                            );
+                            $parsed[] = $entry_parsed;
+                            foreach ($program_list['kegiatan'] as $kegiatan) {
+                                if ($kegiatan['kode_kegiatan'] == $tujuan['kode_kegiatan'] and $kegiatan['kode_output'] == $sasaran['kode_output'] and $kegiatan['kode_program'] == $program['kode_program']){
+                                    // echo "\t\t\t".$kegiatan['kode_komponen']."-".$this->Program_model->get_nama_composite($kegiatan['kode_kegiatan'].$kegiatan['kode_output'].$kegiatan['kode_program'].$kegiatan['kode_komponen'])."\n";  
+                                    $kode_akun=$kegiatan['kode_kegiatan'].$kegiatan['kode_output'].$kegiatan['kode_program'].$kegiatan['kode_komponen'];
+                                    $entry_parsed = array(
+                                       'order' => ++$order,
+                                       'level' => 3,
+                                       'akun' => $kode_akun,
+                                       'type' => 'index',
+                                       'nama' => $kegiatan['nama_komponen'],
+                                       'start_sum' => null,
+                                       'end_sum' => null,
+                                       'sum_negatif' => null,
+                                       'jumlah_now' => null,
+                                       'jumlah_last' => null,
+                                       'selisih' => null,
+                                       'persentase' => null,
+                                    );
+                                    $parsed[] = $entry_parsed;
+                                    foreach ($program_list['subkegiatan'] as $subkegiatan) {
+                                        if ($subkegiatan['kode_kegiatan'] == $tujuan['kode_kegiatan'] and $subkegiatan['kode_output'] == $sasaran['kode_output'] and $subkegiatan['kode_program'] == $program['kode_program'] and $subkegiatan['kode_komponen'] == $kegiatan['kode_komponen']){
+                                            // echo "\t\t\t\t".$subkegiatan['kode_subkomponen']."-".$this->Program_model->get_nama_composite($subkegiatan['kode_kegiatan'].$subkegiatan['kode_output'].$subkegiatan['kode_program'].$subkegiatan['kode_komponen'].$subkegiatan['kode_subkomponen'])."\n"; 
+                                            $kode_akun = $subkegiatan['kode_kegiatan'].$subkegiatan['kode_output'].$subkegiatan['kode_program'].$subkegiatan['kode_komponen'].$subkegiatan['kode_subkomponen']; 
+                                            $parsed_data[] = $entry_parsed; 
+
+                                            $debet = (isset($rekap[$kode_akun]['debet'])) ? $rekap[$kode_akun]['debet'] : 0 ;
+                                            $kredit = (isset($rekap[$kode_akun]['kredit'])) ? $rekap[$kode_akun]['kredit'] : 0 ;
+                                            $saldo_awal = (isset($rekap[$kode_akun]['saldo_awal'])) ? $rekap[$kode_akun]['saldo_awal'] : 0 ;
+                                            if ($this->case_hutang($kode_akun) or true) { // CEGATAN BUAT ALWAYS TRUE, bisar positif
+                                                $saldo_sekarang = $saldo_awal + $kredit - $debet;
+                                            } else {
+                                                $saldo_sekarang = $saldo_awal + $debet - $kredit;
+                                            }
+                                            $entry_parsed = array(
+                                               'order' => ++$order,
+                                               'level' => 4,
+                                               'akun' => $kode_akun,
+                                               'type' => 'entry',
+                                               'nama' => $subkegiatan['nama_subkomponen'],
+                                               'sum_negatif' => null,
+                                               'start_sum' => null,
+                                               'end_sum' => null,
+                                               'jumlah_now' => $saldo_sekarang,
+                                               'jumlah_last' => $saldo_awal,
+                                               'selisih' => abs($saldo_sekarang - $saldo_awal),
+                                               'persentase' => ($saldo_awal == 0 or $saldo_sekarang == 0) ? 0 : abs($saldo_sekarang - $saldo_awal) / $saldo_awal * 100 ,
+                                            );
+                                            $parsed[] = $entry_parsed;
+                                        }
+                                    }
+                                }
+                            }             
+                        }
+                    }
+                }
+            }
+        }
+
+        
+
+        unset($data['posisi']);
+        unset($data['saldo']);
+        $data['parse'] = $parsed;
+        $data['atribut'] = $parse_data;
+        $data['atribut']['level'] = 5;
+        $data['level'] = 6;
+        $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
+        $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
+        $this->load->view('akuntansi/laporan/cetak_laporan_posisi_keuangan', $data);
+    }
+
+    public function get_lapak($level, $parse_data, $tipe = null)
     {
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
@@ -2269,7 +2474,7 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/laporan/cetak_laporan_aktifitas', $data_parsing);
     }
 
-    public function get_laporan_arus($level, $parse_data)
+    public function get_laporan_arus($level, $parse_data, $tipe = null)
     {
         $array_akun = array(6,7);
         $data = array();
@@ -2898,7 +3103,7 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/laporan/cetak_laporan_arus_kas', $data_parsing);
     }
 
-    public function get_lra($level, $parse_data)
+    public function get_lra($level, $parse_data, $tipe = null)
     {
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
@@ -2908,6 +3113,19 @@ class Laporan extends MY_Controller {
         if ($unit == 'all'){
             $unit = null;
         }
+
+ 
+
+        // $daterange = $this->input->post('daterange');
+        $daterange = $parse_data['parsing_date'];
+        $date_t = explode(' - ', $daterange);
+        $year = gmdate('Y');
+
+        $start_date = "$year-01-01";
+
+        $end_date = strtodate($date_t[1]) or null;
+
+        $tanggal_laporan = $date_t[1];
 
         $param_list = array(
             array(
@@ -2935,17 +3153,6 @@ class Laporan extends MY_Controller {
                 'string' => null,
             ),
         );
-
-        // $daterange = $this->input->post('daterange');
-        $daterange = $parse_data['parsing_date'];
-        $date_t = explode(' - ', $daterange);
-        $year = gmdate('Y');
-
-        $start_date = "$year-01-01";
-
-        $end_date = strtodate($date_t[1]) or null;
-
-        $tanggal_laporan = $date_t[1];
 
         // print_r($parse_data);die();
 
@@ -3167,6 +3374,7 @@ class Laporan extends MY_Controller {
         $data['kpa'] = $kpa;
         $data['teks_kpa'] = $teks_kpa;
         $data['level'] = $level;
+        $data['jenis_laporan'] = 'each';
         $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
         $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
 
@@ -3212,6 +3420,502 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
     }
 
+    public function get_lra_kinerja($level, $parse_data, $tipe = null)
+    {
+        error_reporting(E_ALL & ~E_NOTICE);
+        $jumlah_tahun_sekarang = 0;
+        $jumlah_tahun_awal = 0;
+        $array_akun = array(4,5,8);
+        $array_not_akun = array(59,81);        
+
+        $daterange = $parse_data['parsing_date'];
+        $date_t = explode(' - ', $daterange);
+        $year = gmdate('Y');
+
+        $start_date = "$year-01-01";
+
+        $end_date = strtodate($date_t[1]) or null;
+
+        $tanggal_laporan = $date_t[1];
+
+        $param_list = array(
+            array(
+                'akun' => array(4),
+                'not_akun' => null,
+                'jenis_pembatasan' => 'terikat_temporer',
+                'string' => ' APBN',
+            ),
+            array(
+                'akun' => array(4),
+                'not_akun' => null,
+                'jenis_pembatasan' => 'tidak_terikat',
+                'string' => ' Selain APBN',
+            ),
+            array(
+                'akun' => array(5),
+                'not_akun' => array(59),
+                'jenis_pembatasan' => 'terikat_temporer',
+                'string' => ' APBN',
+            ),
+            array(
+                'akun' => array(5),
+                'not_akun' => array(59),
+                'jenis_pembatasan' => 'tidak_terikat',
+                'string' => ' Selain APBN',
+            ),
+            array(
+                'akun' => array(8),
+                'not_akun' => array(81),
+                'jenis_pembatasan' => null,
+                'string' => null,
+            ),
+        );
+
+
+        //get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null,$tingkat = null,$sumber = null)
+        $unit = $this->input->post('unit');
+        if ($unit == 'all'){
+            $unit = null;
+        }
+        // $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',null,$start_date,$end_date,null,'subkegiatan');
+        // echo "<pre>";
+
+        $rekap = array();
+
+        $chart_length_tingkat = array();
+        $chart_length_tingkat['tujuan'] = 2;
+        $chart_length_tingkat['sasaran'] = 4;
+        $chart_length_tingkat['program'] = 6;
+        $chart_length_tingkat['kegiatan'] = 8;
+        $chart_length_tingkat['subkegiatan'] = 10;
+
+        $level = $chart_length_tingkat['subkegiatan'];
+        $order = 0;
+        $parsed_data = array();
+        $data_parsing = array();
+        $array_to_jumlah = array();
+        $jumlah_anggaran = 0;
+        $jumlah_realisasi = 0;
+        $jumlah_selisih = 0;
+        $program_list = $this->Program_model->get_select_program();
+
+
+        foreach ($param_list as $entry_list) {
+            // $entry_list = $param_list[2];
+            extract($entry_list,EXTR_PREFIX_ALL,'array');
+            $jenis_pembatasan = $array_jenis_pembatasan;
+            // echo"<pre>";
+            // print_r($array_string);
+            // die();
+            // echo $jenis_pembatasan;
+            $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',$jenis_pembatasan,$start_date,$end_date,null,'subkegiatan');
+            // print_r($data);die();
+
+
+
+            foreach ($data['posisi'] as $kd_akun => $entry) {
+                foreach ($entry as $inner_entry) {
+                    $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
+                }
+            }
+     
+            foreach ($data['posisi'] as $kd_akun => $entry) {
+                foreach ($entry as $inner_entry) {
+                    $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] += $inner_entry['jumlah'];
+                }
+            }
+
+            foreach ($data['anggaran'] as $kd_akun => $entry) {
+                $rekap[substr($kd_akun,0,$level)]['anggaran'] = 0;
+            }
+
+            foreach ($data['anggaran'] as $kd_akun => $entry) {
+                $rekap[substr($kd_akun,0,$level)]['anggaran'] += $entry;
+            }
+
+            $kode_akun = $array_akun[0];
+            $nama_akun = ucfirst(strtolower($this->Akun_model->get_nama_akun_by_level($kode_akun,1))) . $array_string;
+            $entry_parsed = array(
+               'order' => ++$order,
+               'level' => 0,
+               'akun' => $array_akun[0],
+               'type' => 'index',
+               'nama' => $nama_akun,
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'anggaran' => null,
+               'realisasi' => null,
+               'selisih' => null,
+               'persentase' => null,
+               'jenis_pembatasan' => $jenis_pembatasan,
+            );
+            $parsed_data[] = $entry_parsed;
+            foreach ($program_list['tujuan'] as $tujuan) {
+                // echo $tujuan['kode_kegiatan']."-".$this->Program_model->get_nama_composite($tujuan['kode_kegiatan'])."\n";
+                $kode_akun = $tujuan['kode_kegiatan'];
+                $entry_parsed = array(
+                   'order' => ++$order,
+                   'level' => 1,
+                   'akun' => $kode_akun,
+                   'type' => 'index',
+                   'nama' => $tujuan['nama_kegiatan'],
+                   'start_sum' => null,
+                   'end_sum' => null,
+                   'sum_negatif' => null,
+                   'anggaran' => null,
+                   'realisasi' => null,
+                   'selisih' => null,
+                   'persentase' => null,
+                   'jenis_pembatasan' => $jenis_pembatasan,
+                );
+                $parsed_data[] = $entry_parsed;
+                foreach ($program_list['sasaran'] as $sasaran) {
+                    if ($sasaran['kode_kegiatan'] == $tujuan['kode_kegiatan']){
+                        // echo "\t".$sasaran['kode_output']."-".$this->Program_model->get_nama_composite($sasaran['kode_kegiatan'].$sasaran['kode_output'])."\n";  
+                        $kode_akun = $sasaran['kode_kegiatan'].$sasaran['kode_output'];         
+                        $entry_parsed = array(
+                           'order' => ++$order,
+                           'level' => 2,
+                           'akun' => $kode_akun,
+                           'type' => 'index',
+                           'nama' => $sasaran['nama_output'],
+                           'start_sum' => null,
+                           'end_sum' => null,
+                           'sum_negatif' => null,
+                           'anggaran' => null,
+                           'realisasi' => null,
+                           'selisih' => null,
+                           'persentase' => null,
+                           'jenis_pembatasan' => $jenis_pembatasan,
+                        );   
+                        $parsed_data[] = $entry_parsed;  
+                        foreach ($program_list['program'] as $program) {
+                            if ($program['kode_kegiatan'] == $tujuan['kode_kegiatan'] and $program['kode_output'] == $sasaran['kode_output']){
+                                // echo "\t\t".$program['kode_program']."-".$this->Program_model->get_nama_composite($program['kode_kegiatan'].$program['kode_output'].$program['kode_program'])."\n";   
+                                $kode_akun = $program['kode_kegiatan'].$program['kode_output'].$program['kode_program'];
+                                $entry_parsed = array(
+                                   'order' => ++$order,
+                                   'level' => 3,
+                                   'akun' => $kode_akun,
+                                   'type' => 'index',
+                                   'nama' => $program['nama_program'],
+                                   'start_sum' => null,
+                                   'end_sum' => null,
+                                   'sum_negatif' => null,
+                                   'anggaran' => null,
+                                   'realisasi' => null,
+                                   'selisih' => null,
+                                   'persentase' => null,
+                                   'jenis_pembatasan' => $jenis_pembatasan,
+                                );   
+                                $parsed_data[] = $entry_parsed; 
+                                foreach ($program_list['kegiatan'] as $kegiatan) {
+                                    if ($kegiatan['kode_kegiatan'] == $tujuan['kode_kegiatan'] and $kegiatan['kode_output'] == $sasaran['kode_output'] and $kegiatan['kode_program'] == $program['kode_program']){
+                                        // echo "\t\t\t".$kegiatan['kode_komponen']."-".$this->Program_model->get_nama_composite($kegiatan['kode_kegiatan'].$kegiatan['kode_output'].$kegiatan['kode_program'].$kegiatan['kode_komponen'])."\n";  
+                                        $kode_akun=$kegiatan['kode_kegiatan'].$kegiatan['kode_output'].$kegiatan['kode_program'].$kegiatan['kode_komponen'];
+                                        $entry_parsed = array(
+                                           'order' => ++$order,
+                                           'level' => 4,
+                                           'akun' => $kode_akun,
+                                           'type' => 'index',
+                                           'nama' => $kegiatan['nama_komponen'],
+                                           'start_sum' => null,
+                                           'end_sum' => null,
+                                           'sum_negatif' => null,
+                                           'anggaran' => null,
+                                           'realisasi' => null,
+                                           'selisih' => null,
+                                           'persentase' => null,
+                                           'jenis_pembatasan' => $jenis_pembatasan,
+                                        );   
+                                        $parsed_data[] = $entry_parsed; 
+                                        $array_to_jumlah[] = array(
+                                                                    'akun' => $kode_akun,
+                                                                    'jenis_pembatasan' => $jenis_pembatasan,
+                                                                    'nama' => "Jumlah ".$kegiatan['nama_komponen'],
+                                                            );
+                                        foreach ($program_list['subkegiatan'] as $subkegiatan) {
+                                            if ($subkegiatan['kode_kegiatan'] == $tujuan['kode_kegiatan'] and $subkegiatan['kode_output'] == $sasaran['kode_output'] and $subkegiatan['kode_program'] == $program['kode_program'] and $subkegiatan['kode_komponen'] == $kegiatan['kode_komponen']){
+                                                // echo "\t\t\t\t".$subkegiatan['kode_subkomponen']."-".$this->Program_model->get_nama_composite($subkegiatan['kode_kegiatan'].$subkegiatan['kode_output'].$subkegiatan['kode_program'].$subkegiatan['kode_komponen'].$subkegiatan['kode_subkomponen'])."\n"; 
+                                                $kode_akun = $subkegiatan['kode_kegiatan'].$subkegiatan['kode_output'].$subkegiatan['kode_program'].$subkegiatan['kode_komponen'].$subkegiatan['kode_subkomponen']; 
+                                                $debet = (isset($rekap[$kode_akun]['debet'])) ? $rekap[$kode_akun]['debet'] : 0 ;
+                                                $kredit = (isset($rekap[$kode_akun]['kredit'])) ? $rekap[$kode_akun]['kredit'] : 0 ;
+                                                $saldo_sekarang = $debet - $kredit;
+                                                $anggaran = (isset($rekap[$kode_akun]['anggaran'])) ? $rekap[$kode_akun]['anggaran'] : 0 ;
+                                                $selisih = abs($anggaran) - abs($saldo_sekarang);
+                                                if ($anggaran == 0) {
+                                                    $persentase = 0;
+                                                } else {
+                                                    $persentase = abs($saldo_sekarang) / $anggaran * 100;
+                                                }
+
+                                                $jumlah_anggaran += $anggaran;
+                                                $jumlah_selisih += $selisih;
+                                                $jumlah_realisasi += $saldo_sekarang;
+
+
+                                                $entry_parsed = array(
+                                                   'order' => ++$order,
+                                                   'level' => 5,
+                                                   'akun' => $kode_akun,
+                                                   'type' => 'index',
+                                                   'nama' => $subkegiatan['nama_subkomponen'],
+                                                   'start_sum' => null,
+                                                   'end_sum' => null,
+                                                   'sum_negatif' => null,
+                                                   'anggaran' => $anggaran,
+                                                   'realisasi' => $saldo_sekarang,
+                                                   'selisih' => $selisih,
+                                                   'persentase' => $persentase,
+                                                   'jenis_pembatasan' => $jenis_pembatasan,
+                                                );   
+                                                $parsed_data[] = $entry_parsed; 
+                                            }
+                                        }
+                                    }
+                                }             
+                            }
+                        }
+                    }
+                }
+            }
+
+            $entry_parsed = array(
+               'order' => ++$order,
+               'level' => 0,
+               'akun' => 'sum_all_'.$parsed_data[0]['akun'],
+               'type' => 'index',
+               'nama' => "Realisasi ".$parsed_data[0]['nama'],
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'anggaran' => $jumlah_anggaran,
+               'realisasi' => $jumlah_realisasi,
+               'selisih' => $jumlah_selisih,
+               'persentase' => null,
+               'jenis_pembatasan' => $parsed_data[0]['jenis_pembatasan'],
+            );
+            $parsed_data[] = $entry_parsed;
+
+            $data_parsing[] = array(
+                                'parsed_data' => $parsed_data,
+                                'array_to_jumlah' => $array_to_jumlah
+                            );
+            $parsed_data = array();
+            $array_to_jumlah = array();
+            $jumlah_anggaran = 0;
+            $jumlah_realisasi = 0;
+            $jumlah_selisih = 0;
+        }
+
+
+        
+        // echo "<pre>";
+        $data_final = array();
+        $array_jumlah_total = array();
+        foreach ($data_parsing as $parsed) {
+            extract($parsed);
+            $array_jumlah_total = array();
+            $jumlah_anggaran = 0;
+            foreach ($array_to_jumlah as $detail_jumlah) {
+                // print_r($detail_jumlah);die();
+               $array_jumlah_total[] = $this->add_jumlah_for($parsed_data,$detail_jumlah['akun'],'lra',$detail_jumlah['nama'],$detail_jumlah['jenis_pembatasan']);
+            }
+
+            // $this->add_jumlah_after($parsed_data,'all','lra','akun',"Jumlah ".$parsed_data[0]['nama'],$array_jumlah_total,$array_jumlah_total,$parsed_data[0]['jenis_pembatasan']);
+            // print_r($array_jumlah_total);
+            // die();
+            $data_final = array_merge($data_final,$parsed_data);
+            // print_r($parsed_data);
+            // die();
+        }
+        // unset($data_parsing);
+
+        // die('==========');
+        // print_r($array_to_jumlah);
+        // echo "===============";
+        // print_r($array_jumlah_total);
+        // die();
+
+
+        // $this->add_jumlah_for($parsed,3,'lpk',"JUMLAH ASET BERSIH");
+        // $this->add_jumlah_for($parsed,11,'lpk',"JUMLAH ASET LANCAR");
+        // $this->add_jumlah_for($parsed,12,'lpk',"JUMLAH ASET TIDAK LANCAR");
+        // $this->add_jumlah_for($parsed,21,'lpk',"JUMLAH LIABILITAS JANGKA PENDEK");
+        // $this->add_jumlah_for($parsed,22,'lpk',"JUMLAH LIABILITAS JANGKA PANJANG");
+        // $this->add_jumlah_after($parsed,"sum.12",'lpk','akun',"JUMLAH ASET",array("sum.11","sum.12"),array("sum.11","sum.12"));
+        // $this->add_jumlah_after($parsed,"sum.3",'lpk','akun',"JUMLAH LIABILITAS DAN ASET BERSIH",array("sum.2","sum.3"),array("sum.2","sum.3"));
+        $data['tanggal_laporan'] = $tanggal_laporan;
+        $data['parse'] = $data_final;
+        $data['atribut'] = $parse_data;
+        $data['atribut']['level'] = 6;
+        $data['tahun'] = gmdate('Y');
+        $data['jenis_laporan'] = 'each';
+        $data['nama_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);
+        if ($data['nama_unit'] == '-' or $data['nama_unit'] == 'Penerimaan'){
+            $data['nama_unit'] = 'UNIVERSITAS DIPONEGORO';
+        }
+        if ($unit == null or $unit == 9999) {
+            $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
+            $teks_kpa = "Rektor";
+        } else {
+            $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+            $teks_kpa = "Pengguna Anggaran";
+        }
+
+        $data['kpa'] = $kpa;
+        $data['teks_kpa'] = $teks_kpa;
+        $data['level'] = 6;
+
+        // echo "<pre>";
+        // print_r($parsed);die();
+
+        $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
+    }
+
+    public function get_rekap_lra($level, $parse_data,$tipe = null)
+    {
+        $jumlah_tahun_sekarang = 0;
+        $jumlah_tahun_awal = 0;
+        $array_akun = array(4,5,8);
+        $array_not_akun = array(59,81);
+        $unit = $this->input->post('unit');
+        if ($unit == 'all'){
+            $unit = null;
+        }
+
+        // $daterange = $this->input->post('daterange');
+        $daterange = $parse_data['parsing_date'];
+        $date_t = explode(' - ', $daterange);
+        $year = gmdate('Y');
+
+        $start_date = "$year-01-01";
+
+        $end_date = strtodate($date_t[1]) or null;
+
+        $tanggal_laporan = $date_t[1];
+
+        $array_unit = $this->Unit_kerja_model->get_all_unit_kerja();
+
+        // echo "<pre>";
+        // print_r($array_unit);die();
+        $sum_posisi = 0;
+        $sum_anggaran = 0;
+        $order = 0;
+        $parsed = array();
+
+        foreach ($array_unit as $unit) {
+            $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit['kode_unit'],'anggaran',null,$start_date,$end_date);
+            $anggaran = 0;
+            $posisi = 0;
+            foreach ($data['anggaran'] as $entry) {
+                $anggaran += $entry;
+            }
+            foreach ($data['posisi'] as $entry_posisi) {
+                foreach ($entry_posisi as $entry) {
+                    if ($entry['tipe'] == 'debet'){
+                        $posisi += $entry['jumlah'];
+                    } elseif ($entry['tipe'] == 'kredit'){
+                        $posisi -= $entry['jumlah'];
+                    }
+                }
+            }
+
+            if ($anggaran == 0 or $posisi == 0) {
+                $persentase = 0;
+            }else {
+                $persentase = ($posisi / $anggaran) * 100;
+            }
+            $entry_parsed = array(
+               'order' => ++$order,
+               'level' => 1,
+               'akun' => $unit['kode_unit'],
+               'type' => 'entry_rekap',
+               'nama' => $unit['nama_unit'],
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'anggaran' => $anggaran,
+               'realisasi' => $posisi,
+               'selisih' => abs($anggaran) - abs($posisi),
+               'persentase' => $persentase,
+               'jenis_pembatasan' => null,
+            );
+
+            $parsed[] = $entry_parsed;
+            $sum_posisi += $posisi;
+            $sum_anggaran += $anggaran;
+        }
+
+        if ($sum_anggaran == 0 or $sum_posisi == 0) {
+            $persentase = 0;
+        }else {
+            $persentase = ($sum_posisi / $sum_anggaran) * 100;
+        }
+
+        $entry_parsed = array(
+           'order' => ++$order,
+           'level' => 1,
+           'akun' => 'sum_all',
+           'type' => 'sum',
+           'nama' => "Jumlah",
+           'start_sum' => null,
+           'end_sum' => null,
+           'sum_negatif' => null,
+           'anggaran' => $sum_anggaran,
+           'realisasi' => $sum_posisi,
+           'selisih' => abs($sum_anggaran) - abs($sum_posisi),
+           'persentase' => $persentase,
+           'jenis_pembatasan' => null,
+        );
+
+        $parsed[] = $entry_parsed;
+
+        $data['atribut'] = $parse_data;
+        $data['atribut']['level'] = 1;
+        $data['tahun'] = gmdate('Y');
+        $unit = null;
+        $data['nama_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);
+        if ($data['nama_unit'] == '-' or $data['nama_unit'] == 'Penerimaan'){
+            $data['nama_unit'] = 'UNIVERSITAS DIPONEGORO';
+        }
+        if ($unit == null or $unit == 9999) {
+            $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
+            $teks_kpa = "Rektor";
+        } else {
+            $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+            $teks_kpa = "Pengguna Anggaran";
+        }
+        // print_r($kpa);
+        // echo "<br/>";
+        // print_r($teks_kpa);
+        // die();
+        $data['kpa'] = $kpa;
+        $data['teks_kpa'] = $teks_kpa;
+        $data['level'] = 1;
+        $data['jenis_laporan'] = 'rekap';
+        $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
+        $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
+
+
+        // $this->add_jumlah_for($parsed,3,'lpk',"JUMLAH ASET BERSIH");
+        // $this->add_jumlah_for($parsed,11,'lpk',"JUMLAH ASET LANCAR");
+        // $this->add_jumlah_for($parsed,12,'lpk',"JUMLAH ASET TIDAK LANCAR");
+        // $this->add_jumlah_for($parsed,21,'lpk',"JUMLAH LIABILITAS JANGKA PENDEK");
+        // $this->add_jumlah_for($parsed,22,'lpk',"JUMLAH LIABILITAS JANGKA PANJANG");
+        // $this->add_jumlah_after($parsed,"sum.12",'lpk','akun',"JUMLAH ASET",array("sum.11","sum.12"),array("sum.11","sum.12"));
+        // $this->add_jumlah_after($parsed,"sum.3",'lpk','akun',"JUMLAH LIABILITAS DAN ASET BERSIH",array("sum.2","sum.3"),array("sum.2","sum.3"));
+        $data['tanggal_laporan'] = $tanggal_laporan;
+        $data['parse'] = $parsed;
+
+        // echo "<pre>";
+        // print_r($parsed);die();
+
+        $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
+    }
+
+
     function copyRows(PHPExcel_Worksheet $sheet,$srcRow,$dstRow,$height,$width) {
         for ($row = 0; $row < $height; $row++) {
                for ($col = 0; $col < $width; $col++) {
@@ -3252,6 +3956,7 @@ class Laporan extends MY_Controller {
             $filter_unit_gup = '';
             $filter_unit_pup = '';
             $filter_unit_tup = '';
+            $filter_unit_ls3 = '';
             $filter_unit_lsphk3 = '';
             $filter_unit_lspg = '';
 
@@ -3268,6 +3973,7 @@ class Laporan extends MY_Controller {
             $filter_unit_pup = "AND substr(trx_tambah_up.kode_unit_subunit,1,2)='".$kode_unit."'";
             $filter_unit_tup = "AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'";
             $filter_unit_lsphk3 = "AND substr(trx_lsphk3.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_ls3 = "AND substr(tk.kode_unit,1,2)='".$kode_unit."'";
             $filter_unit_lspg = "AND P.unitsukpa=".$kode_unit."";
         }
 
@@ -3279,12 +3985,15 @@ class Laporan extends MY_Controller {
             $this->data['periode'] = $daterange;
             $filter_periode = "AND (tgl_spm BETWEEN '$periode_awal' AND '$periode_akhir')";
             $filter_periode_lspg = "AND (S.tanggal BETWEEN '$periode_awal' AND '$periode_akhir')";
+            $filter_periode_ls3 = "AND (ts.tgl_spm BETWEEN '$periode_awal' AND '$periode_akhir')";
+
         }else{
             $periode_awal = null;
             $periode_akhir = null;
             $this->data['periode'] = 'Semua Periode';
             $filter_periode = "";
             $filter_periode_lspg = "";
+            $filter_periode_ls3 = "";
         }
 
         //up
@@ -3307,6 +4016,46 @@ class Laporan extends MY_Controller {
         $this->data['ls3'] = $this->db->query("SELECT * FROM trx_spm_lsphk3_data, trx_lsphk3, (select id_kuitansi, kode_akun, uraian, no_bukti, cair from rsa_kuitansi_lsphk3) as  rsa_kuitansi_lsphk3 WHERE id_trx_spm_lsphk3_data = id_trx_nomor_lsphk3 AND posisi='SPM-FINAL-KBUU' AND trx_lsphk3.id_kuitansi = rsa_kuitansi_lsphk3.id_kuitansi AND trx_spm_lsphk3_data.flag_proses_akuntansi=0 AND rsa_kuitansi_lsphk3.cair = 1 
             AND FALSE
             $filter_unit_lsphk3 $filter_periode");
+
+        $this->data['lk'] = $this->db->query("
+                    SELECT 
+                        tk.str_nomor_trx_spm,
+                        ts.untuk_bayar,
+                        ts.tgl_spm as tgl_proses,
+                        if (count(case when cair = 1 then 1 else null end) = count(case when flag_proses_akuntansi = 1 then 1 else null end),1,0) as flag_proses_akuntansi, 
+                        SUM(td.volume * td.harga_satuan) as jumlah_bayar 
+                    FROM 
+                        rsa_kuitansi as tk, rsa_kuitansi_detail as td, trx_spm_lsk_data as ts, trx_lsk as th
+                    WHERE 
+                        tk.id_kuitansi = td.id_kuitansi 
+                        AND ts.str_nomor_trx = tk.str_nomor_trx_spm
+                        AND ts.nomor_trx_spm = th.id_trx_nomor_lsk_spm 
+                        AND th.posisi = 'SPM-FINAL-KBUU'
+                        AND jenis='LK' 
+                        $filter_unit_ls3
+                        $filter_periode_ls3
+                    GROUP BY tk.str_nomor_trx_spm
+        ");
+
+        $this->data['ln'] = $this->db->query("
+                    SELECT 
+                        tk.str_nomor_trx_spm,
+                        ts.untuk_bayar,
+                        ts.tgl_spm as tgl_proses,
+                        if (count(case when cair = 1 then 1 else null end) = count(case when flag_proses_akuntansi = 1 then 1 else null end),1,0) as flag_proses_akuntansi, 
+                        SUM(td.volume * td.harga_satuan) as jumlah_bayar 
+                    FROM 
+                        rsa_kuitansi as tk, rsa_kuitansi_detail as td, trx_spm_lsnk_data as ts, trx_lsnk as th
+                    WHERE 
+                        tk.id_kuitansi = td.id_kuitansi 
+                        AND ts.str_nomor_trx = tk.str_nomor_trx_spm
+                        AND ts.nomor_trx_spm = th.id_trx_nomor_lsnk_spm 
+                        AND th.posisi = 'SPM-FINAL-KBUU'
+                        AND jenis='LN' 
+                        $filter_unit_ls3
+                        $filter_periode_ls3
+                    GROUP BY tk.str_nomor_trx_spm
+        ");
 
         //lspg
         $this->data['lspg'] = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.proses=5 $filter_unit_lspg $filter_periode_lspg");
@@ -3496,7 +4245,7 @@ class Laporan extends MY_Controller {
 
     }
 
-    public function add_jumlah_after(&$parse,$after,$jenis,$tipe,$nama,$start,$end)
+    public function add_jumlah_after(&$parse,$after,$jenis,$tipe,$nama,$start,$end,$jenis_pembatasan = null)
     {
         $posisi = 0;
         if ($jenis == 'lpk'){
@@ -3565,14 +4314,96 @@ class Laporan extends MY_Controller {
                'persentase' => ($jumlah_now == 0 or $jumlah_last == 0) ? 0 : abs($jumlah_now - $jumlah_last) / $jumlah_now * 100 ,
             );
 
+            while ($i < count($parse) and $posisi == 0) {
+                if ($parse[$i]['akun'] == $after) {
+                    $posisi = $i;
+                }
+                ++$i;
+            }
+        }
+        elseif ($jenis == 'lra'){
+            $anggaran = 0;
+            $realisasi = 0;
+            $selisih = 0;
+            $persentase = 0;
+
+            
+
+            $j = 0;
+
+            for ($i=0; $i < count($start); $i++) { 
+                $temp_start = 0;
+                $temp_end = 0;
+                while ($j < count($parse) and $temp_start == 0) {
+                    $added_condition = true;
+                    if ($jenis_pembatasan != null) {
+                        $added_condition = ($parse[$j]['jenis_pembatasan'] == $jenis_pembatasan);                    
+                    }
+                    if ((substr($parse[$j]['akun'],0,strlen($akun)) == $start[$i]) and $added_condition) {
+                    // if ($parse[$j]['akun'] == $akun) {
+                        $temp_start = $j;
+                    }
+                    ++$j;
+                }
+
+                $j--;
+
+                while ($j < count($parse) and $temp_end == 0) {
+                    $added_condition = false;
+                    if ($jenis_pembatasan != null) {
+                        $added_condition = ($parse[$j+1]['jenis_pembatasan'] != $jenis_pembatasan);
+                    }
+                    if (!isset($parse[$j+1]) or substr($parse[$j+1]['akun'],0,strlen($akun)) != $end[$i] or $added_condition) {
+                        $temp_end = $j;
+                    }
+
+                    ++$j;
+                }
+
+                for ($l=$temp_start; $l <= $temp_end; $l++) { 
+                    $anggaran += $parse[$l]['anggaran'];
+                    $realisasi += $parse[$l]['realisasi'];
+                    $selisih += $parse[$l]['selisih'];
+                }
+            }
+
+            $posisi = 0;
+            $j = 0;
+
+            if ($after == 'all'){
+                $posisi = count($parse);
+            }else{
+                while ($j < count($parse) and $posisi == 0) {
+                    $added_condition = true;
+                    if ($jenis_pembatasan != null) {
+                        $added_condition = ($parse[$j]['jenis_pembatasan'] == $jenis_pembatasan);                    
+                    }
+                    if ((substr($parse[$j]['akun'],0,strlen($akun)) == $akun) and $added_condition) {
+                    // if ($parse[$j]['akun'] == $akun) {
+                        $posisi = $j;
+                    }
+                    ++$j;
+                }
+            }
+
+
+            $entry_added = array(
+               'order' => 'xx',
+               'level' => 0,
+               'akun' => "sum_after_$akun",
+               'type' => 'sum',
+               'nama' => $nama,
+               'start_sum' => null,
+               'end_sum' => null,
+               'sum_negatif' => null,
+               'anggaran' => $anggaran,
+               'realisasi' => $realisasi,
+               'selisih' => $selisih,
+               'persentase' => $persentase ,
+               'jenis_pembatasan' => $jenis_pembatasan,
+            );
         }
 
-        while ($i < count($parse) and $posisi == 0) {
-            if ($parse[$i]['akun'] == $after) {
-                $posisi = $i;
-            }
-            ++$i;
-        }
         // print_r($entry_added);die();
 
         array_splice($parse, $posisi+1, 0, array($entry_added));
@@ -3714,10 +4545,15 @@ class Laporan extends MY_Controller {
                 $akun = $prefix_akun.".".$akun;
             }
 
+            $added_string = '';
+            if ($jenis_pembatasan != null){
+                $added_string = ".$jenis_pembatasan";
+            }
+
             $entry_added = array(
                'order' => 'xx',
                'level' => 0,
-               'akun' => "sum.$akun",
+               'akun' => "sum.$akun".$added_string,
                'type' => 'sum',
                'nama' => $nama,
                'start_sum' => null,
@@ -3809,6 +4645,8 @@ class Laporan extends MY_Controller {
         // print_r($entry_added);die();
 
         array_splice($parse, $posisi, 0, array($entry_added));
+
+        return $entry_added['akun'];
     }
 
 

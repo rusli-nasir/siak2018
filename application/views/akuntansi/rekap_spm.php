@@ -1,10 +1,15 @@
 <!-- javascript -->
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
+
+
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/jquery.dataTables.min.css" />
+<script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/excellentexport.min.js"></script>
+
+
 <script type="text/javascript">
 	$(document).ready(function(){
 		var host = location.protocol + '//' + location.host + '/sisrenbang/index.php/';
@@ -173,19 +178,48 @@
 					</td>
 				</tr>
 				<?php $no++; } } ?>
-				<?php if($ls3->num_rows() > 0){
-					foreach($ls3->result() as $result){ 
+				<?php if($lk->num_rows() > 0){
+					foreach($lk->result() as $result){ 
 					if($result->flag_proses_akuntansi==1){ 
 						echo '<tr style="background-color:#DAEEF3">';
 					}else{
 						echo '<tr>';
 					}?>			
 					<td><?php echo $no; ?>.</td>
-					<td>LSPHK3</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<td>LSK</td>
+					<td><?php echo date("d-m-Y", strtotime($result->tgl_proses)); ?></td>
+					<td><?php echo $result->str_nomor_trx_spm; ?></td>			
 					<td><?php echo $result->untuk_bayar; ?></td>
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
+					<td>
+						<?php if ($result->flag_proses_akuntansi==1): ?>
+							<span class="glyphicon glyphicon-ok text-success"></span>
+						<?php else: ?>
+							<span class="glyphicon glyphicon-remove text-danger"></span>
+						<?php endif ?>
+					</td>
+				</tr>
+				<?php $no++; } } ?>
+				<?php if($ln->num_rows() > 0){
+					foreach($ln->result() as $result){ 
+					if($result->flag_proses_akuntansi==1){ 
+						echo '<tr style="background-color:#DAEEF3">';
+					}else{
+						echo '<tr>';
+					}?>			
+					<td><?php echo $no; ?>.</td>
+					<td>LNK</td>
+					<td><?php echo date("d-m-Y", strtotime($result->tgl_proses)); ?></td>
+					<td><?php echo $result->str_nomor_trx_spm; ?></td>			
+					<td><?php echo $result->untuk_bayar; ?></td>
+					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
+					<td>
+						<?php if ($result->flag_proses_akuntansi==1): ?>
+							<span class="glyphicon glyphicon-ok text-success"></span>
+						<?php else: ?>
+							<span class="glyphicon glyphicon-remove text-danger"></span>
+						<?php endif ?>
+					</td>
 				</tr>
 				<?php $no++; } } ?>
 				<?php if($lspg->num_rows() > 0){
@@ -274,9 +308,16 @@
 
   $(document).ready(function(){
     var t = $('#tabel_spm').DataTable({
+    	dom: 'Bfrtip',
     	paging: false,
     	scrollY: 800,
-    	pageLength: 50
+    	pageLength: 50,
+    	buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
     });
 
     t.on( 'order.dt search.dt', function () {
