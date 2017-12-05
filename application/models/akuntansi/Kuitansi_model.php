@@ -77,6 +77,7 @@ class Kuitansi_model extends CI_Model {
 
                 $string_query = "SELECT posisi,ket,str_nomor_trx as no_spm,jumlah_bayar as jumlah FROM trx_spm_".$tabel_spm."_data, trx_".$tabel_spm." WHERE nomor_trx_spm = id_trx_nomor_".$tabel_spm."  AND 
                 (str_nomor_trx LIKE '$spm') $unit ORDER BY tgl_proses DESC LIMIT 0,1";
+
                 // die($string_query);
                 $query = $this->db->query($string_query);
                 $status = $query->result_array();

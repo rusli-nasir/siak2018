@@ -6,8 +6,10 @@
 
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
+<!-- <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/datatables.js"></script> -->
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/excellentexport.min.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
 
 
 <script type="text/javascript">
@@ -59,7 +61,9 @@
 		<form class="form-horizontal" action="<?php echo site_url('akuntansi/laporan/rekap_spm/cetak'); ?>" method="post" target="_blank">
 			<input type="hidden" name="unit" value="<?php if(isset($kode_unit)) echo $kode_unit; ?>">
 			<input type="hidden" name="daterange" value="<?php if(isset($periode)) echo $periode; ?>">
-			<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-print"></span> Download Excel</button>
+			<!-- <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-print"></span> Download Excel</button> -->
+			<a download="rekap_spm.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
+			<button class="btn btn-success no-print" type="button" id="print_tabel">Cetak</button>
 		</form>
 	</div>
 </div>
@@ -76,8 +80,15 @@
 </div>
 <div class="row">
 	<div class="col-sm-12">	
+		<div id="printed_table">
 		<table class="table" id="tabel_spm">
 			<thead>
+				<tr>
+					<th colspan="7" style="text-align: center;">
+						REKAP SPM <br/> 
+						<?php echo $teks_periode ?> <br/> <br/> 
+					</th>
+				</tr>
 				<tr>
 					<th>No</th>
 					<th>Jenis</th>
@@ -85,7 +96,7 @@
 					<th>No. SPM</th>
 					<th width="40% !important">Keterangan</th>
 					<th>Jumlah</th>
-					<th></th>
+					<th>terjurnal</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -105,9 +116,9 @@
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
-							<span class="glyphicon glyphicon-ok text-success"></span>
+							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
 						<?php else: ?>
-							<span class="glyphicon glyphicon-remove text-danger"></span>
+							<span class="glyphicon glyphicon-remove text-danger"> belum</span>
 						<?php endif ?>
 					</td>
 				</tr>
@@ -127,9 +138,9 @@
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
-							<span class="glyphicon glyphicon-ok text-success"></span>
+							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
 						<?php else: ?>
-							<span class="glyphicon glyphicon-remove text-danger"></span>
+							<span class="glyphicon glyphicon-remove text-danger"> belum</span>
 						<?php endif ?>
 					</td>
 				</tr>
@@ -149,9 +160,9 @@
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
-							<span class="glyphicon glyphicon-ok text-success"></span>
+							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
 						<?php else: ?>
-							<span class="glyphicon glyphicon-remove text-danger"></span>
+							<span class="glyphicon glyphicon-remove text-danger"> belum</span>
 						<?php endif ?>
 					</td>		
 				</tr>
@@ -171,9 +182,9 @@
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
-							<span class="glyphicon glyphicon-ok text-success"></span>
+							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
 						<?php else: ?>
-							<span class="glyphicon glyphicon-remove text-danger"></span>
+							<span class="glyphicon glyphicon-remove text-danger"> belum</span>
 						<?php endif ?>
 					</td>
 				</tr>
@@ -193,9 +204,9 @@
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
-							<span class="glyphicon glyphicon-ok text-success"></span>
+							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
 						<?php else: ?>
-							<span class="glyphicon glyphicon-remove text-danger"></span>
+							<span class="glyphicon glyphicon-remove text-danger"> belum</span>
 						<?php endif ?>
 					</td>
 				</tr>
@@ -215,9 +226,9 @@
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
-							<span class="glyphicon glyphicon-ok text-success"></span>
+							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
 						<?php else: ?>
-							<span class="glyphicon glyphicon-remove text-danger"></span>
+							<span class="glyphicon glyphicon-remove text-danger"> belum</span>
 						<?php endif ?>
 					</td>
 				</tr>
@@ -237,23 +248,51 @@
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
-							<span class="glyphicon glyphicon-ok text-success"></span>
+							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
 						<?php else: ?>
-							<span class="glyphicon glyphicon-remove text-danger"></span>
+							<span class="glyphicon glyphicon-remove text-danger"> belum</span>
 						<?php endif ?>
 					</td>
 				</tr>
 				<?php $no++; } } ?>
 			</tbody>
-			<tfoot>
+			<tbody>
 				<tr>
 					<th colspan="5" align="right">Total</th>
-					<th><?php echo number_format($total); ?></th>
+					<th colspan="2"><?php echo number_format($total); ?></th>
 				</tr>
-			</tfoot>
+			</tbody>
 		</table>
+		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$('#download_excel').click(function(){
+		// var printed = jQuery.extend(true,{}, $('#printed_table'))
+		var printed = $('#printed_table').clone()
+		printed.find('label').first().remove()
+		printed.find('div.dataTables_info').last().remove()
+		printed.find('table').attr('border', '1')
+		printed.find('tr').css("background-color", "");
+        var result = 'data:application/vnd.ms-excel,'+ encodeURIComponent(printed.html()) 
+        this.href = result;
+        this.download = "rekap_spm.xls";
+
+
+        return true;
+    })
+    $('#print_tabel').click(function(){
+    	var printed = $('#printed_table').clone()
+		printed.find('label').first().remove()
+		printed.find('div.dataTables_info').last().remove()
+		printed.find('table').attr('border', '1')
+		printed.find('table').attr('width', '80%')
+		printed.find('div').css("zoom", "90%");
+		printed.find('tr').css("background-color", "");
+        printed.print();
+    })
+</script>
 
 <script type="text/javascript">   
   $('input[id="daterange"]').daterangepicker(
@@ -310,13 +349,8 @@
     var t = $('#tabel_spm').DataTable({
     	dom: 'Bfrtip',
     	paging: false,
-    	scrollY: 800,
-    	pageLength: 50,
     	buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
+            'excel',
         ],
     });
 
@@ -326,4 +360,6 @@
         } );
     } ).draw();
   });
+
+
 </script>

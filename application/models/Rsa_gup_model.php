@@ -59,7 +59,7 @@ class Rsa_gup_model extends CI_Model {
 
         function check_dokumen_gup_by_str_trx($no_str_trx){
 
-            $query = "SELECT posisi "
+            $query = "SELECT t1.posisi "
                     . "FROM trx_nomor_gup AS tt1 "
                     . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
                     . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
@@ -67,10 +67,38 @@ class Rsa_gup_model extends CI_Model {
                         . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
                         . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
 
+
             $q = $this->db->query($query);
 //            var_dump($q->num_rows());die;
             if($q->num_rows() > 0){
-               return $q->row()->posisi ;
+               if($q->row()->posisi == 'SPP-FINAL'){
+                    $query = "SELECT str_nomor_trx_spm FROM trx_spp_spm WHERE str_nomor_trx_spp = '{$no_str_trx}' " ;
+
+                     $q = $this->db->query($query);
+
+                     if($q->num_rows() > 0){
+
+                        $str_ = $q->row()->str_nomor_trx_spm ;
+                        
+                        $query = "SELECT t1.posisi "
+                            . "FROM trx_nomor_gup AS tt1 "
+                            . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
+                            . "WHERE tt1.str_nomor_trx = '{$str_}' "
+                            . "AND t1.tgl_proses IN ( "
+                                . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
+                                . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
+
+                        $q = $this->db->query($query);
+                        if($q->num_rows() > 0){
+                            return $q->row()->posisi;
+                        }
+                        
+                     }
+
+                    
+               }else{
+                        return $q->row()->posisi;
+               }
             }else{
                 return '';
             }
@@ -86,10 +114,10 @@ class Rsa_gup_model extends CI_Model {
             }
         }
 
-        function lihat_ket_by_str_trx($str_trx){
+        function lihat_ket_by_str_trx($no_str_trx){
             // $q = $this->db->query("SELECT ket FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
 
-            $query = "SELECT ket "
+            $query = "SELECT t1.posisi,t1.ket "
                     . "FROM trx_nomor_gup AS tt1 "
                     . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
                     . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
@@ -101,7 +129,34 @@ class Rsa_gup_model extends CI_Model {
 
 //            var_dump($q->num_rows());die;
             if($q->num_rows() > 0){
-               return $q->row()->ket ;
+               if($q->row()->posisi == 'SPP-FINAL'){
+                    $query = "SELECT str_nomor_trx_spm FROM trx_spp_spm WHERE str_nomor_trx_spp = '{$no_str_trx}' " ;
+
+                     $q = $this->db->query($query);
+
+                     if($q->num_rows() > 0){
+
+                        $str_ = $q->row()->str_nomor_trx_spm ;
+                        
+                        $query = "SELECT t1.posisi,t1.ket "
+                            . "FROM trx_nomor_gup AS tt1 "
+                            . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
+                            . "WHERE tt1.str_nomor_trx = '{$str_}' "
+                            . "AND t1.tgl_proses IN ( "
+                                . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
+                                . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
+
+                        $q = $this->db->query($query);
+                        if($q->num_rows() > 0){
+                            return $q->row()->ket;
+                        }
+                        
+                     }
+
+                    
+               }else{
+                        return $q->row()->ket;
+               }
             }else{
                 return '';
             }
@@ -650,17 +705,52 @@ class Rsa_gup_model extends CI_Model {
         
         function get_daftar_spp($kode_unit_subunit,$tahun){
             
-            $query = "SELECT *,t1.tgl_proses AS tgl_proses_status "
+            $query2 = "SELECT tt1.str_nomor_trx AS str_nomor_trx_spp,t3.str_nomor_trx_spm AS str_nomor_trx_spm,t1.tgl_spp,t2.jumlah_bayar, t1.posisi "
                     . "FROM trx_nomor_gup AS tt1 "
                     . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
+                    . "JOIN trx_spp_gup_data AS t2 ON tt1.id_trx_nomor_gup = t2.nomor_trx_spp "
+                    . "LEFT JOIN trx_spp_spm AS t3 ON t1.id_trx_nomor_gup = t3.nomor_trx_spp "
                     . "WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' "
                     . "AND jenis = 'SPP' "
+                    . "AND t3.jenis_trx = 'GUP' "
                     . "AND tt1.tahun = '{$tahun}' "
                     . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
-                        . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
+                        . "SELECT MAX(t22.tgl_proses) FROM trx_gup AS t22 "
+                        . "WHERE t22.id_trx_nomor_gup = t1.id_trx_nomor_gup GROUP BY t22.kode_unit_subunit)" ;
+
+            $query = "SELECT t1.str_nomor_trx AS str_nomor_trx_spp,t2.str_nomor_trx_spm,t3.posisi AS posisi_spp,t4.posisi AS posisi_spm,t1.tgl_spp,t1.jumlah_bayar 
+FROM trx_spp_gup_data AS t1
+JOIN trx_spp_spm AS t2
+ON t1.str_nomor_trx = t2.str_nomor_trx_spp
+JOIN (
+    SELECT t31.kode_unit_subunit,t31.id_trx_nomor_gup,t31.posisi,t31.tgl_proses
+    FROM trx_gup AS t31
+    WHERE t31.kode_unit_subunit = '{$kode_unit_subunit}' AND t31.tahun = '{$tahun}' 
+    AND t31.tgl_proses IN (
+        SELECT MAX(t311.tgl_proses) AS tgl_proses 
+        FROM trx_gup AS t311
+        WHERE t311.kode_unit_subunit = '{$kode_unit_subunit}' AND t311.tahun = '{$tahun}' 
+        GROUP BY t311.id_trx_nomor_gup
+    )
+
+) AS t3
+ON t1.nomor_trx_spp = t3.id_trx_nomor_gup
+JOIN (
+    SELECT t41.kode_unit_subunit,t41.id_trx_nomor_gup,t41.posisi,t41.tgl_proses
+    FROM trx_gup AS t41
+    WHERE t41.kode_unit_subunit = '{$kode_unit_subunit}' AND t41.tahun = '{$tahun}' 
+    AND t41.tgl_proses IN (
+        SELECT MAX(t411.tgl_proses) AS tgl_proses 
+        FROM trx_gup AS t411
+        WHERE t411.kode_unit_subunit = '{$kode_unit_subunit}' AND t411.tahun = '{$tahun}' 
+        GROUP BY t411.id_trx_nomor_gup
+    )
+
+) AS t4
+ON t2.nomor_trx_spm = t4.id_trx_nomor_gup
+WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " ;
                         
-//                        echo $query; die;
+                       // echo $query; die;
 
                 $q = $this->db->query($query);
 
@@ -737,9 +827,9 @@ class Rsa_gup_model extends CI_Model {
         
         function proses_gup_spp_rka($data){
 
-            $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            foreach($rel_kuitansi as $rel){
+            // foreach($rel_kuitansi as $rel){
 //                $this->db->where('id_kuitansi', $rel);
 //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
                     $query = "UPDATE rsa_detail_belanja_ "
@@ -750,15 +840,15 @@ class Rsa_gup_model extends CI_Model {
                         . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
 //                echo $query ; die;
                 $this->db->query($query);
-            }
+            // }
 
         }
         
         function tolak_gup_spp_rka($data){
 
-            $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            foreach($rel_kuitansi as $rel){
+            // foreach($rel_kuitansi as $rel){
 //                $this->db->where('id_kuitansi', $rel);
 //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
                     $query = "UPDATE rsa_detail_belanja_ "
@@ -769,15 +859,15 @@ class Rsa_gup_model extends CI_Model {
                         . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
 //                echo $query ; die;
                 $this->db->query($query);
-            }
+            // }
 
         }
         
         function proses_gup_spm_rka($data){
 
-            $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            foreach($rel_kuitansi as $rel){
+            // foreach($rel_kuitansi as $rel){
 //                $this->db->where('id_kuitansi', $rel);
 //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
                     $query = "UPDATE rsa_detail_belanja_ "
@@ -788,15 +878,15 @@ class Rsa_gup_model extends CI_Model {
                         . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
 //                echo $query ; die;
                 $this->db->query($query);
-            }
+            // }
 
         }
         
         function proses_gup_cair_rka($data){
 
-            $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            foreach($rel_kuitansi as $rel){
+            // foreach($rel_kuitansi as $rel){
 //                $this->db->where('id_kuitansi', $rel);
 //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
                 $nw = date('Y-m-d H:i:s');
@@ -808,15 +898,15 @@ class Rsa_gup_model extends CI_Model {
                         . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
 //                echo $query ; die;
                 $this->db->query($query);
-            }
+            // }
 
         }
         
         function tolak_gup_spm_rka($data){
 
-            $rel_kuitansi = json_decode($data['rel_kuitansi']);
+            // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            foreach($rel_kuitansi as $rel){
+            // foreach($rel_kuitansi as $rel){
 //                $this->db->where('id_kuitansi', $rel);
 //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
                     $query = "UPDATE rsa_detail_belanja_ "
@@ -827,7 +917,7 @@ class Rsa_gup_model extends CI_Model {
                         . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
 //                echo $query ; die;
                 $this->db->query($query);
-            }
+            // }
 
         }
         
@@ -909,7 +999,7 @@ class Rsa_gup_model extends CI_Model {
 
                             // echo $str_unit ; die ;
 
-                            $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPM-DRAFT-KPA' AND kode_unit_subunit IN ({$str_unit}) AND aktif = '1' " ; 
+                            $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPM-DRAFT-KPA' AND SUBSTR(kode_unit_subunit,1,2) IN ({$str_unit}) AND aktif = '1' " ; 
 
                            // echo $query ; die ;
 
@@ -927,6 +1017,22 @@ class Rsa_gup_model extends CI_Model {
                     }else{
                         return '0';
                     }
+
+        }
+
+        function get_last_spp($kode_unit,$tahun){
+            $query = "SELECT t1.*
+FROM
+trx_spp_gup_data AS t1
+WHERE t1.kode_unit_subunit = '{$kode_unit}' AND t1.tahun = '{$tahun}'
+AND t1.id_trx_spp_gup_data = (SELECT MAX(id_trx_spp_gup_data) FROM trx_spp_gup_data AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit}' AND t2.tahun = '{$tahun}' GROUP BY t2.kode_unit_subunit )" ;
+
+            $q = $this->db->query($query);
+            if($q->num_rows() > 0){
+               return $q->row();
+            }else{
+                return array();
+            }
 
         }
 

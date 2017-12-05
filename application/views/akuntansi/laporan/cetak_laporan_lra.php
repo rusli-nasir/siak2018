@@ -82,12 +82,23 @@ if($atribut['cetak']){
 					  foreach ($parse as $key => $entry): ?>
 					  	<?php if ($entry['level'] != 0 or $entry['type'] != 'index' or true): ?>
 							<tr 
-								<?php if ($entry['type'] == 'sum'): ?>
-									style="background-color: #EDED74;font-weight: bold;"
-								<?php elseif ($entry['level'] == $atribut['level']-2): ?>
-									style="background-color: #7CFFFF;font-weight: bold;"
-								<?php elseif ($entry['level'] < $atribut['level']-1): ?>
-									style="background-color: #54FFA9;font-weight: bold;"
+								<?php if (!isset($entry['level_spec'])): ?>
+									<?php if ($entry['type'] == 'sum'): ?>
+										style="background-color: #EDED74;font-weight: bold;"
+									<?php elseif ($entry['level'] == $atribut['level']-2): ?>
+										style="background-color: #7CFFFF;font-weight: bold;"
+									<?php elseif ($entry['level'] < $atribut['level']-1): ?>
+										style="background-color: #54FFA9;font-weight: bold;"
+									<?php endif ?>
+								<?php else: ?>
+									<?php if ($entry['type'] == 'sum'): ?>
+										style="background-color: #EDED74;font-weight: bold;"
+									<?php elseif ($entry['level'] == $entry['level_spec']-2): ?>
+										style="background-color: #7CFFFF;font-weight: bold;"
+									<?php elseif ($entry['level'] < $entry['level_spec']-1): ?>
+										style="background-color: #54FFA9;font-weight: bold;"
+									<?php endif ?>
+									
 								<?php endif ?>
 							>
 								<?php if ($jenis_laporan == 'rekap'): ?>

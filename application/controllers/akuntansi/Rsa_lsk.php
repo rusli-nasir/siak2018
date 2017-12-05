@@ -5,7 +5,7 @@
 /* -------------- Constructor ------------- */
 
             private $cur_tahun;
-    public function __construct(){
+            public function __construct(){
         parent::__construct();
             //load library, helper, and model
                 $this->cur_tahun = $this->setting_model->get_tahun();

@@ -44,11 +44,11 @@ class Checker extends MY_Controller {
 
     public function cek_spm_jumlah()
     {
-        $spm = '00001/BPS/SPM-LS PIHAK KE-3/JUL/2017';
-        $jumlah = 10315000;
+        $spm = '00004/W23/SPM-TUP/OKT/2017';
+        $jumlah = 8000000000;
 
-        print_r($this->Kuitansi_model->cari_kuitansi_dari_rsa($spm,$jumlah));
-        die();
+        // print_r($this->Kuitansi_model->read_spm_rsa($spm,$jumlah));
+        // die();
 
     }
 
@@ -115,6 +115,7 @@ class Checker extends MY_Controller {
                                 $objWorksheet->setCellValueByColumnAndRow(11,$row,$cocok_jumlah_proses);
                             }elseif (!$cocok_jumlah_proses) {
                                 $cocok_rsa = $this->Kuitansi_model->read_spm_rsa($spm_ori,$jumlah);
+                                die($spm_ori);
                                 $objWorksheet->setCellValueByColumnAndRow(12,$row,$cocok_rsa['posisi']);
                                 $objWorksheet->setCellValueByColumnAndRow(13,$row,$cocok_rsa['ket']);
                                 if ($cocok_rsa['sama_nominal'] == 1){

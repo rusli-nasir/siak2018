@@ -153,6 +153,7 @@
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
         <button id="simpan" name="simpan" class="btn btn-success" type="submit">Buka Laporan</button>
+        <a href="<?php echo site_url('akuntansi/laporan/lainnya') ?>"><button type="button" class="btn btn-primary" > Pindah ke Laporan Utama</button></a>
       </div>
     </div>
     <?php echo form_close(); ?>

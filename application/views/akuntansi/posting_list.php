@@ -149,6 +149,8 @@ $tahun = gmdate('Y');
 								<a href="<?php echo site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab12)){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_lsnk/spm_lsnk_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } else if(isset($tab9)){ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->no_spm)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php }else{ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } ?>

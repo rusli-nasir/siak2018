@@ -1,3 +1,8 @@
+<?php 
+$ci =& get_instance();
+$tahun = gmdate('Y');
+ ?>
+
 <style type="text/css">
 table {
         width: 100% !important;
@@ -144,11 +149,11 @@ tbody td, thead th {
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>						
                         <?php if(isset($tab1)){ ?>
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab4)){ ?>
                         <a href="<?php echo site_url('akuntansi/rsa_gup/up/'.$result->kode_unit_subunit.'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab9)){ ?>
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab6)){ ?>
 							<a href="<?php echo site_url('akuntansi/rsa_pup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab5)){ ?>
