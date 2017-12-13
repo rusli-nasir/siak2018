@@ -40,6 +40,195 @@ class Kuitansi_model extends CI_Model {
         print_r($this->read_spm_rsa($spm,$jumlah));
     }
 
+    public function read_sp2d_siak($unit,$jumlah,$jenis)
+    {
+        set_time_limit(900);
+        // $array_kelompok = Array
+        //     (
+        //         ['UP'] => array (
+        //                         'tabel' => 'trx_spm_up_data',
+        //                     ),
+        //         ['GUP'] => ,
+        //         ['LS'] => ,
+        //         ['LS3'] => ,
+        //         ['TUP'] => ,
+        //         ['TUP BBM'] => ,
+        //         ['TUP NIHIL'] => ,
+        //         ['LS4'] => ,
+        //         ['LSPG'] => ,
+        //         ['PUP'] => ,
+        //     );
+
+        $tabel_jenis = array(
+            'UP' => 'up',
+            'GUP' => 'gup',
+            'LS' => 'rsa_kuitansi',
+            'TUP' => 'tambah_tup',
+            'LS3' => 'rsa_kuitansi',
+            'TUP BBM' => 'tambah_tup',
+            'TUP NIHIL' => 'tup',
+            'LS4' => 'rsa_kuitansi',
+            'LSPG' => 'kepeg_tr_spmls',
+            'PUP' => 'tambah_up',
+        );
+
+        $tabel_konversi_jenis = array(
+            'UP' => 'UP',
+            'GUP' => 'GUP',
+            'LS' => 'LSK',
+            'TUP' => 'TUP',
+            'LS3' => 'LSK',
+            'TUP BBM' => 'TUP',
+            'TUP NIHIL' => 'TUP_NIHIL',
+            'LS4' => 'LS',
+            'LSPG' => 'LS',
+            'PUP' => 'PUP',
+        );
+
+        $masuk_spm = array('UP','GUP','TUP','PUP','TUP NIHIL','TUP BBM');
+
+        $masuk_pgw = array('LSPG','LS');
+
+        $masuk_ls = array('LS3','LS4','LSK','LS','LSNK');
+
+        $spm_ketemu_siak = '';
+        $spm_ketemu_rsa = '';
+
+        // CARI DI SIAK
+        
+        $spm = $this->db->select('no_spm')
+                        ->where(array('jumlah_debet' => $jumlah,'unit_kerja' => $unit, 'jenis' => $tabel_konversi_jenis[$jenis]))
+                        ->where("tipe <> 'pajak'")
+                        ->get('akuntansi_kuitansi_jadi')
+                        ->result_array();
+
+        foreach ($spm as $found_spm) {
+            $spm_ketemu_siak .= $found_spm['no_spm'].",";
+        }
+
+        if (in_array($jenis,$masuk_ls)){
+            $spm = $this->db->select('no_spm')
+                        ->where(array('jumlah_debet' => $jumlah,'unit_kerja' => $unit))
+                        ->where("(jenis = 'LK' or jenis = 'LN')")
+                        ->where("tipe <> 'pajak'")
+                        ->get('akuntansi_kuitansi_jadi')
+                        ->result_array();
+
+            foreach ($spm as $found_spm) {
+                $spm_ketemu_siak .= $found_spm['no_spm'].",";
+            }
+        }
+
+        if (in_array($jenis,$masuk_pgw)){
+            $spm = $this->db->select('no_spm')
+                        ->where(array('jumlah_debet' => $jumlah,'unit_kerja' => $unit, 'jenis' => 'NK'))
+                        ->where("tipe <> 'pajak'")
+                        ->get('akuntansi_kuitansi_jadi')
+                        ->result_array();
+
+            foreach ($spm as $found_spm) {
+                $spm_ketemu_siak .= $found_spm['no_spm'].",";
+            }
+        }
+
+        // $spm_ketemu_siak = ''; //UNTUK FORCE SEARCH KE RSA
+
+        if (strlen($spm_ketemu_siak) == 0){
+            $spm_ketemu_siak = "tidak ketemu di siak";
+            // CARI DI RSA
+            // Kalau masuk SPM
+            if (in_array($jenis,$masuk_spm)){ 
+                $tabel_spm = $tabel_jenis[$jenis];
+                
+                $where_unit = 'AND substr(trx_'.$tabel_spm.'.kode_unit_subunit,1,2)="'.$unit.'"';
+
+                $string_query = "
+                                    SELECT 
+                                        posisi,ket,str_nomor_trx as no_spm,
+                                        jumlah_bayar as jumlah,
+                                        tgl_proses
+                                    FROM 
+                                        trx_spm_".$tabel_spm."_data, trx_".$tabel_spm."                                         
+                                    WHERE 
+                                        nomor_trx_spm = id_trx_nomor_".$tabel_spm."  AND 
+                                        jumlah_bayar = $jumlah AND
+                                        id_trx_".$tabel_spm." IN (select distinct max(id_trx_".$tabel_spm.") from trx_".$tabel_spm." group by id_trx_nomor_".$tabel_spm.")
+                                        $where_unit 
+                                    GROUP BY
+                                        nomor_trx_spm
+                                    ORDER BY 
+                                        nomor_trx_spm,tgl_proses DESC";
+
+                $spm = $this->db->query($string_query)->result_array();
+                foreach ($spm as $found_spm) {
+                    $spm_ketemu_rsa .= $found_spm['no_spm']."(".$found_spm['posisi']."),";
+                }
+            }
+            // Kalau masuk LS3
+            if (in_array($jenis,$masuk_ls)){
+                $string_query = "
+                                    SELECT 
+                                        if(cair=1,'cair','belum cair') as posisi, 
+                                        str_nomor_trx_spm as no_spm, 
+                                        sum(volume*harga_satuan) as jumlah
+                                    FROM 
+                                        rsa_kuitansi,
+                                        rsa_kuitansi_detail 
+                                    WHERE 
+                                        rsa_kuitansi.id_kuitansi=rsa_kuitansi_detail.id_kuitansi AND
+                                        (jenis = 'LK' OR jenis = 'LN') AND
+                                        substr(kode_unit,1,2) = $unit
+                                    GROUP BY 
+                                        str_nomor_trx_spm
+                                    HAVING
+                                        jumlah = $jumlah
+                                    ";
+                $spm = $this->db->query($string_query)->result_array();
+                foreach ($spm as $found_spm) {
+                    $spm_ketemu_rsa .= $found_spm['no_spm']."(".$found_spm['posisi']."),";
+                }
+            }
+            // Kalau masuk LS PG
+            if (in_array($jenis,$masuk_pgw)){
+                $string_query = "
+                                    SELECT 
+                                        IF(proses = 5 ,'selesai','belum selesai') as posisi, 
+                                        status as ket, 
+                                        nomor as no_spm, 
+                                        total_sumberdana as jumlah
+                                    FROM 
+                                        kepeg_tr_spmls 
+                                    WHERE 
+                                        total_sumberdana = $jumlah AND
+                                        substr(unitsukpa,1,2) = $unit         
+                                    ";
+                $spm = $this->db->query($string_query)->result_array();
+                foreach ($spm as $found_spm) {
+                    $spm_ketemu_rsa .= $found_spm['no_spm']."(".$found_spm['posisi']."),";
+                }
+            }
+
+            if (strlen($spm_ketemu_rsa) == 0){
+                $spm_ketemu_rsa = "tidak ketemu di rsa";
+            }else{
+                $spm_ketemu_rsa = substr($spm_ketemu_rsa,0,-1);
+            }
+            
+        }else{
+            $spm_ketemu_siak = substr($spm_ketemu_siak,0,-1);
+        }
+
+
+        $result = array(
+            'siak' => $spm_ketemu_siak,
+            'rsa' => $spm_ketemu_rsa,
+        );
+
+        return $result;
+
+
+    }
+
 
     public function read_spm_rsa($spm,$jumlah,$kode_unit=null)
     {
@@ -346,13 +535,32 @@ class Kuitansi_model extends CI_Model {
             $unit = '';
         }
 
+        if($limit!=null OR $start!=null){
+            $query = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
+        }else{
+            $query = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            (str_nomor_trx LIKE '%$keyword%') $unit");
+        }
+        return $query;
+    }
+
+    function read_ks($limit = null, $start = null, $keyword = null, $kode_unit = null){
+        if($kode_unit!=null){
+            $unit = 'AND substr(trx_tambah_ks.kode_unit_subunit,1,2)="'.$kode_unit.'"';
+        }else{
+            $unit = '';
+        }
+
 		if($limit!=null OR $start!=null){
-			$query = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
-			(str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
+			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks AND
+			(trx_spm_tambah_ks_data.str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
 		}else{
-			$query = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
-			(str_nomor_trx LIKE '%$keyword%') $unit");
+			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks AND
+			(trx_spm_tambah_ks_data.str_nomor_trx LIKE '%$keyword%') $unit");
 		}
+        // die("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spm FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks AND
+        //     (trx_spm_tambah_ks_data.str_nomor_trx LIKE '%$keyword%') $unit");
 		return $query;
 	}
     
@@ -723,6 +931,18 @@ class Kuitansi_model extends CI_Model {
                                     );
             unset($temp_data['akun_debet']);
             unset($temp_data['jumlah_debet']);
+
+            if ($jenis == 'LK'){
+                $table_suffix = 'lsk';
+            }elseif ($jenis == 'LN') {
+                $table_suffix = 'lsnk';
+            }
+            $table = 'trx_spm_'.$table_suffix."_data";
+            $table_status = 'trx_'.$table_suffix;
+            $no_lookup_spm = $this->db->get_where($table,array('str_nomor_trx' => $entry['str_nomor_trx_spm']))->row_array()['nomor_trx_spm'];
+            $temp_data['tanggal_verifikator'] = $this->db->get_where($table_status,array('id_trx_nomor_'.$table_suffix.'_spm' => $no_lookup_spm,'posisi' => 'SPM-FINAL-VERIFIKATOR'))->row_array()['tgl_proses'];
+            $temp_data['tanggal_final_kbuu'] = $this->db->get_where($table_status,array('id_trx_nomor_'.$table_suffix.'_spm' => $no_lookup_spm,'posisi' => 'SPM-FINAL-KBUU'))->row_array()['tgl_proses'];
+
             $hasil[] = $temp_data;
         }
 
@@ -902,7 +1122,18 @@ class Kuitansi_model extends CI_Model {
             $filter_unit = 'AND substr(T.kode_unit_subunit,1,2)='.$this->session->userdata('kode_unit').'';
         }
 
-        $query = $this->db->query("SELECT * FROM trx_up T, trx_spm_up_data U WHERE T.id_trx_nomor_up=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
+        $query = $this->db->query("SELECT * FROM trx_up T, trx_spm_up_data U WHERE T.id_trx_nomor_up_spm=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
+        return $query;
+    }
+
+    public function total_ks($posisi, $flag){
+        if($this->session->userdata('kode_unit')==null){
+            $filter_unit = '';
+        }else{
+            $filter_unit = 'AND substr(T.kode_unit_subunit,1,2)='.$this->session->userdata('kode_unit').'';
+        }
+
+        $query = $this->db->query("SELECT * FROM trx_tambah_ks T, trx_spm_tambah_ks_data U WHERE T.id_trx_nomor_tambah_ks_spm=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
         return $query;
     }
 

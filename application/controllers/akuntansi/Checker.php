@@ -6,6 +6,7 @@ class Checker extends MY_Controller {
         parent::__construct();
         $this->cek_session_in();
         $this->load->library('excel');
+        $this->db2 = $this->load->database('rba',TRUE);
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
     }
 
@@ -14,6 +15,97 @@ class Checker extends MY_Controller {
         $this->load->library('excel');
         $temp_data['content'] = $this->load->view('akuntansi/form_upload_cek_spm_siak',null,true);
         $this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+    public function import_cek_sp2d_siak()
+    {
+            $this->load->library('excel');
+            $temp_data['content'] = $this->load->view('akuntansi/form_upload_cek_sp2d_siak',null,true);
+            $this->load->view('akuntansi/content_template',$temp_data,false);
+    }
+
+    public function do_upload_cek_sp2d_siak($value='')
+    {
+            $config['upload_path'] = './assets/akuntansi/upload';
+            $config['allowed_types'] = 'xls|xlsx';
+            $config['max_size'] = '20000';
+
+            $this->load->library('upload', $config);
+
+            if ( ! $this->upload->do_upload())
+            {
+                echo $this->upload->display_errors('<p>', '</p>');
+                die('gagal mengupload');
+            }
+
+            $data = $this->upload->data();
+
+            $file = $data['full_path'];
+
+            $inputFileType = PHPExcel_IOFactory::identify($file);
+
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file);
+
+            $i = 0;
+
+            // echo "<pre>";
+            $start_row  = 6;
+            $column_jenis = 4;
+            $column_jumlah =6;
+            $column_siak =7;
+            $column_rsa =8;
+            $array_jenis = array();
+
+
+            while ($objPHPExcel->setActiveSheetIndex($i)){
+
+                $objWorksheet = $objPHPExcel->getActiveSheet();
+                $title = $objWorksheet->getTitle();
+
+                $objWorksheet->setCellValueByColumnAndRow($column_siak,$start_row,'SIAK');
+                $objWorksheet->setCellValueByColumnAndRow($column_rsa,$start_row,'RSA');
+
+                $highestRow = $objWorksheet->getHighestRow();
+
+                $kode_unit = $this->db2->get_where('unit',array('alias' => $title))->row_array()['kode_unit'];
+
+                // echo "$title - $kode_unit\n";
+
+                $numbering = 0;
+                for ($iter_row=$start_row; $iter_row <= $highestRow; $iter_row++) { 
+                    $numbering++;
+                    $jenis = $placer = $objWorksheet->getCellByColumnAndRow($column_jenis,$iter_row)->getValue();
+                    $jumlah = $objWorksheet->getCellByColumnAndRow($column_jumlah,$iter_row)->getValue();
+                    if ($placer != null and $jumlah != null){
+                        if (!isset($array_jenis[$placer])){
+                            $array_jenis[$placer] = 1;
+                        }else{
+                            $array_jenis[$placer]++;
+                        }
+                        $found = $this->Kuitansi_model->read_sp2d_siak($kode_unit,$jumlah,$jenis);
+                        $objWorksheet->setCellValueByColumnAndRow($column_siak,$iter_row,$found['siak']);
+                        $objWorksheet->setCellValueByColumnAndRow($column_rsa,$iter_row,$found['rsa']);
+                    }
+                }
+
+                if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
+            }
+
+        unlink($file);
+        // die('selesai');
+
+
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=rekap_sp2d.xlsx");
+        header('Cache-Control: max-age=0');
+        // $objWriter = new PHPExcel_Writer_HTML($objPHPExcel,'excel5');  
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
+
+            // print_r($array_jenis);
     }
 
     public function do_upload_cek_siak($alert = null,$notice = null)

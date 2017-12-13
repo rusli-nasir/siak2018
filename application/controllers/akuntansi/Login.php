@@ -15,6 +15,8 @@ class Login extends MY_Controller {
 		$server_uri = base_url(uri_string());
 		// die($server_uri);
 		$data['is_demo'] = (strpos($server_uri,'pak.undip.ac.id') !== false);
+
+		// $data['maintenance'] = "Untuk keperluan maintenance database rsa pada tanggal 11 Desember 2017, diharap TIDAK melakukan aktifitas di sistem SiaK mulai pukul 16.00";
 		// $data['is_demo'] = (strpos($server_uri,'localhost') !== false);
 
 		// echo strpos($server_uri,'localhost');

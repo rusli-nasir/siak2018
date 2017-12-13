@@ -1,4 +1,7 @@
 <!-- javascript -->
+<?php
+	$tahun = gmdate('Y');
+?>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/jquery.dataTables.min.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
@@ -81,6 +84,13 @@
 <div class="row">
 	<div class="col-sm-12">	
 		<div id="printed_table">
+		<style type="text/css">
+			@media print {
+			  a[href]:after {
+			    content: none !important;
+			  }
+			}
+		</style>
 		<table class="table" id="tabel_spm">
 			<thead>
 				<tr>
@@ -111,7 +121,11 @@
 					<td><?php echo $no; ?>.</td>
 					<td>UP</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<td>
+						<a href="<?php $r=up_get_details($result->str_nomor_trx); echo site_url('akuntansi/rsa_gup/up/'.$r->kode_unit_subunit.'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank">
+							<?php echo $result->str_nomor_trx; ?>
+						</a>
+					</td>			
 					<td><?php echo $result->untuk_bayar; ?></td>
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
@@ -132,8 +146,18 @@
 					}?>	
 					<td><?php echo $no; ?>.</td>
 					<td>GU</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<td>
+						<?php 
+							$tanggal = date("d-m-Y", strtotime($result->tgl_spm));
+							$tahun = date("Y", strtotime($result->tgl_spm));
+							echo $tanggal; 
+						?>
+					</td>
+					<td>
+						<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank">
+							<?php echo $result->str_nomor_trx; ?>
+						</a>
+					</td>			
 					<td><?php echo $result->untuk_bayar; ?></td>
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
@@ -155,7 +179,13 @@
 					<td><?php echo $no; ?>.</td>
 					<td>PUP</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
+
+					<td>
+						<!-- <a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->nomor_trx_spm.'/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"> -->
+							<?php echo $result->str_nomor_trx; ?>	
+						<!-- </a> -->
+					</td>			
+
 					<td><?php echo $result->untuk_bayar; ?></td>
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
@@ -176,8 +206,20 @@
 					}?>			
 					<td><?php echo $no; ?>.</td>
 					<td>TUP</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td>
-					<td><?php echo $result->str_nomor_trx; ?></td>			
+					<!-- <td><?php echo date("d-m-Y", strtotime($result->tgl_spm)); ?></td> -->
+					<!-- <td><?php echo $result->str_nomor_trx; ?></td>			 -->
+					<td>
+						<?php 
+							$tanggal = date("d-m-Y", strtotime($result->tgl_spm));
+							$tahun = date("Y", strtotime($result->tgl_spm));
+							echo $tanggal; 
+						?>
+					</td>
+					<td>
+						<a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank">
+							<?php echo $result->str_nomor_trx; ?>
+						</a>
+					</td>
 					<td><?php echo $result->untuk_bayar; ?></td>
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
@@ -198,8 +240,20 @@
 					}?>			
 					<td><?php echo $no; ?>.</td>
 					<td>LSK</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_proses)); ?></td>
-					<td><?php echo $result->str_nomor_trx_spm; ?></td>			
+					<!-- <td><?php echo date("d-m-Y", strtotime($result->tgl_proses)); ?></td> -->
+					<!-- <td><?php echo $result->str_nomor_trx_spm; ?></td>			 -->
+					<td>
+						<?php 
+							$tanggal = date("d-m-Y", strtotime($result->tgl_proses));
+							$tahun = date("Y", strtotime($result->tgl_proses));
+							echo $tanggal; 
+						?>
+					</td>
+					<td>
+						<a href="<?php echo site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank">
+							<?php echo $result->no_spm; ?>
+						</a>
+					</td>
 					<td><?php echo $result->untuk_bayar; ?></td>
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
@@ -220,8 +274,20 @@
 					}?>			
 					<td><?php echo $no; ?>.</td>
 					<td>LNK</td>
-					<td><?php echo date("d-m-Y", strtotime($result->tgl_proses)); ?></td>
-					<td><?php echo $result->str_nomor_trx_spm; ?></td>			
+					<!-- <td><?php echo date("d-m-Y", strtotime($result->tgl_proses)); ?></td> -->
+					<!-- <td><?php echo $result->str_nomor_trx_spm; ?></td>			 -->
+					<td>
+						<?php 
+							$tanggal = date("d-m-Y", strtotime($result->tgl_proses));
+							$tahun = date("Y", strtotime($result->tgl_proses));
+							echo $tanggal; 
+						?>
+					</td>
+					<td>
+						<a href="<?php echo site_url('akuntansi/rsa_lsnk/spm_lsnk_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank">
+							<?php echo $result->no_spm; ?>
+						</a>
+					</td>
 					<td><?php echo $result->untuk_bayar; ?></td>
 					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
 					<td>
@@ -243,9 +309,13 @@
 					<td><?php echo $no; ?>.</td>
 					<td>LSPG</td>
 					<td><?php echo date("d-m-Y", strtotime($result->tanggal)); ?></td>
-					<td><?php echo $result->nomor; ?></td>			
+					<td>
+						<a href="<?php echo site_url('akuntansi/rsa_gup/lspg/id/'.$result->id_spmls);?>" target="_blank">
+							<?php echo $result->nomor; ?>
+						</a>
+					</td>			
 					<td><?php echo $result->untuk_bayar; ?></td>
-					<td><?php $total += $result->jumlah_bayar; echo number_format($result->jumlah_bayar); ?></td>
+					<td><?php $total += $result->jumlah_bayar; echo number_format($result->total_sumberdana); ?></td>
 					<td>
 						<?php if ($result->flag_proses_akuntansi==1): ?>
 							<span class="glyphicon glyphicon-ok text-success"> sudah</span>
@@ -363,3 +433,12 @@
 
 
 </script>
+
+<?php
+function up_get_details($no_spm){
+    $ci =& get_instance();
+    $ci->load->model('Rsa_up_model', 'up_model');
+    
+    return $ci->up_model->get_data_spm($no_spm);
+}
+?>

@@ -52,6 +52,8 @@ class Jurnal_rsa extends MY_Controller {
                 $direct_url = 'akuntansi/kuitansi/index_tup_nihil';
             }else if($jenis=='TUP_PENGEMBALIAN'){
                 $direct_url = 'akuntansi/kuitansi/index_tup_pengembalian';
+            }else if($jenis=='KS'){
+                $direct_url = 'akuntansi/kuitansi/index_ks';
             }
 
 
@@ -255,6 +257,9 @@ class Jurnal_rsa extends MY_Controller {
             }
             else if (in_array($jenis,$this->Spm_model->get_jenis_spm())){
                 $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
+                // echo "<pre>";
+                // print_r($isian);
+                // die();
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
                 if ($jenis == 'LSPHK3') {
                     $akun_debet_akrual = $isian['akun_debet'];
@@ -262,8 +267,12 @@ class Jurnal_rsa extends MY_Controller {
                     $isian['akun_debet_akrual'] = $akun_debet_akrual;
                     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
                 } 
-                if ($jenis == 'TUP' or $jenis == 'GUP'){
+                if ($jenis == 'TUP' or $jenis == 'GUP' or $jenis == 'KS'){
                     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');  
+                } 
+                if ($jenis == 'KS'){
+                    $isian['jumlah_debet'] = $isian['jumlah_bayar'];
+                    $isian['teks_judul']  = "INPUT JURNAL KERJA SAMA";
                 }
             }
             else if ($jenis != 'NK'){

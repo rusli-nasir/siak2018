@@ -457,22 +457,22 @@
                 function spm_tambah_ks_lihat($url = ''){
 
 
-                    if($this->check_session->user_session() && (($this->check_session->get_level()==11)||($this->check_session->get_level()==2)||($this->check_session->get_level()==3)||($this->check_session->get_level()==14)||($this->check_session->get_level()==100))){
+                    if(1){
 
 
                         $url = urldecode($url);
 
-
-                            if( base64_encode(base64_decode($url, true)) === $url){
                                 $url = base64_decode($url);
-                            }else{
-                                redirect(site_url('/'));
-                            }
+
 
 
                             $arr_url = explode('/', $url);
                             $kd_unit = $this->unit_model->get_kd_unit_by_alias($arr_url[1]);
                             $tahun = $arr_url[4] ;
+
+                            // echo "<pre>";
+                            // print_r($arr_url);
+                            // die();
 
 
                 //set data for main template
@@ -538,7 +538,7 @@
                                 
                                     
                                     $data_spp = $this->rsa_tambah_ks_model->get_data_spp($nomor_trx_spp);
-                                   // var_dump($data_spp);die;
+                                   // var_dump($nomor_trx_spp);die;
                                     $subdata['detail_tambah_ks']   = array(
                                                                     'nom' => $data_spp->jumlah_bayar,
                                                                     'terbilang' => $data_spp->terbilang, 
@@ -651,8 +651,10 @@
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
-                $data['main_content']           = $this->load->view("rsa_tambah_ks/spm_tambah_ks_lihat",$subdata,TRUE);
-                $this->load->view('main_template',$data);
+                $data['main_content']           = $this->load->view("akuntansi/spm_tambah_ks_lihat",$subdata,TRUE);
+                $data['bukti'] = true;
+                $data['content'] = '';
+                $this->load->view('akuntansi/content_template',$data);
             } 
             else{
                 redirect('welcome','refresh');  // redirect ke halaman home

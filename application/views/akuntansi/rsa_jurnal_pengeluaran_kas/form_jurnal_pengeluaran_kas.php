@@ -13,7 +13,17 @@
 
 <?php echo validation_errors(); ?>
 <!-- Form Name -->
-<legend><center>INPUT JURNAL PENGELUARAN KAS</center></legend>
+
+
+<legend>
+  <center>
+    <?php if (isset($teks_judul)): ?>
+      <?php echo $teks_judul ?>
+    <?php else: ?>
+      INPUT JURNAL PENGELUARAN KAS
+    <?php endif ?>
+  </center>
+</legend>
 
 <!-- Text input-->
 <?php

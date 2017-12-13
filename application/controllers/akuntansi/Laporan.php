@@ -6,7 +6,7 @@ class Laporan extends MY_Controller {
 	public function __construct(){
         parent::__construct();
         $this->data['menu9'] = true;
-        $this->cek_session_in();
+        // $this->cek_session_in();
         $this->cek_session_in();
         $this->load->model('akuntansi/Laporan_model', 'Laporan_model');
         $this->load->model('akuntansi/Akun_model', 'Akun_model');
@@ -39,6 +39,7 @@ class Laporan extends MY_Controller {
         $temp_data['content'] = $this->load->view('akuntansi/buku_besar_list',$this->data,true);
         $this->load->view('akuntansi/content_template',$temp_data,false);
     }
+
 
     public function lainnya($tipe = null){
         $this->data['menu9'] = null;
@@ -880,9 +881,13 @@ class Laporan extends MY_Controller {
 
     }
 
-    public function cetak_buku_besar(){
+    public function cetak_buku_besar($mode = null){
         // header('Content-Type: text/html; charset=utf-8');
         // ob_implicit_flush(true);
+        // 
+        if ($mode == 'kinerja'){
+            $_POST = $_GET;
+        }
 
         header('Content-Type: text/html; charset=utf-8');
         while (ob_get_level()) ob_end_flush();
@@ -4358,7 +4363,9 @@ class Laporan extends MY_Controller {
 
         $this->data['lk'] = $this->db->query("
                     SELECT 
-                        tk.str_nomor_trx_spm,
+                        tk.str_nomor_trx_spm as no_spm,
+                        tk.str_nomor_trx as no_spp,
+                        tk.id_kuitansi,
                         ts.untuk_bayar,
                         ts.tgl_spm as tgl_proses,
                         if (count(case when cair = 1 then 1 else null end) = count(case when flag_proses_akuntansi = 1 then 1 else null end),1,0) as flag_proses_akuntansi, 
@@ -4378,7 +4385,9 @@ class Laporan extends MY_Controller {
 
         $this->data['ln'] = $this->db->query("
                     SELECT 
-                        tk.str_nomor_trx_spm,
+                        tk.str_nomor_trx_spm as no_spm,
+                        tk.str_nomor_trx as no_spp,
+                        tk.id_kuitansi,
                         ts.untuk_bayar,
                         ts.tgl_spm as tgl_proses,
                         if (count(case when cair = 1 then 1 else null end) = count(case when flag_proses_akuntansi = 1 then 1 else null end),1,0) as flag_proses_akuntansi, 
@@ -4397,7 +4406,7 @@ class Laporan extends MY_Controller {
         ");
 
         //lspg
-        $this->data['lspg'] = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.proses=5 $filter_unit_lspg $filter_periode_lspg");
+        $this->data['lspg'] = $this->db->query("SELECT *,S.nomor as nomor FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.proses=5 $filter_unit_lspg $filter_periode_lspg");
 
         //gup
         //$this->data['gup'] = $this->db->query("SELECT * FROM rsa_kuitansi WHERE cair=1 $filter_unit_gup ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");

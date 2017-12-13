@@ -637,6 +637,12 @@ class Laporan_model extends CI_Model {
         ";
     }
 
+    public function generate_access_buku_besar($tipe)
+    {
+
+        return $form_format;
+    }
+
 
     public function get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null,$tingkat = null,$sumber = null)
     {

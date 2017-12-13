@@ -24,9 +24,14 @@ class Coba extends MY_Controller {
 
     public function index()
     {
+        $teks = "20 September 2017";
+        $_POST = $_GET;
         echo "<pre>";
-        echo $this->Akun_model->get_nama_akun_by_level('4',1);echo "\n";
-        echo $this->Akun_model->get_nama_akun_by_level('5',1);
+        echo urlencode($teks);
+        echo "\n";
+        echo urldecode($teks);
+        echo "\n";
+        print_r($this->input->post());
     }
 
     public function rekap_spm_unit()

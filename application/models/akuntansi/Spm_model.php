@@ -51,7 +51,7 @@ class Spm_model extends CI_Model {
 
 	public function get_jenis_spm() // yang lewat kas undip & kas bendahara
 	{
-		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','GUP_NIHIL'); 
+		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','GUP_NIHIL','KS'); 
 	}
 
 	public function get_array_jenis() // yang lewat kas undip & kas bendahara
@@ -60,7 +60,8 @@ class Spm_model extends CI_Model {
 						'UP' => 'trx_spm_up_data',
 						'GUP' => 'trx_spm_gup_data',
 						'TUP' => 'trx_spm_tambah_tup_data',
-						'PUP' => 'trx_spm_tambah_up_data',
+            'PUP' => 'trx_spm_tambah_up_data',
+						'KS' => 'trx_spm_tambah_ks_data',
             'TUP_NIHIL' => 'rsa_kuitansi',
             // 'LK' => 'rsa_kuitansi',
 						// 'LN' => 'rsa_kuitansi',
