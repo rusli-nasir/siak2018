@@ -113,6 +113,8 @@ class Jurnal_rsa extends MY_Controller {
             unset($checker['akun_debet_akrual']);
             unset($checker['akun_kredit']);
             unset($checker['akun_kredit_akrual']);
+            unset($checker['jumlah_debet']);
+            unset($checker['jumlah_kredit']);
 
             $date = strtotime($checker['tanggal']);
             $checker['tanggal'] = date('Y-m-d', $date);
@@ -120,19 +122,17 @@ class Jurnal_rsa extends MY_Controller {
             $date = strtotime($checker['tanggal_bukti']);
             $checker['tanggal_bukti'] = date('Y-m-d', $date);
 
-            $checker['jumlah_debet'] = substr($checker['jumlah_debet'], 0, -3);
-            $checker['jumlah_kredit'] = substr($checker['jumlah_kredit'], 0, -3);
+
+            // echo "<pre>";
 
             // print_r($checker);die();
             // print_r($entry);die();
             if ($this->Jurnal_rsa_model->check_kuitansi_exist($checker)){
                 $this->session->set_flashdata('warning','Data yang sama sudah ada');
                 redirect($direct_url);
-                
             }
 
-
-
+            // die();
 
             $q1 = $this->Kuitansi_model->add_kuitansi_jadi($entry);
 
@@ -273,6 +273,46 @@ class Jurnal_rsa extends MY_Controller {
                 if ($jenis == 'KS'){
                     $isian['jumlah_debet'] = $isian['jumlah_bayar'];
                     $isian['teks_judul']  = "INPUT JURNAL KERJA SAMA";
+
+                    $akun_kerjasama_permintaan = $this->Akun_model->get_akun_kerjasama_permintaan();
+
+                    $isian['akun_debet'] = $akun_kerjasama_permintaan['akun_debet'];
+                    $isian['akun_debet_akrual'] = $akun_kerjasama_permintaan['akun_debet_akrual'];
+                    $isian['akun_kredit'] = $akun_kerjasama_permintaan['akun_kredit'];
+                    $isian['akun_kredit_akrual'] = $akun_kerjasama_permintaan['akun_kredit_akrual'];
+
+                    // echo "<pre>";
+                    // print_r($akun_kerjasama_permintaan);
+                    // die();
+
+                    
+                    // $isian['akun_sal'] = $isian['akun_debet_akrual'] = $this->Akun_model->get_akun_kerjasama_penerimaan();
+                    // $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+                    // $isian['akun_debet_akrual'] = $this->Akun_model->get_akun_kerjasama_penerimaan();
+
+                    // $isian['akun_kredit'] = $array_kredit =  $this->Akun_model->get_akun_kerjasama_lra();
+
+                    // for ($i=0; $i < count($isian['akun_kredit']); $i++) { 
+                    //     $isian['akun_kredit'][$i]['nama'] = ucwords(strtolower($isian['akun_kredit'][$i]['nama']));
+                    // }
+
+                    // $array_kredit =  $this->Akun_model->get_akun_kerjasama_lra();
+
+                    // for ($i=0; $i < count($isian['akun_kredit']); $i++) { 
+                    //     $isian['akun_kredit'][$i]['nama'] = ucwords(strtolower($isian['akun_kredit'][$i]['nama']));
+                    // }
+
+                    // $akun_kas = array();
+                    // foreach ($array_kredit as $akun_kredit) {
+                    //     $akun_kas[] = array(
+                    //         'akun_6' => '6'.substr($akun_kredit['akun_6'],1),
+                    //         'nama' => str_replace("Pendapatan","Biaya",ucwords(strtolower($akun_kredit['nama'])))
+                    //     );
+                    // }
+                    // $isian['akun_kas'] = json_decode(json_encode($akun_kas));
+                    // echo "<pre>";
+                    // print_r($isian['akun_kas']);
+                    // die();   
                 }
             }
             else if ($jenis != 'NK'){
@@ -287,7 +327,7 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
 
                 // $isian['pajak'] = null;
-                // print_r($isian);die();
+                // print_r($isian['akun_kas']);die();
                 // print_r($isian['pajak']);die();
             } else {
                 $isian = $this->Kuitansi_model->get_kuitansi_nk($id_kuitansi);
@@ -322,7 +362,9 @@ class Jurnal_rsa extends MY_Controller {
 	        $this->data['menu1'] = true;
             $isian['jenis'] = $jenis;
              //get rekening by unit
-            $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
+            if ($jenis != 'KS'){
+                $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
+            }
 	        // print_r($isian['akun_kas']);die();
 	        // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
 			$this->data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);

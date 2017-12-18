@@ -109,6 +109,10 @@ class Spm_model extends CI_Model {
             $tabel_debet = "kas_bendahara";
             $tabel_kredit = "kas_undip";
 
+            if ($jenis == 'KS'){
+              $tabel_debet = 'kas_kerjasama';
+            }
+
             $this->db
             	->where('nomor_trx_spm',$nomor_trx_spm)
             	->from($tabel_data)
@@ -164,6 +168,13 @@ class Spm_model extends CI_Model {
 
           	$inti['no_bukti'] = $this->generate_no_bukti($inti['str_nomor_trx'],$jenis);
             $inti['kode_usulan_belanja'] = $this->generate_kode_kegiatan($inti,$jenis);
+
+            if ($jenis == 'KS'){
+              $inti['akun_debet'] = $debet['kd_akun_kas'];
+              $inti['akun_kredit'] = $kredit['kd_akun_kas'];
+              $inti['akun_debet_kas'] = $debet['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($debet['kd_akun_kas']);
+              $inti['akun_kredit_kas'] = $kredit['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($kredit['kd_akun_kas']);
+            }
 
           	if ($jenis == 'LSPHK3') {
           		$this->db
@@ -239,6 +250,10 @@ class Spm_model extends CI_Model {
             $tabel_debet = "kas_bendahara";
             $tabel_kredit = "kas_undip";
 
+            if ($jenis == 'KS'){
+              $tabel_debet = 'kas_kerjasama';
+            }
+
             $this->db
             	->where('nomor_trx_spm',$nomor_trx_spm)
             	->from($tabel_data)
@@ -288,6 +303,13 @@ class Spm_model extends CI_Model {
             $inti['akun_kredit'] = $sal_univ['akun_6'];
             $inti['jumlah_kredit'] = $kredit['kredit'];
             $inti['kas_akun_kredit'] = $sal_univ['akun_6'] ." - ". $sal_univ['nama'];
+
+            if ($jenis == 'KS'){
+              $inti['akun_debet'] = $debet['kd_akun_kas'];
+              $inti['akun_kredit'] = $kredit['kd_akun_kas'];
+              $inti['akun_debet_kas'] = $debet['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($debet['kd_akun_kas']);
+              $inti['akun_kredit_kas'] = $kredit['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($kredit['kd_akun_kas']);
+            }
 
           	$field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');
 

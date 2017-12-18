@@ -51,11 +51,12 @@ class Checker extends MY_Controller {
             $i = 0;
 
             // echo "<pre>";
+            $header_row = 4;
             $start_row  = 6;
-            $column_jenis = 4;
-            $column_jumlah =6;
-            $column_siak =7;
-            $column_rsa =8;
+            $column_jenis = 5;
+            $column_jumlah =7;
+            $column_siak =8;
+            $column_rsa =9;
             $array_jenis = array();
 
 
@@ -64,8 +65,8 @@ class Checker extends MY_Controller {
                 $objWorksheet = $objPHPExcel->getActiveSheet();
                 $title = $objWorksheet->getTitle();
 
-                $objWorksheet->setCellValueByColumnAndRow($column_siak,$start_row,'SIAK');
-                $objWorksheet->setCellValueByColumnAndRow($column_rsa,$start_row,'RSA');
+                $objWorksheet->setCellValueByColumnAndRow($column_siak,$header_row,'SIAK');
+                $objWorksheet->setCellValueByColumnAndRow($column_rsa,$header_row,'RSA');
 
                 $highestRow = $objWorksheet->getHighestRow();
 
@@ -76,14 +77,22 @@ class Checker extends MY_Controller {
                 $numbering = 0;
                 for ($iter_row=$start_row; $iter_row <= $highestRow; $iter_row++) { 
                     $numbering++;
-                    $jenis = $placer = $objWorksheet->getCellByColumnAndRow($column_jenis,$iter_row)->getValue();
-                    $jumlah = $objWorksheet->getCellByColumnAndRow($column_jumlah,$iter_row)->getValue();
+                    $jenis = $placer = $objWorksheet->getCellByColumnAndRow($column_jenis,$iter_row)->getCalculatedValue();
+                    $jumlah = $objWorksheet->getCellByColumnAndRow($column_jumlah,$iter_row)->getCalculatedValue();
                     if ($placer != null and $jumlah != null){
                         if (!isset($array_jenis[$placer])){
                             $array_jenis[$placer] = 1;
                         }else{
                             $array_jenis[$placer]++;
                         }
+
+                        // if ($jenis == 'TUP '){
+                        //     echo "$title $iter_row \n";
+                        // }
+                        // if ($jenis == 'GUP '){
+                        //     echo "$title $iter_row \n";
+                        // }
+                        // 
                         $found = $this->Kuitansi_model->read_sp2d_siak($kode_unit,$jumlah,$jenis);
                         $objWorksheet->setCellValueByColumnAndRow($column_siak,$iter_row,$found['siak']);
                         $objWorksheet->setCellValueByColumnAndRow($column_rsa,$iter_row,$found['rsa']);
@@ -94,6 +103,9 @@ class Checker extends MY_Controller {
             }
 
         unlink($file);
+
+        // echo "<pre>";
+        // print_r($array_jenis);
         // die('selesai');
 
 

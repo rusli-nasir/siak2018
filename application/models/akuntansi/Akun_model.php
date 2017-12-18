@@ -8,6 +8,33 @@ class Akun_model extends CI_Model {
         $this->load->database('default', TRUE);
         $this->db2 = $this->load->database('rba',TRUE);
     }
+
+
+    
+    /**
+     * Gets the akun kerjasama permintaan.
+     */
+    public function get_akun_kerjasama_permintaan()
+    {
+    	return array(
+    		'akun_debet' => array(
+    							'akun_6' => "523159",
+    							'nama' => $this->get_nama_akun("523159")
+    						),
+    		'akun_kredit' => array(
+    							'akun_6' => "911101",
+    							'nama' => $this->get_nama_akun("911101")
+    						),
+    		'akun_debet_akrual' => array(
+    							'akun_6' => "723159",
+    							'nama' => $this->get_nama_akun("723159")
+    						),
+    		'akun_kredit_akrual' => array(
+    							'akun_6' => "111148",
+    							'nama' => $this->get_nama_akun("111148")
+    						)
+    	);
+    }
 	
 	public function get_nama_akun($kode_akun){
 		if (isset($kode_akun)){
@@ -281,6 +308,16 @@ class Akun_model extends CI_Model {
             $data[]=$temp_data;
         }
         return $data;
+    }
+
+    public function get_akun_kerjasama_penerimaan()
+    {
+    	return $this->db->get_where('akuntansi_aset_6',array('flag_penerimaan' => 1))->result_array();
+    }
+
+    public function get_akun_kerjasama_lra()
+    {
+    	return $this->db->get_where('akuntansi_lra_6',array('akun_3' => 424))->result_array();
     }
 
 	public function get_akun_penerimaan()

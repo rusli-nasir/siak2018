@@ -70,6 +70,7 @@ class Kuitansi_model extends CI_Model {
             'LS4' => 'rsa_kuitansi',
             'LSPG' => 'kepeg_tr_spmls',
             'PUP' => 'tambah_up',
+            'KS' => 'tambah_ks',
         );
 
         $tabel_konversi_jenis = array(
@@ -83,6 +84,7 @@ class Kuitansi_model extends CI_Model {
             'LS4' => 'LS',
             'LSPG' => 'LS',
             'PUP' => 'PUP',
+            'KS' => 'KS',
         );
 
         $masuk_spm = array('UP','GUP','TUP','PUP','TUP NIHIL','TUP BBM');
@@ -90,6 +92,8 @@ class Kuitansi_model extends CI_Model {
         $masuk_pgw = array('LSPG','LS');
 
         $masuk_ls = array('LS3','LS4','LSK','LS','LSNK');
+
+        $masuk_ks = array('KS');
 
         $spm_ketemu_siak = '';
         $spm_ketemu_rsa = '';
@@ -110,6 +114,19 @@ class Kuitansi_model extends CI_Model {
             $spm = $this->db->select('no_spm')
                         ->where(array('jumlah_debet' => $jumlah,'unit_kerja' => $unit))
                         ->where("(jenis = 'LK' or jenis = 'LN')")
+                        ->where("tipe <> 'pajak'")
+                        ->get('akuntansi_kuitansi_jadi')
+                        ->result_array();
+
+            foreach ($spm as $found_spm) {
+                $spm_ketemu_siak .= $found_spm['no_spm'].",";
+            }
+        }
+
+        if (in_array($jenis,$masuk_ks)){
+            $spm = $this->db->select('no_spm')
+                        ->where(array('jumlah_debet' => $jumlah,'unit_kerja' => $unit))
+                        ->where("jenis = 'KS' ")
                         ->where("tipe <> 'pajak'")
                         ->get('akuntansi_kuitansi_jadi')
                         ->result_array();
@@ -151,6 +168,34 @@ class Kuitansi_model extends CI_Model {
                                         trx_spm_".$tabel_spm."_data, trx_".$tabel_spm."                                         
                                     WHERE 
                                         nomor_trx_spm = id_trx_nomor_".$tabel_spm."  AND 
+                                        jumlah_bayar = $jumlah AND
+                                        id_trx_".$tabel_spm." IN (select distinct max(id_trx_".$tabel_spm.") from trx_".$tabel_spm." group by id_trx_nomor_".$tabel_spm.")
+                                        $where_unit 
+                                    GROUP BY
+                                        nomor_trx_spm
+                                    ORDER BY 
+                                        nomor_trx_spm,tgl_proses DESC";
+
+                $spm = $this->db->query($string_query)->result_array();
+                foreach ($spm as $found_spm) {
+                    $spm_ketemu_rsa .= $found_spm['no_spm']."(".$found_spm['posisi']."),";
+                }
+            }
+            // Kalau masuk KS
+            if (in_array($jenis,$masuk_ks)){ 
+                $tabel_spm = $tabel_jenis[$jenis];
+                
+                $where_unit = 'AND substr(trx_'.$tabel_spm.'.kode_unit_subunit,1,2)="'.$unit.'"';
+
+                $string_query = "
+                                    SELECT 
+                                        posisi,ket,str_nomor_trx as no_spm,
+                                        jumlah_bayar as jumlah,
+                                        tgl_proses
+                                    FROM 
+                                        trx_spm_".$tabel_spm."_data, trx_".$tabel_spm."                                         
+                                    WHERE 
+                                        nomor_trx_spm = id_trx_nomor_".$tabel_spm."_spm  AND 
                                         jumlah_bayar = $jumlah AND
                                         id_trx_".$tabel_spm." IN (select distinct max(id_trx_".$tabel_spm.") from trx_".$tabel_spm." group by id_trx_nomor_".$tabel_spm.")
                                         $where_unit 
@@ -904,8 +949,6 @@ class Kuitansi_model extends CI_Model {
         if ($kode_akun_tambah != null){
             $this->db->where('kode_akun_tambah',$kode_akun_tambah);
         }
-
-
 
         // $this->db->select('jumlah');
         $this->db->where("(jenis = 'LN' or jenis = 'LK')");

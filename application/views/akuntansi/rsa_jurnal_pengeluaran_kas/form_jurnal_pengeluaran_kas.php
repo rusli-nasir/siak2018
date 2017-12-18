@@ -130,7 +130,15 @@ if($jenis=='NK'){
   <div class="form-group">
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
     <div class="col-md-3">
-      <?php if ($jenis == 'TUP_PENGEMBALIAN'): ?>
+      <?php if ($jenis == 'KS'): ?>
+        <input id="kas_akun_debet" name="kas_akun_debet" value="<?php echo $akun_debet['akun_6'].' - '.$akun_debet['nama'] ?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>   
+        <!-- <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
+          <option value="">Pilih Akun</option>
+          <?php foreach ($akun_sal as $each_sal): ?>
+            <option value="<?php echo $each_sal['akun_6'] ?>" ><?php echo $each_sal['akun_6'].' - '.$each_sal['nama'] ?></option>  
+          <?php endforeach ?>
+        </select> -->
+      <?php elseif ($jenis == 'TUP_PENGEMBALIAN'): ?>
         <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
             <option value="<?php echo $akun_sal_debet['akun_6'] ?>"  ><?php echo $akun_sal_debet['akun_6']. " - ".$akun_sal_debet['nama'] ?></option>
 
@@ -151,8 +159,10 @@ if($jenis=='NK'){
     <div class="col-md-3">
       <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
       <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
-          <option value="">Pilih Akun</option>
-          <?php if ($jenis == 'TUP_PENGEMBALIAN'): ?>
+          <!-- <option value="">Pilih Akun</option> -->
+          <?php if ($jenis == 'KS'): ?>
+                <option value="<?php echo $akun_debet_akrual['akun_6'] ?>" ><?php echo $akun_debet_akrual['akun_6'].' - '.$akun_debet_akrual['nama'] ?></option>  
+          <?php elseif ($jenis == 'TUP_PENGEMBALIAN'): ?>
             <?php foreach ($akun_debet_akrual_tup_pengembalian as $akun) {
               ?>
               <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
@@ -225,7 +235,14 @@ if($jenis=='NK'){
     <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
-        <?php if (!in_array($jenis,$array_spm) or $jenis == 'LSPHK3' or $jenis != 'NK'): ?>
+        <?php if ($jenis == 'KS'): ?>
+          <option value="<?php echo $akun_kredit['akun_6'] ?>" ><?php echo $akun_kredit['akun_6'].' - '.$akun_kredit['nama'] ?></option>  
+          <!-- <option value="<?php echo $akun_kredit ?>" selected><?php echo $akun_kredit_kas?></option> -->
+          <!-- <option value="">Pilih Akun</option>
+          <?php foreach ($akun_kredit as $each_sal): ?>
+            <option value="<?php echo $each_sal['akun_6'] ?>" ><?php echo $each_sal['akun_6'].' - '.$each_sal['nama'] ?></option>  
+          <?php endforeach ?> -->
+        <?php elseif (!in_array($jenis,$array_spm) or $jenis == 'LSPHK3' or $jenis != 'NK'): ?>
           <option value="<?php echo $akun_sal['akun_6'] ?>" selected><?php echo $akun_sal['akun_6']. " - ".$akun_sal['nama'] ?></option>
         <?php elseif (in_array($jenis,$array_spm) and $jenis != 'LSPHK3' and $jenis != 'NK'): ?>
           <option value="<?php echo $akun_kredit ?>" selected><?php echo $kas_akun_kredit?></option>
@@ -240,13 +257,17 @@ if($jenis=='NK'){
     <label class="col-md-1 control-label" for="akun_kredit_akrual">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
-        <option value="">Pilih Akun</option>
-        <?php foreach ($akun_kas as $akun) {
+        <?php if ($jenis == 'KS'): ?>
+          <option value="<?php echo $akun_kredit_akrual['akun_6'] ?>" ><?php echo $akun_kredit_akrual['akun_6'].' - '.$akun_kredit_akrual['nama'] ?></option>  
+        <?php else: ?>
+          <option value="">Pilih Akun</option>
+          <?php foreach ($akun_kas as $akun) {
+            ?>
+            <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
+            <?php
+          }
           ?>
-          <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
-          <?php
-        }
-        ?>
+        <?php endif ?>
       </select>
     </div>
     <div class="col-md-3">
