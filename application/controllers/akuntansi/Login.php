@@ -16,7 +16,7 @@ class Login extends MY_Controller {
 		// die($server_uri);
 		$data['is_demo'] = (strpos($server_uri,'pak.undip.ac.id') !== false);
 
-		// $data['maintenance'] = "Untuk keperluan maintenance database rsa pada tanggal 11 Desember 2017, diharap TIDAK melakukan aktifitas di sistem SiaK mulai pukul 16.00";
+		$data['maintenance'] = "Untuk penyesuaian awal tahun 2018, sedang ada penyesuaian sistem di bagian laporan-laporan";
 		// $data['is_demo'] = (strpos($server_uri,'localhost') !== false);
 
 		// echo strpos($server_uri,'localhost');
@@ -55,9 +55,10 @@ class Login extends MY_Controller {
 					'kode_unit'	=>  $row->kode_unit,
 					'kode_user'	=>  $row->kode_user,
 					'alias'	=>  $alias,
-					'level'	=>  $row->level
+					'level'	=>  $row->level,
+					'setting_tahun' => 2017,
 				);
-				print_r($login_data);
+				// print_r($login_data);
 				$this->session->set_userdata($login_data);
 				$login = true;
 			}else{

@@ -3138,26 +3138,35 @@ class Laporan extends MY_Controller {
                 'not_akun' => null,
                 'jenis_pembatasan' => null,
                 'string' => null,
+                'is_anggaran' => false,
+                'jenis' => 'pendapatan',
             ),
             array(
                 'akun' => array(5),
                 'not_akun' => array(59),
                 'jenis_pembatasan' => 'terikat_temporer',
                 'string' => ' APBN',
+                'is_anggaran' => true,
+                'jenis' => 'biaya',
             ),
             array(
                 'akun' => array(5),
                 'not_akun' => array(59),
                 'jenis_pembatasan' => 'tidak_terikat',
                 'string' => ' Selain APBN',
+                'is_anggaran' => true,
+                'jenis' => 'biaya',
             ),
             array(
                 'akun' => array(8),
                 'not_akun' => array(81),
                 'jenis_pembatasan' => null,
                 'string' => null,
+                'is_anggaran' => true,
+                'jenis' => 'biaya',
             ),
         );
+
 
         // print_r($parse_data);die();
 
@@ -3168,6 +3177,7 @@ class Laporan extends MY_Controller {
         // echo"<pre>";
         $parsed = array();
         $order = 0;
+        $sum_anggaran = $sum_realisasi = 0;
         foreach ($param_list as $entry_list) {
             extract($entry_list,EXTR_PREFIX_ALL,'array');
             $jenis_pembatasan = $array_jenis_pembatasan;
@@ -3221,6 +3231,7 @@ class Laporan extends MY_Controller {
             $entry_parsed = array();
 
             $data['akun'] = $akun;
+
             foreach ($akun as $key_1 => $akun_1) {
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
                 $data['nama_lvl_1'][$key_1][] = $nama;
@@ -3317,6 +3328,10 @@ class Laporan extends MY_Controller {
                                 );
                                 $parsed[] = $entry_parsed;
                                 //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$anggaran<br/>";
+                                if ($array_is_anggaran){
+                                    $sum_anggaran += $anggaran;
+                                }
+                                $sum_realisasi += $saldo_sekarang;
                             }
                         } else {
                             $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
@@ -3351,6 +3366,11 @@ class Laporan extends MY_Controller {
                             );
                             $parsed[] = $entry_parsed;
                             //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3  - $nama |$saldo_sekarang|$anggaran<br/>";
+                            //
+                            if ($array_is_anggaran){
+                                $sum_anggaran += $anggaran;
+                            }
+                            $sum_realisasi += $saldo_sekarang;
                         }
                     }
                 }
@@ -3358,6 +3378,32 @@ class Laporan extends MY_Controller {
             
         }
         // die();
+        // 
+        //==================== SUM TOTAL =============================
+        
+        $selisih = abs($anggaran) - abs($saldo_sekarang);
+        if ($anggaran == 0) {
+            $persentase = 0;
+        } else {
+            $persentase = abs($saldo_sekarang) / $anggaran * 100;
+        }
+
+        $entry_parsed = array(
+           'order' => ++$order,
+           'level' => 0,
+           'akun' => 'sum.total',
+           'type' => 'sum',
+           'nama' => 'Jumlah Total',
+           'start_sum' => null,
+           'end_sum' => null,
+           'sum_negatif' => null,
+           'anggaran' => $sum_anggaran,
+           'realisasi' => $sum_realisasi,
+           'selisih' => $selisih,
+           'persentase' => $persentase,
+           'jenis_pembatasan' => null,
+        );
+        $parsed[] = $entry_parsed;
 
         $data['atribut'] = $parse_data;
         $data['tahun'] = gmdate('Y');
@@ -3419,8 +3465,14 @@ class Laporan extends MY_Controller {
         $data['tanggal_laporan'] = $tanggal_laporan;
         $data['parse'] = $parsed;
 
+
         // echo "<pre>";
-        // print_r($parsed);die();
+        // foreach ($parsed as $each_parsed) {
+        //     echo $each_parsed['akun'];
+        //     echo "\n";
+        // }
+        // die;
+        // print_r(array_keys($parsed));die();
 
         $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
     }
@@ -4140,79 +4192,200 @@ class Laporan extends MY_Controller {
 
         $array_unit = $this->Unit_kerja_model->get_all_unit_kerja();
 
+        $array_unit[] = array(
+            'kode_unit' => '9999',
+            'nama_unit' => 'Penerimaan',
+        );
+
         // echo "<pre>";
         // print_r($array_unit);die();
-        $sum_posisi = 0;
-        $sum_anggaran = 0;
         $order = 0;
         $parsed = array();
 
+        $param_list = array(
+            array(
+                'akun' => array(4),
+                'not_akun' => null,
+                'jenis_pembatasan' => null,
+                'string' => null,
+                'is_anggaran' => false,
+                'jenis' => 'pendapatan',
+            ),
+            array(
+                'akun' => array(5),
+                'not_akun' => array(59),
+                'jenis_pembatasan' => 'terikat_temporer',
+                'string' => ' APBN',
+                'is_anggaran' => true,
+                'jenis' => 'biaya',
+            ),
+            array(
+                'akun' => array(5),
+                'not_akun' => array(59),
+                'jenis_pembatasan' => 'tidak_terikat',
+                'string' => ' Selain APBN',
+                'is_anggaran' => true,
+                'jenis' => 'biaya',
+            ),
+            array(
+                'akun' => array(8),
+                'not_akun' => array(81),
+                'jenis_pembatasan' => null,
+                'string' => null,
+                'is_anggaran' => true,
+                'jenis' => 'biaya',
+            ),
+        );
+
+
+        $data_anggaran = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit['kode_unit'],'anggaran',null,$start_date,$end_date);
+
+        $list_jenis = ['pendapatan','biaya'];
+
+        $anggaran = $posisi = array();
+
+
         foreach ($array_unit as $unit) {
-            $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit['kode_unit'],'anggaran',null,$start_date,$end_date);
-            $anggaran = 0;
-            $posisi = 0;
-            foreach ($data['anggaran'] as $entry) {
-                $anggaran += $entry;
-            }
-            foreach ($data['posisi'] as $entry_posisi) {
-                foreach ($entry_posisi as $entry) {
-                    if ($entry['tipe'] == 'debet'){
-                        $posisi += $entry['jumlah'];
-                    } elseif ($entry['tipe'] == 'kredit'){
-                        $posisi -= $entry['jumlah'];
-                    }
-                }
+            $data = array();
+            $sum_posisi = $sum_anggaran = array();
+
+            foreach ($list_jenis as $each_jenis) {
+                $anggaran[$each_jenis] = $posisi[$each_jenis] = 0;            
+                $sum_posisi[$each_jenis] = $sum_anggaran[$each_jenis] = 0;
             }
 
-            if ($anggaran == 0 or $posisi == 0) {
+
+            // echo "<pre>";
+
+            foreach ($param_list as $each_param) {
+                extract($each_param,EXTR_PREFIX_ALL,'array');
+                
+                // echo "$array_jenis_pembatasan \n";
+                $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit['kode_unit'],'anggaran',$array_jenis_pembatasan,$start_date,$end_date);
+
+                // print_r($temp_data);echo "\n";
+
+                // $data = array_merge_recursive($data,$temp_data);
+                // 
+                foreach ($data['anggaran'] as $entry) {
+                    if ($array_is_anggaran){
+                        $anggaran[$array_jenis] += $entry;
+                    }
+                }
+
+                foreach ($data['posisi'] as $entry_posisi) {
+                    foreach ($entry_posisi as $entry) {
+                        if ($entry['tipe'] == 'debet'){
+                            // echo "$posisi + ".$entry['jumlah'];
+                            $posisi[$array_jenis] += $entry['jumlah'];
+                            // echo " = $posisi\n";
+                        } elseif ($entry['tipe'] == 'kredit'){
+                            // echo "$posisi - ".$entry['jumlah'];
+                            $posisi[$array_jenis] -= $entry['jumlah'];
+                            // echo " = $posisi\n";
+                        }
+                    }
+                }
+
+            }
+
+            /*print_r($data);
+            die();*/
+            
+            // $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit['kode_unit'],'anggaran',null,$start_date,$end_date);
+            foreach ($list_jenis as $each_jenis) {
+
+                if ($anggaran[$each_jenis] == 0 or $posisi == 0) {
+                    $persentase = 0;
+                }else {
+                    $persentase = ($posisi[$each_jenis] / $anggaran[$each_jenis]) * 100;
+                }
+                $entry_parsed = array(
+                   'order' => ++$order,
+                   'level' => 1,
+                   'akun' => $unit['kode_unit'],
+                   'type' => 'entry_rekap',
+                   'nama' => $unit['nama_unit'],
+                   'start_sum' => null,
+                   'end_sum' => null,
+                   'sum_negatif' => null,
+                   'anggaran' => $anggaran[$each_jenis],
+                   'realisasi' => $posisi[$each_jenis],
+                   'selisih' => abs($anggaran[$each_jenis]) - abs($posisi[$each_jenis]),
+                   'persentase' => $persentase,
+                   'jenis_pembatasan' => null,
+                );
+
+                $parsed[$each_jenis][] = $entry_parsed;
+
+                foreach ($parsed[$each_jenis] as $each_parsed) {
+                    $sum_posisi[$each_jenis] += $each_parsed['realisasi'];
+                    $sum_anggaran[$each_jenis] += $each_parsed['anggaran'];
+                }
+                        
+            }
+
+        }
+
+        // echo "<pre>";
+        // print_r($parsed);
+        // print_r($sum_posisi);
+        // print_r($sum_anggaran);
+        // die;
+        
+        $substractor = array_pop($parsed['biaya']);
+        $sum_anggaran['biaya'] -= $substractor['anggaran'];
+        $sum_posisi['biaya'] -= $substractor['realisasi'];
+
+
+        foreach ($list_jenis as $each_jenis) {
+
+            // foreach ($parsed[$each_jenis] as $each_parsed) {
+            //     $sum_posisi[$each_jenis] += $eposisi[$each_jenis];
+            //     $sum_anggaran[$each_jenis] += $anggaran[$each_jenis];
+            // }
+
+            
+            if ($sum_anggaran[$each_jenis] == 0 or $sum_posisi[$each_jenis] == 0) {
                 $persentase = 0;
             }else {
-                $persentase = ($posisi / $anggaran) * 100;
+                $persentase = ($sum_posisi[$each_jenis] / $sum_anggaran[$each_jenis]) * 100;
             }
+
             $entry_parsed = array(
                'order' => ++$order,
                'level' => 1,
-               'akun' => $unit['kode_unit'],
-               'type' => 'entry_rekap',
-               'nama' => $unit['nama_unit'],
+               'akun' => 'sum_all',
+               'type' => 'sum',
+               'nama' => "Jumlah",
                'start_sum' => null,
                'end_sum' => null,
                'sum_negatif' => null,
-               'anggaran' => $anggaran,
-               'realisasi' => $posisi,
-               'selisih' => abs($anggaran) - abs($posisi),
+               'anggaran' => $sum_anggaran[$each_jenis],
+               'realisasi' => $sum_posisi[$each_jenis],
+               'selisih' => abs($sum_anggaran[$each_jenis]) - abs($sum_posisi[$each_jenis]),
                'persentase' => $persentase,
                'jenis_pembatasan' => null,
             );
 
-            $parsed[] = $entry_parsed;
-            $sum_posisi += $posisi;
-            $sum_anggaran += $anggaran;
+            // echo "<pre>";
+            // echo "$each_jenis \n";
+            // print_r($entry_parsed);
+            // print_r($sum_posisi);
+            // print_r($sum_anggaran);
+
+
+
+            $parsed[$each_jenis][] = $entry_parsed;
         }
+        // die;    
 
-        if ($sum_anggaran == 0 or $sum_posisi == 0) {
-            $persentase = 0;
-        }else {
-            $persentase = ($sum_posisi / $sum_anggaran) * 100;
-        }
+        // echo "<pre>";
+        // print_r($parsed);
+        // die;
 
-        $entry_parsed = array(
-           'order' => ++$order,
-           'level' => 1,
-           'akun' => 'sum_all',
-           'type' => 'sum',
-           'nama' => "Jumlah",
-           'start_sum' => null,
-           'end_sum' => null,
-           'sum_negatif' => null,
-           'anggaran' => $sum_anggaran,
-           'realisasi' => $sum_posisi,
-           'selisih' => abs($sum_anggaran) - abs($sum_posisi),
-           'persentase' => $persentase,
-           'jenis_pembatasan' => null,
-        );
 
-        $parsed[] = $entry_parsed;
+
 
         $data['atribut'] = $parse_data;
         $data['atribut']['level'] = 1;
@@ -4249,12 +4422,12 @@ class Laporan extends MY_Controller {
         // $this->add_jumlah_after($parsed,"sum.12",'lpk','akun',"JUMLAH ASET",array("sum.11","sum.12"),array("sum.11","sum.12"));
         // $this->add_jumlah_after($parsed,"sum.3",'lpk','akun',"JUMLAH LIABILITAS DAN ASET BERSIH",array("sum.2","sum.3"),array("sum.2","sum.3"));
         $data['tanggal_laporan'] = $tanggal_laporan;
-        $data['parse'] = $parsed;
+        $data['parse_all'] = $parsed;
 
         // echo "<pre>";
         // print_r($parsed);die();
 
-        $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
+        $this->load->view('akuntansi/laporan/cetak_laporan_lra_rekap', $data);
     }
 
 
@@ -4863,7 +5036,7 @@ class Laporan extends MY_Controller {
             while ($j < count($parse) and $end == 0) {
                 $added_condition = false;
                 if ($jenis_pembatasan != null) {
-                    $added_condition = ($parse[$j+1]['jenis_pembatasan'] != $jenis_pembatasan);
+                    $added_condition = (isset($parse[$j+1])) ? ($parse[$j+1]['jenis_pembatasan'] != $jenis_pembatasan) : false;
                 }
                 if (!isset($parse[$j+1]) or substr($parse[$j+1]['akun'],0,strlen($akun)) != $akun or $added_condition) {
                     $end = $j;

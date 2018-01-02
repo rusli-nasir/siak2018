@@ -131,7 +131,8 @@ if($jenis=='NK'){
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
     <div class="col-md-3">
       <?php if ($jenis == 'KS'): ?>
-        <input id="kas_akun_debet" name="kas_akun_debet" value="<?php echo $akun_debet['akun_6'].' - '.$akun_debet['nama'] ?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>   
+        <input id="kas_akun_debet" name="kas_akun_debet_view" value="<?php echo $akun_debet['akun_6'].' - '.$akun_debet['nama'] ?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>   
+        <input id="kas_akun_debet" name="kas_akun_debet" value="<?php echo $akun_debet['akun_6']?>"  type="hidden" >   
         <!-- <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
           <option value="">Pilih Akun</option>
           <?php foreach ($akun_sal as $each_sal): ?>

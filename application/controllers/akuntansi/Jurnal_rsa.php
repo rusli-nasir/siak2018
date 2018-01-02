@@ -123,10 +123,10 @@ class Jurnal_rsa extends MY_Controller {
             $checker['tanggal_bukti'] = date('Y-m-d', $date);
 
 
-            // echo "<pre>";
+            echo "<pre>";
 
             // print_r($checker);die();
-            // print_r($entry);die();
+            print_r($entry);die();
             if ($this->Jurnal_rsa_model->check_kuitansi_exist($checker)){
                 $this->session->set_flashdata('warning','Data yang sama sudah ada');
                 redirect($direct_url);
@@ -199,7 +199,7 @@ class Jurnal_rsa extends MY_Controller {
         }
         else
         {    
-            if ($jenis == 'TUP_NIHIL'){
+            if ($jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL'){
                 $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
                 $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
                 $akun_debet_akrual = $isian['kode_akun'];

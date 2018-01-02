@@ -46,7 +46,7 @@
 <script src="<?php echo base_url();?>/assets/akuntansi/js/lumino.glyphs.js"></script>
 
 <?php
-	// $maintenance = "Untuk keperluan maintenance database rsa pada tanggal 11 Desember 2017, diharap TIDAK melakukan aktifitas di sistem SiaK mulai pukul 16.00";
+	$maintenance = "Untuk penyesuaian awal tahun 2018,sedang ada penyesuaian sistem di bagian laporan-laporan";
 ?>
 
 <?php if (isset($maintenance)): ?>
@@ -177,6 +177,7 @@
 			        </ul>
 			      </li>	
 			      <li class="<?php if(isset($menu16)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/laporan/rekap_spm'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap SPM</a></li>
+			      <li class="<?php if(isset($menu_proses_spm)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/dashboard/dashboard_proses/each'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Rekap SPM Diproses</a></li>
 			      <li class="<?php if(isset($menu_koreksi)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/checker/import_cek_spm_siak'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Koreksi SPM</a></li>			
 			<?php }else if($this->session->userdata('level')==4){ ?>
 				<li class="<?php if(isset($menu_monitor)) echo 'active'; ?>"><a href="<?php echo site_url('akuntansi/kuitansi/monitor'); ?>"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Monitoring</a></li>	

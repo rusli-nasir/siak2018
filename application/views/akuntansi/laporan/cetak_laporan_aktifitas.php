@@ -99,10 +99,10 @@ if($atribut['cetak']){
 
 							 ?>
 							<?php 
-							if ($entry['level'] < $atribut['level']-1) {
+							// if ($entry['level'] < $atribut['level']-1) {
 									$entry['nama'] = strtolower($entry['nama']);
 									$entry['nama'] = ucwords($entry['nama']);
-								}
+								// }
 								$entry['nama'] = str_replace('Apbn', "APBN", $entry['nama']);
 								$entry['nama'] = str_replace('bp Ptnbh', "BP PTNBH", $entry['nama']);
 								$entry['nama'] = str_replace(' Ptn ', " PTN ", $entry['nama']);

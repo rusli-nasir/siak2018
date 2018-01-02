@@ -8,6 +8,7 @@ class Saldo extends MY_Controller {
         $this->data['menu8'] = true;
         $this->cek_session_in();
         $this->load->model('akuntansi/Saldo_model', 'Saldo_model');
+        $this->load->model('akuntansi/Akun_model', 'Akun_model');
         $this->data['db2'] = $this->load->database('rba',TRUE);
     }
 
@@ -124,4 +125,105 @@ class Saldo extends MY_Controller {
 			redirect(site_url('akuntansi/saldo/index/?balasan=4'));
 		}
 	}
+
+	public function upload_saldo($mode = null)
+	{
+		$data['destination'] = 'akuntansi/saldo/do_upload_saldo/'.$mode;
+        $temp_data['content'] = $this->load->view('akuntansi/form_upload_cek',$data,true);
+        $this->load->view('akuntansi/content_template',$temp_data,false);
+	}
+
+	public function do_upload_saldo($mode = null)
+    {
+    		$this->load->library('excel');
+            $config['upload_path'] = './assets/akuntansi/upload';
+            $config['allowed_types'] = 'xls|xlsx';
+            $config['max_size'] = '20000';
+
+            $this->load->library('upload', $config);
+
+            if ( ! $this->upload->do_upload())
+            {
+                echo $this->upload->display_errors('<p>', '</p>');
+                die('gagal mengupload');
+            }
+
+            $data = $this->upload->data();
+
+            $file = $data['full_path'];
+
+            $tabel_akun = array(
+            	1 => 'akuntansi_aset_6',
+            	2 => 'akuntansi_hutang_6',
+            	3 => 'akuntansi_aset_bersih_6',
+            );
+
+            $inputFileType = PHPExcel_IOFactory::identify($file);
+
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file);
+
+
+    		$data = array();
+
+    		$i = 0;
+
+            while ($objPHPExcel->setActiveSheetIndex($i)){
+            	$objWorksheet = $objPHPExcel->getActiveSheet();
+            	$highest_row = $objWorksheet->getHighestRow(); // e.g. 10
+        		$highestColumnIndex = 7; // e.g. 5
+
+        		$kolom_nama = 5;
+        		$kolom_debet = 6;
+        		$kolom_kredit = 7;
+
+        		$start_row = 6;
+
+
+        		for ($row=$start_row; $row <= $highest_row; $row++) { 	
+        			if ( $objWorksheet->getCellByColumnAndRow(1,$row)->getValue() != '' and $objWorksheet->getCellByColumnAndRow(4,$row)->getValue() != '' and $objWorksheet->getCellByColumnAndRow(5,$row)->getValue() != 'dst') {
+	        			$string_akun = "";
+	        			for ($col=0; $col <= 4; $col++) { 
+	        				$string_akun .= $objWorksheet->getCellByColumnAndRow($col,$row)->getValue();
+	        			}
+	        			$first_akun = $objWorksheet->getCellByColumnAndRow(0,$row)->getValue();
+		        		$entry_data = array();
+		        		$entry_data['akun'] = $string_akun;
+		        		$entry_data['saldo_awal'] = $objWorksheet->getCellByColumnAndRow($kolom_debet,$row)->getValue() - $objWorksheet->getCellByColumnAndRow($kolom_kredit,$row)->getValue();
+		        		if ($first_akun == 2 or $first_akun == 3){
+		        			$entry_data['saldo_awal'] *= -1;
+		        		}
+		        		$entry_data['nama_akun'] = $objWorksheet->getCellByColumnAndRow($kolom_nama,$row)->getValue();
+		        		$entry_data['nama_asal'] = $this->Akun_model->get_nama_akun($entry_data['akun']);
+
+		        		$data[] = $entry_data;
+
+	        			$entry_saldo = $entry_data;
+	        			$entry_saldo['tahun'] = 2017;
+	        			unset($entry_saldo['nama_akun']);
+	        			unset($entry_saldo['nama_asal']);
+	        			if ($entry_data['saldo_awal'] != 0) {
+	        				$this->db->insert('akuntansi_saldo',$entry_saldo);
+	        			}
+	        			if ($entry_data['nama_akun'] != $entry_data['nama_asal']){
+	        				$this->db->where('akun_6',$entry_saldo['akun']);
+	        				$this->db->update($tabel_akun[$first_akun],array('nama' => $entry_data['nama_asal']));
+	        			}
+
+	        		}
+        		}
+
+        		$index = 0;
+
+            	if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
+            }
+
+            echo "<pre>";
+
+            print_r($data);
+
+            unlink($file);
+            die($file);
+    }
 }

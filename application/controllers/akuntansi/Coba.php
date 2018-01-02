@@ -22,16 +22,88 @@ class Coba extends MY_Controller {
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
 	}
 
+    public function array_mesh() {
+        // Combine multiple associative arrays and sum the values for any common keys
+        // The function can accept any number of arrays as arguments
+        // The values must be numeric or the summed value will be 0
+        
+        // Get the number of arguments being passed
+        $numargs = func_num_args();
+        
+        // Save the arguments to an array
+        $arg_list = func_get_args();
+        
+        // Create an array to hold the combined data
+        $out = array();
+
+        // Loop through each of the arguments
+        for ($i = 0; $i < $numargs; $i++) {
+            $in = $arg_list[$i]; // This will be equal to each array passed as an argument
+
+            // Loop through each of the arrays passed as arguments
+            foreach($in as $key => $value) {
+                // If the same key exists in the $out array
+                if(array_key_exists($key, $out)) {
+                    // Sum the values of the common key
+                    $sum = $in[$key] + $out[$key];
+                    // Add the key => value pair to array $out
+                    $out[$key] = $sum;
+                }else{
+                    // Add to $out any key => value pairs in the $in array that did not have a match in $out
+                    $out[$key] = $in[$key];
+                }
+            }
+        }
+        
+        return $out;
+    }
+
     public function index()
     {
-        $teks = "20 September 2017";
-        $_POST = $_GET;
-        echo "<pre>";
-        echo urlencode($teks);
-        echo "\n";
-        echo urldecode($teks);
-        echo "\n";
-        print_r($this->input->post());
+
+        echo $this->session->userdata('setting_tahun');
+        // $this->load->helper('cookie');
+        // 
+        // setcookie ("cookie", "", time() - 3600);
+
+        // setcookie("cookie[three]", "cookiethree");
+        // setcookie("cookie[two]", "cookietwo");
+        // setcookie("cookie[one]", "cookieone");
+
+        // $_COOKIE['hai'] = 'haaaa0i';
+        // $_COOKIE['login'] = 'yes0';
+
+
+        // $this->load->view('akuntansi/coba2');
+
+        // $teks = "20 September 2017";
+        // $_POST = $_GET;
+        // echo "<pre>";
+        // echo urlencode($teks);
+        // echo "\n";
+        // echo urldecode($teks);
+        // echo "\n";
+        // print_r($this->input->post());
+        // $a = array(
+        //     'a' => array(1,2,3),
+        //     'b' => 1
+        // );
+
+        // $b = array(
+        //     'a' => array(3,4,5),
+        //     'b' => 2
+        // );
+
+
+
+        // $c = array_merge_recursive($a,$b);
+
+        // print_r($a);
+        // print_r($b);
+        // print_r($c);
+        // 
+        
+
     }
 
     public function rekap_spm_unit()

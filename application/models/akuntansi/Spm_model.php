@@ -51,23 +51,45 @@ class Spm_model extends CI_Model {
 
 	public function get_jenis_spm() // yang lewat kas undip & kas bendahara
 	{
-		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','GUP_NIHIL','KS'); 
+		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','GUP_NIHIL','KS','EM'); 
 	}
 
 	public function get_array_jenis() // yang lewat kas undip & kas bendahara
 	{
 		return array(
 						'UP' => 'trx_spm_up_data',
-						'GUP' => 'trx_spm_gup_data',
+            'GUP' => 'trx_spm_gup_data',
+						'GUP_NIHIL' => 'trx_spm_gup_data',
 						'TUP' => 'trx_spm_tambah_tup_data',
             'PUP' => 'trx_spm_tambah_up_data',
 						'KS' => 'trx_spm_tambah_ks_data',
             'TUP_NIHIL' => 'rsa_kuitansi',
+            'EM' => 'trx_spm_em_data',
             // 'LK' => 'rsa_kuitansi',
 						// 'LN' => 'rsa_kuitansi',
 						'LSPHK3' => 'trx_spm_lsphk3_data',
 		);
 	}
+
+  public function get_array_proses_spm() // Array jenis dan tabel untuk checking proses SPM
+  {
+    return array (
+      'EM' => 'trx_spm_em_data',
+      'GUP' => 'trx_spm_gup_data',
+      'LSK' => 'trx_spm_lsk_data',
+      'LSNK' => 'trx_spm_lsnk_data',
+      'KS' => 'trx_spm_tambah_ks_data',
+      'TUP' => 'trx_spm_tambah_tup_data',
+      'TUP_NIHIL' => 'trx_spm_tup_data',
+      'PUP' => 'trx_spm_tambah_up_data',
+      'UP' => 'trx_spm_up_data',
+    );
+  }
+
+  public function get_array_case_spm() // array yang di refer dengan id_[jenis]_spm
+  {
+    return array('KS','EM','LSK','LSNK');
+  }
 
   public function get_array_jenis_spm()
   {
@@ -86,6 +108,87 @@ class Spm_model extends CI_Model {
             'SPM-LS PIHAK KE-3' => 'rsa_kuitansi',
     );
   }
+
+  public function konversi_jenis_spm($jenis)
+  {
+    $tabel_konversi = array(
+      'GUP' => 'GU',
+    );
+    if (isset($tabel_konversi[$jenis])){
+      return $tabel_konversi[$jenis];
+    }else{
+      return $jenis;
+    }
+  } 
+
+  public function get_spm_proses_rsa($mode,$array_params = null)
+  {
+    $tabel_jenis = $this->get_array_proses_spm();
+    $tabel_case_spm = $this->get_array_case_spm();
+    $data = array();
+    if ($mode == 'total'){
+      foreach ($tabel_jenis as $jenis_spm => $tabel_sumber) {
+        $entry = array(
+          'jenis' => $this->konversi_jenis_spm($jenis_spm),
+        );
+        $tabel_posisi = str_replace('spm_', '', str_replace('_data','',$tabel_sumber));
+        $jenis_spm = str_replace('trx_spm_', '', str_replace('_data','',$tabel_sumber));
+        $jenis_spm = strtolower($jenis_spm);
+        $search_id = "id_trx_nomor_$jenis_spm";
+        if (in_array(strtoupper(str_replace('tambah_','',$jenis_spm)), $tabel_case_spm)){
+          $search_id .= "_spm";
+        }
+        $query = "SELECT 
+                        count(*) AS jumlah 
+                  FROM 
+                          $tabel_sumber,
+                          (SELECT $search_id,posisi FROM $tabel_posisi WHERE $tabel_posisi.id_trx_$jenis_spm IN (SELECT max(id_trx_$jenis_spm) as id_trx_$jenis_spm FROM $tabel_posisi GROUP BY $search_id)) AS tabel_posisi
+                  WHERE 
+                          tabel_posisi.$search_id = $tabel_sumber.nomor_trx_spm AND 
+                          tabel_posisi.posisi NOT IN ('SPM-DITOLAK-VERIFIKATOR','SPM-DITOLAK-KBUU','SPM-DITOLAK-KPA','SPP-DITOLAK','SPM-FINAL-KBUU')
+                  ";
+        $entry['jumlah'] = $this->db->query($query)->row_array()['jumlah'];
+        $entry['real_jenis'] = $jenis_spm;
+        $data[] = $entry;
+      }
+    }elseif ($mode == 'each') {
+      foreach ($array_params as $params) {
+        $jenis_spm = $params;
+        $init_jenis = $params;
+        $tabel_sumber = $tabel_jenis[$jenis_spm];
+
+        $tabel_posisi = str_replace('spm_', '', str_replace('_data','',$tabel_sumber));
+        $jenis_spm = str_replace('trx_spm_', '', str_replace('_data','',$tabel_sumber));
+        $jenis_spm = strtolower($jenis_spm);
+        $search_id = "id_trx_nomor_$jenis_spm";
+        if (in_array(strtoupper(str_replace('tambah_','',$jenis_spm)), $tabel_case_spm)){
+          $search_id .= "_spm";
+        }
+        $query = "SELECT 
+                        $tabel_sumber.str_nomor_trx as nomor_spm,
+                        $tabel_sumber.jumlah_bayar,
+                        $tabel_sumber.untuk_bayar,
+                        '$jenis_spm' as real_jenis,
+                        '$init_jenis' as jenis,
+                        posisi
+                  FROM 
+                          $tabel_sumber,
+                          (SELECT $search_id,posisi FROM $tabel_posisi WHERE $tabel_posisi.id_trx_$jenis_spm IN (SELECT max(id_trx_$jenis_spm) as id_trx_$jenis_spm FROM $tabel_posisi GROUP BY $search_id)) AS tabel_posisi
+                  WHERE 
+                          tabel_posisi.$search_id = $tabel_sumber.nomor_trx_spm AND 
+                          tabel_posisi.posisi NOT IN ('SPM-DITOLAK-VERIFIKATOR','SPM-DITOLAK-KBUU','SPM-DITOLAK-KPA','SPP-DITOLAK','SPM-FINAL-KBUU')
+                  ";
+        $data[$jenis_spm] = $this->db->query($query)->result_array();
+      }
+      foreach ($data as $each_data) {
+        foreach ($each_data as $entry_data){
+          $data['all'][] = $entry_data;
+        }
+      }
+    }
+    return $data;
+  }
+
 
 	public function update_spm($nomor_trx_spm,$updater,$jenis)
 	{

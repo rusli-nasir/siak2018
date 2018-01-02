@@ -18,12 +18,14 @@ class Notifikasi_model extends CI_Model {
             $subunit = '='.$kode_unit;
             $tup_string = " AND substr(trx_tambah_tup.kode_unit_subunit,1,2)=$kode_unit";
             $ks_string = " AND substr(trx_tambah_ks.kode_unit_subunit,1,2)=$kode_unit";
+            $em_string = " AND substr(trx_em.kode_unit_subunit,1,2)=$kode_unit";
         } else {
             $unit = '';
             $unit_jadi = '';
             $subunit = 'like \'%\'';
             $tup_string = '';
             $ks_string = '';
+            $em_string = '';
         }
         
         if($this->session->userdata('kode_unit')==null){
@@ -60,9 +62,11 @@ class Notifikasi_model extends CI_Model {
                 $result['gup_nihil_posting'] = 0;
                 $result['pup_posting'] = 0;
                 $result['tup_pengembalian_posting'] = 0;
+                $result['gup_pengembalian_posting'] = 0;
                 $result['lk_posting'] = 0;
                 $result['ln_posting'] = 0;
                 $result['ks_posting'] = 0;
+                $result['em_posting'] = 0;
                 
                 foreach($query2->result_array() as $sub_query){
                     $key = $sub_query['jenis'];
@@ -78,7 +82,9 @@ class Notifikasi_model extends CI_Model {
                     else if($key == 'LK') $result['lk_posting'] = $sub_query['c'];
                     else if($key == 'LN') $result['ln_posting'] = $sub_query['c'];
                     else if($key == 'TUP_PENGEMBALIAN') $result['tup_pengembalian_posting'] = $sub_query['c'];
+                    else if($key == 'GUP_PENGEMBALIAN') $result['gup_pengembalian_posting'] = $sub_query['c'];
                     else if($key == 'KS') $result['ks'] = $sub_query['c'];
+                    else if($key == 'EM') $result['ks'] = $sub_query['c'];
                 }
                 
                 break;
@@ -90,13 +96,19 @@ class Notifikasi_model extends CI_Model {
             (SELECT Count(*) FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx $tup_string ) AS tup,
             (SELECT Count(*) FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama WHERE nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx $ks_string ) AS ks,
 
-            (SELECT count(*) FROM trx_spm_gup_data, trx_gup WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=$level AND substr(trx_gup.kode_unit_subunit,1,2) $subunit) AS gu,
+            (SELECT Count(*) FROM trx_spm_em_data, trx_em, kas_kerjasama WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx $em_string ) AS em,
+
+            (SELECT count(*) FROM trx_spm_gup_data, trx_gup WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND untuk_bayar != 'GUP NIHIL' AND flag_proses_akuntansi=$level AND substr(trx_gup.kode_unit_subunit,1,2) $subunit) AS gu,
+            -- (SELECT count(*) FROM trx_spm_gup_data, trx_gup WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND untuk_bayar = 'GUP NIHIL' AND flag_proses_akuntansi=$level AND substr(trx_gup.kode_unit_subunit,1,2) $subunit) AS gup_nihil,
+            (SELECT count(*) FROM rsa_kuitansi as tk, trx_spm_gup_data as tg WHERE tk.str_nomor_trx_spm = tg.str_nomor_trx AND tg.untuk_bayar = 'GUP NIHIL' AND tk.cair = 1 $unit) AS gup_nihil,
             -- (SELECT count(*) FROM trx_spm_tup_data, trx_tup WHERE nomor_trx_spm = id_trx_nomor_tup AND posisi='SPM-FINAL-KBUU' AND trx_spm_tup_data.kode_unit_subunit $subunit) AS tup_nihil,
             (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1 AND jenis='GP' AND flag_proses_akuntansi=$level $unit) AS gup,
             (SELECT 0) AS gup_nihil,
             (SELECT COUNT(*) FROM rsa_kuitansi_lsphk3 WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS ls,
-            (SELECT COUNT(*) FROM rsa_kuitansi_pengembalian WHERE cair=1 AND flag_proses_akuntansi=$level $unit) AS tup_pengembalian,
+            (SELECT COUNT(*) FROM rsa_kuitansi_pengembalian WHERE cair=1 AND flag_proses_akuntansi=$level $unit AND jenis='TP' ) AS tup_pengembalian,
+            (SELECT COUNT(*) FROM rsa_kuitansi_pengembalian WHERE cair=1 AND flag_proses_akuntansi=$level $unit AND jenis='GP' ) AS gup_pengembalian,
             (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1  AND jenis='TP' AND flag_proses_akuntansi=$level $unit ) AS tup_nihil,
+            -- (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1  AND jenis='GP' AND flag_proses_akuntansi=$level $unit ) AS gup_nihil,
             (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1  AND jenis='LN' AND flag_proses_akuntansi=$level $unit ) AS ln,
             (SELECT COUNT(*) FROM rsa_kuitansi WHERE cair=1  AND jenis='LK' AND flag_proses_akuntansi=$level $unit ) AS lk,
             (SELECT COUNT(*) FROM `kepeg_tr_spmls` WHERE `flag_proses_akuntansi` =$level AND `proses` = 5 AND substr(unitsukpa,1,2) $subunit) AS spm");
@@ -107,7 +119,7 @@ class Notifikasi_model extends CI_Model {
 
         $result['belum'] = $temp;
         
-        $result['kuitansi'] = $result['up'] + $result['pup'] + $result['gup'] + $result['gu'] + $result['gup_nihil'] + $result['tup'] + $result['tup_nihil'] + $result['ls'] + $result['lk'] + $result['ln'] + $result['spm'] + $result['tup_pengembalian'] + $result['ks'];
+        $result['kuitansi'] = $result['up'] + $result['pup'] + $result['gup'] + $result['gu'] + $result['gup_nihil'] + $result['tup'] + $result['tup_nihil'] + $result['ls'] + $result['lk'] + $result['ln'] + $result['spm'] + $result['tup_pengembalian'] + $result['gup_pengembalian'] + $result['ks'] + $result['em'];
         
         $query2 = $this->db->query("SELECT jenis, COUNT(jenis) as c FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND $condstr $unit_jadi GROUP BY jenis");
                                 
@@ -123,7 +135,9 @@ class Notifikasi_model extends CI_Model {
         $result['gup_nihil_jadi'] = 0;
         $result['pup_jadi'] = 0;
         $result['tup_pengembalian_jadi'] = 0;
+        $result['gup_pengembalian_jadi'] = 0;
         $result['ks_jadi'] = 0;
+        $result['em_jadi'] = 0;
 
         foreach($query2->result_array() as $sub_query){
             $key = $sub_query['jenis'];
@@ -139,10 +153,12 @@ class Notifikasi_model extends CI_Model {
             else if($key == 'LN') $result['ln_jadi'] = $sub_query['c'];
             else if($key == 'NK') $result['spm_jadi'] = $sub_query['c'];
             else if($key == 'TUP_PENGEMBALIAN') $result['tup_pengembalian_jadi'] = $sub_query['c'];
+            else if($key == 'GUP_PENGEMBALIAN') $result['gup_pengembalian_jadi'] = $sub_query['c'];
             else if($key == 'KS') $result['ks_jadi'] = $sub_query['c'];
+            else if($key == 'EM') $result['em_jadi'] = $sub_query['c'];
         }
         
-        $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['gu_jadi'] + $result['ls_jadi'] + $result['lk_jadi'] + $result['ln_jadi'] + $result['spm_jadi'] + $result['tup_jadi'] + $result['up_jadi'] + $result['tup_nihil_jadi'] + $result['gup_nihil_jadi'] + $result['pup_jadi'] + $result['tup_pengembalian_jadi'];
+        $result['kuitansi_jadi'] = $result['gup_jadi'] + $result['gu_jadi'] + $result['ls_jadi'] + $result['lk_jadi'] + $result['ln_jadi'] + $result['spm_jadi'] + $result['tup_jadi'] + $result['up_jadi'] + $result['tup_nihil_jadi'] + $result['gup_nihil_jadi'] + $result['pup_jadi'] + $result['tup_pengembalian_jadi'] + $result['gup_pengembalian_jadi'] + $result['ks_jadi'] + $result['em_jadi'];
 
         // $level = 1;
 
