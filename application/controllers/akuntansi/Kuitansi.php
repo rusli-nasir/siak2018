@@ -349,11 +349,11 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_tup_pengembalian($config['per_page'], $id, $keyword, $kode_unit);
-		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm_tup_pengembalian($config['per_page'], $id, null, $kode_unit);
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_pengembalian($config['per_page'], $id, $keyword, $kode_unit,'TP');
+		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm_pengembalian($config['per_page'], $id, null, $kode_unit,'TP');
 
-		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
-		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'jenis' => 'TP','substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'jenis' => 'TP','substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
 		$this->data['jenis_isi'] = "TUP ISI";
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_tup_pengembalian_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
@@ -493,11 +493,11 @@ class Kuitansi extends MY_Controller {
 
 		//search
 		if(isset($_POST['keyword_'.$jenis])){
-			$keyword = $this->input->post('keyword_'.$jenis);
-			$this->session->set_userdata('keyword_'.$jenis, $keyword);		
+			$keyword = $this->input->post('keyword');
+			$this->session->set_userdata('keyword', $keyword);		
 		}else{
-			if($this->session->userdata('keyword_'.$jenis)!=null){
-				$keyword = $this->session->userdata('keyword_'.$jenis);
+			if($this->session->userdata('keyword')!=null){
+				$keyword = $this->session->userdata('keyword');
 			}else{
 				$keyword = '';
 			}
@@ -542,7 +542,12 @@ class Kuitansi extends MY_Controller {
 			// echo "<pre/>";
 			// print_r($this->data['query']->result());die();
 		}elseif ($jenis == 'gup_pengembalian') {
-			
+			$this->data['query'] = $this->Kuitansi_model->read_kuitansi_pengembalian($config['per_page'], $id, $keyword, $kode_unit,'GP');
+			$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm_pengembalian($config['per_page'], $id, null, $kode_unit,'GP');
+			$this->data['jenis'] = 'GUP_PENGEMBALIAN';
+
+			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'jenis' => 'GP','substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
+			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'jenis' => 'GP','substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
 		}elseif ($jenis == 'em') {
 			$this->data['query'] = $this->Kuitansi_model->read_em($config['per_page'], $id, $keyword, $kode_unit);
 

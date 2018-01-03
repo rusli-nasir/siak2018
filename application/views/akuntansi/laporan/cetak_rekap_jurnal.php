@@ -222,7 +222,7 @@ function get_saldo_awal($kode_akun){
 	if ($ci->session->userdata('kode_unit') != 42 AND $ci->session->userdata('kode_akun') != 9999) {
 		return null;
 	}
-	$tahun = gmdate('Y');
+	$tahun = $this->session->userdata('setting_tahun');
 	$hasil = $ci->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
 	return $hasil;

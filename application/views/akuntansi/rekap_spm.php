@@ -1,6 +1,6 @@
 <!-- javascript -->
 <?php
-	$tahun = gmdate('Y');
+	$tahun = $this->session->userdata('setting_tahun');
 ?>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/jquery.dataTables.min.css" />
@@ -352,6 +352,7 @@
 
         return true;
     })
+    
     $('#print_tabel').click(function(){
     	var printed = $('#printed_table').clone()
 		printed.find('label').first().remove()

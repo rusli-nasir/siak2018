@@ -145,6 +145,12 @@ if($jenis=='NK'){
 
         ?>
         </select>
+      <?php elseif ($jenis == 'GUP_PENGEMBALIAN'): ?>
+        <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
+            <option value="<?php echo $akun_sal_debet['akun_6'] ?>"  ><?php echo $akun_sal_debet['akun_6']. " - ".$akun_sal_debet['nama'] ?></option>
+
+        ?>
+        </select>
       <?php else: ?>
           <input id="kas_akun_debet" name="kas_akun_debet" value="<?=$akun_debet_kas?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>        
       <?php endif ?>
@@ -165,6 +171,13 @@ if($jenis=='NK'){
                 <option value="<?php echo $akun_debet_akrual['akun_6'] ?>" ><?php echo $akun_debet_akrual['akun_6'].' - '.$akun_debet_akrual['nama'] ?></option>  
           <?php elseif ($jenis == 'TUP_PENGEMBALIAN'): ?>
             <?php foreach ($akun_debet_akrual_tup_pengembalian as $akun) {
+              ?>
+              <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
+              <?php
+            }
+            ?>
+          <?php elseif ($jenis == 'GUP_PENGEMBALIAN'): ?>
+            <?php foreach ($akun_debet_akrual_gup_pengembalian as $akun) {
               ?>
               <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
               <?php

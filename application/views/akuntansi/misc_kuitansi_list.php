@@ -1,5 +1,5 @@
 <?php 
-$tahun = gmdate('Y');
+$tahun = $this->session->userdata('setting_tahun');
  ?>
 <style type="text/css">
 table {
@@ -139,6 +139,7 @@ tbody td, thead th {
 					<th style="width:300px !important">URAIAN</th>
 					<th>AKUN DEBET</th>
 					<th>AKUN KREDIT</th>
+					<th>PAJAK</th>
 					<th>JUMLAH</th>
 				</tr>
 			</thead>
@@ -161,10 +162,11 @@ tbody td, thead th {
 						<td style="width:300px !important"><?php echo $result->untuk_bayar."<br>Penerima: ".$result->penerima; ?></td>
 						<td><?php echo $result->kd_akun_kas; ?></td>
 	                    <td><?php echo '?'; ?></td>
+	                    <td><?php echo '-'; ?></td>
 						<td><?php echo $result->debet; ?></td>					
 					<?php elseif ($jenis == 'GUP_NIHIL'): ?>
 						<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx_spm)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi)."/$jenis"; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 						</td>
 						<td>
@@ -184,9 +186,33 @@ tbody td, thead th {
 						<td style="width:300px !important"><?php echo $result->uraian; ?></td>
 						<td><?php echo $result->kode_akun; ?></td>
 	                    <td><?php echo '?'; ?></td>
-						<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>				
-					<?php elseif ($jenis == 'gup_nihil'): ?>
-						
+	                    <?php 
+						$pajak = get_detail_pajak($result->no_bukti, 'GP'); 
+						?>
+						<td style="width:350px">
+						<?php foreach ($pajak as $entry_pajak): ?>
+			              
+			              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
+			              
+			          	<?php endforeach ?>
+			          	</td>
+						<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>		
+					<?php elseif ($jenis == 'GUP_PENGEMBALIAN'): ?>
+						<td>						
+							<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx_spm)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi)."/$jenis"; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+						</td>
+						<td><?php echo date("d/m/Y", strtotime($result->tgl_kuitansi)); ?></td>
+						<td><?php echo $result->no_bukti; ?></td>
+						<td><?php echo $result->str_nomor_trx_spm; ?></td>
+						<td>GUP Pengembalian</td>
+						<!-- <td><?php echo substr($result->kode_usulan_belanja,6,2); ?></td> -->
+						<td><?php echo get_unit($result->kode_unit); ?></td>
+						<td style="width:250px"><?php echo $result->uraian; ?></td>
+						<td><?php echo $result->kode_akun; ?></td>
+						<td><?php echo '?'; ?></td>
+						<td><?php echo '-'; ?></td>
+						<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
 					<?php endif ?>
 				</tr>
 				<?php $no++; } ?>

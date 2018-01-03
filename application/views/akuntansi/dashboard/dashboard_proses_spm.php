@@ -118,6 +118,6 @@
       printed.find('table').attr('width', '80%')
       printed.find('div').css("zoom", "90%");
       printed.find('tr').css("background-color", "");
-        printed.print();
+      printed.print();
     })
 </script>

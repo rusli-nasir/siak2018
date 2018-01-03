@@ -936,7 +936,7 @@ class Kuitansi_model extends CI_Model {
             $filter_unit = '';   
         }
 
-        $date_now = gmdate('Y');
+        $date_now = $this->session->userdata('setting_tahun');
 
         if($limit!=null OR $start!=null){
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  

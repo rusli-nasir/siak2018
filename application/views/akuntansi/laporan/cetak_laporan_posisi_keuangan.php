@@ -72,7 +72,7 @@ if($atribut['cetak']){
 					<th  style="text-align:center" width="">No</th>
 					<th style="text-align:center" width="45%">URAIAN</th>
 					<th style="text-align:center" width="15%"> <?php echo $atribut['daterange'];?></th>
-					<th style="text-align:center" width="15%">31 Des <?php echo gmdate('Y')-1 ?></th>
+					<th style="text-align:center" width="15%">31 Des <?php echo $this->session->userdata('setting_tahun')-1 ?></th>
 					<th style="text-align:center" width="15%">Selisih/Kenaikan</th>
 					<th style="text-align:center" width="5%">%</th>
 				</tr>

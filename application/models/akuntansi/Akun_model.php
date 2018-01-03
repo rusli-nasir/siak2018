@@ -245,7 +245,7 @@ class Akun_model extends CI_Model {
 	public function get_saldo_awal($kode_akun)
 	{
 		
-		$tahun = gmdate('Y');
+		$tahun = $this->session->userdata('setting_tahun');
 
 		$hasil = $this->db->get_where('akuntansi_saldo',array('akun' => $kode_akun,'tahun' => $tahun))->row_array();
 
@@ -254,7 +254,7 @@ class Akun_model extends CI_Model {
 
 	public function get_saldo_awal_batch($array_akun)
 	{
-		$tahun = gmdate('Y');		
+		$tahun = $this->session->userdata('setting_tahun');		
 		$data = array();
 
 		foreach ($array_akun as $akun) {

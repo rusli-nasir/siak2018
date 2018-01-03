@@ -52,6 +52,10 @@ class Jurnal_rsa extends MY_Controller {
                 $direct_url = 'akuntansi/kuitansi/index_tup_nihil';
             }else if($jenis=='TUP_PENGEMBALIAN'){
                 $direct_url = 'akuntansi/kuitansi/index_tup_pengembalian';
+            }else if($jenis=='GUP_PENGEMBALIAN'){
+                $direct_url = 'akuntansi/kuitansi/index_misc/gup_pengembalian';
+            }else if($jenis=='GUP_NIHIL'){
+                $direct_url = 'akuntansi/kuitansi/index_misc/gup_nihil';
             }else if($jenis=='KS'){
                 $direct_url = 'akuntansi/kuitansi/index_ks';
             }
@@ -67,7 +71,7 @@ class Jurnal_rsa extends MY_Controller {
             if ($jenis == 'TUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN' ) {
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
             }
-            else if ($jenis == 'TUP_PENGEMBALIAN') {
+            else if ($jenis == 'TUP_PENGEMBALIAN' or $jenis == 'GUP_PENGEMBALIAN') {
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
                 $entry['akun_debet'] = $entry['kas_akun_debet'];
                 unset($entry['kas_akun_debet']);
@@ -91,6 +95,10 @@ class Jurnal_rsa extends MY_Controller {
             if ($jenis == 'TUP_NIHIL') {
                 $entry['jenis'] = $kuitansi['jenis'] = 'TUP_NIHIL';
             } 
+
+            if ($jenis == 'GUP_NIHIL') {
+                $entry['jenis'] = $kuitansi['jenis'] = 'GUP_NIHIL';
+            } 
             if ($jenis == 'LK') {
                 $entry['jenis'] = $kuitansi['jenis'] = 'LK';
             } 
@@ -99,6 +107,9 @@ class Jurnal_rsa extends MY_Controller {
             } 
             if ($jenis == 'TUP_PENGEMBALIAN') {
                 $entry['jenis'] = $kuitansi['jenis'] = 'TUP_PENGEMBALIAN';
+            } 
+            if ($jenis == 'GUP_PENGEMBALIAN') {
+                $entry['jenis'] = $kuitansi['jenis'] = 'GUP_PENGEMBALIAN';
             } 
 
             $entry['jumlah_kredit'] = $entry['jumlah_debet'];
@@ -123,10 +134,11 @@ class Jurnal_rsa extends MY_Controller {
             $checker['tanggal_bukti'] = date('Y-m-d', $date);
 
 
-            echo "<pre>";
+            // echo "<pre>";
+            // print_r($kuitansi['jenis']);die();
 
             // print_r($checker);die();
-            print_r($entry);die();
+            // print_r($entry);die();
             if ($this->Jurnal_rsa_model->check_kuitansi_exist($checker)){
                 $this->session->set_flashdata('warning','Data yang sama sudah ada');
                 redirect($direct_url);
@@ -138,7 +150,7 @@ class Jurnal_rsa extends MY_Controller {
 
             $updater =  array();
             $updater['flag_proses_akuntansi'] = 1;
-            if ($jenis == 'TUP_PENGEMBALIAN') {
+            if ($jenis == 'TUP_PENGEMBALIAN' or $jenis == 'GUP_PENGEMBALIAN') {
                 $q2 = $this->Kuitansi_model->update_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($kuitansi['jenis']),$updater);
                 $array_pajak = $this->Pajak_model->get_transfer_pajak($q1);
                 $this->Pajak_model->insert_pajak($q1,$array_pajak);
@@ -226,6 +238,20 @@ class Jurnal_rsa extends MY_Controller {
 
                 $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
 
+                // print_r($isian);die();
+            }
+            else if ($jenis == 'GUP_PENGEMBALIAN'){
+                $isian = $this->Jurnal_rsa_model->get_kuitansi_pengembalian($id_kuitansi,"GUP_PENGEMBALIAN");
+                $isian['jenis_pembatasan_dana'] = $this->Jurnal_rsa_model->get_jenis_pembatasan_dana($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis));
+                $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+                $isian['akun_sal_debet'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+                $isian['akun_debet_akrual_gup_pengembalian'] = $this->Jurnal_rsa_model->get_akun_kas_mandiri()->result();
+
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
+
+                $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
+
+                // echo "<pre>";
                 // print_r($isian);die();
             }
             else if ($jenis == 'LK'){

@@ -82,8 +82,8 @@ class Jurnal_umum extends MY_Controller {
         //Verifikasi tanggal dulu, batal upload kalau tanggal tidak memenuhi regex 2017-XX-XX
 
         $report_tanggal = array();
-        $awal_tahun = gmdate('Y')."-01-01";
-        $akhir_tahun = gmdate('Y')."-12-31";
+        $awal_tahun = $this->session->userdata('setting_tahun')."-01-01";
+        $akhir_tahun = $this->session->userdata('setting_tahun')."-12-31";
 
         for ($row=11; $row <= $highestRow; $row++) { 
             if($objWorksheet->getCellByColumnAndRow(5,$row)->getValue()!=null){

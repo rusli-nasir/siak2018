@@ -65,8 +65,8 @@ class Penerimaan extends MY_Controller {
         $sal_penerimaan = $this->Akun_model->get_kode_sal_penerimaan();
         $waktu_penerimaan = date('Y-m-d H:i:s');
 
-        $awal_tahun = gmdate('Y')."-01-01";
-        $akhir_tahun = gmdate('Y')."-12-31";
+        $awal_tahun = $this->session->userdata('setting_tahun')."-01-01";
+        $akhir_tahun = $this->session->userdata('setting_tahun')."-12-31";
 
         $i = 0;
 

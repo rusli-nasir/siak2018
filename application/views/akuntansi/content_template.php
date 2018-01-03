@@ -46,7 +46,7 @@
 <script src="<?php echo base_url();?>/assets/akuntansi/js/lumino.glyphs.js"></script>
 
 <?php
-	$maintenance = "Untuk penyesuaian awal tahun 2018,sedang ada penyesuaian sistem di bagian laporan-laporan";
+	// $maintenance = "Untuk penyesuaian awal tahun 2018,sedang ada penyesuaian sistem di bagian laporan-laporan";
 ?>
 
 <?php if (isset($maintenance)): ?>

@@ -280,8 +280,8 @@ class Laporan_model extends CI_Model {
         if ($sumber == 'biaya') {
             $placer = 'kode_akun_sub';
             $group_identifier = 'kode_akun_sub';
-            $awal_tahun = gmdate('Y')."-01-01";
-            $akhir_tahun = gmdate('Y')."-12-31";
+            $awal_tahun = $this->session->userdata('setting_tahun')."-01-01";
+            $akhir_tahun = $this->session->userdata('setting_tahun')."-12-31";
             // die("BETWEEN $awal_tahun AND $akhir_tahun");
         }
 
@@ -321,7 +321,7 @@ class Laporan_model extends CI_Model {
 
         // echo "(tanggal BETWEEN '$start_date' AND '$end_date')";die();
 
-        $year = gmdate("Y");
+        $year = $this->session->userdata('setting_tahun');
 
         $array_jenis = array();
         if ($jenis == null){
@@ -658,7 +658,8 @@ class Laporan_model extends CI_Model {
             $array_jenis[] = $jenis;
         }
 
-        $year = date("Y");
+        $year = $this->session->userdata('setting_tahun');
+
         if ($start_date == null AND $end_date == null) {
             $start_date = "$year-01-01";  
             $end_date = "$year-12-31";      
@@ -987,6 +988,7 @@ class Laporan_model extends CI_Model {
 
 
             $query_max_unit_revisi  = "SELECT max(revisi) as max_revisi,LEFT(kode_usulan_belanja,2) as unit FROM `detail_belanja_` WHERE 1 $query_unit GROUP BY LEFT(kode_usulan_belanja,2)";
+            // die($query_max_unit_revisi);
             $max_revisi = $this->db2->query($query_max_unit_revisi)->result_array();
             $revisi_unit = array();
             $anggaran_temp = array();
@@ -1059,6 +1061,7 @@ class Laporan_model extends CI_Model {
                 $anggaran[$entry['akun']] += $entry['jumlah'];
             }
 
+            // echo "<pre>";
             // print_r($anggaran);die();
             $data['anggaran'] = $anggaran;
         }

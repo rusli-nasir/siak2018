@@ -1,5 +1,5 @@
 <?php 
-	$tahun = gmdate('Y');
+	$tahun = $this->session->userdata('setting_tahun');
  ?>
 <style type="text/css">
 table {

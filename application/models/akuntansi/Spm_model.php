@@ -51,7 +51,7 @@ class Spm_model extends CI_Model {
 
 	public function get_jenis_spm() // yang lewat kas undip & kas bendahara
 	{
-		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','GUP_NIHIL','KS','EM'); 
+		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','KS','EM'); 
 	}
 
 	public function get_array_jenis() // yang lewat kas undip & kas bendahara
@@ -59,7 +59,7 @@ class Spm_model extends CI_Model {
 		return array(
 						'UP' => 'trx_spm_up_data',
             'GUP' => 'trx_spm_gup_data',
-						'GUP_NIHIL' => 'trx_spm_gup_data',
+						// 'GUP_NIHIL' => 'trx_spm_gup_data',
 						'TUP' => 'trx_spm_tambah_tup_data',
             'PUP' => 'trx_spm_tambah_up_data',
 						'KS' => 'trx_spm_tambah_ks_data',
@@ -448,7 +448,7 @@ class Spm_model extends CI_Model {
           		// die();
           	}
 
-            if ($jenis == 'GUP') {
+            if ($jenis == 'GUP' or $jenis == 'GUP_NIHIL') {
               $inti['jumlah_debet'] = $inti['jumlah_kredit'];
             }
 

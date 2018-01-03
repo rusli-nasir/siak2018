@@ -72,7 +72,7 @@ if($atribut['cetak']){
 				<tr style="background-color:#FFC2FF;height:45px">
 					<th width="5%">No.</th>
 					<th colspan="4" width="60%">URAIAN</th>
-					<th colspan="3" width="20%"><?php echo gmdate('Y') ?></th>
+					<th colspan="3" width="20%"><?php echo $this->session->userdata('setting_tahun') ?></th>
 				</tr>
 			</thead>
 			<tbody>

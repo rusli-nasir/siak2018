@@ -1,6 +1,6 @@
 <!-- javascript -->
 <?php 
-$tahun = gmdate('Y');
+$tahun = $this->session->userdata('setting_tahun');
  ?>
 
 <script type="text/javascript">

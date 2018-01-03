@@ -1681,7 +1681,7 @@ class Laporan extends MY_Controller {
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
         $array_akun = array(1,2,3);
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
         $start_date = "$year-01-01";
         $end_date = "$year-31-12";
 
@@ -2010,7 +2010,7 @@ class Laporan extends MY_Controller {
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
         $array_akun = array(1,2,3);
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
         $start_date = "$year-01-01";
         $end_date = "$year-31-12";
 
@@ -2220,7 +2220,7 @@ class Laporan extends MY_Controller {
         $array_aset = array();
         $array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = array(3);
 
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
         $last_year = $year - 1;
 
         if ($year == '2017') {
@@ -2490,7 +2490,7 @@ class Laporan extends MY_Controller {
         $array_not_investasi = array();
         $array_special_investasi = array();
 
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
 
         $start_date = $year.'-01-01';
         $end_date = $year.'-12-31';
@@ -2709,7 +2709,7 @@ class Laporan extends MY_Controller {
         $array_aset = array();
         $array_aset['aset_bersih_kekayaan_awal_PTN_badan_hukum'] = array(3);
 
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
         $last_year = $year - 1;
 
         if ($year == '2017') {
@@ -3124,7 +3124,7 @@ class Laporan extends MY_Controller {
         // $daterange = $this->input->post('daterange');
         $daterange = $parse_data['parsing_date'];
         $date_t = explode(' - ', $daterange);
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
 
         $start_date = "$year-01-01";
 
@@ -3406,7 +3406,7 @@ class Laporan extends MY_Controller {
         $parsed[] = $entry_parsed;
 
         $data['atribut'] = $parse_data;
-        $data['tahun'] = gmdate('Y');
+        $data['tahun'] = $this->session->userdata('setting_tahun');
         $data['nama_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);
         if ($data['nama_unit'] == '-' or $data['nama_unit'] == 'Penerimaan'){
             $data['nama_unit'] = 'UNIVERSITAS DIPONEGORO';
@@ -3487,7 +3487,7 @@ class Laporan extends MY_Controller {
 
         $daterange = $parse_data['parsing_date'];
         $date_t = explode(' - ', $daterange);
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
 
         $start_date = "$year-01-01";
 
@@ -4144,7 +4144,7 @@ class Laporan extends MY_Controller {
         $data['parse'] = $data_final;
         $data['atribut'] = $parse_data;
         $data['atribut']['level'] = 6;
-        $data['tahun'] = gmdate('Y');
+        $data['tahun'] = $this->session->userdata('setting_tahun');
         $data['jenis_laporan'] = 'each';
         $data['nama_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);
         if ($data['nama_unit'] == '-' or $data['nama_unit'] == 'Penerimaan'){
@@ -4182,7 +4182,7 @@ class Laporan extends MY_Controller {
         // $daterange = $this->input->post('daterange');
         $daterange = $parse_data['parsing_date'];
         $date_t = explode(' - ', $daterange);
-        $year = gmdate('Y');
+        $year = $this->session->userdata('setting_tahun');
 
         $start_date = "$year-01-01";
 
@@ -4389,7 +4389,7 @@ class Laporan extends MY_Controller {
 
         $data['atribut'] = $parse_data;
         $data['atribut']['level'] = 1;
-        $data['tahun'] = gmdate('Y');
+        $data['tahun'] = $this->session->userdata('setting_tahun');
         $unit = null;
         $data['nama_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);
         if ($data['nama_unit'] == '-' or $data['nama_unit'] == 'Penerimaan'){
