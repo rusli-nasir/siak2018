@@ -64,13 +64,16 @@ tbody td, thead th {
   <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/PUP/1'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GP/1'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_jadi; ?></span></a></li>
     <li role="presentation" class="<?php if(isset($tab9)){ if($tab9==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GUP/1'); ?>">GU&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gu_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gu_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GP_NIHIL/1'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_jadi; ?></span></a></li>
+  <!-- <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GP_NIHIL/1'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_jadi; ?></span></a></li> -->
   <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP/1'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_NIHIL/1'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab11)){ if($tab11==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/LK'); ?>">LS-K&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->lk_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->lk_jadi; ?></span></a></li>
     <li role="presentation" class="<?php if(isset($tab12)){ if($tab12==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/LN'); ?>">LS-NK&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ln_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ln_jadi; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab10)){ if($tab10==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_PENGEMBALIAN/1'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_pengembalian_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian_jadi; ?></span></a></li>
+
+  <li role="presentation" class="<?php if(isset($tab_tup_pengembalian_jadi)){ if($tab_tup_pengembalian_jadi==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_PENGEMBALIAN/1'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_pengembalian_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab_gup_pengembalian_jadi)){ if($tab_gup_pengembalian_jadi==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GUP_PENGEMBALIAN/1'); ?>">GUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_pengembalian_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_pengembalian_jadi; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab_gup_nihil_jadi)){ if($tab_gup_nihil_jadi==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GUP_NIHIL/1'); ?>">GUP Nihil.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_jadi; ?></span></a></li>
 </ul>
 <div class="row">
 	<div class="col-sm-9">
@@ -309,9 +312,9 @@ function get_nama_unit($unit){
 
 function get_tabel_by_jenis($jenis)
 {
-	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN') {
+	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN') {
 		return 'rsa_kuitansi_detail_pajak';
-	}elseif ($jenis == 'TUP_PENGEMBALIAN') {
+	}elseif ($jenis == 'TUP_PENGEMBALIAN'  or $jenis == 'GUP_PENGEMBALIAN') {
 		return 'rsa_kuitansi_detail_pajak_pengembalian';
 	}elseif ($jenis == 'L3') {
 		return 'rsa_kuitansi_detail_pajak_lsphk3';

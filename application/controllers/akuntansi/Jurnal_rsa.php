@@ -522,6 +522,12 @@ class Jurnal_rsa extends MY_Controller {
             $direct_url = 'akuntansi/kuitansi/jadi/TUP/1';
         }else if($jenis=='TUP_NIHIL'){
             $direct_url = 'akuntansi/kuitansi/jadi/TUP_NIHIL/1';
+        }else if($jenis=='GUP_NIHIL'){
+            $direct_url = 'akuntansi/kuitansi/jadi/GUP_NIHIL/1';
+        }else if($jenis=='TUP_PENGEMBALIAN'){
+            $direct_url = 'akuntansi/kuitansi/jadi/TUP_PENGEMBALIAN/1';
+        }else if($jenis=='GUP_PENGEMBALIAN'){
+            $direct_url = 'akuntansi/kuitansi/jadi/GUP_PENGEMBALIAN/1';
         }else if($jenis=='LK'){
             $direct_url = 'akuntansi/kuitansi/jadi/LK/1';
         }else if($jenis=='LN'){
@@ -562,7 +568,7 @@ class Jurnal_rsa extends MY_Controller {
 
             }
 
-            if ($kuitansi['jenis'] == 'TUP_PENGEMBALIAN') {
+            if ($kuitansi['jenis'] == 'TUP_PENGEMBALIAN' or $kuitansi['jenis'] == 'TUP_PENGEMBALIAN') {
                 $entry['akun_debet'] = $entry['kas_akun_debet'];
                 unset($entry['kas_akun_debet']);
             }

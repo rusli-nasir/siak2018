@@ -506,11 +506,11 @@ class Kuitansi extends MY_Controller {
 		$total_data = $this->Kuitansi_model->read_gup(null, null, $keyword, $kode_unit);
 		$total = $total_data->num_rows();
 		//pagination
-		if($this->uri->segment('4')==null){
+		if($this->uri->segment('5')==null){
 			$id = 0;
 			$this->data['no'] = $id+1;
 		}else{
-			// $id = ($id-1)*20;
+			$id = ($id-1)*20;
 			$this->data['no'] = $id+1;
 		}
 		$this->load->library('pagination');
@@ -533,6 +533,9 @@ class Kuitansi extends MY_Controller {
 
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
+		// echo "<pre>";
+		// print_r($this->data['halaman']);
+		// die();
 		if ($jenis == 'gup_nihil'){
 			$this->data['query'] = $this->Kuitansi_model->read_kuitansi_gup($config['per_page'], $id, $keyword, $kode_unit,'GUP_NIHIL');
 			$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_gup($config['per_page'], $id, $keyword, $kode_unit,'GUP_NIHIL',true);
@@ -1207,7 +1210,11 @@ class Kuitansi extends MY_Controller {
         	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab6'] = true;
         }else if($jenis=='TUP_PENGEMBALIAN'){
-        	$this->data['tab10'] = true;
+        	$this->data['tab_tup_pengembalian_jadi'] = true;
+        }else if($jenis=='GUP_PENGEMBALIAN'){
+        	$this->data['tab_gup_pengembalian_jadi'] = true;
+        }else if($jenis=='GUP_NIHIL'){
+        	$this->data['tab_gup_nihil_jadi'] = true;
         }else if($jenis=='LK'){
         	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab11'] = true;
@@ -1502,6 +1509,11 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='TUP_NIHIL'){
         	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab6'] = true;
+        }else if($jenis=='GUP_PENGEMBALIAN'){
+        	$this->data['tab_gup_pengembalian'] = true;
+        }else if($jenis=='GUP_NIHIL'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        	$this->data['tab_gup_nihil'] = true;
         }else if($jenis=='TUP_PENGEMBALIAN'){
         	$this->data['tab10'] = true;
         }else if($jenis=='LK'){

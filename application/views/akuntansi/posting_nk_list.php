@@ -34,6 +34,10 @@
   <li role="presentation" class="<?php if(isset($tab7)){ if($tab7==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_ls'); ?>">LS- 3&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ls_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ls_posting; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_posting; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab10)){ if($tab10==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/TUP_PENGEMBALIAN/1'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian_posting; ?></span></a></li>
+
+  
+  <li role="presentation" class="<?php if(isset($tab_gup_pengembalian)){ if($tab_gup_pengembalian==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/GUP_PENGEMBALIAN/1'); ?>">GUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_pengembalian_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_pengembalian_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab_gup_nihil)){ if($tab_gup_nihil==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/GUP_NIHIL/1'); ?>">GUP NIHIL.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_posting; ?></span></a></li>
 </ul>
 <div class="row">
 	<div class="col-sm-9">

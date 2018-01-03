@@ -71,6 +71,12 @@ tbody td, thead th {
   <li role="presentation" class="<?php if(isset($tab12)){ if($tab12==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_lnk'); ?>">LS-NK&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ln ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ln; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab10)){ if($tab10==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup_pengembalian'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_pengembalian ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian; ?></span></a></li>
+
+   <!-- <li role="presentation" class="<?php if(isset($tab_ks)){ if($tab_ks==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_ks'); ?>">Kerja Sama&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ks ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ks; ?></span></a></li> -->
+  
+  <li role="presentation" class="<?php if(isset($tab_gup_nihil)){ if($tab_gup_nihil==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_misc/gup_nihil'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab_gup_pengembalian)){ if($tab_gup_pengembalian==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_misc/gup_pengembalian'); ?>">GUP Pengembalian&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_pengembalian ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_pengembalian; ?></span></a></li>
+  
 </ul>
 <div class="row">
 	<div class="col-sm-9">
