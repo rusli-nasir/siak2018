@@ -110,21 +110,30 @@ class Akun_model extends CI_Model {
 			$kode_akun = 5;
 			// $replacer = 7;
 			for ($i=1; $i <= $level; $i++) { 
-				$this->db2->select("kode_akun".$i."digit as akun_$i");
+				$teks_kode = $i."digit";
+				$teks_nama = $i."digit";
+				if ($i == 5){
+					$i++;
+				}
+				if ($i == 6){
+					$teks_kode = "";
+					$teks_nama = "";
+				}
+				$this->db2->select("kode_akun".$teks_kode." as akun_$i");
 			}
-			$this->db2->select("nama_akun".$level."digit as nama");
+			$this->db2->select("nama_akun".$teks_nama." as nama");
 
 			if ($array_not_akun != null) {
 				foreach ($array_not_akun as $not_akun) {
 					if (substr($not_akun,0,1) == 7){
 						$not_akun = substr_replace($not_akun,5,0,1);
 					}
-					$this->db2->not_like("kode_akun".$level."digit",$not_akun,'after');
+					$this->db2->not_like("kode_akun".$teks_kode,$not_akun,'after');
 				}
 			}
 			$this->db2
-					 ->like("kode_akun".$level."digit",$kode_akun,'after')
-					 ->group_by("kode_akun".$level."digit")
+					 ->like("kode_akun".$teks_kode,$kode_akun,'after')
+					 ->group_by("kode_akun".$teks_kode)
 					 ->from("akun_belanja")
 			;
 			// echo $this->db2->get_compiled_select();die();
@@ -165,6 +174,9 @@ class Akun_model extends CI_Model {
 
 		}
 
+		// echo "<pre>";
+		// print_r($hasil);die();
+
 
 		if ($replacer != 0) {
 			foreach ($hasil as $key => $entry) {
@@ -174,12 +186,18 @@ class Akun_model extends CI_Model {
 						$entry['nama'] = ucwords(strtolower($entry['nama']));
 					}
 					$data[substr_replace($entry['akun_1'],$replacer,0,1)][substr_replace($entry['akun_2'],$replacer,0,1)][substr_replace($entry['akun_3'],$replacer,0,1)] = $entry;
-				} else {
+				} elseif($level == 4) {
 					if ($replacer == 7) {
 						$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
 						$entry['nama'] = ucwords(strtolower($entry['nama']));
 					}
 					$data[substr_replace($entry['akun_1'],$replacer,0,1)][substr_replace($entry['akun_2'],$replacer,0,1)][substr_replace($entry['akun_3'],$replacer,0,1)][substr_replace($entry['akun_4'],$replacer,0,1)] = $entry;
+				} elseif($level == 6) {
+					if ($replacer == 7) {
+						$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+						$entry['nama'] = ucwords(strtolower($entry['nama']));
+					}
+					$data[substr_replace($entry['akun_1'],$replacer,0,1)][substr_replace($entry['akun_2'],$replacer,0,1)][substr_replace($entry['akun_3'],$replacer,0,1)][substr_replace($entry['akun_4'],$replacer,0,1)][substr_replace($entry['akun_6'],$replacer,0,1)] = $entry;
 				}
 			}
 		} else {
@@ -187,9 +205,12 @@ class Akun_model extends CI_Model {
 				if ($level == 3) {
 					$entry['nama'] = ucwords(strtolower($entry['nama']));
 					$data[$entry['akun_1']][$entry['akun_2']][$entry['akun_3']] = $entry;
-				} else {
+				} elseif($level == 4) {
 					$entry['nama'] = ucwords(strtolower($entry['nama']));
 					$data[$entry['akun_1']][$entry['akun_2']][$entry['akun_3']][$entry['akun_4']] = $entry;
+				} elseif($level == 6) {
+					$entry['nama'] = ucwords(strtolower($entry['nama']));
+					$data[$entry['akun_1']][$entry['akun_2']][$entry['akun_3']][$entry['akun_4']][$entry['akun_6']] = $entry;
 				}
 			}
 		}

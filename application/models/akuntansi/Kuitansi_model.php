@@ -771,6 +771,8 @@ class Kuitansi_model extends CI_Model {
         }else{
             if($this->session->userdata('alias')=='WR2'){
                 $alias = 'W23';
+            }elseif($this->session->userdata('alias')=='WR1'){
+                $alias = 'W11';
             }else{
                 $alias = $this->session->userdata('alias');
             }

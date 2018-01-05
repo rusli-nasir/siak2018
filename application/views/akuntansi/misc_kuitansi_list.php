@@ -73,7 +73,7 @@ tbody td, thead th {
   <li role="presentation" class="<?php if(isset($tab10)){ if($tab10==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_tup_pengembalian'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_pengembalian ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian; ?></span></a></li>
 
   <!-- <li role="presentation" class="<?php if(isset($tab_ks)){ if($tab_ks==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_ks'); ?>">Kerja Sama&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ks ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ks; ?></span></a></li> -->
-  
+
   <li role="presentation" class="<?php if(isset($tab_gup_nihil)){ if($tab_gup_nihil==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_misc/gup_nihil'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab_gup_pengembalian)){ if($tab_gup_pengembalian==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/index_misc/gup_pengembalian'); ?>">GUP Pengembalian&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_pengembalian ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_pengembalian; ?></span></a></li>
 </ul>
@@ -170,6 +170,7 @@ tbody td, thead th {
 					<?php elseif ($jenis == 'GUP_NIHIL'): ?>
 						<td>						
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi)."/$jenis"; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 						</td>
 						<td>
@@ -260,7 +261,7 @@ function get_nama_unit($unit){
 
 function get_tabel_by_jenis($jenis)
 {
-	if ($jenis == 'GP') {
+	if ($jenis == 'GP' or $jenis == 'GUP_NIHIL' or $jenis == 'gup_nihil') {
 		return 'rsa_kuitansi_detail_pajak';
 	}elseif ($jenis == 'L3') {
 		return 'rsa_kuitansi_detail_pajak_lsphk3';
@@ -269,15 +270,9 @@ function get_tabel_by_jenis($jenis)
 function get_detail_pajak($no_bukti,$jenis)
 {
 	$ci =& get_instance();
-	$hasil = $ci->db->get_where(get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
-	
-	$data = array();
 
-	foreach ($hasil as $entry) {
-		$detail = $ci->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
-		$data[] = array_merge($entry,$detail);
-	}
+	$ci->load->model('akuntansi/Pajak_model', 'Pajak_model');
 
-	return $data;
+	return $ci->Pajak_model->get_detail_pajak($no_bukti,$jenis);
 }
 ?>

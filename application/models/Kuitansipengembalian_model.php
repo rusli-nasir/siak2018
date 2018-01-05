@@ -259,7 +259,7 @@ class Kuitansipengembalian_model extends CI_Model{
 
     function get_data_detail_kuitansi($id_kuitansi,$tahun){
         $str = "SELECT rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail,rsa.rsa_kuitansi_detail_pengembalian.deskripsi,rsa.rsa_kuitansi_detail_pengembalian.volume,"
-                . "rsa.rsa_kuitansi_detail_pengembalian.satuan,rsa.rsa_kuitansi_detail_pengembalian.harga_satuan,(rsa.rsa_kuitansi_detail_pengembalian.volume * rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS bruto "
+                . "rsa.rsa_kuitansi_detail_pengembalian.satuan,rsa.rsa_kuitansi_detail_pengembalian.harga_satuan,(ROUND(rsa.rsa_kuitansi_detail_pengembalian.volume * rsa.rsa_kuitansi_detail_pengembalian.harga_satuan)) AS bruto "
                 . "" //,GROUP_CONCAT(rsa_kuitansi_detail_pajak.jenis_pajak SEPARATOR '<br>') AS pajak_nom "
                 . "FROM rsa.rsa_kuitansi_pengembalian "
                 . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
@@ -845,6 +845,8 @@ class Kuitansipengembalian_model extends CI_Model{
                 $q = $this->db->get('trx_spp_lsnk_data');
         }else if($jenis == 'LSK'){
                 $q = $this->db->get('trx_spp_lsk_data');
+        }else if($jenis == 'EM'){
+                $q = $this->db->get('trx_spp_em_data');
         }else if($jenis == 'KS'){
                 $q = $this->db->get('trx_spp_ks_data');
         }

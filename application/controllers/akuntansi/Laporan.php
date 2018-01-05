@@ -3119,7 +3119,8 @@ class Laporan extends MY_Controller {
             $unit = null;
         }
 
- 
+    
+        $level = 6;
 
         // $daterange = $this->input->post('daterange');
         $daterange = $parse_data['parsing_date'];
@@ -3185,6 +3186,7 @@ class Laporan extends MY_Controller {
             // print_r($array_string);
             // die();
             // echo $jenis_pembatasan;
+            // $jenis_pembatasan = 'terikat_temporer';
             $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',$jenis_pembatasan,$start_date,$end_date);
             // echo "<pre>";
             // print_r($data);die();
@@ -3198,6 +3200,11 @@ class Laporan extends MY_Controller {
             foreach ($array_akun as $kd_awal) {
                 $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level,$tabel_akun[$kd_awal],$array_not_akun);
             }
+
+            // echo "<pre>";
+            // print_r($akun);die();
+
+
 
 
             $rekap = array();
@@ -3333,6 +3340,81 @@ class Laporan extends MY_Controller {
                                 }
                                 $sum_realisasi += $saldo_sekarang;
                             }
+                        } elseif ($level == 6) {
+                            $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
+                            $entry_parsed = array(
+                               'order' => ++$order,
+                               'level' => 2,
+                               'akun' => $key_3,
+                               'type' => 'index',
+                               'nama' => $nama,
+                               'start_sum' => null,
+                               'end_sum' => null,
+                               'sum_negatif' => null,
+                               'anggaran' => null,
+                               'realisasi' => null,
+                               'selisih' => null,
+                               'persentase' => null,
+                               'jenis_pembatasan' => $jenis_pembatasan,
+                            );
+                            $parsed[] = $entry_parsed;
+                            //echo "&nbsp;&nbsp;&nbsp;&nbsp;$key_3 - $nama<br/>";
+                            foreach ($akun_3 as $key_4 => $akun_4) {
+                                $nama = $this->Akun_model->get_nama_akun_by_level($key_4,4,$tabel_akun[$key_1]);
+                                // $data['nama_lvl_3'][$key_2][] = $nama;
+                                // $data['key_lvl_3'][] = $key_4;
+                                $entry_parsed = array(
+                                   'order' => ++$order,
+                                   'level' => 3,
+                                   'akun' => $key_4,
+                                   'type' => 'index',
+                                   'nama' => $nama,
+                                   'start_sum' => null,
+                                   'end_sum' => null,
+                                   'sum_negatif' => null,
+                                   'anggaran' => null,
+                                   'realisasi' => null,
+                                   'selisih' => null,
+                                   'persentase' => null,
+                                   'jenis_pembatasan' => $jenis_pembatasan,
+                                );
+                                $parsed[] = $entry_parsed;
+                                foreach ($akun_4 as $key_6 => $akun_6) {
+                                    $debet = (isset($rekap[$key_6]['debet'])) ? $rekap[$key_6]['debet'] : 0 ;
+                                    $kredit = (isset($rekap[$key_6]['kredit'])) ? $rekap[$key_6]['kredit'] : 0 ;
+                                    $saldo_sekarang = $debet - $kredit;
+                                    $anggaran = (isset($rekap[$key_6]['anggaran'])) ? $rekap[$key_6]['anggaran'] : 0 ;
+                                    // $saldo_awal = (isset($rekap[$key_6]['kredit'])) ? $rekap[$key_6]['saldo_awal'] : 0 ;
+                                    $nama = $akun_6['nama'];
+                                    $selisih = abs($anggaran) - abs($saldo_sekarang);
+                                    if ($anggaran == 0) {
+                                        $persentase = 0;
+                                    } else {
+                                        $persentase = abs($saldo_sekarang) / $anggaran * 100;
+                                    }
+                                    $entry_parsed = array(
+                                       'order' => ++$order,
+                                       'level' => 5,
+                                       'akun' => $key_6,
+                                       'type' => 'entry',
+                                       'nama' => $nama,
+                                       'start_sum' => null,
+                                       'end_sum' => null,
+                                       'sum_negatif' => null,
+                                       'anggaran' => $anggaran,
+                                       'realisasi' => $saldo_sekarang,
+                                       'selisih' => $selisih,
+                                       'persentase' => $persentase,
+                                       'jenis_pembatasan' => $jenis_pembatasan,
+                                    );
+                                    $parsed[] = $entry_parsed;
+                                    //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$key_4 - $nama|$saldo_sekarang|$anggaran<br/>";
+                                    if ($array_is_anggaran){
+                                        $sum_anggaran += $anggaran;
+                                    }
+                                    $sum_realisasi += $saldo_sekarang;
+                                }
+                            }
                         } else {
                             $debet = (isset($rekap[$key_3]['debet'])) ? $rekap[$key_3]['debet'] : 0 ;
                             $kredit = (isset($rekap[$key_3]['kredit'])) ? $rekap[$key_3]['kredit'] : 0 ;
@@ -3404,6 +3486,8 @@ class Laporan extends MY_Controller {
            'jenis_pembatasan' => null,
         );
         $parsed[] = $entry_parsed;
+
+        $parse_data['level'] = 6;
 
         $data['atribut'] = $parse_data;
         $data['tahun'] = $this->session->userdata('setting_tahun');

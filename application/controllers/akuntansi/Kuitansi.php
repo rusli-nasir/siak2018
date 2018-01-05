@@ -1757,9 +1757,12 @@ class Kuitansi extends MY_Controller {
     	}
 		
 		//gu
-		$gu = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 
+		$gu = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND untuk_bayar != 'GUP NIHIL' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 
 			AND substr(trx_gup.kode_unit_subunit,1,2)='".$kode_unit."'");
 		$gu = $gu->num_rows();
+
+		// echo "SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 
+		// 	AND substr(trx_gup.kode_unit_subunit,1,2)='".$kode_unit."'";die();
 
 		//up
 		$up = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx 
@@ -1802,7 +1805,11 @@ class Kuitansi extends MY_Controller {
 		$lspg = $this->db->query("SELECT * FROM kepeg_tr_spmls S, kepeg_tr_sppls P WHERE S.id_tr_sppls=P.id_sppls AND S.flag_proses_akuntansi=0 AND S.proses=5 AND P.unitsukpa=".$kode_unit."");
 		$lspg = $lspg->num_rows();
 
+		// echo $up.'-'.$gup.'-'.$gu.'-'.$pup.'-'.$tup.'-'.$ls3.'-'.$lspg.'-'.$tup_pengembalian;die();
+
 		return $up+$gup+$gu+$pup+$tup+$ls3+$lspg+$tup_pengembalian;
+
+
 	}
     
     /****************** RUPIAH MURNI ************************/

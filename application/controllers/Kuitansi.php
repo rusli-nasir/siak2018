@@ -971,6 +971,7 @@ Class Kuitansi extends CI_Controller {
                 }
 
                 function get_data_kuitansi_pengembalian(){
+                    $_POST = $_GET;
                     if($this->input->post('id')){
                         $data_kuitansi = $this->kuitansipengembalian_model->get_data_kuitansi($this->input->post('id'),$this->cur_tahun);
                         $data_detail_kuintansi = $this->kuitansipengembalian_model->get_data_detail_kuitansi($this->input->post('id'),$this->cur_tahun);

@@ -197,9 +197,8 @@ class Saldo extends MY_Controller {
 		        		$entry_data['nama_akun'] = $objWorksheet->getCellByColumnAndRow($kolom_nama,$row)->getValue();
 		        		$entry_data['nama_asal'] = $this->Akun_model->get_nama_akun($entry_data['akun']);
 
-		        		$data[] = $entry_data;
-
 	        			$entry_saldo = $entry_data;
+
 	        			$entry_saldo['tahun'] = 2017;
 	        			unset($entry_saldo['nama_akun']);
 	        			unset($entry_saldo['nama_asal']);
@@ -208,8 +207,14 @@ class Saldo extends MY_Controller {
 	        			}
 	        			if ($entry_data['nama_akun'] != $entry_data['nama_asal']){
 	        				$this->db->where('akun_6',$entry_saldo['akun']);
-	        				$this->db->update($tabel_akun[$first_akun],array('nama' => $entry_data['nama_asal']));
+	        				$this->db->update($tabel_akun[$first_akun],array('nama' => $entry_data['nama_akun']));
+	        				// $entry_data['edited']  = $tabel_akun[$first_akun];
 	        			}
+	        			$entry_data['nama_akun_setelah'] = $this->Akun_model->get_nama_akun($entry_data['akun']);
+	        			if ($entry_data['nama_akun'] == $entry_data['nama_akun_setelah']){
+	        				$entry_data['sudah_sama']  = "sama";
+	        			}
+		        		$data[] = $entry_data;
 
 	        		}
         		}
