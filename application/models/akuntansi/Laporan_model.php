@@ -416,7 +416,7 @@ class Laporan_model extends CI_Model {
                         $group_tingkat = "substring(kode_kegiatan,7,$length_kegiatan)";
                         $added_select = "substring(kode_kegiatan,7,$length_kegiatan) as tingkat,";
                     }
-                    $this->db_laporan->select("*,$added_select $cari as akun, sum(jumlah_debet) as jumlah");
+                    $this->db_laporan->select("$added_select $cari as akun, sum(jumlah_debet) as jumlah");
                     $this->db_laporan
                         ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
                         // ->order_by('no_bukti')
@@ -536,7 +536,7 @@ class Laporan_model extends CI_Model {
 
                         // $this->db_laporan->cache_on();
 
-                        $query = "SELECT tr.akun,tu.*,tu.tipe as jenis_pajak,$added_select sum(jumlah) as jumlah FROM $from as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
+                        $query = "SELECT tr.akun,tu.tipe as jenis_pajak,$added_select sum(jumlah) as jumlah FROM $from as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
                                  AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 

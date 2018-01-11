@@ -90,7 +90,7 @@ if($atribut['cetak']){
 							style="background-color: #54FFA9;font-weight: bold;"
 						<?php endif ?>
 					>
-						<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
+						<td> <?php if ($entry['type'] != 'sum'  and !isset($entry['hide_index'])) echo $entry['akun'] ?></td>
 						<td>
 							<?php 
 							for ($i=0; $i < $entry['level']; $i++) { 

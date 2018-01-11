@@ -884,7 +884,7 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   height:.3in'>
   <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
   justify;text-justify:inter-ideograph;line-height:normal;tab-stops:2.0in'><span
-  class=SpellE><span style='font-size:12.0pt;font-family:"Arial",sans-serif'>Kegiatan</span></span><span
+  class=SpellE><span style='font-size:12.0pt;font-family:"Arial",sans-serif'>Tujuan</span></span><span
   style='font-size:12.0pt;font-family:"Arial",sans-serif'><o:p></o:p></span></p>
   </td>
   <td width=16 valign=top style='width:11.8pt;padding:0in 5.4pt 0in 5.4pt;
@@ -909,7 +909,7 @@ style='font-size:12.0pt;line-height:106%;font-family:"Arial",sans-serif'>&nbsp;<
   height:.3in'>
   <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;text-align:
   justify;text-justify:inter-ideograph;line-height:normal;tab-stops:2.0in'><span
-  style='font-size:12.0pt;font-family:"Arial",sans-serif'>Output<o:p></o:p></span></p>
+  style='font-size:12.0pt;font-family:"Arial",sans-serif'>Sasaran<o:p></o:p></span></p>
   </td>
   <td width=16 valign=top style='width:11.8pt;padding:0in 5.4pt 0in 5.4pt;
   height:.3in'>

@@ -244,7 +244,7 @@ class Jurnal_umum extends MY_Controller {
                 $entry['unit_kerja'] = 92;
                 $entry['tipe'] = 'jurnal_umum';
                 $entry['jenis'] = 'jurnal_umum';
-                $entry['jenis_pembatasan_dana'] = 'tidak_terikat';
+                $entry['jenis_pembatasan_dana'] = 'terikat_temporer';
 
                 $entry['flag'] =3;
                 $entry['status'] = 4;
