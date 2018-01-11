@@ -126,7 +126,7 @@ class Spm_model extends CI_Model {
     $tabel_jenis = $this->get_array_proses_spm();
     $tabel_case_spm = $this->get_array_case_spm();
     $data = array();
-    echo "<pre>";
+    // echo "<pre>";
     if ($mode == 'total'){
       foreach ($tabel_jenis as $jenis_spm => $tabel_sumber) {
         $entry = array(
@@ -149,12 +149,12 @@ class Spm_model extends CI_Model {
                           tabel_posisi.posisi NOT IN ('SPM-DITOLAK-VERIFIKATOR','SPM-DITOLAK-KBUU','SPM-DITOLAK-KPA','SPP-DITOLAK','SPM-FINAL-KBUU')
                   ";
 
-        echo $query;
+        // echo $query;
         $entry['jumlah'] = $this->db->query($query)->row_array()['jumlah'];
         $entry['real_jenis'] = $jenis_spm;
         $data[] = $entry;
       }
-      die();
+      // die();
     }elseif ($mode == 'each') {
       foreach ($array_params as $params) {
         $jenis_spm = $params;

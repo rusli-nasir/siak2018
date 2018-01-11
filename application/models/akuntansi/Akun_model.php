@@ -52,7 +52,8 @@ class Akun_model extends CI_Model {
 	            $hasil_uraian = implode(' ', $uraian_akun);
 	            return $hasil_uraian;
 			} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
-				$kode_akun[0] = 4;
+				// $kode_akun[0] = 4;
+				substr_replace($kode_akun,4,0,1);
 				$hasil =  $this->db->get_where('akuntansi_lra_6',array('akun_6' => $kode_akun))->row_array()['nama'];
 				if ($hasil == null) {
 					$hasil = $this->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
@@ -96,8 +97,9 @@ class Akun_model extends CI_Model {
 		}
 	}
 
-	public function get_akun_by_level($kode_akun,$level,$tabel,$array_not_akun = null)
+	public function get_akun_by_level($kode_akun,$level,$tabel,$array_not_akun = null,$mode = null)
 	{
+		// die($tabel);
 		$replacer = 0;
 		if ($kode_akun == 6) {
 			$kode_akun = 4;
@@ -176,6 +178,30 @@ class Akun_model extends CI_Model {
 
 		// echo "<pre>";
 		// print_r($hasil);die();
+		if ($mode == 'singular'){
+			foreach ($hasil as $key => $entry) {
+				if ($level == 3) {
+					if ($replacer == 7) {
+						$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+						$entry['nama'] = ucwords(strtolower($entry['nama']));
+					}
+					$data[] = $entry;
+				} elseif($level == 4) {
+					if ($replacer == 7) {
+						$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+						$entry['nama'] = ucwords(strtolower($entry['nama']));
+					}
+					$data[] = $entry;
+				} elseif($level == 6) {
+					if ($replacer == 7) {
+						$entry['nama'] = str_replace("Biaya","Beban",$entry['nama']);
+						$entry['nama'] = ucwords(strtolower($entry['nama']));
+					}
+					$data[] = $entry;
+				}
+			}
+			return $data;
+		}
 
 
 		if ($replacer != 0) {

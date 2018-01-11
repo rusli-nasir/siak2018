@@ -139,6 +139,7 @@ class Saldo extends MY_Controller {
             $config['upload_path'] = './assets/akuntansi/upload';
             $config['allowed_types'] = 'xls|xlsx';
             $config['max_size'] = '20000';
+            PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 
             $this->load->library('upload', $config);
 
@@ -190,13 +191,13 @@ class Saldo extends MY_Controller {
 	        			$first_akun = $objWorksheet->getCellByColumnAndRow(0,$row)->getValue();
 		        		$entry_data = array();
 		        		$entry_data['akun'] = $string_akun;
-		        		$entry_data['saldo_awal'] = $objWorksheet->getCellByColumnAndRow($kolom_debet,$row)->getValue() - $objWorksheet->getCellByColumnAndRow($kolom_kredit,$row)->getValue();
+		        		$entry_data['saldo_awal'] = $objWorksheet->getCellByColumnAndRow($kolom_debet,$row)->getCalculatedValue() - $objWorksheet->getCellByColumnAndRow($kolom_kredit,$row)->getCalculatedValue();
 		        		if ($first_akun == 2 or $first_akun == 3){
 		        			$entry_data['saldo_awal'] *= -1;
 		        		}
 		        		$entry_data['nama_akun'] = $objWorksheet->getCellByColumnAndRow($kolom_nama,$row)->getValue();
 		        		$entry_data['nama_asal'] = $this->Akun_model->get_nama_akun($entry_data['akun']);
-
+		        		
 	        			$entry_saldo = $entry_data;
 
 	        			$entry_saldo['tahun'] = 2017;
@@ -210,9 +211,108 @@ class Saldo extends MY_Controller {
 	        				$this->db->update($tabel_akun[$first_akun],array('nama' => $entry_data['nama_akun']));
 	        				// $entry_data['edited']  = $tabel_akun[$first_akun];
 	        			}
+	        			$entry_data['nama_sebelum'] = $this->Akun_model->get_nama_akun($entry_data['akun']);
 	        			$entry_data['nama_akun_setelah'] = $this->Akun_model->get_nama_akun($entry_data['akun']);
 	        			if ($entry_data['nama_akun'] == $entry_data['nama_akun_setelah']){
 	        				$entry_data['sudah_sama']  = "sama";
+	        			}
+		        		$data[] = $entry_data;
+
+	        		}
+        		}
+
+        		$index = 0;
+
+            	if($i <$objPHPExcel->getSheetCount()-1 ) $i++; else break; 
+            }
+
+            echo "<pre>";
+
+            print_r($data);
+
+            unlink($file);
+            die($file);
+    }
+
+	public function rename_saldo($mode = null)
+	{
+		$data['destination'] = 'akuntansi/saldo/do_rename_saldo/'.$mode;
+        $temp_data['content'] = $this->load->view('akuntansi/form_upload_cek',$data,true);
+        $this->load->view('akuntansi/content_template',$temp_data,false);
+	}
+
+	public function do_rename_saldo($mode = null)
+    {
+    		$this->load->library('excel');
+            $config['upload_path'] = './assets/akuntansi/upload';
+            $config['allowed_types'] = 'xls|xlsx';
+            $config['max_size'] = '20000';
+            PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
+
+            $this->load->library('upload', $config);
+
+            if ( ! $this->upload->do_upload())
+            {
+                echo $this->upload->display_errors('<p>', '</p>');
+                die('gagal mengupload');
+            }
+
+            $data = $this->upload->data();
+
+            $file = $data['full_path'];
+
+            $tabel_akun = array(
+            	1 => 'akuntansi_aset_',
+            	2 => 'akuntansi_hutang_',
+            	3 => 'akuntansi_aset_bersih_',
+            );
+
+            $inputFileType = PHPExcel_IOFactory::identify($file);
+
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file);
+
+
+    		$data = array();
+
+    		$i = 0;
+
+            while ($objPHPExcel->setActiveSheetIndex($i)){
+            	$objWorksheet = $objPHPExcel->getActiveSheet();
+            	$highest_row = $objWorksheet->getHighestRow(); // e.g. 10
+        		$highestColumnIndex = 7; // e.g. 5
+
+        		$kolom_nama = 5;
+        		$kolom_debet = 6;
+        		$kolom_kredit = 7;
+
+        		$start_row = 6;
+
+
+        		for ($row=$start_row; $row <= $highest_row; $row++) { 	
+        			if ( $objWorksheet->getCellByColumnAndRow(0,$row)->getValue() != '' and $objWorksheet->getCellByColumnAndRow(5,$row)->getValue() != '' and $objWorksheet->getCellByColumnAndRow(5,$row)->getValue() != 'dst') {
+	        			$string_akun = "";
+	        			for ($col=0; $col <= 4; $col++) { 
+	        				$string_akun .= $objWorksheet->getCellByColumnAndRow($col,$row)->getValue();
+	        			}
+		        		$level = strlen($string_akun);
+
+	        			$first_akun = $objWorksheet->getCellByColumnAndRow(0,$row)->getValue();
+
+		        		$entry_data = array();
+		        		$entry_data['akun'] = $string_akun;
+		        		$entry_data['nama_akun'] = $objWorksheet->getCellByColumnAndRow($kolom_nama,$row)->getValue();
+		        		$entry_data['nama_asal'] = $this->db->get_where($tabel_akun[$first_akun].$level,array("akun_$level" => $entry_data['akun']))->row_array()['nama'];
+
+		        		
+	        			$entry_saldo = $entry_data;
+
+	        			unset($entry_saldo['nama_akun']);
+	        			unset($entry_saldo['nama_asal']);
+	        			if ($entry_data['nama_akun'] != $entry_data['nama_asal']){
+	        				$this->db->where("akun_$level",$entry_saldo['akun']);
+	        				$this->db->update($tabel_akun[$first_akun].$level,array('nama' => $entry_data['nama_akun']));
 	        			}
 		        		$data[] = $entry_data;
 

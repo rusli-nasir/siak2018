@@ -93,13 +93,13 @@
 <div class="container-fluid">
     <?php echo form_open('akuntansi/laporan/lainnya',array("class"=>"form-horizontal","id" => "form_pop")); ?>
 	<!-- Text input-->
+    <div id="vue_unit">
     <div class="form-group">
       <label class="col-md-2 control-label">Periode</label>  
       <div class="col-md-6">
         <input class="form-control" type="text" name="daterange">
       </div>
     </div>
-    <div id="vue_unit">
       <div class="form-group">
         <label class="col-md-2 control-label">Jenis Laporan</label>  
         <div class="col-md-6">
@@ -135,7 +135,6 @@
               <?php } ?>
           </div>
       </div>
-    </div>
     <div class="row">
       <div class="col-sm-4">
         <div class="form-group">
@@ -144,11 +143,14 @@
               <select id="level" name="level" class="form-control" required="">
                 <option value="3">Header</option>
                 <option value="4">Sub-Header</option>
+                <option value="6" v-show="jenis_laporan == 'Realisasi Anggaran'">Detail</option>
               </select>
           </div>
         </div>
       </div>
     </div>
+    </div>
+
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">

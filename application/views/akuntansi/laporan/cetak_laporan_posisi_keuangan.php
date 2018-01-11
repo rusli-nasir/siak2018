@@ -62,7 +62,7 @@ if($atribut['cetak']){
 			<div style="font-weight:bold">
 				UNIVERSITAS DIPONEGORO<br/>
 				Laporan Posisi Keuangan<br/>
-				<?php echo $atribut['daterange']; ?><br/>
+				<?php echo "per ".$atribut['daterange']; ?><br/>
 			</div>
 			(Disajikan dalam Rupiah, kecuali dinyatakan lain)<br/><br/>
 		</div>
@@ -72,7 +72,7 @@ if($atribut['cetak']){
 					<th  style="text-align:center" width="">No</th>
 					<th style="text-align:center" width="45%">URAIAN</th>
 					<th style="text-align:center" width="15%"> <?php echo $atribut['daterange'];?></th>
-					<th style="text-align:center" width="15%">31 Des <?php echo $this->session->userdata('setting_tahun')-1 ?></th>
+					<th style="text-align:center" width="15%">31 Desember <?php echo $this->session->userdata('setting_tahun')-1 ?></th>
 					<th style="text-align:center" width="15%">Selisih/Kenaikan</th>
 					<th style="text-align:center" width="5%">%</th>
 				</tr>
@@ -112,7 +112,8 @@ if($atribut['cetak']){
 								$entry['nama'] = str_replace('Beban', "Biaya", $entry['nama']);
 								$entry['nama'] = str_replace(' BEBAN', " BIAYA", $entry['nama']);
 								$entry['nama'] = str_replace('bumu', "BUMU", $entry['nama']);
-							 	echo $entry['nama'];
+
+								echo $entry['nama'];
 							 ?>
 							</td>
 						<td align="right">
