@@ -3524,7 +3524,7 @@ class Laporan extends MY_Controller {
             // die();
             // echo $jenis_pembatasan;
             // $jenis_pembatasan = 'terikat_temporer';
-            $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',$jenis_pembatasan,$start_date,$end_date);
+            $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',$jenis_pembatasan,$start_date,$end_date); 
             // echo "<pre>";
             // print_r($data);die();
             $tabel_akun = array(
