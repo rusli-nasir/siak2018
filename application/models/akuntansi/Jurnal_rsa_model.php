@@ -15,6 +15,11 @@ class Jurnal_rsa_model extends CI_Model {
         return $query;
     }
 
+    public function get_sole_rekening_of_unit($kode_unit){
+        $query = $this->db->query("SELECT * FROM akuntansi_aset_6 WHERE (kode_unit='".$kode_unit."')");
+        return $query;
+    }
+
     public function get_akun_sal_by_unit($kode_unit)
     {
         $this->db->where('kode_unit',$kode_unit);

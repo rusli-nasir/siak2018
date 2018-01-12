@@ -141,12 +141,16 @@ class Akun_model extends CI_Model {
 			// echo $this->db2->get_compiled_select();die();
 			$hasil = $this->db2->get()->result_array();
 
-			foreach ($hasil as $key => $value) {
-				if ($value['akun_3'] == 523){
-					$hasil[$key]['nama'] = "Beban Pengadaan Jasa Lain-lain";
-				}
-			}
+			// BLOK GANTI NAMA KE BEBAN PENGADAAN JASA LAIN-LAIN
+			
+			// foreach ($hasil as $key => $value) {
+			// 	if ($value['akun_3'] == 523){
+			// 		$hasil[$key]['nama'] = "Beban Pengadaan Jasa Lain-lain";
+			// 	}
+			// }
 
+			// =========================================
+			
 			// print_r($hasil);die();
 			// echo "atas";
 			// $data = array();
@@ -373,7 +377,9 @@ class Akun_model extends CI_Model {
         $result1 =  $this->db->get('akuntansi_aset_6')->result_array();
         $this->db->like('nama', 'Operasional BBM');
         $result2 =  $this->db->get('akuntansi_aset_6')->result_array();
-        return array_merge($result1,$result2);
+        $this->db->like('akun_6', '111148');
+        $result3 =  $this->db->get('akuntansi_aset_6')->result_array();
+        return array_merge($result1,$result2,$result3);
     }
 
 	public function get_kode_sal_penerimaan()

@@ -61,7 +61,9 @@ class Coba extends MY_Controller {
     public function index()
     {
 
-        echo $this->session->userdata('setting_tahun');
+        echo "<pre>";
+        echo $this->Akun_model->get_nama_akun('523112');
+        // echo $this->session->userdata('setting_tahun');
         // $this->load->helper('cookie');
         // 
         // setcookie ("cookie", "", time() - 3600);

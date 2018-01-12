@@ -16,7 +16,7 @@ class Login extends MY_Controller {
 		// die($server_uri);
 		$data['is_demo'] = (strpos($server_uri,'pak.undip.ac.id') !== false);
 
-		$data['maintenance'] = "Untuk penyesuaian awal tahun 2018, sedang ada penyesuaian sistem di bagian laporan-laporan";
+		// $data['maintenance'] = "Untuk penyesuaian awal tahun 2018, sedang ada penyesuaian sistem di bagian laporan-laporan";
 		// $data['is_demo'] = (strpos($server_uri,'localhost') !== false);
 
 		// echo strpos($server_uri,'localhost');

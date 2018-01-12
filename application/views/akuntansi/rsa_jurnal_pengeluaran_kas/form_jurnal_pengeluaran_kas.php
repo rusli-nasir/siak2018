@@ -169,8 +169,10 @@ if($jenis=='NK'){
           <!-- <option value="">Pilih Akun</option> -->
           <?php if ($jenis == 'KS'): ?>
                 <option value="<?php echo $akun_debet_akrual['akun_6'] ?>" ><?php echo $akun_debet_akrual['akun_6'].' - '.$akun_debet_akrual['nama'] ?></option>  
-          <?php elseif ($jenis == 'TUP_PENGEMBALIAN'): ?>
-            <option value="">Pilih Akun</option>
+          <?php elseif ($jenis == 'TUP_PENGEMBALIAN' or ($jenis == 'TUP' and $this->session->userdata('kode_unit') == 63)): ?>
+            <?php if ($this->session->userdata('kode_unit') != 63): ?> <!-- case untuk spbu langsung select -->
+              <option value="">Pilih Akun</option>
+            <?php endif ?>
             <?php foreach ($akun_debet_akrual_tup_pengembalian as $akun) {
               ?>
               <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
@@ -275,7 +277,9 @@ if($jenis=='NK'){
         <?php if ($jenis == 'KS'): ?>
           <option value="<?php echo $akun_kredit_akrual['akun_6'] ?>" ><?php echo $akun_kredit_akrual['akun_6'].' - '.$akun_kredit_akrual['nama'] ?></option>  
         <?php else: ?>
-          <option value="">Pilih Akun</option>
+          <?php if ($this->session->userdata('kode_unit') != 63): ?> <!-- case untuk spbu langsung select -->
+              <option value="">Pilih Akun</option>
+          <?php endif ?>
           <?php foreach ($akun_kas as $akun) {
             ?>
             <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>

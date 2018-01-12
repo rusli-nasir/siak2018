@@ -118,6 +118,7 @@ class Notifikasi_model extends CI_Model {
         // echo "<pre>";
         // print_r($temp);
         // die();
+        // die("SELECT Count(*) FROM trx_spm_em_data, trx_em WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0  $em_string");
         // die("SELECT count(*) FROM rsa_kuitansi as tk, trx_spm_gup_data as tg WHERE tk.str_nomor_trx_spm = tg.str_nomor_trx AND tg.untuk_bayar = 'GUP NIHIL' AND tk.cair = 1  AND tk.flag_proses_akuntansi=$level $unit");
 
         $result =  array_merge($result, $temp);

@@ -497,12 +497,16 @@ class Penerimaan extends MY_Controller {
         	$this->data['all_unit_kerja'] = $this->Unit_kerja_model->get_all_unit_kerja();
             // $this->data['akun_kas_rsa'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
         	$this->data['akun_kas_akrual'] = $this->Akun_model->get_akun_penerimaan();
+            // echo "<pre>";
+            // print_r($this->data['akun_kas_akrual']);
+            // die();
             // print_r($this->data['akun_kas_akrual']);die();
             $this->data['akun_kas_akrual'][]= $this->Akun_model->get_akun_sal_penerimaan();
 
             $this->data['sal_penerimaan'][] = $this->Akun_model->get_akun_sal_penerimaan();
         	// $this->data['data_akun_debet'] = array_merge($this->Akun_lra_model->get_akun_debet(),$this->Akun_model->get_akun_sal_penerimaan());
             $this->data['data_akun_debet'] = $this->Akun_lra_model->get_akun_debet();
+            // print_r($this->data['data'])
         	$this->data['data_akun_kredit'] = $this->Akun_lra_model->get_akun_kredit();
         	// $this->data['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
 			$temp_data['content'] = $this->load->view('akuntansi/penerimaan_tambah',$this->data,true);

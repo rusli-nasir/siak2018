@@ -94,6 +94,9 @@ class Laporan extends MY_Controller {
             }else if($this->input->post('jenis_laporan')=='Arus Kas'){
                 $data['daterange'] = "Untuk tahun yang berakhir pada tanggal ".$this->Jurnal_rsa_model->reKonversiTanggal($data['periode_akhir']);
                 $this->get_laporan_arus($level, $data,$tipe);
+            }else if($this->input->post('jenis_laporan')=='Perubahan Aset Neto'){
+                $data['daterange'] = "UNTUK TAHUN YANG BERAKHIR 31 DESEMBER ".$this->session->userdata('setting_tahun');
+                $this->get_lpe($data);
             }
         }else{
             $this->db2 = $this->load->database('rba', true);
@@ -3868,11 +3871,24 @@ class Laporan extends MY_Controller {
 
         // print_r($this->add_jumlah_for($parsed,411,'lra',"dummy",null,null,true));die();
         $this->add_jumlah_for($parsed,4,'lra',"Jumlah Pendapatan");
-        $this->add_jumlah_for($parsed,5,'lra',"Jumlah Beban APBN",'terikat_temporer');
-        $this->add_jumlah_for($parsed,5,'lra',"Jumlah Beban Selain APBN",'tidak_terikat');
+        $beban_apbn = $this->add_jumlah_for($parsed,5,'lra',"Jumlah Beban APBN",'terikat_temporer');
+        $beban_selain_apbn = $this->add_jumlah_for($parsed,5,'lra',"Jumlah Beban Selain APBN",'tidak_terikat');
         $this->add_jumlah_for($parsed,41,'lra',"Jumlah Pendapatan APBN");
         $this->add_jumlah_for($parsed,42,'lra',"Jumlah Pendapatan Selain APBN");
         $this->add_jumlah_for($parsed,82,'lra',"Jumlah Aktivitas Pembiayaan");
+
+        $sum_biaya_anggaran = $beban_apbn['anggaran'] + $beban_selain_apbn['anggaran'];
+        $sum_biaya_realisasi = $beban_apbn['realisasi'] + $beban_selain_apbn['realisasi'];
+
+        $sum_biaya_selisih = abs($sum_biaya_realisasi) - abs($sum_biaya_anggaran);
+
+        if ($sum_biaya_anggaran == 0) {
+            $sum_biaya_persentase = 0;
+        } else {
+            $sum_biaya_persentase = abs($sum_biaya_realisasi) / $sum_biaya_anggaran * 100;
+        }
+
+
 
 
         $entry_parsed = array(
@@ -3884,10 +3900,10 @@ class Laporan extends MY_Controller {
            'start_sum' => null,
            'end_sum' => null,
            'sum_negatif' => null,
-           'anggaran' => $sum_anggaran,
-           'realisasi' => $sum_realisasi,
-           'selisih' => $selisih,
-           'persentase' => $persentase,
+           'anggaran' => $sum_biaya_anggaran,
+           'realisasi' => $sum_biaya_realisasi,
+           'selisih' => $sum_biaya_selisih,
+           'persentase' => $sum_biaya_persentase,
            'jenis_pembatasan' => null,
         );
         // public function insert_after(&$parse,$after,$entry_added,$jenis_pembatasan = null)
@@ -4958,6 +4974,29 @@ class Laporan extends MY_Controller {
 
         $this->load->view('akuntansi/laporan/cetak_laporan_lra_rekap', $data);
     }
+
+    public function get_lpe($parse_data){
+        $year = $this->session->userdata('setting_tahun');
+        $akun4_tidak_terikat = $this->Laporan_model->get_rekap(array(41),null,'kas',null,'sum',null,"$year-01-01","$year-12-31"); 
+        $akun4_terikat_temporer = $this->Laporan_model->get_rekap(array(42),null,'kas',null,'sum',null,"$year-01-01","$year-12-31"); 
+        $akun5_tidak_terikat = $this->Laporan_model->get_rekap(array(5),null,'kas',null,'sum','tidak_terikat',"$year-01-01","$year-12-31"); 
+        $akun5_terikat_temporer = $this->Laporan_model->get_rekap(array(5),null,'kas',null,'sum','terikat_temporer',"$year-01-01","$year-12-31");
+        $akun_3 = $this->Laporan_model->get_rekap(array(311101),null,'kas',null,'sum',null,"$year-01-01","$year-12-31"); 
+        // echo "<pre>";
+        // print_r ($akun4_tidak_terikat);
+        // print_r ($akun4_terikat_temporer);
+        // print_r ($akun5_tidak_terikat);
+        // print_r ($akun5_terikat_temporer);
+        // die();
+        $data['surplus'] = ($akun4_tidak_terikat['balance'] + $akun4_terikat_temporer['balance']) - ($akun5_tidak_terikat['balance'] + $akun5_terikat_temporer['balance']);
+        $data['saldo_awal'] = $akun_3['saldo'];
+        $data['atribut'] = $parse_data;
+        $data['tahun'] = $year;
+
+        $this->load->view('akuntansi/laporan/cetak_laporan_lpe', $data);
+    }
+
+
 
 
     function copyRows(PHPExcel_Worksheet $sheet,$srcRow,$dstRow,$height,$width) {

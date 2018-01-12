@@ -959,9 +959,9 @@ class Laporan_model extends CI_Model {
             $query_sumber_dana = '';
             if ($sumber_dana != null){
                 if ($sumber_dana == 'tidak_terikat'){
-                    $query_sumber_dana = "AND sumber_dana='SELAIN-APBN'";
+                    $query_sumber_dana = "AND sumber_dana IN ('SELAIN-APBN','SPI-SILPA','APBN-LAINNYA')";
                 }elseif ($sumber_dana == 'terikat_temporer') {
-                    $query_sumber_dana = "AND sumber_dana IN ('APBN-BPPTNBH','APBN-LAINNYA')";
+                    $query_sumber_dana = "AND sumber_dana IN ('APBN-BPPTNBH')";
                 }
             }
 
@@ -976,7 +976,7 @@ class Laporan_model extends CI_Model {
 
             $tabel_sumber_dana = array(
                 'terikat_temporer' => array('APBN-BPPTNBH','APBN-LAINNYA'),
-                'tidak_terikat' => array('SELAIN-APBN'),
+                'tidak_terikat' => array('SELAIN-APBN','SPI-SILPA'),
             );
 
             $added_query = '';
@@ -1015,13 +1015,15 @@ class Laporan_model extends CI_Model {
 
                     }
 
+                    // echo "<pre>";
 
                     foreach ($revisi_unit as $unit => $revisi) {
                         $lenunit = 2;
                         $query = "SELECT SUM(rba.detail_belanja_.volume*rba.detail_belanja_.harga_satuan) AS jumlah $selected_query  FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6) LIKE '$akun%' AND  SUBSTR(rba.detail_belanja_.username,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.tahun = '{$tahun}' AND rba.detail_belanja_.revisi ='{$revisi}' $added_query $query_sumber_dana GROUP BY $group_by";
-                        // die($query);
+                        // echo $query."\n";
                         $anggaran_temp = array_merge($anggaran_temp,$this->db2->query($query)->result_array());
                     }
+                    // die();
 
 
                     // $added_query = "1 ";
@@ -1045,7 +1047,11 @@ class Laporan_model extends CI_Model {
                         $this->db_pendapatan->where('LEFT(sukpa,2)',$unit);
                     } 
                     $this->db_pendapatan->like('akun',$akun,'after');
-                    $this->db_pendapatan->select("SUM(jml_nilai) as jumlah,akun");
+                    if ($this->session->userdata('level') == 1){
+                        $this->db_pendapatan->select("0 as jumlah,akun");
+                    }else{
+                        $this->db_pendapatan->select("SUM(jml_nilai) as jumlah,akun");
+                    }
                     $this->db_pendapatan->group_by('akun');
 
                     // $anggaran[$akun] += $this->db2->get('target')->row_array()['jumlah'];
