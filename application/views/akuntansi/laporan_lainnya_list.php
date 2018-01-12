@@ -109,6 +109,7 @@
               <option value="Realisasi Anggaran" >Realisasi Anggaran</option>
               <option value="Rekap Realisasi Anggaran" >Rekap Realisasi Anggaran</option>
               <option value="Arus Kas" >Arus Kas</option>
+              <option value="Perubahan Aset Neto" >Perubahan Aset Neto</option>
             </select>
         </div>
       </div>
