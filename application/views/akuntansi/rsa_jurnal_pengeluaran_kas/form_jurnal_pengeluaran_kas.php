@@ -113,7 +113,7 @@ if($jenis=='NK'){
       <option value="terikat">Tidak Terikat</option>
       <option value="tidak_terikat">Terikat Temporer</option>
       <option value="terikat_permanen">Terikat Permanen</option> -->
-      <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'tidak_terikat' OR $jenis=='NK' OR $jenis=='TUP'): ?> selected <?php endif ?> <?php if ($jenis == 'TUP' OR $jenis=='GUP'): ?> selected <?php endif ?> value="tidak_terikat" >Tidak Terikat</option>
+      <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'tidak_terikat' OR $jenis=='NK' OR $jenis=='TUP'): ?> selected <?php endif ?> <?php if ($jenis == 'TUP'  OR $jenis=='EM' OR $jenis=='KS' OR $jenis=='GUP'): ?> selected <?php endif ?> value="tidak_terikat" >Tidak Terikat</option>
       <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'terikat_temporer'): ?> selected <?php endif ?> value="terikat_temporer">Terikat Temporer</option>
       <option <?php if (isset($jenis_pembatasan_dana)) if ($jenis_pembatasan_dana == 'terikat_permanen'): ?> selected <?php endif ?> value="terikat_permanen">Terikat Permanen</option>
     </select>
@@ -145,6 +145,12 @@ if($jenis=='NK'){
 
         ?>
         </select>
+      <?php elseif ($jenis == 'EM'): ?>
+        <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
+            <option value="<?php echo $akun_debet_em['akun_6'] ?>"  ><?php echo $akun_debet_em['akun_6']. " - ".$akun_debet_em['nama'] ?></option>
+
+        ?>
+        </select>
       <?php elseif ($jenis == 'GUP_PENGEMBALIAN'): ?>
         <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
             <option value="<?php echo $akun_sal_debet['akun_6'] ?>"  ><?php echo $akun_sal_debet['akun_6']. " - ".$akun_sal_debet['nama'] ?></option>
@@ -169,13 +175,15 @@ if($jenis=='NK'){
           <!-- <option value="">Pilih Akun</option> -->
           <?php if ($jenis == 'KS'): ?>
                 <option value="<?php echo $akun_debet_akrual['akun_6'] ?>" ><?php echo $akun_debet_akrual['akun_6'].' - '.$akun_debet_akrual['nama'] ?></option>  
-          <?php elseif ($jenis == 'TUP_PENGEMBALIAN' or ($jenis == 'TUP' and $this->session->userdata('kode_unit') == 63)): ?>
+          <?php elseif ($jenis == 'EM'): ?>
+                <option value="<?php echo $akun_debet_akrual_em['akun_6'] ?>" ><?php echo $akun_debet_akrual_em['akun_6'].' - '.$akun_debet_akrual_em['nama'] ?></option>  
+          <?php elseif ($jenis == 'TUP_PENGEMBALIAN' or (($jenis == 'TUP') and $this->session->userdata('kode_unit') == 63)): ?>
             <?php if ($this->session->userdata('kode_unit') != 63): ?> <!-- case untuk spbu langsung select -->
               <option value="">Pilih Akun</option>
             <?php endif ?>
             <?php foreach ($akun_debet_akrual_tup_pengembalian as $akun) {
               ?>
-              <option value="<?=$akun->akun_6?>"><?=$akun->akun_6.' - '.$akun->nama?></option>
+              <option value="<?=$akun->akun_6?>" ><?=$akun->akun_6.' - '.$akun->nama?></option>
               <?php
             }
             ?>
@@ -252,7 +260,9 @@ if($jenis=='NK'){
     <label class="col-md-2 control-label" for="akun_kredit">Akun Kredit</label>
     <div class="col-md-3">
       <select id="akun_kredit" name="akun_kredit" class="form-control" required="">
-        <?php if ($jenis == 'KS'): ?>
+        <?php if ($jenis == 'EM'): ?>
+          <option value="<?php echo $akun_kredit_em['akun_6'] ?>" ><?php echo $akun_kredit_em['akun_6'].' - '.$akun_kredit_em['nama'] ?></option>  
+        <?php elseif ($jenis == 'KS'): ?>
           <option value="<?php echo $akun_kredit['akun_6'] ?>" ><?php echo $akun_kredit['akun_6'].' - '.$akun_kredit['nama'] ?></option>  
           <!-- <option value="<?php echo $akun_kredit ?>" selected><?php echo $akun_kredit_kas?></option> -->
           <!-- <option value="">Pilih Akun</option>
@@ -276,6 +286,8 @@ if($jenis=='NK'){
       <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
         <?php if ($jenis == 'KS'): ?>
           <option value="<?php echo $akun_kredit_akrual['akun_6'] ?>" ><?php echo $akun_kredit_akrual['akun_6'].' - '.$akun_kredit_akrual['nama'] ?></option>  
+        <?php elseif ($jenis == 'EM'): ?>
+          <option value="<?php echo $akun_kredit_akrual_em['akun_6'] ?>" ><?php echo $akun_kredit_akrual_em['akun_6'].' - '.$akun_kredit_akrual_em['nama'] ?></option>  
         <?php else: ?>
           <?php if ($this->session->userdata('kode_unit') != 63): ?> <!-- case untuk spbu langsung select -->
               <option value="">Pilih Akun</option>

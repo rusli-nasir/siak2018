@@ -62,7 +62,7 @@ class Coba extends MY_Controller {
     {
 
         echo "<pre>";
-        echo $this->Akun_model->get_nama_akun('523112');
+        print_r($this->Akun_model->get_akun_kerjasama_permintaan());
         // echo $this->session->userdata('setting_tahun');
         // $this->load->helper('cookie');
         // 

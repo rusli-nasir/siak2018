@@ -110,6 +110,18 @@ tbody td, thead th {
 	      		</span>
 	    	</div>
 	    </form>
+	    <?php }elseif (isset($tab8)){ ?>
+	    <form action="<?php echo site_url('akuntansi/kuitansi/index_tup_nihil'); ?>" method="post">
+			<div class="input-group">
+				<span class="input-group-btn">
+	        		<a href="<?php echo site_url('akuntansi/kuitansi/reset_search'); ?>"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-refresh"></span> Reset</button></a>
+	      		</span>
+	      		<input type="text" class="form-control" placeholder="No.bukti/No.SPM/Uraian" name="keyword" value="<?php if($this->session->userdata('keyword')) echo $this->session->userdata('keyword'); ?>">
+	      		<span class="input-group-btn">
+	        		<button class="btn btn-default" type="submit">Cari</button>
+	      		</span>
+	    	</div>
+	    </form>
 	    <?php }else{ ?>
 	    <form action="<?php echo site_url('akuntansi/kuitansi/index_ls'); ?>" method="post">
 			<div class="input-group">

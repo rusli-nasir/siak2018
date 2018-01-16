@@ -220,7 +220,7 @@ class Kuitansi_model extends CI_Model{
     }
 
     function get_data_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.tahun,rsa.rsa_kuitansi.jenis,rsa.rsa_kuitansi.no_bukti,"
+        $str = "SELECT rsa.rsa_kuitansi.id_kuitansi,rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.tahun,rsa.rsa_kuitansi.jenis,rsa.rsa_kuitansi.no_bukti,rsa.rsa_kuitansi.alias_no_bukti,"
                 . "rba.akun_belanja.nama_akun,"
                 . "SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
                 . "rsa.rsa_kuitansi.uraian,rba.subkomponen_input.nama_subkomponen,"
@@ -257,7 +257,7 @@ class Kuitansi_model extends CI_Model{
 
     function get_data_detail_kuitansi($id_kuitansi,$tahun){
         $str = "SELECT rsa.rsa_kuitansi_detail.id_kuitansi_detail,rsa.rsa_kuitansi_detail.deskripsi,rsa.rsa_kuitansi_detail.volume,"
-                . "rsa.rsa_kuitansi_detail.satuan,rsa.rsa_kuitansi_detail.harga_satuan,(rsa.rsa_kuitansi_detail.volume * rsa.rsa_kuitansi_detail.harga_satuan) AS bruto "
+                . "rsa.rsa_kuitansi_detail.satuan,rsa.rsa_kuitansi_detail.harga_satuan,(ROUND(rsa.rsa_kuitansi_detail.volume * rsa.rsa_kuitansi_detail.harga_satuan)) AS bruto "
                 . "" //,GROUP_CONCAT(rsa_kuitansi_detail_pajak.jenis_pajak SEPARATOR '<br>') AS pajak_nom "
                 . "FROM rsa.rsa_kuitansi "
                 . "JOIN rsa.rsa_kuitansi_detail "
@@ -709,7 +709,7 @@ class Kuitansi_model extends CI_Model{
                         . "GROUP BY SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10),SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,19,5) "
                         . "ORDER BY SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) ASC,SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,19,5) ASC";
 
-       //                 echo $str;die;
+                       // echo $str;die;
 //            var_dump($str);die;
 
             $q = $this->db->query($str);
@@ -873,6 +873,8 @@ class Kuitansi_model extends CI_Model{
                 $q = $this->db->get('trx_spp_lsnk_data');
         }else if($jenis == 'LSK'){
                 $q = $this->db->get('trx_spp_lsk_data');
+        }else if($jenis == 'EM'){
+                $q = $this->db->get('trx_spp_em_data');
         }else if($jenis == 'KS'){
                 $q = $this->db->get('trx_spp_ks_data');
         }
@@ -1175,6 +1177,33 @@ class Kuitansi_model extends CI_Model{
             
         }
 
+        function get_em_akun_before_by_spm($nomor_spm_cair_before){
+            
+            $tahun = substr($nomor_spm_cair_before,-4,4);
+            
+            $kdunit = substr($nomor_spm_cair_before,6,3);
+//            echo $kdunit ; die;
+            $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
+                    . "JOIN rsa_kuitansi ON rsa_kuitansi.str_nomor_trx_spm = t1.str_nomor_trx_spm "
+                    . "WHERE SUBSTR(t1.str_nomor_trx_spm,7,3) = '{$kdunit}' AND t1.jenis_trx = 'EM' AND t1.tahun = '{$tahun}' "
+                    . "AND tgl_proses < ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.str_nomor_trx_spm = '{$nomor_spm_cair_before}' ) " ;
+//                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
+            
+           // echo $str; die;
+                    
+            $q = $this->db->query($str);
+            
+//            var_dump($q->result());die;
+            
+//                var_dump($q->num_rows());die;
+                if($q->num_rows() > 0){
+                   return $q->result();
+                }else{
+                    return '';
+                }
+            
+        }
+
         function get_lsk_akun_before_by_spm($nomor_spm_cair_before){
             
             $tahun = substr($nomor_spm_cair_before,-4,4);
@@ -1281,6 +1310,29 @@ class Kuitansi_model extends CI_Model{
             
         }
 
+        function get_em_akun_before_by_unit($kode_unit_subunit,$tahun){
+//            $tahun = substr($nomor_spm_cair_before,-4,4);
+            $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
+                    . "JOIN rsa_kuitansi ON rsa_kuitansi.str_nomor_trx_spm = t1.str_nomor_trx_spm "
+                    . "WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " ; // AND t1.jenis_trx = 'TUP'
+//                    . "AND tgl_proses < ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'GUP' AND t2.tahun = '{$tahun}' ) " ;
+//                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
+            
+           // echo $str; die;
+                    
+            $q = $this->db->query($str);
+            
+//            var_dump($q->result());die;
+            
+//                var_dump($q->num_rows());die;
+                if($q->num_rows() > 0){
+                   return $q->result();
+                }else{
+                    return '';
+                }
+            
+        }
+
         function get_lsnk_akun_before_by_unit($kode_unit_subunit,$tahun){
 //            $tahun = substr($nomor_spm_cair_before,-4,4);
             $str = "SELECT rsa_kuitansi.kode_akun5digit FROM trx_urut_spm_cair AS t1 "
@@ -1338,6 +1390,39 @@ class Kuitansi_model extends CI_Model{
             }
 
 
+
+        }
+
+        function edit_tgl_kuitansi($id_kuitansi,$tgl_kuitansi,$tahun){
+
+            $this->db->where('id_kuitansi', $id_kuitansi);
+            $this->db->where('tahun', $tahun);
+            return $this->db->update('rsa_kuitansi', array('tgl_kuitansi'=>$tgl_kuitansi));
+
+        }
+
+        function edit_alias_kuitansi($id_kuitansi,$alias_no_bukti,$tahun){
+
+            $this->db->where('id_kuitansi', $id_kuitansi);
+            $this->db->where('tahun', $tahun);
+            return $this->db->update('rsa_kuitansi', array('alias_no_bukti'=>$alias_no_bukti.'A'));
+
+        }
+
+        function check_valid_kuitansi_by_id($id_kuitansi,$tahun){
+            $this->db->where('id_kuitansi', $id_kuitansi);
+            $this->db->where('tahun', $tahun);
+            $q = $this->db->get('rsa_kuitansi');
+            if($q->num_rows() > 0){
+                $data = $q->row();
+                if(($data->str_nomor_trx === NULL)&&($data->str_nomor_trx_spm === NULL)){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return false;
+            }
 
         }
 

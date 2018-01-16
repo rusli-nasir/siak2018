@@ -905,7 +905,7 @@ class Kuitansi extends MY_Controller {
 		}
 		$this->load->library('pagination');
 		$config['total_rows'] = $total;
-		$config['base_url'] = site_url('akuntansi/kuitansi/index_tup');
+		$config['base_url'] = site_url('akuntansi/kuitansi/index_em');
 	 	$config['per_page'] = '20';
 	 	$config['use_page_numbers'] = TRUE;
 		$config['first_link'] = 'Pertama';
@@ -923,13 +923,16 @@ class Kuitansi extends MY_Controller {
 
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
+		$this->data['jenis'] = 'EM';
 
 		$this->data['query'] = $this->Kuitansi_model->read_em($config['per_page'], $id, $keyword, $kode_unit);
 
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_em('SPM-FINAL-KBUU', 0)->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_em('SPM-FINAL-KBUU', 1)->num_rows();
+
+		// print_r($this->data['query']);die();
 		
-		$temp_data['content'] = $this->load->view('akuntansi/misc_list',$this->data,true);
+		$temp_data['content'] = $this->load->view('akuntansi/misc_kuitansi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
     
@@ -1184,6 +1187,12 @@ class Kuitansi extends MY_Controller {
             if ($this->data['query'][$key]['jenis'] == 'LK' or $this->data['query'][$key]['jenis'] == 'LN' ) {
 	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_ls($this->data['query'][$key]['no_spm']);        	
             }
+            if ($this->data['query'][$key]['jenis'] == 'EM') {
+	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_em($this->data['query'][$key]['no_spm']);        	
+            }
+            if ($this->data['query'][$key]['jenis'] == 'KS') {
+	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_tambah_ks');        	
+            }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
 
@@ -1221,6 +1230,12 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='LN'){
         	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab12'] = true;
+        }else if($jenis=='EM'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        	$this->data['tab_em'] = true;
+        }else if($jenis=='KS'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        	$this->data['tab_ks'] = true;
         }
 
         $this->data['jenis'] = $jenis;
@@ -1490,6 +1505,12 @@ class Kuitansi extends MY_Controller {
             if ($this->data['query'][$key]['jenis'] == 'LK' or $this->data['query'][$key]['jenis'] == 'LN' ) {
 	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_ls($this->data['query'][$key]['no_spm']);        	
             }
+            if ($this->data['query'][$key]['jenis'] == 'EM') {
+	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_em($this->data['query'][$key]['no_spm']);        	
+            }
+            if ($this->data['query'][$key]['jenis'] == 'KS') {
+	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_tambah_ks');        	
+            }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
         
@@ -1522,6 +1543,12 @@ class Kuitansi extends MY_Controller {
         }else if($jenis=='LN'){
         	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
         	$this->data['tab12'] = true;
+        }else if($jenis=='EM'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        	$this->data['tab_em'] = true;
+        }else if($jenis=='KS'){
+        	$this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        	$this->data['tab_ks'] = true;
         }
 
         $this->data['jenis'] = $jenis;

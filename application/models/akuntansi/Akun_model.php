@@ -399,4 +399,30 @@ class Akun_model extends CI_Model {
         $this->db->where('kode_unit',92);
         return $this->db->get('akuntansi_sal_6')->row_array()['akun_6'];
     }
+
+    public function get_akun_belanja_bbm($mode = null)
+    {
+    	$this->db->select('nama_akun as nama');
+    	$this->db->select('kode_akun as akun_6');
+    	$hasil = $this->db->get_where('akun_belanja',array('nama_akun' => 'Biaya BBM'))->row_array();
+
+    	if ($mode == 'akrual'){
+    		$hasil['akun_6'] = substr_replace($hasil['akun_6'],7,0,1);
+    		$hasil['nama'] = substr_replace($hasil['nama'],'Beban',0,5);
+
+    	}
+    	return $hasil;
+    }
+
+    public function get_sal_bbm()
+    {
+    	return $this->db->get_where('akuntansi_sal_6',array('kode_unit' => 'bbm'))->row_array();
+    }
+
+    public function get_kas_bbm()
+    {
+    	return $this->db->get_where('akuntansi_aset_6',array('kode_unit' => 'bbm'))->row_array();
+    }
+
+    
 }

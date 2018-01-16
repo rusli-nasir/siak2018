@@ -58,6 +58,8 @@ class Jurnal_rsa extends MY_Controller {
                 $direct_url = 'akuntansi/kuitansi/index_misc/gup_nihil';
             }else if($jenis=='KS'){
                 $direct_url = 'akuntansi/kuitansi/index_ks';
+            }else if($jenis=='EM'){
+                $direct_url = 'akuntansi/kuitansi/index_em';
             }
 
 
@@ -79,6 +81,9 @@ class Jurnal_rsa extends MY_Controller {
             }
             else if (in_array($jenis,$array_spm)){
                 $kuitansi = $this->Spm_model->get_spm_transfer($id_kuitansi,$jenis);
+                if ($jenis == 'EM' or $jenis == 'KS'){
+                    unset($entry['kas_akun_debet']);
+                }
             }
             else if ($jenis != 'NK'){
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
@@ -112,6 +117,10 @@ class Jurnal_rsa extends MY_Controller {
             if ($jenis == 'GUP_PENGEMBALIAN') {
                 $entry['jenis'] = $kuitansi['jenis'] = 'GUP_PENGEMBALIAN';
             } 
+            if ($jenis == 'EM') {
+                $entry['jenis'] = $kuitansi['jenis'] = 'EM';
+                $entry['kode_kegiatan'] = $this->Spm_model->get_kode_kegiatan_spm($entry['no_spm']);
+            } 
 
             $entry['jumlah_kredit'] = $entry['jumlah_debet'];
             $entry['flag'] = 1;
@@ -123,6 +132,7 @@ class Jurnal_rsa extends MY_Controller {
             unset($checker['tanggal_jurnal']);
             unset($checker['flag']);
             unset($checker['akun_debet_akrual']);
+            // unset($checker['kas_akun_debet']);
             unset($checker['akun_kredit']);
             unset($checker['akun_kredit_akrual']);
             unset($checker['jumlah_debet']);
@@ -135,10 +145,12 @@ class Jurnal_rsa extends MY_Controller {
             $checker['tanggal_bukti'] = date('Y-m-d', $date);
 
 
+            // unset($entry['kas_akun_debet']);
             // echo "<pre>";
             // print_r($kuitansi['jenis']);die();
 
             // print_r($checker);die();
+            // print_r($kuitansi);die();
             // print_r($entry);die();
             if ($this->Jurnal_rsa_model->check_kuitansi_exist($checker)){
                 $this->session->set_flashdata('warning','Data yang sama sudah ada');
@@ -226,15 +238,17 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
 
                 
-                if ($jenis == 'TUP_NIHIL' and $this->session->userdata('kode_unit') == 63) {
-                    $kode_unit = $this->session->userdata('kode_unit');
-                    $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
-                    $isian['akun_sal_debet'] = $isian['akun_sal'];
-                    $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_sole_rekening_of_unit($kode_unit)->result(); // pakai indeks array yanga sama dengan TUP pengembalian SPBU, 
-                    $isian['direct'] = array('debet_akrual');
-                }
+                // if ($jenis == 'TUP_NIHIL' and $this->session->userdata('kode_unit') == 63) {
+                //     $kode_unit = $this->session->userdata('kode_unit');
+                //     unset($isian['akun_debet_akrual']);
+                //     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
+                //     $isian['akun_sal_debet'] = $isian['akun_sal'];
+                //     $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_sole_rekening_of_unit($kode_unit)->result(); // pakai indeks array yanga sama dengan TUP pengembalian SPBU, 
+                //     $isian['direct'] = array('debet_akrual');
+                // }
 
-                // print_r($isian['pajak']);die();
+                // echo "<pre>";
+                // print_r($isian['akun_debet_akrual_tup_pengembalian']);die();
 
             }
             else if ($jenis == 'TUP_PENGEMBALIAN'){
@@ -297,6 +311,18 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
 
                 $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
+            }
+            elseif ($jenis == 'EM') {
+                $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
+
+                $isian['akun_debet_em'] = $this->Akun_model->get_akun_belanja_bbm();
+                $isian['akun_kredit_em'] = $this->Akun_model->get_sal_bbm();
+                $isian['akun_debet_akrual_em'] = $this->Akun_model->get_akun_belanja_bbm('akrual');
+                $isian['akun_kredit_akrual_em'] = $this->Akun_model->get_kas_bbm();
+
+                // echo "<pre>";
+                // print_r($isian);
+                // die();
             }
             else if (in_array($jenis,$this->Spm_model->get_jenis_spm())){
                 $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
@@ -459,6 +485,8 @@ class Jurnal_rsa extends MY_Controller {
             $direct_url = 'akuntansi/kuitansi/jadi/LN/1';
         }else if($jenis=='TUP_PENGEMBALIAN'){
             $direct_url = 'akuntansi/kuitansi/jadi/TUP_PENGEMBALIAN/1';
+        }else if($jenis=='EM'){
+            $direct_url = 'akuntansi/kuitansi/jadi/EM/1';
         }
 
         
@@ -467,8 +495,13 @@ class Jurnal_rsa extends MY_Controller {
         $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result_array();
         $isian['pajak'] = $this->Pajak_model->get_detail_pajak_jadi($id_kuitansi_jadi);
 
-        // print_r($isian);
+        // echo "<pre>";
+        // print_r($isian);die();
         // print_r($isian['akun_sal']);die();
+        // 
+        // if (($jenis == 'TUP' or $jenis == 'TUP_PENGEMBALIAN') and $this->session->userdata('kode_unit') == 63){
+        //     $isian['akun_debet_akrual'] = $this->Akun_model->get_nama_akun($isian['akun_debet_akrual']);
+        // }
 
         $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
         $isian['mode'] = $mode;
@@ -478,8 +511,15 @@ class Jurnal_rsa extends MY_Controller {
         $query_riwayat = $this->db->query("SELECT * FROM akuntansi_riwayat WHERE id_kuitansi_jadi='$id_kuitansi_jadi' ORDER BY id DESC LIMIT 0,1")->row_array();
         $isian['komentar'] = $query_riwayat['komentar'];
         $isian['akun_sal_debet'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+
         $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_rekening_by_unit('all')->result();
         $isian['direct_url'] = $direct_url;
+        if ($jenis == 'EM') {
+            $isian['akun_sal'] = array($this->Akun_model->get_sal_bbm());
+            $isian['akun_kas'] = array($this->Akun_model->get_kas_bbm());
+        }
+        // echo "<pre>";
+        // print_r($isian['akun_sal']);
         // print_r($isian['akun_kas']);die();
         // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
         $this->data['content'] = $this->load->view('akuntansi/detail_kuitansi_jadi',$isian,true);
@@ -559,6 +599,10 @@ class Jurnal_rsa extends MY_Controller {
             $direct_url = 'akuntansi/kuitansi/jadi/LK/1';
         }else if($jenis=='LN'){
             $direct_url = 'akuntansi/kuitansi/jadi/LN/1';
+        }else if($jenis=='EM'){
+            $direct_url = 'akuntansi/kuitansi/jadi/EM/1';
+        }else if($jenis=='KS'){
+            $direct_url = 'akuntansi/kuitansi/jadi/KS/1';
         }
         redirect($direct_url);
 
@@ -657,6 +701,11 @@ class Jurnal_rsa extends MY_Controller {
             $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_rekening_by_unit('all')->result();  
             if ($kode_unit == 63){
                 $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_sole_rekening_of_unit($kode_unit)->result();  
+            }
+            if ($isian['jenis'] == 'EM'){
+                $isian['akun_sal'] = array($this->Akun_model->get_sal_bbm());
+                $isian['akun_debet_akrual_em'] = $this->Akun_model->get_akun_belanja_bbm('akrual');
+                $isian['akun_kredit_akrual_em'] = $this->Akun_model->get_kas_bbm();
             }
             // print_r($isian['akun_kas']);die();
             // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);

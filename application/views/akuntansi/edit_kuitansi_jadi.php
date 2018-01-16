@@ -158,6 +158,10 @@
             }
             ?>
 
+          <?php if ($jenis == 'EM'): ?>
+            <option <?php if ($akun_debet_akrual_em['akun_6'] == $akun_debet_akrual_em_kredit): ?> selected <?php endif ?> value="<?=$akun_debet_akrual_em['akun_6']?>"><?=$akun_debet_akrual_em['akun_6'].' - '.$akun_debet_akrual_em['nama']?></option>
+          <?php endif ?>
+
           <?php else: ?>
               <?php foreach($query_1->result() as $result){ ?>
                 <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
@@ -246,6 +250,9 @@
           <?php
         }
         ?>
+        <?php if ($jenis == 'EM'): ?>
+            <option <?php if ($akun_kredit_akrual_em['akun_6'] == $akun_kredit_akrual): ?> selected <?php endif ?> value="<?=$akun_kredit_akrual_em['akun_6']?>"><?=$akun_kredit_akrual_em['akun_6'].' - '.$akun_kredit_akrual_em['nama']?></option>
+          <?php endif ?>
       </select>
     </div>
     <div class="col-md-3">

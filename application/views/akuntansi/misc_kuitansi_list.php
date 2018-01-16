@@ -1,5 +1,7 @@
 <?php 
 $tahun = $this->session->userdata('setting_tahun');
+$ci =& get_instance();
+$ci->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
  ?>
 <style type="text/css">
 table {
@@ -167,6 +169,25 @@ tbody td, thead th {
 	                    <td><?php echo '?'; ?></td>
 	                    <td><?php echo '-'; ?></td>
 						<td><?php echo $result->debet; ?></td>					
+					<?php elseif ($jenis == 'EM'): ?>
+						<?php 
+							$no_spp = $ci->Kuitansi_model->get_no_spp_em($result->str_nomor_trx);
+						 ?>
+						<td>						
+							<a href="<?php echo site_url('akuntansi/rsa_em/spm_em_lihat_99/'.urlencode(base64_encode($no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/EM'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+						</td>
+						<td><?php echo date("d/m/Y", strtotime($result->tgl_spm)); ?></td>
+						<!-- <td><?php /*echo $result->no_bukti;*/ ?></td> -->
+						<td><?php echo $result->str_nomor_trx; ?></td>
+						<td><?php echo "EM"; ?></td>
+						<!-- <td><?php /*echo substr($result->kode_usulan_belanja,6,2);*/ ?></td> -->
+						<td><?php echo get_unit($result->kode_unit_subunit); ?></td>
+						<td style="width:250px !important"><?php echo $result->untuk_bayar."<br>Penerima: ".$result->penerima; ?></td>
+						<td><?php echo $result->kd_akun_kas; ?></td>
+	                    <td><?php echo '?'; ?></td>
+	                    <td><?php echo '-'; ?></td>
+						<td><?php echo $result->jumlah_bayar; ?></td>					
 					<?php elseif ($jenis == 'GUP_NIHIL'): ?>
 						<td>						
 							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>

@@ -308,7 +308,7 @@ class Spm_model extends CI_Model {
           		// die();
           	}
 
-            if ($jenis == 'GUP') {
+            if ($jenis == 'GUP' or $jenis == 'EM') {
               $inti['jumlah_debet'] = $inti['jumlah_kredit'];
             }
 
@@ -412,10 +412,29 @@ class Spm_model extends CI_Model {
             $inti['kas_akun_kredit'] = $sal_univ['akun_6'] ." - ". $sal_univ['nama'];
 
             if ($jenis == 'KS'){
-              $inti['akun_debet'] = $debet['kd_akun_kas'];
+              $akun_kerjasama_permintaan = $this->Akun_model->get_akun_kerjasama_permintaan();
+
+              $inti['akun_debet'] = $akun_kerjasama_permintaan['akun_debet']['akun_6'];
+              // $inti['akun_debet'] = $debet['kd_akun_kas'];
               $inti['akun_kredit'] = $kredit['kd_akun_kas'];
               $inti['akun_debet_kas'] = $debet['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($debet['kd_akun_kas']);
               $inti['akun_kredit_kas'] = $kredit['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($kredit['kd_akun_kas']);
+              // echo "<pre>";
+              // print_r($akun_kerjasama_permintaan);die;
+              
+              // die('aaa');
+            }
+
+            if ($jenis == 'EM'){
+                $inti['akun_debet'] = $this->Akun_model->get_akun_belanja_bbm()['akun_6'];
+                $inti['akun_kredit'] = $this->Akun_model->get_sal_bbm()['akun_6'];
+                $inti['akun_debet_kas'] = $this->Akun_model->get_akun_belanja_bbm()['nama'];
+                $inti['akun_kredit_kas'] = $this->Akun_model->get_sal_bbm()['nama'];
+                $inti['jumlah_debet'] = $inti['jumlah_bayar'];
+                $inti['jumlah_kredit'] = $inti['jumlah_bayar'];
+                // $inti['unit_kerja'] = $inti['kode_unit'];
+                // $inti['akun_debet_akrual_em'] = $this->Akun_model->get_akun_belanja_bbm('akrual');
+                // $inti['akun_kredit_akrual_em'] = $this->Akun_model->get_kas_bbm();
             }
 
           	$field_tujuan = $this->db->list_fields('akuntansi_kuitansi_jadi');
@@ -468,6 +487,15 @@ class Spm_model extends CI_Model {
             
         }
 	}
+
+  public function get_kode_kegiatan_spm($spm)
+  {
+      $this->db->select('kode_usulan_belanja as kode_kegiatan');
+      $hasil = $this->db->get_where('rsa_kuitansi',array('str_nomor_trx_spm' => $spm, 'aktif' => 1, 'cair' => 1))->row_array();
+      if ($hasil != null){
+        return $hasil['kode_kegiatan'];
+      }
+  }
 
 
 }

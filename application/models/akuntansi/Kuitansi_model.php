@@ -626,6 +626,34 @@ class Kuitansi_model extends CI_Model {
         return $hasil['str_nomor_trx'];
     }
 
+    public function get_no_spp_em($no_spm)
+    {
+        $this->db->select(array('kode_unit_subunit','nomor_trx'));
+        $where = $this->db->get_where('trx_nomor_em',array('str_nomor_trx' => $no_spm))->row_array();
+        $where['aktif'] = 1;
+        $where['jenis'] = 'SPP';
+        $hasil = $this->db->get_where('trx_nomor_em',$where)->row_array();
+
+        if ($hasil != null){
+            return $hasil['str_nomor_trx'];
+        }
+
+    }
+
+    public function get_no_spp($no_spm,$table)
+    {
+        $this->db->select(array('kode_unit_subunit','nomor_trx'));
+        $where = $this->db->get_where($table,array('str_nomor_trx' => $no_spm))->row_array();
+        $where['aktif'] = 1;
+        $where['jenis'] = 'SPP';
+        $hasil = $this->db->get_where($table,$where)->row_array();
+
+        if ($hasil != null){
+            return $hasil['str_nomor_trx'];
+        }
+
+    }
+
     
     function read_up($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
@@ -714,18 +742,19 @@ class Kuitansi_model extends CI_Model {
     
     function read_em($limit = null, $start = null, $keyword = null, $kode_unit = null){
         if($kode_unit!=null){
-            $unit = 'AND substr(trx_tambah_em.kode_unit_subunit,1,2)="'.$kode_unit.'"';
+            $unit = 'AND substr(trx_em.kode_unit_subunit,1,2)="'.$kode_unit.'"';
         }else{
             $unit = '';
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM trx_spm_tambah_em_data, trx_tambah_em, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            $query = $this->db->query("SELECT * FROM trx_spm_em_data, trx_em, kas_undip WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
             (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM trx_spm_tambah_em_data, trx_tambah_em, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            $query = $this->db->query("SELECT * FROM trx_spm_em_data, trx_em, kas_undip WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
             (str_nomor_trx LIKE '%$keyword%') $unit");
         }
+        // die("SELECT * FROM trx_spm_em_data, trx_em, kas_undip WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND (str_nomor_trx LIKE '%$keyword%') $unit");
         return $query;
     }
 
@@ -1340,7 +1369,7 @@ class Kuitansi_model extends CI_Model {
             $filter_unit = 'AND substr(T.kode_unit_subunit,1,2)='.$this->session->userdata('kode_unit').'';
         }
 
-        $query = $this->db->query("SELECT * FROM trx_tambah_em T, trx_spm_tambah_em_data U WHERE T.id_trx_nomor_tambah_em_spm=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
+        $query = $this->db->query("SELECT * FROM trx_em T, trx_spm_em_data U WHERE T.id_trx_nomor_em_spm=U.nomor_trx_spm AND T.posisi='$posisi' AND U.flag_proses_akuntansi='$flag' $filter_unit");
         return $query;
     }
 
