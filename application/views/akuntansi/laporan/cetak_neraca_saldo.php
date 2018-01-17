@@ -432,13 +432,13 @@ function get_nama_akun_v($kode_akun){
 	if (isset($kode_akun)){
 		if(strlen($kode_akun)>3){
 			if($count_kode > 1){
-				if(substr($kode_akun, 0, 3)=='411'){
-					return 'Pemungutan/Penyetoran Pajak';
-				}else{
-					$query = $ci->db->query("SELECT nama_akun FROM akuntansi_pajak WHERE kode_akun LIKE '".substr($kode_akun, 0, 3)."%' LIMIT 0,1")->row_array();
-					$data = explode(' ',$query['nama_akun']);
-					return $data[0].' '.$data[1].' '.$data[2];
-				}
+				// if(substr($kode_akun, 0, 3)=='411'){
+				// 	return 'Pemungutan/Penyetoran Pajak';
+				// }else{
+				// 	$query = $ci->db->query("SELECT nama_akun FROM akuntansi_pajak WHERE kode_akun LIKE '".substr($kode_akun, 0, 3)."%' LIMIT 0,1")->row_array();
+				// 	$data = explode(' ',$query['nama_akun']);
+				// 	return $data[0].' '.$data[1].' '.$data[2];
+				// }
 			}else{
 				if (substr($kode_akun,0,1) == 5){
 					if ($level == 6){

@@ -925,11 +925,16 @@ class Kuitansi extends MY_Controller {
 		$this->data['halaman'] = $this->pagination->create_links();
 		$this->data['jenis'] = 'EM';
 
-		$this->data['query'] = $this->Kuitansi_model->read_em($config['per_page'], $id, $keyword, $kode_unit);
+		// $this->data['query'] = $this->Kuitansi_model->read_em($config['per_page'], $id, $keyword, $kode_unit);
 
-		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_em('SPM-FINAL-KBUU', 0)->num_rows();
-		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_em('SPM-FINAL-KBUU', 1)->num_rows();
+		// $this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_em('SPM-FINAL-KBUU', 0)->num_rows();
+		// $this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_em('SPM-FINAL-KBUU', 1)->num_rows();
 
+		$this->data['query'] = $this->Kuitansi_model->read_kuitansi($config['per_page'], $id, $keyword, $kode_unit,'EM');
+		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_spm($config['per_page'], $id, null, $kode_unit,'EM');
+
+		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'EM', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
+		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'EM', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		// print_r($this->data['query']);die();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/misc_kuitansi_list',$this->data,true);

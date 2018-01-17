@@ -19,6 +19,11 @@ class Laporan_model extends CI_Model {
         return $query;
     }
 
+    function get_tanggal_input(){
+        $query = $this->db_laporan->query("SELECT tanggal_jurnal FROM akuntansi_kuitansi_jadi WHERE jenis = 'jurnal_umum' GROUP BY tanggal_jurnal HAVING COUNT(*) > 1");
+        return $query->result();
+    }
+
     public function get_pajak()
     {
         $query = $this->db->get('akuntansi_pajak')->result_array();
@@ -269,6 +274,7 @@ class Laporan_model extends CI_Model {
 
     public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null,$sumber = null)
     {
+
         if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
             $mode = 'saldo';
         }else{
@@ -538,7 +544,7 @@ class Laporan_model extends CI_Model {
 
                         $query = "SELECT tr.akun,tu.tipe as jenis_pajak,$added_select sum(jumlah) as jumlah FROM $from as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
-                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
+                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian') AND tu.tipe != 'pajak' AND tu.tipe != 'pengembalian'
                                  $added_query 
                                  AND (tr.tipe = '$tipe' $query_pajak2)
                                  GROUP BY tr.akun $added_group
@@ -1240,8 +1246,10 @@ class Laporan_model extends CI_Model {
 
     }
 
-    public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
+    public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$tanggal_jurnal = null)
     {
+
+        // die($tanggal_jurnal);
 
         $array_jenis = array('pajak');
         if ($jenis == null){
@@ -1261,6 +1269,12 @@ class Laporan_model extends CI_Model {
                 ),
         );
 
+        if ($tanggal_jurnal != null){
+            $start_date = $this->session->userdata('setting_tahun')."-01-01";
+            $end_date = $this->session->userdata('setting_tahun')."-12-31";
+        }
+
+
         $this->db_laporan->start_cache();
 
         if ($sumber_dana != null){
@@ -1277,6 +1291,10 @@ class Laporan_model extends CI_Model {
 
         if ($unit != null) {
             $this->db_laporan->where('unit_kerja',$unit);
+        }
+
+        if ($tanggal_jurnal != null) {
+            $this->db_laporan->where('tanggal_jurnal',$tanggal_jurnal);
         }
 
         // $this->db_laporan->where("tipe <> 'pajak'");

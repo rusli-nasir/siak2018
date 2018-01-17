@@ -79,7 +79,7 @@
           <?php } ?>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="display: none;">
       <label class="col-md-2 control-label">Periode</label>  
       <div class="col-md-6">
         <input class="form-control" type="text" name="daterange">
@@ -105,19 +105,16 @@
           </select>
       </div>
     </div>
-    <?php if ($this->session->userdata('kode_unit') == 92): ?>
-       <div class="form-group">
-        <label class="col-md-2 control-label">Tanggal Input</label>  
-        <div class="col-md-6">
-            <select name="tanggal_jurnal" class="form-control">
-              <option value="">Pilih Tanggal Jurnal</option>
-              <?php foreach ($tanggal_input as $data): ?>
-                <option value="<?php echo $data->tanggal_jurnal ?>"><?php echo $data->tanggal_jurnal ?></option>
-              <?php endforeach ?>
-            </select>
-        </div>
+     <div class="form-group">
+      <label class="col-md-2 control-label">Tanggal Input</label>  
+      <div class="col-md-6">
+          <select name="tanggal_input" class="form-control">
+            <?php foreach ($tanggal_input as $data): ?>
+              <option value="<?php echo $data->tanggal_jurnal ?>"><?php echo $data->tanggal_jurnal ?></option>
+            <?php endforeach ?>
+          </select>
       </div>
-    <?php endif ?>
+    </div>
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">

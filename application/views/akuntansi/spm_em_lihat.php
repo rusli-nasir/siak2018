@@ -274,7 +274,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                         var rel = $(this).attr('rel');
                         $.ajax({
                             type:"POST",
-                            url :"<?=site_url("kuitansi/get_data_kuitansi")?>",
+                            url :"<?=site_url("akuntansi/bridge_kuitansi/get_data_kuitansi")?>",
                             data:'id=' + rel,
                             success:function(data){
 //                                    console.log(data);
@@ -409,7 +409,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                         var rel = $(this).attr('rel');
                         $.ajax({
                             type:"POST",
-                            url :"<?=site_url("kuitansi/get_data_kuitansi_pengembalian")?>",
+                            url :"<?=site_url("akuntansi/bridge_kuitansi/get_data_kuitansi_pengembalian")?>",
                             data:'id=' + rel,
                             success:function(data){
                                    // console.log(data);

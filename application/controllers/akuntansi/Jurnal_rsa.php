@@ -81,12 +81,16 @@ class Jurnal_rsa extends MY_Controller {
             }
             else if (in_array($jenis,$array_spm)){
                 $kuitansi = $this->Spm_model->get_spm_transfer($id_kuitansi,$jenis);
-                if ($jenis == 'EM' or $jenis == 'KS'){
-                    unset($entry['kas_akun_debet']);
-                }
+            }
+            if ($jenis == 'EM'){
+                $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
+                unset($entry['kas_akun_debet']);
             }
             else if ($jenis != 'NK'){
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis));
+                if ($jenis == 'EM' or $jenis == 'KS'){
+                    unset($entry['kas_akun_debet']);
+                }
             }
             else {
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer_nk($id_kuitansi);
@@ -313,7 +317,8 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
             }
             elseif ($jenis == 'EM') {
-                $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
+                $isian = $this->Jurnal_rsa_model->get_kuitansi($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
+                $isian['pajak'] = $this->Pajak_model->get_detail_pajak($isian['no_bukti'],$isian['jenis']);
 
                 $isian['akun_debet_em'] = $this->Akun_model->get_akun_belanja_bbm();
                 $isian['akun_kredit_em'] = $this->Akun_model->get_sal_bbm();

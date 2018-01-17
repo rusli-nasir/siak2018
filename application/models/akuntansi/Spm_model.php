@@ -26,6 +26,11 @@ class Spm_model extends CI_Model {
       return $data['tgl_spm'];
     }
 
+    if ($jenis == 'EM'){
+      $data = $this->db->get_where('trx_spm_em_data',array('str_nomor_trx' => $no_spm))->row_array();
+      return $data['tgl_spm'];
+    }
+
     if ($jenis == 'LK'){
       $data = $this->db->get_where('trx_spm_lsk_data',array('str_nomor_trx' => $no_spm))->row_array();
       // print_r($data);die();
@@ -51,7 +56,7 @@ class Spm_model extends CI_Model {
 
 	public function get_jenis_spm() // yang lewat kas undip & kas bendahara
 	{
-		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','KS','EM'); 
+		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','KS'); 
 	}
 
 	public function get_array_jenis() // yang lewat kas undip & kas bendahara
@@ -64,7 +69,7 @@ class Spm_model extends CI_Model {
             'PUP' => 'trx_spm_tambah_up_data',
 						'KS' => 'trx_spm_tambah_ks_data',
             'TUP_NIHIL' => 'rsa_kuitansi',
-            'EM' => 'trx_spm_em_data',
+            // 'EM' => 'trx_spm_em_data',
             // 'LK' => 'rsa_kuitansi',
 						// 'LN' => 'rsa_kuitansi',
 						'LSPHK3' => 'trx_spm_lsphk3_data',

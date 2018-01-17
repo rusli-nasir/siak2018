@@ -12,7 +12,7 @@ class Pajak_model extends CI_Model {
 
     public function get_tabel_by_jenis($jenis)
     {
-        if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN') {
+        if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN' or $jenis == 'EM') {
             return 'rsa_kuitansi_detail_pajak';
         }elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
             return 'rsa_kuitansi_detail_pajak_lsphk3';
@@ -23,7 +23,7 @@ class Pajak_model extends CI_Model {
 
     public function get_tabel_detail_by_jenis($jenis)
     {
-        if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN') {
+        if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN'  or $jenis == 'EM') {
             return 'rsa_kuitansi_detail';
         }elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
             return 'rsa_kuitansi_detail_lsphk3';
@@ -34,7 +34,7 @@ class Pajak_model extends CI_Model {
 
     public function get_tabel_utama_by_jenis($jenis)
     {
-    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL'  or $jenis == 'GUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL'  or $jenis == 'GUP_NIHIL' or $jenis == 'LK' or $jenis == 'LN'  or $jenis == 'EM') {
     		return 'rsa_kuitansi';
     	}elseif ($jenis == 'L3' or $jenis == 'LSPHK3') {
     		return 'rsa_kuitansi_lsphk3';

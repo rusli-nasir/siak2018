@@ -331,20 +331,9 @@ function get_tabel_by_jenis($jenis)
 function get_detail_pajak($no_bukti,$jenis)
 {
 	$ci =& get_instance();
-	if (strpos($no_bukti, '-')) {
-		return null;
-	}
-
-	$hasil = $ci->db->get_where(get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
 	
-	$data = array();
+	$ci->load->model('akuntansi/Pajak_model', 'Pajak_model');
 
-	foreach ($hasil as $entry) {
-		$detail = $ci->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row_array();
-		if ($detail != null)
-			$data[] = array_merge($entry,$detail);
-	}
-
-	return $data;
+	return $ci->Pajak_model->get_detail_pajak($no_bukti,$jenis);
 }
 ?>

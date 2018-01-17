@@ -989,6 +989,7 @@ class Kuitansi_model extends CI_Model {
 
     public function get_kuitansi_transfer($id_kuitansi,$tabel,$tabel_detail,$jenis = null)
     {
+        // die($jenis);
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Spm_model', 'Spm_model');
 
@@ -1239,7 +1240,7 @@ class Kuitansi_model extends CI_Model {
 
     public function get_tabel_by_jenis($jenis)
     {
-    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL' or $jenis == 'LN'or $jenis == 'LK') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL' or $jenis == 'GUP_NIHIL' or $jenis == 'LN' or $jenis == 'LK' or $jenis == 'EM') {
     		return 'rsa_kuitansi';
     	}elseif ($jenis == 'L3') {
     		return 'rsa_kuitansi_lsphk3';
@@ -1249,7 +1250,7 @@ class Kuitansi_model extends CI_Model {
     }
     public function get_tabel_detail_by_jenis($jenis)
     {
-    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL'  or $jenis == 'GUP_NIHIL' or $jenis == 'LN'or $jenis == 'LK') {
+    	if ($jenis == 'GP' or $jenis == 'TUP_NIHIL'  or $jenis == 'GUP_NIHIL' or $jenis == 'LN'or $jenis == 'LK'  or $jenis == 'EM') {
     		return 'rsa_kuitansi_detail';
     	}elseif ($jenis == 'L3') {
     		return 'rsa_kuitansi_detail_lsphk3';

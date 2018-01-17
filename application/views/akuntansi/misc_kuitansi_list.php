@@ -169,7 +169,7 @@ tbody td, thead th {
 	                    <td><?php echo '?'; ?></td>
 	                    <td><?php echo '-'; ?></td>
 						<td><?php echo $result->debet; ?></td>					
-					<?php elseif ($jenis == 'EM'): ?>
+					<?php elseif ($jenis == 'EMzz'): ?>
 						<?php 
 							$no_spp = $ci->Kuitansi_model->get_no_spp_em($result->str_nomor_trx);
 						 ?>
@@ -238,6 +238,25 @@ tbody td, thead th {
 						<td><?php echo '?'; ?></td>
 						<td><?php echo '-'; ?></td>
 						<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
+					<?php elseif ($jenis == 'EM'): ?>
+						<?php 
+							$no_spp = $ci->Kuitansi_model->get_no_spp_em($result->str_nomor_trx);
+						 ?>
+						<td>						
+							<a href="<?php echo site_url('akuntansi/rsa_em/spm_em_lihat_99/'.urlencode(base64_encode($no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/EM'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
+						</td>
+						<td><?php echo date("d/m/Y", strtotime($result->tgl_kuitansi)); ?></td>
+						<td><?php echo $result->no_bukti; ?></td>
+						<td><?php echo $result->str_nomor_trx_spm; ?></td>
+						<td>GUP Pengembalian</td>
+						<!-- <td><?php echo substr($result->kode_usulan_belanja,6,2); ?></td> -->
+						<td><?php echo get_unit($result->kode_unit); ?></td>
+						<td style="width:250px"><?php echo $result->uraian; ?></td>
+						<td><?php echo $result->kode_akun; ?></td>
+						<td><?php echo '?'; ?></td>
+						<td><?php echo '-'; ?></td>
+						<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
 					<?php endif ?>
 				</tr>
 				<?php $no++; } ?>
@@ -282,7 +301,7 @@ function get_nama_unit($unit){
 
 function get_tabel_by_jenis($jenis)
 {
-	if ($jenis == 'GP' or $jenis == 'GUP_NIHIL' or $jenis == 'gup_nihil') {
+	if ($jenis == 'GP' or $jenis == 'GUP_NIHIL' or $jenis == 'gup_nihil' or $jenis == 'EM') {
 		return 'rsa_kuitansi_detail_pajak';
 	}elseif ($jenis == 'L3') {
 		return 'rsa_kuitansi_detail_pajak_lsphk3';

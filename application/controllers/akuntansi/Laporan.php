@@ -177,6 +177,7 @@ class Laporan extends MY_Controller {
         $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
         $this->data['query_akun_kas'] = $this->get_akun_kas();
         $this->data['query_akun_akrual'] = $this->get_akun_akrual();
+        $this->data['tanggal_input'] = $this->Laporan_model->get_tanggal_input();
 
         $temp_data['content'] = $this->load->view('akuntansi/rekap_jurnal_list',$this->data,true);
         $this->load->view('akuntansi/content_template',$temp_data,false);
@@ -1054,8 +1055,15 @@ class Laporan extends MY_Controller {
         $tipe = $this->input->post('tipe');
         $basis = $this->input->post('basis');
         $unit = $this->input->post('unit');
+        $tanggal_jurnal = $this->input->post('tanggal_jurnal');
         $sumber_dana = $this->input->post('sumber_dana');
         $data['sumber'] = 'get_rekap_jurnal';
+
+
+        // echo "<pre>";
+        // echo $tanggal_jurnal;
+        // print_r($this->input->post());
+        // die();
         
         $daterange = $this->input->post('daterange');
         $date_t = explode(' - ', $daterange);
@@ -1098,8 +1106,7 @@ class Laporan extends MY_Controller {
 
         // print_r($this->input->post());die();
         // $akun = array(1,2,3,4,5,6,7,8,9);
-        //public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null)
-        $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir);
+        $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$tanggal_jurnal);
         // print_r($data['query']);die();
 
         if($tipe=='pdf'){
