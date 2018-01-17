@@ -272,7 +272,7 @@ class Laporan_model extends CI_Model {
         return $data;
     }
 
-    public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null,$sumber = null)
+    public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null,$sumber = null, $array_tipe_jurnal = null)
     {
 
         if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
@@ -290,6 +290,10 @@ class Laporan_model extends CI_Model {
             $akhir_tahun = $this->session->userdata('setting_tahun')."-12-31";
             // die("BETWEEN $awal_tahun AND $akhir_tahun");
         }
+
+        // $array_tipe_jurnal = array('pengeluaran');
+        $array_all_tipe_jurnal = array('pajak','pengembalian');
+
 
         // $sumber = 'biaya';
 
@@ -448,6 +452,23 @@ class Laporan_model extends CI_Model {
                         $this->db_laporan->where("kode_kegiatan <> ''");
                     }
 
+                    if ($array_tipe != null) {
+                        if (in_array('pengeluaran', $array_tipe_jurnal)){
+                            $where_tipe = '(1 ';
+                            $array_differ_tipe = array_diff($array_all_tipe_jurnal,$array_tipe_jurnal);
+                            foreach ($array_differ_tipe as $each_tipe) {
+                                $where_tipe.= " AND tipe!='$each_tipe' "; 
+                            }
+                        }else{
+                            $where_tipe = '(0 ';
+                            foreach ($array_tipe_jurnal as $each_tipe) {
+                                $where_tipe.= " OR tipe='$each_tipe' ";                
+                            }
+                        }
+                        $where_tipe .= ")";
+                        $this->db_laporan->where("kode_kegiatan <> ''");
+                    }
+
                     // if ($regex_kegiatan != null){
                     //     $this->db_laporan->where("kode_kegiatan REGEXP '$regex_kegiatan'");   
                     // }
@@ -525,6 +546,22 @@ class Laporan_model extends CI_Model {
                             $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
                         }
 
+                        if ($array_tipe != null) {
+                            if (in_array('pengeluaran', $array_tipe_jurnal)){
+                                $where_tipe = '(1 ';
+                                $array_differ_tipe = array_diff($array_all_tipe_jurnal,$array_tipe_jurnal);
+                                foreach ($array_differ_tipe as $each_tipe) {
+                                    $where_tipe.= " AND tu.tipe!='$each_tipe' "; 
+                                }
+                            }else{
+                                $where_tipe = '(0 ';
+                                foreach ($array_tipe_jurnal as $each_tipe) {
+                                    $where_tipe.= " OR tu.tipe='$each_tipe' ";                
+                                }
+                            }
+                            $where_tipe .= ")";
+                        }
+
                         // if ($regex_kegiatan != null){
                         //     $added_query .= "AND kode_kegiatan REGEXP '$regex_kegiatan'";   
                         // }
@@ -544,13 +581,13 @@ class Laporan_model extends CI_Model {
 
                         $query = "SELECT tr.akun,tu.tipe as jenis_pajak,$added_select sum(jumlah) as jumlah FROM $from as tu, akuntansi_relasi_kuitansi_akun as tr WHERE
                                  tr.id_kuitansi_jadi = tu.id_kuitansi_jadi 
-                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian') AND tu.tipe != 'pajak' AND tu.tipe != 'pengembalian'
+                                 AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian') AND $where_tipe 
                                  $added_query 
                                  AND (tr.tipe = '$tipe' $query_pajak2)
                                  GROUP BY tr.akun $added_group
                         ";
 
-                        // echo $query."\n";
+                        // echo $query."\n";die();
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
@@ -1246,10 +1283,13 @@ class Laporan_model extends CI_Model {
 
     }
 
-    public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$tanggal_jurnal = null)
+    public function read_rekap_jurnal($jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$tanggal_jurnal = null,$array_tipe = null)
     {
 
         // die($tanggal_jurnal);
+        // 
+        // $array_tipe = array('pengeluaran');
+        $array_all_tipe = array('pajak','pengembalian');
 
         $array_jenis = array('pajak');
         if ($jenis == null){
@@ -1257,6 +1297,26 @@ class Laporan_model extends CI_Model {
         }else {
             $array_jenis[] = $jenis;
         }
+
+        if ($array_tipe != null) {
+            if (in_array('pengeluaran', $array_tipe)){
+                $where_tipe = '(1 ';
+                $array_differ_tipe = array_diff($array_all_tipe,$array_tipe);
+                foreach ($array_differ_tipe as $each_tipe) {
+                    $where_tipe.= " AND akuntansi_kuitansi_jadi.tipe!='$each_tipe' "; 
+                }
+            }else{
+                $where_tipe = '(0 ';
+                foreach ($array_tipe as $each_tipe) {
+                    $where_tipe.= " OR akuntansi_kuitansi_jadi.tipe='$each_tipe' ";                
+                }
+            }
+            $where_tipe .= ")";
+        }
+
+        // die($where_tipe);
+
+
 
         $kolom = array(
             'debet' => array(
@@ -1315,6 +1375,10 @@ class Laporan_model extends CI_Model {
         $this->db_laporan->select('akuntansi_relasi_kuitansi_akun.tipe as tipe_relasi');
 
         $this->db_laporan->from('akuntansi_kuitansi_jadi');
+
+        if ($array_tipe != null){
+            $this->db_laporan->where($where_tipe);
+        }
 
         $this->db_laporan->join('akuntansi_relasi_kuitansi_akun','akuntansi_kuitansi_jadi.id_kuitansi_jadi = akuntansi_relasi_kuitansi_akun.id_kuitansi_jadi');
 
