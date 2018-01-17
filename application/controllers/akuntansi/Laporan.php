@@ -1130,6 +1130,7 @@ class Laporan extends MY_Controller {
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]) or null;
         $level = $this->input->post('level');
+        $array_tipe  = $this->input->post('tipe');
 
         // echo "<pre>";
         // print_r($this->input->post());die;
@@ -1301,7 +1302,7 @@ class Laporan extends MY_Controller {
         // $data = $this->Laporan_model->get_data_buku_besar($akun,'akrual');
         // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca');
         // $data['query'] = $this->Laporan_model->revamp_get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca',$tingkat);
-        $query_neraca = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca',$tingkat,$sumber);
+        $query_neraca = $this->Laporan_model->get_neraca($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,'neraca',$tingkat,$sumber,$array_tipe);
 
         // foreach ($akun as $each_akun) {
         //     if (!isset($query_neraca[$each_akun['akun_6']])){
