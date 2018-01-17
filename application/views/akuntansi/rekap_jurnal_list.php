@@ -6,6 +6,11 @@
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
 <!-- javascript -->
+<style>
+  input[type=checkbox] {
+    margin: 8px 0 0;
+}
+</style>
 <script type="text/javascript">
 	$(document).ready(function(){
 		var host = "<?=site_url('/')?>";
@@ -118,6 +123,20 @@
         </div>
       </div>
     <?php endif ?>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Tipe</label>  
+      <div class="col-md-2 checkbox">
+        <label><input type="checkbox" name="tipe[]" value="pengeluaran" checked>Transaksi</label>
+     </div>
+     <div class="col-md-2 checkbox">
+       <label><input type="checkbox" name="tipe[]" value="pajak">Pajak</label>
+     </div>
+     <?php if ($this->session->userdata('kode_unit') == 92): ?>
+       <div class="col-md-2 checkbox">
+         <label><input type="checkbox" name="tipe[]" value="pengembalian">Pengembalian</label>
+       </div>
+     </div>
+   <?php endif ?>
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
@@ -202,6 +221,15 @@
           showDropdowns: true
         }
     );
+
+    $("input:checkbox[name^='tipe']").click(function(){
+      checked = $("input:checkbox[name^='tipe']:checked").length;
+      if (!checked) {
+        $("input:checkbox[name^='tipe']").prop('required', true);
+      } else {
+        $("input:checkbox[name^='tipe']").prop('required', false);
+      }
+    });
 </script>
 
 <?php

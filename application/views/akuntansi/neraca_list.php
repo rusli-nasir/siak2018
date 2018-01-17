@@ -10,6 +10,11 @@
 <script type="text/javascript" src="<?php echo base_url();?>/assets/akuntansi/js/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets/akuntansi/css/daterangepicker.css" />
 <!-- javascript -->
+<style>
+  input[type=checkbox] {
+    margin: 8px 0 0;
+}
+</style>
 <script type="text/javascript">
 	$(document).ready(function(){
 		var host = "<?=site_url('/')?>";
@@ -125,22 +130,38 @@
       </div>
     </div>
     
+  <div id='vue_unit'>
     <div class="form-group">
       <label class="col-md-2 control-label">Level Laporan</label>  
       <div class="col-md-3">
-          <select id="level" name="level" class="form-control" required="">
+          <select v-model="level_laporan" id="level" name="level" class="form-control" required="">
             <option value="3">Header</option>
             <option value="4">Sub-Header</option>
             <option value="6">Detail</option>
           </select>
       </div>
     </div>
+   <div class="form-group">
+    <label class="col-md-2 control-label">Tipe</label>  
+    <div class="col-md-2 checkbox">
+      <label><input type="checkbox" name="tipe[]" value="pengeluaran" checked>Transaksi</label>
+   </div>
+   <div class="col-md-2 checkbox" v-if="level_laporan == '6'">
+     <label><input type="checkbox" name="tipe[]" value="pajak">Pajak</label>
+   </div>
+   <?php if ($this->session->userdata('kode_unit') == 92): ?>
+   <div class="col-md-2 checkbox">
+     <label><input type="checkbox" name="tipe[]" value="pengembalian">Pengembalian</label>
+   </div>
+  </div>
+  <?php endif ?>
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
         <button id="simpan" name="simpan" class="btn btn-success" type="submit">Buka Neraca</button>
       </div>
     </div>
+  </div>  
     <?php echo form_close(); ?>
 </div>
 <br/>
@@ -295,7 +316,32 @@
         }
     );
 </script>
+<script type="text/javascript">
+      vue_unit = new Vue({
+        el : "#vue_unit",
+        data : {
+                  level_laporan : 3,
+                  unit : 'all',
+                },
+        methods : {
 
+        },
+        computed : {
+
+        },
+        watch : {
+        }
+      });
+
+      $("input:checkbox[name^='tipe']").click(function(){
+        checked = $("input:checkbox[name^='tipe']:checked").length;
+        if (!checked) {
+          $("input:checkbox[name^='tipe']").prop('required', true);
+        } else {
+          $("input:checkbox[name^='tipe']").prop('required', false);
+        }
+      });
+</script>
 <?php
 function get_pengeluaran($id_kuitansi){
 	$ci =& get_instance();

@@ -1058,12 +1058,12 @@ class Laporan extends MY_Controller {
         $tanggal_jurnal = $this->input->post('tanggal_jurnal');
         $sumber_dana = $this->input->post('sumber_dana');
         $data['sumber'] = 'get_rekap_jurnal';
+        $array_tipe  = $this->input->post('tipe');
 
-
-        // echo "<pre>";
-        // echo $tanggal_jurnal;
-        // print_r($this->input->post());
-        // die();
+        //  echo "<pre>";
+        // // echo $tanggal_jurnal;
+        //  print_r($array_tipe);
+        //  die();
         
         $daterange = $this->input->post('daterange');
         $date_t = explode(' - ', $daterange);
@@ -1106,7 +1106,7 @@ class Laporan extends MY_Controller {
 
         // print_r($this->input->post());die();
         // $akun = array(1,2,3,4,5,6,7,8,9);
-        $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$tanggal_jurnal);
+        $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$tanggal_jurnal,$array_tipe);
         // print_r($data['query']);die();
 
         if($tipe=='pdf'){
