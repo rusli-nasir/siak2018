@@ -765,11 +765,13 @@ class Kuitansi_model extends CI_Model {
             $unit = '';
         }
 
+        $disabler = "AND false";
+
 		if($limit!=null OR $start!=null){
-			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks AND
+			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks $disabler AND
 			(trx_spm_tambah_ks_data.str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
 		}else{
-			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks AND
+			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks $disabler AND
 			(trx_spm_tambah_ks_data.str_nomor_trx LIKE '%$keyword%') $unit");
 		}
         // die("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spm FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks AND
@@ -999,6 +1001,10 @@ class Kuitansi_model extends CI_Model {
 
         $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
         $hasil['akun_debet'] = $hasil['kode_akun'];
+
+        if ($jenis == 'EM'){
+            $hasil['akun_debet'] = $this->Akun_model->get_akun_belanja_bbm()['akun_6'];
+        }
 
         $query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
         $hasil['jumlah_debet'] = $this->db->query($query)->row_array()['pengeluaran'];

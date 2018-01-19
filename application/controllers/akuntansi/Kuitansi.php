@@ -803,6 +803,9 @@ class Kuitansi extends MY_Controller {
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_ks('SPM-FINAL-KBUU', 0)->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_ks('SPM-FINAL-KBUU', 1)->num_rows();
 
+		// $this->data['kuitansi_non_jadi'] = null;
+		// $this->data['kuitansi_jadi'] = null;
+
 		// echo "<pre>";
 		// print_r($this->data['query']);
 		// die();

@@ -81,8 +81,11 @@ class Jurnal_rsa extends MY_Controller {
             }
             else if (in_array($jenis,$array_spm)){
                 $kuitansi = $this->Spm_model->get_spm_transfer($id_kuitansi,$jenis);
+                if ($jenis == 'KS'){
+                    unset($entry['kas_akun_debet']);
+                }
             }
-            if ($jenis == 'EM'){
+            else if ($jenis == 'EM'){
                 $kuitansi = $this->Kuitansi_model->get_kuitansi_transfer($id_kuitansi,$this->Kuitansi_model->get_tabel_by_jenis($jenis),$this->Kuitansi_model->get_tabel_detail_by_jenis($jenis),$jenis);
                 unset($entry['kas_akun_debet']);
             }

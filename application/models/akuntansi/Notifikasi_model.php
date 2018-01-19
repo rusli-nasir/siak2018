@@ -83,9 +83,11 @@ class Notifikasi_model extends CI_Model {
                     else if($key == 'LN') $result['ln_posting'] = $sub_query['c'];
                     else if($key == 'TUP_PENGEMBALIAN') $result['tup_pengembalian_posting'] = $sub_query['c'];
                     else if($key == 'GUP_PENGEMBALIAN') $result['gup_pengembalian_posting'] = $sub_query['c'];
-                    else if($key == 'KS') $result['ks'] = $sub_query['c'];
-                    else if($key == 'EM') $result['ks'] = $sub_query['c'];
+                    else if($key == 'KS') $result['ks_posting'] = $sub_query['c'];
+                    else if($key == 'EM') $result['em_posting'] = $sub_query['c'];
                 }
+                // echo "<pre>";
+                // print_r($result);die();
                 
                 break;
         }
@@ -120,7 +122,7 @@ class Notifikasi_model extends CI_Model {
         // print_r($temp);
         // die("SELECT Count(*) FROM trx_spm_em_data, trx_em, kas_undip WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx $em_string");
         // die("SELECT Count(*) FROM trx_spm_em_data, trx_em WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0  $em_string");
-        // die("SELECT count(*) FROM rsa_kuitansi as tk, trx_spm_gup_data as tg WHERE tk.str_nomor_trx_spm = tg.str_nomor_trx AND tg.untuk_bayar = 'GUP NIHIL' AND tk.cair = 1  AND tk.flag_proses_akuntansi=$level $unit");
+        // die("SELECT Count(*) FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama WHERE nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx $ks_string");
 
         $result =  array_merge($result, $temp);
 

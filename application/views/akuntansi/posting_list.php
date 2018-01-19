@@ -42,6 +42,10 @@ $tahun = $this->session->userdata('setting_tahun');
 
   <li role="presentation" class="<?php if(isset($tab_gup_pengembalian)){ if($tab_gup_pengembalian==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/GUP_PENGEMBALIAN/1'); ?>">GUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_pengembalian_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_pengembalian_posting; ?></span></a></li>
   <li role="presentation" class="<?php if(isset($tab_gup_nihil)){ if($tab_gup_nihil==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/GUP_NIHIL/1'); ?>">GUP NIHIL.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_posting; ?></span></a></li>
+
+
+  <li role="presentation" class="<?php if(isset($tab_em)){ if($tab_em==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/EM/1'); ?>">E Money&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->em_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->em_posting; ?></span></a></li>
+  <li role="presentation" class="<?php if(isset($tab_ks)){ if($tab_ks==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/posting/KS/1'); ?>">KS&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ks_posting ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ks_posting; ?></span></a></li>
  
 </ul>
 <div class="row">

@@ -222,6 +222,10 @@ class Pajak_model extends CI_Model {
         $tabel_utama = $this->get_tabel_utama_by_jenis($jenis);
         $tabel_pajak = $this->get_tabel_by_jenis($jenis);
 
+        if ($tabel_detail == null){
+            return null;
+        }
+
         $query = "SELECT tp.*,SUM(tp.rupiah_pajak) as rupiah_pajak FROM $tabel_utama as tu, $tabel_detail as td, $tabel_pajak as tp WHERE tu.no_bukti='$no_bukti' AND td.id_kuitansi = tu.id_kuitansi AND td.id_kuitansi_detail=tp.id_kuitansi_detail AND tp.rupiah_pajak > 0 GROUP BY tp.jenis_pajak";
 
         $pajak_valid = array('PPh_Ps_21','PPh_Ps_22','PPh_Ps_22','PPh_Ps_23','PPh_Ps_26','PPN');
