@@ -354,10 +354,11 @@ if($jenis=='NK'){
 </fieldset>
 </form>
 <script>
+
   var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
   var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
 
-  <?php if (isset($akun_debet_akrual)): ?>
+  <?php if (isset($akun_debet_akrual) and $jenis != 'KS'): ?>
         selectize1.setValue('<?=$akun_debet_akrual?>');  
   <?php endif ?>
 </script>

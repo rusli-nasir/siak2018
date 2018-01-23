@@ -807,7 +807,7 @@ class Kuitansi extends MY_Controller {
 		// $this->data['kuitansi_jadi'] = null;
 
 		// echo "<pre>";
-		// print_r($this->data['query']);
+		// print_r($this->data['query']->result_array());
 		// die();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/ks_list',$this->data,true);
