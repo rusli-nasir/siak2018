@@ -20,7 +20,7 @@ class Laporan_model extends CI_Model {
     }
 
     function get_tanggal_input(){
-        $query = $this->db_laporan->query("SELECT tanggal_jurnal FROM akuntansi_kuitansi_jadi WHERE jenis = 'jurnal_umum' GROUP BY tanggal_jurnal HAVING COUNT(*) > 1");
+        $query = $this->db_laporan->query("SELECT tanggal_jurnal,max(tanggal) as last_tanggal FROM akuntansi_kuitansi_jadi WHERE jenis = 'jurnal_umum' GROUP BY tanggal_jurnal HAVING COUNT(*) > 1 ORDER BY MONTH(max(tanggal))");
         return $query->result();
     }
 
@@ -1002,9 +1002,9 @@ class Laporan_model extends CI_Model {
             $query_sumber_dana = '';
             if ($sumber_dana != null){
                 if ($sumber_dana == 'tidak_terikat'){
-                    $query_sumber_dana = "AND sumber_dana IN ('SELAIN-APBN','SPI-SILPA','APBN-LAINNYA')";
+                    $query_sumber_dana = "AND sumber_dana IN ('SELAIN-APBN','SPI-SILPA')";
                 }elseif ($sumber_dana == 'terikat_temporer') {
-                    $query_sumber_dana = "AND sumber_dana IN ('APBN-BPPTNBH')";
+                    $query_sumber_dana = "AND sumber_dana IN ('APBN-BPPTNBH','APBN-LAINNYA')";
                 }
             }
 
@@ -1288,7 +1288,7 @@ class Laporan_model extends CI_Model {
 
         // die($tanggal_jurnal);
         // 
-        // $array_tipe = array('pengeluaran');
+        $array_tipe = array('memorial');
         $array_all_tipe = array('pajak','pengembalian');
 
         $array_jenis = array('pajak');

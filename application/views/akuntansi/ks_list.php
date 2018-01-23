@@ -157,7 +157,7 @@ tbody td, thead th {
 					</td>
 					<td><?php echo date("d/m/Y", strtotime($result->tgl_spm)); ?></td>
 					<!-- <td><?php /*echo $result->no_bukti;*/ ?></td> -->
-					<td><?php echo $result->str_nomor_trx; ?></td>
+					<td><?php echo $result->no_spm; ?></td>
 					<td><?php echo "KS"; ?></td>
 					<!-- <td><?php /*echo substr($result->kode_usulan_belanja,6,2);*/ ?></td> -->
 					<td><?php echo get_unit($result->kode_unit_subunit); ?></td>

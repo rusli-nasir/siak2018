@@ -28,12 +28,12 @@ class Spm_model extends CI_Model {
 
     if ($jenis == 'EM'){
       $data = $this->db->get_where('trx_spm_em_data',array('str_nomor_trx' => $no_spm))->row_array();
+      // print_r($data);die();
       return $data['tgl_spm'];
     }
 
     if ($jenis == 'LK'){
       $data = $this->db->get_where('trx_spm_lsk_data',array('str_nomor_trx' => $no_spm))->row_array();
-      // print_r($data);die();
       // die($data);
       return $data['tgl_spm'];
     }
@@ -54,10 +54,92 @@ class Spm_model extends CI_Model {
 		}
 	}
 
+  public function get_rekap_spm_terjurnal($value='')
+  {
+    if ($unit = $this->session->userdata('kode_unit')){
+        $unit_query = "AND unit_kerja='$unit'";
+    }else{
+        $unit_query = '';
+    }
+    $query = "SELECT no_spm as nomor_spm,max(tanggal) as tanggal_spm,max(tanggal_jurnal) as tanggal_jurnal,jumlah_debet as jumlah,jenis FROM akuntansi_kuitansi_jadi WHERE tipe='pengeluaran' $unit_query GROUP BY concat(no_spm,jenis) ORDER BY jenis,min(id_kuitansi)";
+
+    $result = $this->db->query($query)->result_array();
+
+    $temp_data = array();
+
+
+    foreach ($result as $entry) {
+      $temp_data[$entry['jenis']][] = $entry;
+    }
+
+    $temp_data['all'] = $result;
+
+    $query = "SELECT distinct jenis as real_jenis FROM akuntansi_kuitansi_jadi WHERE tipe='pengeluaran' $unit_query GROUP BY concat(no_spm,jenis)";
+
+    $temp_index = $this->db->query($query)->result_array();
+
+
+    $array_index['all'] = array(
+                        'real_jenis' => 'all',
+                        'jenis' => 'Semua',
+                        'jumlah' => count($temp_data['all']),
+                  );
+
+    foreach ($temp_index as $each_index) {
+      $each_index['jenis'] = $this->konversi_jenis_spm($each_index['real_jenis']);
+      $each_index['jumlah'] = count($temp_data[$each_index['real_jenis']]);
+      
+      // $array_index[$each_index['jenis']] = $each_index;
+      $array_index[$each_index['jenis']] = $each_index;
+    }
+
+
+
+    $data['rekap'] = $temp_data;
+    $data['index'] = $array_index;
+
+    // echo "<pre>";
+    // print_r($array_index);die();
+
+
+    return $data;
+
+
+  }
+
 	public function get_jenis_spm() // yang lewat kas undip & kas bendahara
 	{
-		return array('UP','TUP','GUP','PUP','LSPHK3','TUP_NIHIL','KS'); 
+		return array('UP','TUP','GUP','PUP','TUP_NIHIL','KS'); 
 	}
+
+  public function get_jenis_kuitansi($value='')
+  {
+    return array('GP','GUP_NIHIL','LK','LN','EM');
+  }
+
+  public function get_jenis_pengembalian($value='')
+  {
+    return array('GUP_PENGEMBALIAN','TUP_PENGEMBALIAN');
+  }
+
+  public function get_jenis_lspg($value='')
+  {
+    return array('NK'); 
+  }
+
+  public function get_tabel_assoc_spm($value='')
+  {
+    return array(
+          'GP' => 'trx_spm_gup_data',
+          'EM' => 'trx_spm_em_data',
+          'GUP_NIHIL' => 'trx_spm_gup_data',
+          'LK' => 'trx_spm_lsk_data',
+          'LN' => 'trx_spm_lsnk_data',
+          'TUP_PENGEMBALIAN' => 'trx_spm_tup_data',
+          'TUP_NIHIL' => 'trx_spm_tup_data',
+    );
+  }
+
 
 	public function get_array_jenis() // yang lewat kas undip & kas bendahara
 	{
@@ -75,6 +157,7 @@ class Spm_model extends CI_Model {
 						'LSPHK3' => 'trx_spm_lsphk3_data',
 		);
 	}
+
 
   public function get_array_proses_spm() // Array jenis dan tabel untuk checking proses SPM
   {
@@ -118,6 +201,9 @@ class Spm_model extends CI_Model {
   {
     $tabel_konversi = array(
       'GUP' => 'GU',
+      'NK' => 'LSPG',
+      'LN' => 'LSNK',
+      'LK' => 'LSK',
     );
     if (isset($tabel_konversi[$jenis])){
       return $tabel_konversi[$jenis];

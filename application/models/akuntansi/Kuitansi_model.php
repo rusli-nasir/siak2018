@@ -765,7 +765,7 @@ class Kuitansi_model extends CI_Model {
             $unit = '';
         }
 
-        $disabler = "AND false";
+        $disabler = "";
 
 		if($limit!=null OR $start!=null){
 			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp FROM trx_spm_tambah_ks_data, trx_tambah_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_tambah_ks_data.nomor_trx_spm = id_trx_nomor_tambah_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_tambah_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks $disabler AND

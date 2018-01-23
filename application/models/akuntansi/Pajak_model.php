@@ -282,6 +282,10 @@ class Pajak_model extends CI_Model {
         $tabel_utama = $this->get_tabel_utama_by_jenis($jenis);
         $tabel_pajak = $this->get_tabel_by_jenis($jenis);
 
+        if ($tabel_detail == null){
+            return null;
+        }
+
         // print_r($jenis);die();
 
 

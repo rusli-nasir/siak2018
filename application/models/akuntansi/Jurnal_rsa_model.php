@@ -50,7 +50,7 @@ class Jurnal_rsa_model extends CI_Model {
         $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
         $hasil['tanggal_bukti'] = $this->reKonversiTanggal(date('Y-m-d', strtotime($hasil['tgl_kuitansi'])));
         $tgl = strtotime($this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm'],$jenis));
-        // print_r($tgl);die();
+        // print_r($hasil['str_nomor_trx_spm']);die();
         $hasil['tanggal'] = $this->reKonversiTanggal(date('Y-m-d', $tgl));
 
         if ($jenis == 'TUP_NIHIL') {
@@ -62,7 +62,9 @@ class Jurnal_rsa_model extends CI_Model {
         $query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
         $hasil['pengeluaran'] = number_format($this->db->query($query)->row_array()['pengeluaran'],2,',','.');
 
-        // print_r($hasil);
+        // echo "<pre>";
+
+        // print_r($tgl);
         // print_r($tabel_detail);
 
         // die($jenis);
