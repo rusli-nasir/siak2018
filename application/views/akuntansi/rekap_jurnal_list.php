@@ -137,6 +137,12 @@
        </div>
      </div>
    <?php endif ?>
+   <?php if ($this->session->userdata('level') == 3): ?>
+       <div class="col-md-2 checkbox">
+         <label><input type="checkbox" name="tipe[]" value="memorial">Memorial</label>
+       </div>
+     </div>
+   <?php endif ?>
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
