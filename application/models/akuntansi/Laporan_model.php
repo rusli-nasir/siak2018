@@ -1288,7 +1288,7 @@ class Laporan_model extends CI_Model {
 
         // die($tanggal_jurnal);
         // 
-        $array_tipe = array('memorial');
+        // $array_tipe = array('memorial');
         $array_all_tipe = array('pajak','pengembalian');
 
         $array_jenis = array('pajak');
