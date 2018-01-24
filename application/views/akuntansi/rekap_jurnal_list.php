@@ -124,25 +124,34 @@
       </div>
     <?php endif ?>
     <div class="form-group">
-      <label class="col-md-2 control-label">Tipe</label>  
-      <div class="col-md-2 checkbox">
-        <label><input type="checkbox" name="tipe[]" value="pengeluaran" checked>Transaksi</label>
-     </div>
-     <div class="col-md-2 checkbox">
-       <label><input type="checkbox" name="tipe[]" value="pajak">Pajak</label>
-     </div>
+      <label class="col-md-2 control-label">Tipe</label>
+      <div class="col-md-9">  
+        <div class="col-md-2 checkbox">
+          <label><input type="checkbox" name="tipe[]" value="pengeluaran" checked>Transaksi</label>
+       </div>
+       <div class="col-md-2 checkbox">
+         <label><input type="checkbox" name="tipe[]" value="pajak">Pajak</label>
+       </div>
      <?php if ($this->session->userdata('kode_unit') == 92): ?>
        <div class="col-md-2 checkbox">
          <label><input type="checkbox" name="tipe[]" value="pengembalian">Pengembalian</label>
        </div>
-     </div>
    <?php endif ?>
    <?php if ($this->session->userdata('level') == 3): ?>
        <div class="col-md-2 checkbox">
          <label><input type="checkbox" name="tipe[]" value="memorial">Memorial</label>
        </div>
-     </div>
+      <div class="col-md-2 checkbox">
+         <label><input type="checkbox" name="tipe[]" value="pendapatan">Pendapatan</label>
+      </div>
    <?php endif ?>
+   <?php if ($this->session->userdata('kode_unit') == 9999): ?>
+     <div class="col-md-2 checkbox">
+       <label><input type="checkbox" name="tipe[]" value="pendapatan">Pendapatan</label>
+     </div>
+ <?php endif ?>
+    </div>  <!-- end col-md-9 -->
+      </div> <!-- end form-group -->
     <!-- Button (Double) -->
     <div class="form-group">
       <div class="col-md-12" style="text-align:center;">
