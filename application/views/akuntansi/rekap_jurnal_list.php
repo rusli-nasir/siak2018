@@ -142,12 +142,12 @@
          <label><input type="checkbox" name="tipe[]" value="memorial">Memorial</label>
        </div>
       <div class="col-md-2 checkbox">
-         <label><input type="checkbox" name="tipe[]" value="pendapatan">Pendapatan</label>
+         <label><input type="checkbox" name="tipe[]" value="penerimaan">Penerimaan</label>
       </div>
    <?php endif ?>
    <?php if ($this->session->userdata('kode_unit') == 9999): ?>
      <div class="col-md-2 checkbox">
-       <label><input type="checkbox" name="tipe[]" value="pendapatan">Pendapatan</label>
+       <label><input type="checkbox" name="tipe[]" value="penerimaan">Penerimaan</label>
      </div>
  <?php endif ?>
     </div>  <!-- end col-md-9 -->
