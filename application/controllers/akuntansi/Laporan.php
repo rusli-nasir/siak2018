@@ -2025,17 +2025,17 @@ class Laporan extends MY_Controller {
         // $this->remove_parse($parsed,121);
 
         if ($level == 3){
-            $this->add_after_parse($parsed,'lpk','Piutang Netto',112,array(1131,1132),3,$start_date,$end_date,array('pengurang' => 1133));        
-            $this->add_after_parse($parsed,'lpk','',122,array(1241),3,$start_date,$end_date);
+            $this->add_after_parse($parsed,'lpk','Piutang Netto',112,array(1131,1132),3,$start_date,$end_date,array('pengurang' => 1133));
             $this->add_after_parse($parsed,'lpk','',123,array(1242),3,$start_date,$end_date);
+            $this->add_after_parse($parsed,'lpk','',123,array(1241),3,$start_date,$end_date);
             $this->change_value_entry($parsed,'lpk',311,'add','jumlah_now',$data_aktivitas[6]['tidak_terikat']['balance'] - $data_aktivitas[7]['tidak_terikat']['balance']);
             $this->change_value_entry($parsed,'lpk',321,'replace','jumlah_now',$data_aktivitas[6]['terikat_temporer']['balance'] - $data_aktivitas[7]['terikat_temporer']['balance']);
             $this->change_value_entry($parsed,'lpk',322,'replace','jumlah_now',$data_aktivitas[6]['terikat_permanen']['balance'] - $data_aktivitas[7]['terikat_permanen']['balance']);
         }
         elseif ($level == 4){
             $this->add_after_parse($parsed,'lpk','Piutang Netto',1121,array(1131,1132),3,$start_date,$end_date,array('pengurang' => 1133));        
-            $this->add_after_parse($parsed,'lpk','',1221,array(1241),3,$start_date,$end_date);
-            $this->add_after_parse($parsed,'lpk','',1231,array(1242),3,$start_date,$end_date);
+            $this->add_after_parse($parsed,'lpk','',1226,array(1241),3,$start_date,$end_date);
+            $this->add_after_parse($parsed,'lpk','',1232,array(1242),3,$start_date,$end_date);
             $this->change_value_entry($parsed,'lpk',3111,'add','jumlah_now',$data_aktivitas[6]['tidak_terikat']['balance'] - $data_aktivitas[7]['tidak_terikat']['balance']);
             $this->change_value_entry($parsed,'lpk',3211,'replace','jumlah_now',$data_aktivitas[6]['terikat_temporer']['balance'] - $data_aktivitas[7]['terikat_temporer']['balance']);
             $this->change_value_entry($parsed,'lpk',3221,'replace','jumlah_now',$data_aktivitas[6]['terikat_permanen']['balance'] - $data_aktivitas[7]['terikat_permanen']['balance']);

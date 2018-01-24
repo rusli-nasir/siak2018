@@ -1288,8 +1288,8 @@ class Laporan_model extends CI_Model {
 
         // die($tanggal_jurnal);
         // 
-        // $array_tipe = array('memorial');
-        $array_all_tipe = array('pajak','pengembalian');
+        // $array_tipe = array('penerimaan');
+        $array_all_tipe = array('pajak','pengembalian','memorial','penerimaan');
 
         $array_jenis = array('pajak');
         if ($jenis == null){
@@ -1365,7 +1365,7 @@ class Laporan_model extends CI_Model {
 
         $this->db_laporan->stop_cache();
 
-        $this->db_laporan->where("tipe != 'memorial' AND tipe != 'jurnal_umum' AND tipe != 'pajak' AND tipe != 'pengembalian'");
+        $this->db_laporan->where("tipe != 'memorial' AND tipe != 'jurnal_umum' AND tipe != 'penerimaan' AND tipe != 'pengeluaran' AND tipe != 'pajak' AND tipe != 'pengembalian'");
 
         $query = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
@@ -1382,6 +1382,8 @@ class Laporan_model extends CI_Model {
 
         $this->db_laporan->join('akuntansi_relasi_kuitansi_akun','akuntansi_kuitansi_jadi.id_kuitansi_jadi = akuntansi_relasi_kuitansi_akun.id_kuitansi_jadi');
 
+        // echo $this->db_laporan->get_compiled_select();die();
+
         $query2 = $this->db_laporan->get()->result_array();
 
         $query = array_merge($query,$query2);
@@ -1391,7 +1393,7 @@ class Laporan_model extends CI_Model {
         $data = array();
         foreach ($query as $entry) {
             $data[$entry['id_kuitansi_jadi']]['transaksi'] = $entry;
-            if ($entry['tipe'] == 'memorial' or $entry['tipe'] == 'jurnal_umum' or $entry['tipe'] == 'pajak' or $entry['tipe'] == 'pengembalian') {
+            if ($entry['tipe'] == 'memorial' or $entry['tipe'] == 'jurnal_umum' or $entry['tipe'] == 'penerimaan' or $entry['tipe'] == 'pajak' or $entry['tipe'] == 'pengembalian') {
 
                 $in_query = $entry;
                 // print_r($in_query);die();
