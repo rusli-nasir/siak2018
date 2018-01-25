@@ -144,14 +144,14 @@
    <div class="form-group">
     <label class="col-md-2 control-label">Tipe</label>  
     <div class="col-md-2 checkbox">
-      <label><input type="checkbox" name="tipe[]" value="pengeluaran" checked>Transaksi</label>
+      <label><input type="checkbox" name="tipe[]" value="pengeluaran" onclick="cek()" checked>Transaksi</label>
    </div>
    <div class="col-md-2 checkbox" v-if="level_laporan == '6'">
-     <label><input type="checkbox" name="tipe[]" value="pajak">Pajak</label>
+     <label><input type="checkbox" name="tipe[]" value="pajak" onclick="cek()">Pajak</label>
    </div>
    <?php if ($this->session->userdata('kode_unit') == 92): ?>
    <div class="col-md-2 checkbox">
-     <label><input type="checkbox" name="tipe[]" value="pengembalian">Pengembalian</label>
+     <label><input type="checkbox" name="tipe[]" value="pengembalian" onclick="cek()">Pengembalian</label>
    </div>
   </div>
   <?php endif ?>
@@ -333,14 +333,14 @@
         }
       });
 
-      $("input:checkbox[name^='tipe']").click(function(){
+      function cek(){
         checked = $("input:checkbox[name^='tipe']:checked").length;
         if (!checked) {
           $("input:checkbox[name^='tipe']").prop('required', true);
         } else {
           $("input:checkbox[name^='tipe']").prop('required', false);
         }
-      });
+      };
 </script>
 <?php
 function get_pengeluaran($id_kuitansi){
