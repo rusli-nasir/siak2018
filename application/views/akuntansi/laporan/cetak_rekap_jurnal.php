@@ -1,16 +1,42 @@
-<!DOCTYPE>
 <?php
 if(isset($excel)){
 	header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-	header("Content-Disposition: attachment; filename=rekap_jurnal.xls");  //File name extension was wrong
+	header("Content-Disposition: attachment; filename=Rekap_jurnal.xls");  //File name extension was wrong
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("Cache-Control: private",false);
 }
 ?>
+
+<!DOCTYPE>
 <html>
 	<head>
+		<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
+		<!-- <link href="<?php echo base_url();?>/assets/akuntansi/css/bootstrap.min.css" rel="stylesheet" media="screen"> -->
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
 		<title>Rekap Jurnal</title>
+		<script type="text/javascript">
+		</script>
+	</head>
+
+	<body style="font-family:arial;margin:20px 20px 20px 20px;">
+		<?php if(isset($excel)){ ?>
+		<?php }else{ ?>
+		<form action="<?php echo site_url('akuntansi/laporan/cetak_rekap_jurnal') ?>" method="post">
+			<input type="hidden" name="tipe" value="excel">
+			<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
+			<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
+			<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
+			<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
+			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
+			<input type="hidden" name="cetak" value="cetak">
+			<!-- <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Cetak</button> -->
+		</form>
+		<a download="Rekap_jurnal.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
+		<button class="btn btn-success no-print" type="button" id="print_tabel">Cetak</button>
+		<?php } ?>
+		<div id="printed_table">
 		<style type="text/css">
 		@page{
 			size:landscape;
@@ -27,35 +53,6 @@ if(isset($excel)){
     	.excel{background-color:#A3A33E;color:#fff;}
     	.pdf{background-color:#588097;color:#fff;}
 		</style>
-		<script type="text/javascript">
-		</script>
-	</head>
-	<body style="font-family:arial;margin:20px 20px 20px 20px;">
-		<?php if(!isset($excel)){ ?>
-			&nbsp;&nbsp;
-			<?php echo form_open("akuntansi/laporan/cetak_rekap_jurnal",array("class"=>"form-horizontal")); ?>
-				<input type="hidden" name="tipe" value="excel">
-				<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
-				<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
-				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
-				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
-				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-				<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
-			</form>
-			<?php 
-			$arr_sumber = explode('_', $sumber);
-			$link_cetak = 'cetak_'.$arr_sumber[1].'_'.$arr_sumber[2];
-			?>
-			<?php echo form_open("akuntansi/laporan/$link_cetak",array("class"=>"form-horizontal", "target"=>"_blank")); ?>
-				<input type="hidden" name="tipe" value="pdf">
-				<input type="hidden" name="unit" value="<?php echo $this->input->post('unit') ?>">
-				<input type="hidden" name="basis" value="<?php echo $this->input->post('basis') ?>">
-				<input type="hidden" name="daterange" value="<?php echo $this->input->post('daterange') ?>">
-				<input type="hidden" name="sumber_dana" value="<?php echo $this->input->post('sumber_dana') ?>">
-				<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-				<!-- <input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF"> -->
-			</form>
-		<?php } ?>
 		<div align="center" style="font-weight:bold">
 			<?php echo $teks_unit; ?><br/>
 			JURNAL UMUM<br/>
@@ -152,8 +149,22 @@ if(isset($excel)){
 				</tr>
 			</tbody>
 		</table>
+	</div>
 	</body>
 </html>
+
+<script type="text/javascript">
+	$('#download_excel').click(function(){
+		var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+		this.href = result;
+		this.download = "Rekap_jurnal.xls";
+		return true;
+	})
+	$('#print_tabel').click(function(){
+		$("#printed_table").print();
+	})
+</script>
+
 <?php
 function get_nama_unit($kode_unit)
 {
