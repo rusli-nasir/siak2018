@@ -172,7 +172,7 @@ if(isset($excel)){
 					<td>'.$transaksi['tanggal'].'</td>
 					<td>'.$transaksi['no_bukti'].'</td>
 					<td width="350px;">'.$transaksi['uraian'].'</td>
-					<td>'.$transaksi['kode_user'].'</td>';
+					<td>_'.$transaksi['jenis'].'_</td>';
 					if ($transaksi['tipe'] == 'debet'){
 	    				echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
 	    				echo '<td align="right">0</td>';
