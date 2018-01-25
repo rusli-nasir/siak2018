@@ -1002,9 +1002,9 @@ class Laporan_model extends CI_Model {
             $query_sumber_dana = '';
             if ($sumber_dana != null){
                 if ($sumber_dana == 'tidak_terikat'){
-                    $query_sumber_dana = "AND sumber_dana IN ('SELAIN-APBN','SPI-SILPA')";
+                    $query_sumber_dana = "AND sumber_dana IN ('SELAIN-APBN','SPI-SILPA','APBN-LAINNYA')";
                 }elseif ($sumber_dana == 'terikat_temporer') {
-                    $query_sumber_dana = "AND sumber_dana IN ('APBN-BPPTNBH','APBN-LAINNYA')";
+                    $query_sumber_dana = "AND sumber_dana IN ('APBN-BPPTNBH')";
                 }
             }
 
@@ -1018,8 +1018,8 @@ class Laporan_model extends CI_Model {
             }
 
             $tabel_sumber_dana = array(
-                'terikat_temporer' => array('APBN-BPPTNBH','APBN-LAINNYA'),
-                'tidak_terikat' => array('SELAIN-APBN','SPI-SILPA'),
+                'tidak_terikat' => array('SELAIN-APBN','SPI-SILPA','APBN-LAINNYA'),
+                'terikat_temporer' => array('APBN-BPPTNBH'),
             );
 
             $added_query = '';
@@ -1047,7 +1047,7 @@ class Laporan_model extends CI_Model {
 
             foreach ($array_akun as $akun) {
                 // ambil dari array akun aja, dikelompokin per akun
-                if (substr($akun, 0,1) == 5) {
+                if (substr($akun, 0,1) == 5 ) {
 
                     $group_by = "SUBSTR(rba.detail_belanja_.kode_usulan_belanja,19,6)";
                     $selected_query = ",$group_by as akun";
@@ -1085,7 +1085,7 @@ class Laporan_model extends CI_Model {
                     // print_r($query);die();
 
                     // $anggaran[$akun] = $this->db2->query($query)->row_array()['jumlah'];
-                } elseif (substr($akun,0,1) == 4) {
+                } elseif (substr($akun,0,1) == 4 or substr($akun,0,1) == 8) {
                     if ($unit != null) {
                         $this->db_pendapatan->where('LEFT(sukpa,2)',$unit);
                     } 
@@ -1100,8 +1100,23 @@ class Laporan_model extends CI_Model {
                     // $anggaran[$akun] += $this->db2->get('target')->row_array()['jumlah'];
                     $anggaran_temp = array_merge($anggaran_temp,$this->db_pendapatan->get('target')->result_array());
 
-                }
+                    if ($unit != null) {
+                        $this->db->where('kode_unit',$unit);
+                    } 
+                    $this->db->like('akun',$akun,'after');
+                    if ($this->session->userdata('level') == 1){
+                        $this->db->select("0 as jumlah,akun");
+                    }else{
+                        $this->db->select("SUM(anggaran) as jumlah,akun");
+                    }
+                    $this->db->group_by('akun');    
+
+                    $anggaran_temp = array_merge($anggaran_temp,$this->db->get('akuntansi_anggaran')->result_array());                
+                } 
             }
+
+
+
             foreach ($anggaran_temp as $entry) {
                 $anggaran[$entry['akun']] = 0;
             }
