@@ -275,6 +275,8 @@ class Laporan_model extends CI_Model {
     public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null,$sumber = null, $array_tipe_jurnal = null)
     {
 
+        // echo "<pre>";
+
         if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
             $mode = 'saldo';
         }else{
@@ -292,7 +294,7 @@ class Laporan_model extends CI_Model {
         }
 
         // $array_tipe_jurnal = array('pengeluaran');
-        $array_all_tipe_jurnal = array('pajak','pengembalian');
+        $array_all_tipe_jurnal = array('pajak');
 
 
         // $sumber = 'biaya';
@@ -343,6 +345,8 @@ class Laporan_model extends CI_Model {
         if ($tingkat != null or $sumber != null) {
             $array_akun = array(5);
         }
+
+        // $array_akun = array(111102);
 
         // $array_jenis = array('akrual','kas');
 
@@ -452,7 +456,7 @@ class Laporan_model extends CI_Model {
                         $this->db_laporan->where("kode_kegiatan <> ''");
                     }
 
-                    if ($array_tipe != null) {
+                    if ($array_tipe_jurnal != null) {
                         if (in_array('pengeluaran', $array_tipe_jurnal)){
                             $where_tipe = '(1 ';
                             $array_differ_tipe = array_diff($array_all_tipe_jurnal,$array_tipe_jurnal);
@@ -466,7 +470,7 @@ class Laporan_model extends CI_Model {
                             }
                         }
                         $where_tipe .= ")";
-                        $this->db_laporan->where("kode_kegiatan <> ''");
+                        // $this->db_laporan->where("kode_kegiatan  ''");
                     }
 
                     // if ($regex_kegiatan != null){
@@ -487,6 +491,7 @@ class Laporan_model extends CI_Model {
                         $this->db_laporan->group_by($group_tingkat);
                     }
                     // echo $this->db_laporan->get_compiled_select();die();
+
                     // $this->db_laporan->cache_on();
 
                     $hasil = $this->db_laporan->get($from_init)->result_array();
@@ -508,6 +513,7 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
+
 
 
         $query2 = array();
@@ -545,8 +551,8 @@ class Laporan_model extends CI_Model {
                         if ($start_date != null and $end_date != null){
                             $added_query .= "and tu.tanggal BETWEEN '$start_date' AND '$end_date'";
                         }
-
-                        if ($array_tipe != null) {
+                        $where_tipe = ' 1 ';
+                        if ($array_tipe_jurnal != null) {
                             if (in_array('pengeluaran', $array_tipe_jurnal)){
                                 $where_tipe = '(1 ';
                                 $array_differ_tipe = array_diff($array_all_tipe_jurnal,$array_tipe_jurnal);
@@ -587,13 +593,14 @@ class Laporan_model extends CI_Model {
                                  GROUP BY tr.akun $added_group
                         ";
 
-                        // echo $query."\n";die();
+                        // echo $query."\n";
 
                         $hasil = $this->db_laporan->query($query)->result_array();
 
                         // $this->db_laporan->cache_off();
 
-                        // print_r($hasil);die();
+                        // echo "<pre>";
+                        // print_r($hasil);die();  
 
                         for ($i=0; $i < count($hasil); $i++) { 
                             $hasil[$i]['tipe'] = $tipe;
@@ -621,8 +628,10 @@ class Laporan_model extends CI_Model {
             }
         }
 
+        // die();
+
         // if ($sumber == 'biaya'){
-        //     print_r($query1);die();
+            // print_r($query1);die();
         // }
 
         // foreach ($query1 as $key => $value) {
@@ -644,7 +653,7 @@ class Laporan_model extends CI_Model {
         // }
 
         // print_r($hasil);die();
-
+        // echo "<pre>";
         // print_r($query1);die();
         return $query1;
 
@@ -752,8 +761,8 @@ class Laporan_model extends CI_Model {
                         ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
                         // ->order_by('no_bukti')
                         ;
-                    if ($start_date != null and $end_date != null){
-                        $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
+                    if ($start_date != null and $end_date != null)
+{                        $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
                     }
 
                     if ($sumber_dana != null){

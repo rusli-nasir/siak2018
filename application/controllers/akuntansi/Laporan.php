@@ -1311,8 +1311,8 @@ class Laporan extends MY_Controller {
         // }
 
         $data['query'] = $query_neraca;
-        // echo "<pre>";
         ksort($data['query']);
+        // echo "<pre>";
         // print_r($data['query']);die();
         // echo $tingkat;die();
 
