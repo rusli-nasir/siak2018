@@ -2722,9 +2722,9 @@ class Laporan extends MY_Controller {
         $array_pendanaan['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = array(22); // di sisi debet
         $array_pendanaan['pendanaan_masuk']['investasi'] = array(1);
 
-        $array_pendanaan['pendanaan_keluar']['pemberian_pinjaman'] = array(1);
-        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array(21);
-        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array(22);
+        $array_pendanaan['pendanaan_keluar']['pemberian_pinjaman_/_investasi'] = array(8214,8215);
+        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array(821);
+        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array(22); //* nggak ada
 
         $array_uraian_investasi['penerimaan_hasil_investasi'] = array('penerimaan hasil investasi');
         $array_uraian_investasi['hasil_penjualan_aset_tetap'] = array('penjualan aset tetap');
@@ -2757,20 +2757,20 @@ class Laporan extends MY_Controller {
         $array_akun = array(
                         array( 
                               'jenis_pembatasan' => 'tidak_terikat',
-                              'list_akun' => array(6),
+                              'list_akun' => array(4),
                               'special_case' => array(
                                                 'jenis_pembatasan' => array('terikat_temporer','tidak_terikat'),
-                                                'not_akun' => array(array(62),array(61))
+                                                'not_akun' => array(array(42),array(41))
                                         )
 
                             ),
                         array(
                               'jenis_pembatasan' => 'terikat_temporer',
-                              'list_akun' => array(7)
+                              'list_akun' => array(5)
                             ),
                         array(
                               'jenis_pembatasan' => 'tidak_terikat',
-                              'list_akun' => array(7)
+                              'list_akun' => array(5)
                             ),
         );
 
@@ -2824,6 +2824,7 @@ class Laporan extends MY_Controller {
             }
             // print_r($akun);
             $data_investasi[$nama] = $this->Laporan_model->get_rekap($akun,$array_not,'akrual',null,'sum',null,$start_date,$end_date,$array_kata);
+            // $data_investasi[$nama]['nett'] *= -1;
         }
         // die();
 
@@ -2880,39 +2881,39 @@ class Laporan extends MY_Controller {
         // $array_akun = array(6,7);
         $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
         $array_pembatasan = array(
-            'tidak_terikat' => array(61,73,79),
-            'terikat_temporer' => array(62,73,79),
-            'terikat_permanen' => array(61,621,623,624,626,627,628,629,73,79)
+            'tidak_terikat' => array(41,53,59),
+            'terikat_temporer' => array(42,53,59),
+            'terikat_permanen' => array(41,421,423,424,424,427,428,429,53,59)
         );
 
         $array_akun = array(
-            'tidak_terikat' => array(6,7),
-            'terikat_temporer' => array(6,7),
-            'terikat_permanen' => array(6,7)
+            'tidak_terikat' => array(4,5),
+            'terikat_temporer' => array(4,5),
+            'terikat_permanen' => array(4,5)
         );
 
         $array_akun = array(
             array(
                     'order' => 1,
-                    'akun' => array(6),
+                    'akun' => array(4),
                     'not_akun' => $array_pembatasan['terikat_temporer'],
                     'pembatasan' => 'terikat_temporer'
             ),
             array(
                     'order' => 2,
-                    'akun' => array(6),
+                    'akun' => array(4),
                     'not_akun' => $array_pembatasan['tidak_terikat'],
                     'pembatasan' => 'tidak_terikat'
             ),
             array(
                     'order' => 3,
-                    'akun' => array(7),
+                    'akun' => array(5),
                     'not_akun' => $array_pembatasan['terikat_temporer'],
                     'pembatasan' => 'terikat_temporer'
             ),
             array(
                     'order' => 4,
-                    'akun' => array(7),
+                    'akun' => array(5),
                     'not_akun' => $array_pembatasan['tidak_terikat'],
                     'pembatasan' => 'tidak_terikat'
             ),
@@ -2958,7 +2959,7 @@ class Laporan extends MY_Controller {
         }
 
         foreach ($array_akun as $data) {
-            $temp_data = $this->Laporan_model->get_rekap($data['akun'],$data['not_akun'],'akrual',null,'saldo',$data['pembatasan'],$start_date,$end_date);
+            $temp_data = $this->Laporan_model->get_rekap($data['akun'],$data['not_akun'],'kas',null,'saldo',$data['pembatasan'],$start_date,$end_date);
             $data_all[$data['order']]['saldo'] += $temp_data['saldo'];
             $data_all[$data['order']]['posisi'] += $temp_data['posisi'];
         }
@@ -3033,7 +3034,7 @@ class Laporan extends MY_Controller {
             foreach ($akun as $key_1 => $akun_1) {
                 $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
 
-                if ($key_1 == 7) {
+                if ($key_1 == 5) {
                     if ($jenis_pembatasan != null){
                         $nama = $nama . " " . $konversi_sumber_dana[$jenis_pembatasan];
                     }
@@ -3209,9 +3210,9 @@ class Laporan extends MY_Controller {
         foreach ($data_investasi as $nama => $entry) {
 
             if (in_array($nama,$array_investasi_nett)){
-                $jumlah_now = $entry['nett'];
+                $jumlah_now = $entry['nett'] * -1;
             }else{
-                $jumlah_now = $entry['balance'];
+                $jumlah_now = $entry['balance'] * 1;
             }
             $akun = $nama;
             $nama = str_replace('fluk','penambahan/pengurangan',$nama);
@@ -3312,6 +3313,7 @@ class Laporan extends MY_Controller {
         //     $parsed[] = $entry_parsed;
         // }
 
+        // echo "<pre>";
         // print_r($data_investasi);
         // print_r($data_pendanaan);
         // die();
@@ -3321,16 +3323,63 @@ class Laporan extends MY_Controller {
         $investasi_persediaan = $this->Laporan_model->get_rekap(array(114),null,'akrual',null,'sum',null,$start_date,$end_date);
         $this->modify_from_parse($parsed,'akun','investasi_perolehan_persediaan','jumlah_now','ganti',$investasi_persediaan['nett']);
 
-        $a = $this->add_jumlah_for($parsed,61,'laporan_arus',"JUMLAH PENDAPATAN APBN");
-        $b = $this->add_jumlah_for($parsed,62,'laporan_arus',"JUMLAH PENDAPATAN SELAIN APBN");
-        $c = $this->add_jumlah_for($parsed,7,'laporan_arus',"JUMLAH BEBAN APBN",'terikat_temporer');
-        $d = $this->add_jumlah_for($parsed,7,'laporan_arus',"JUMLAH BEBAN SELAIN APBN",'tidak_terikat');
+        /*
+        BLOK MENGEKSLUSI PEROLEHAN PERSEDIAAN DARI AKUN 521
+         */
+
+        // $perolehan_persediaan_apbn = $this->Laporan_model->get_rekap(array(521),array(521212,521213,521217,521218,521219,52122),'kas',null,'sum','terikat_temporer',$start_date,$end_date);        
+
+        // $perolehan_persediaan_selain_apbn = $this->Laporan_model->get_rekap(array(521),array(521212,521213,521217,521218,521219,52122),'kas',null,'sum','tidak_terikat',$start_date,$end_date);        
+
+        // $this->modify_from_parse($parsed,'akun','521','jumlah_now','kurang',$perolehan_persediaan_apbn['nett'],'terikat_temporer');
+        // $this->modify_from_parse($parsed,'akun','521','jumlah_now','kurang',$perolehan_persediaan_selain_apbn['nett'],'tidak_terikat');
+
+        /*
+        END OF BLOK
+         */
+        
+        
+        /*
+        BLOK KODE NEGASI FLUK PENYERTAAN KE UNIT USAHA
+         */
+
+        $this->modify_from_parse($parsed,'akun','investasi_fluk_penyertaan_ke_unit_usaha','jumlah_now','kali',-1);
+
+
+        /*
+        BLOK KODE MENGUBAH PEROLEHAN ASET TETAP KE TOTAL LRA AKUN 53 (24 JANUARI 2018)
+         */
+        $jumlah_apbn = $this->Laporan_model->get_rekap(array(53),null,'kas',null,'sum',null,$start_date,$end_date);
+
+        $this->modify_from_parse($parsed,'akun','investasi_perolehan_aset_tetap','jumlah_now','ganti',-1 * $jumlah_apbn['nett']);
+
+        /*
+        BLOK KODE MENGUBAH PEROLEHAN PERSEDIAAN (24 JANUARI 2018)
+         */
+
+        // $perolehan_persediaan = $this->Laporan_model->get_rekap(array(521),array(521212,521213,521217,521218,521219,52122),'kas',null,'sum',null,$start_date,$end_date);        
+
+        $this->modify_from_parse($parsed,'akun','investasi_perolehan_persediaan','jumlah_now','ganti',0);
+
+        /*
+        BLOK KODE MENG-0-KAN HASIL PEROLEHAN HASIL TAK BERWUJUD
+         */
+        
+        $this->modify_from_parse($parsed,'akun','investasi_penambahan_hasil_tak_berwujud','jumlah_now','ganti',0);
+
+        // echo "<pre>";
+        // print_r($parsed);die();
+
+        $a = $this->add_jumlah_for($parsed,41,'laporan_arus',"JUMLAH PENDAPATAN APBN");
+        $b = $this->add_jumlah_for($parsed,42,'laporan_arus',"JUMLAH PENDAPATAN SELAIN APBN");
+        $c = $this->add_jumlah_for($parsed,5,'laporan_arus',"JUMLAH BEBAN APBN",'terikat_temporer');
+        $d = $this->add_jumlah_for($parsed,5,'laporan_arus',"JUMLAH BEBAN SELAIN APBN",'tidak_terikat');
         $kas_investasi = $this->add_jumlah_for($parsed,'investasi','laporan_arus',"Kas Bersih Digunakan dari Aktivitas Investasi");
         $kas_pendanaan = $this->add_jumlah_for($parsed,'pendanaan','laporan_arus',"Kas Bersih Diperoleh dari Aktivitas Pendanaan");
 
+        
 
-        // echo "<pre>";
-        // print_r($d);die();
+
 
         /*
         BLOK KODE PENAMBAHAN Kas Bersih dari Aktivitas Operasi
@@ -3341,6 +3390,10 @@ class Laporan extends MY_Controller {
         // echo $c['jumlah_now']."\n";
         // echo $d['jumlah_now']."\n";
         // die();
+        // 
+        // echo "<pre>";
+        // print_r($jumlah_investasi_apbn);die();
+        // $entry_perolehan_aset_tetap 
         
         $entry_kas_bersih_aktivitas_operasi = array(
            'order' => ++$order_in,
@@ -3363,8 +3416,7 @@ class Laporan extends MY_Controller {
         // die();
 
 
-
-        $this->insert_after($parsed,'sum.7.tidak_terikat',$entry_kas_bersih_aktivitas_operasi);
+        $this->insert_after($parsed,'sum.5.tidak_terikat',$entry_kas_bersih_aktivitas_operasi);
 
         /*
         BLOK KODE FLUK KAS DAN SETARA KAS
@@ -3439,6 +3491,9 @@ class Laporan extends MY_Controller {
 
         $this->insert_after($parsed,'kas_dan_setara_kas_awal',$entry_kas_dan_setara_kas_akhir);
 
+        // echo "<pre>";
+        // print_r($parsed);die();
+
 
 
         // $this->add_jumlah_for($parsed,5,'laporan_arus',"Jumlah Beban");
@@ -3508,7 +3563,7 @@ class Laporan extends MY_Controller {
             ),
             array(
                 'akun' => array(8),
-                'not_akun' => array(81),
+                'not_akun' => null,
                 'jenis_pembatasan' => null,
                 'string' => null,
                 'is_anggaran' => true,
@@ -3664,7 +3719,7 @@ class Laporan extends MY_Controller {
                                 $data['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
                                 $data['anggaran_awal_lvl_4'][$key_3][] = $anggaran;
 
-                                if ($key_1 == 5){
+                                if ($key_1 == 5  or $key_2 == 82){
                                     $selisih = abs($anggaran) - abs($saldo_sekarang);
                                 }elseif ($key_1) {
                                     $selisih = abs($saldo_sekarang) - abs($anggaran);                                
@@ -3746,7 +3801,7 @@ class Laporan extends MY_Controller {
                                     $anggaran = (isset($rekap[$key_6]['anggaran'])) ? $rekap[$key_6]['anggaran'] : 0 ;
                                     // $saldo_awal = (isset($rekap[$key_6]['kredit'])) ? $rekap[$key_6]['saldo_awal'] : 0 ;
                                     $nama = $akun_6['nama'];
-                                    if ($key_1 == 5){
+                                    if ($key_1 == 5 or $key_2 == 82){
                                         $selisih = abs($anggaran) - abs($saldo_sekarang);
                                     }elseif ($key_1) {
                                         $selisih = abs($saldo_sekarang) - abs($anggaran);                                
@@ -3792,7 +3847,7 @@ class Laporan extends MY_Controller {
                             $data['nama_lvl_3'][$key_2][] = $nama;
                             $data['saldo_sekarang_lvl_3'][$key_2][] = $saldo_sekarang;
                             $data['anggaran_awal_lvl_3'][$key_2][] = $anggaran;
-                            if ($key_1 == 5){
+                            if ($key_1 == 5  or $key_2 == 82){
                                 $selisih = abs($anggaran) - abs($saldo_sekarang);
                             }elseif ($key_1) {
                                 $selisih = abs($saldo_sekarang) - abs($anggaran);                                
@@ -3884,11 +3939,12 @@ class Laporan extends MY_Controller {
         $this->add_jumlah_for($parsed,41,'lra',"Jumlah Pendapatan APBN");
         $this->add_jumlah_for($parsed,42,'lra',"Jumlah Pendapatan Selain APBN");
         $this->add_jumlah_for($parsed,82,'lra',"Jumlah Aktivitas Pembiayaan");
+        $this->add_jumlah_for($parsed,81,'lra',"Jumlah Aktivitas Pendanaan");
 
         $sum_biaya_anggaran = $beban_apbn['anggaran'] + $beban_selain_apbn['anggaran'];
         $sum_biaya_realisasi = $beban_apbn['realisasi'] + $beban_selain_apbn['realisasi'];
 
-        $sum_biaya_selisih = abs($sum_biaya_realisasi) - abs($sum_biaya_anggaran);
+        $sum_biaya_selisih = abs($sum_biaya_anggaran) - abs($sum_biaya_realisasi);
 
         if ($sum_biaya_anggaran == 0) {
             $sum_biaya_persentase = 0;
@@ -3958,11 +4014,44 @@ class Laporan extends MY_Controller {
          */
 
         $entry_jumlah_pembiayaan = $this->get_from_parse($parsed,'akun','sum.82','','','whole');
+        $entry_jumlah_pendanaan = $this->get_from_parse($parsed,'akun','sum.81','','','whole');
 
-        $silpa_anggaran = $entry_surplus['anggaran'] + $entry_jumlah_pembiayaan['anggaran'];
-        $silpa_realisasi = $entry_surplus['realisasi'] + $entry_jumlah_pembiayaan['realisasi'];
+        $pembiayaan_dan_pendanaan_anggaran = $entry_jumlah_pendanaan['anggaran'] - $entry_jumlah_pembiayaan['anggaran'];
+        $pembiayaan_dan_pendanaan_realisasi = $entry_jumlah_pendanaan['realisasi'] - $entry_jumlah_pembiayaan['realisasi'];
+
+        $pembiayaan_dan_pendanaan_selisih = abs($pembiayaan_dan_pendanaan_realisasi) - abs($pembiayaan_dan_pendanaan_anggaran);
+
+        if ($pembiayaan_dan_pendanaan_anggaran == 0) {
+            $pembiayaan_dan_pendanaan_persentase = 0;
+        } else {
+            $pembiayaan_dan_pendanaan_persentase = abs($pembiayaan_dan_pendanaan_realisasi) / $pembiayaan_dan_pendanaan_anggaran * 100;
+        }
+
+        $entry_pembiayaan_dan_pendanaan = array(
+           'order' => ++$order,
+           'level' => 0,
+           'akun' => 'sum.pembiayaan_dan_pendanaan',
+           'type' => 'sum',
+           'nama' => 'Jumlah Pembiayaan dan Pendanaan',
+           'start_sum' => null,
+           'end_sum' => null,
+           'sum_negatif' => null,
+           'anggaran' => $pembiayaan_dan_pendanaan_anggaran,
+           'realisasi' => $pembiayaan_dan_pendanaan_realisasi,
+           'selisih' => $pembiayaan_dan_pendanaan_selisih,
+           'persentase' => $pembiayaan_dan_pendanaan_persentase,
+           'jenis_pembatasan' => null,
+        );
+
+        $this->insert_after($parsed,'sum.82',$entry_pembiayaan_dan_pendanaan);
+
+
+
+        $silpa_anggaran = $entry_surplus['anggaran'] + $entry_pembiayaan_dan_pendanaan['anggaran'];
+        $silpa_realisasi = $entry_surplus['realisasi'] + $entry_pembiayaan_dan_pendanaan['realisasi'];
 
         $silpa_selisih = abs($silpa_realisasi) - abs($silpa_anggaran);
+
         if ($silpa_anggaran == 0) {
             $silpa_persentase = 0;
         } else {
@@ -3985,7 +4074,7 @@ class Laporan extends MY_Controller {
            'jenis_pembatasan' => null,
         );
 
-        $this->insert_after($parsed,'sum.82',$entry_silpa);
+        $this->insert_after($parsed,'sum.pembiayaan_dan_pendanaan',$entry_silpa);
 
 
         // echo "<pre>";
@@ -5175,9 +5264,26 @@ class Laporan extends MY_Controller {
         }
     }
 
-    public function replace_parse(&$parse,$jenis,$replaced,$akun)
+    public function replace_parse(&$parse,$tipe_indeks,$nilai_indeks,$indeks_dicari = null,$jenis_pembatasan = null,$replacer)
     {
-        # code...
+        $ketemu = 0;
+        $i = 0;
+        while ($i < count($parse) and $ketemu == 0) {
+            // echo $parse[$i][$tipe_indeks]." - ".$nilai_indeks." = ".$parse[$i][$indeks_dicari]."<br/>";
+            if ($jenis_pembatasan != null){
+                $added_condition = ($parse[$i]['jenis_pembatasan'] == $jenis_pembatasan);
+            }else{
+                $added_condition = true;
+            }
+            if (($parse[$i][$tipe_indeks] == $nilai_indeks) and $added_condition) {
+                $ketemu = $i;
+            }
+            $i++;
+        }
+        if ($ketemu){
+            $parse[$i] = $replaced;
+        }
+        return 0;
     }
 
     public function add_after_parse(&$parse,$jenis,$nama = null,$after,$array_akun,$level,$start_date,$end_date,$special_case = null,$pembatasan = null)
@@ -5319,6 +5425,8 @@ class Laporan extends MY_Controller {
                     $parse[$i][$indeks_terganti] = (-1 * $parse[$i][$indeks_terganti]) + $nilai_pengganti;
                 }elseif ($tipe_pengganti == 'ganti'){
                     $parse[$i][$indeks_terganti] = $nilai_pengganti;
+                }elseif ($tipe_pengganti == 'kali'){
+                    $parse[$i][$indeks_terganti] = $parse[$i][$indeks_terganti] * $nilai_pengganti;
                 }
                 $ketemu = 1;
             }
