@@ -2723,7 +2723,7 @@ class Laporan extends MY_Controller {
         $array_pendanaan['pendanaan_masuk']['investasi'] = array(1);
 
         $array_pendanaan['pendanaan_keluar']['pemberian_pinjaman_/_investasi'] = array(8214,8215);
-        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array(821);
+        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array(21);
         $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array(22); //* nggak ada
 
         $array_uraian_investasi['penerimaan_hasil_investasi'] = array('penerimaan hasil investasi');
@@ -2747,9 +2747,10 @@ class Laporan extends MY_Controller {
         $array_pendanaan_nett['pendanaan_masuk']['perolehan_pinjaman'] = true;
         $array_pendanaan_nett['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = true;
         $array_pendanaan_nett['pendanaan_masuk']['investasi'] = true;
+        $array_pendanaan_nett['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = true;
 
         $array_uraian['pendanaan_keluar']['pemberian_pinjaman'] = array('pemberian pinjaman');
-        // $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array('utang','pembayaran pinjaman jangka pendek','pembayaran utang jangka pendek','pembayaran kewajiban jangka pendek');
+        $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array('pembayaran utang','pembayaran hutang','pembayaran pinjaman jangka pendek','pembayaran utang jangka pendek','pembayaran kewajiban jangka pendek');
         // $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array('utang','pembayaran pinjaman jangka panjang','pembayaran utang jangka panjang','pembayaran kewajiban jangka panjang');
 
         $sumber_dana = array('tidak_terikat','terikat_temporer','terikat_permanen');
@@ -2846,6 +2847,7 @@ class Laporan extends MY_Controller {
         }
 
         // print_r($data_investasi);
+        // echo "<pre>";
         // print_r($data_pendanaan);die();
 
 
@@ -3378,9 +3380,6 @@ class Laporan extends MY_Controller {
         $kas_pendanaan = $this->add_jumlah_for($parsed,'pendanaan','laporan_arus',"Kas Bersih Diperoleh dari Aktivitas Pendanaan");
 
         
-
-
-
         /*
         BLOK KODE PENAMBAHAN Kas Bersih dari Aktivitas Operasi
          */
@@ -3437,8 +3436,6 @@ class Laporan extends MY_Controller {
            'persentase' => null,
            'jenis_pembatasan' => null,
         );
-
-
 
         $this->insert_after($parsed,'sum.pendanaan.',$entry_fluk_kas_dan_setara_kas);
         // 

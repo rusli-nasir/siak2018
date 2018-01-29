@@ -379,6 +379,8 @@ class Akun_model extends CI_Model {
         $result2 =  $this->db->get('akuntansi_aset_6')->result_array();
         $this->db->like('akun_6', '111148');
         $result3 =  $this->db->get('akuntansi_aset_6')->result_array();
+        $this->db->like('akun_6', '111302');
+        $result3 =  $this->db->get('akuntansi_aset_6')->result_array();
         return array_merge($result1,$result2,$result3);
     }
 
