@@ -144,7 +144,7 @@
               <select id="level" name="level" class="form-control" required="">
                 <option value="3">Header</option>
                 <option value="4">Sub-Header</option>
-                <option value="6" v-show="jenis_laporan == 'Realisasi Anggaran' || jenis_laporan == 'Posisi Keuangan' || jenis_laporan == 'Arus Kas'">Detail</option>
+                <option value="6" v-show="jenis_laporan == 'Realisasi Anggaran' || jenis_laporan == 'Posisi Keuangan' || jenis_laporan == 'Arus Kas' || jenis_laporan == 'Aktifitas'">Detail</option>
               </select>
           </div>
         </div>
