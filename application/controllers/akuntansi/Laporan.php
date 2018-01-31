@@ -3515,7 +3515,7 @@ class Laporan extends MY_Controller {
 
         $entry_parsed = array(
            'order' => ++$order_in,
-           'level' => 0,
+           'level' => $level-2,
            'akun' => 'investasi',
            'type' => 'hide_index',
            'nama' => 'ARUS KAS DARI AKTIVITAS INVESTASI',
@@ -3544,7 +3544,7 @@ class Laporan extends MY_Controller {
             $nama = str_replace('fluk','penambahan/pengurangan',$nama);
             $entry_parsed = array(
                'order' => ++$order_in,
-               'level' => 2,
+               'level' => $level,
                'akun' => 'investasi_'.$akun,
                'type' => 'hide_index',
                'nama' => ucwords(str_replace("_", " ", $nama)),
@@ -3562,7 +3562,7 @@ class Laporan extends MY_Controller {
 
         $entry_parsed = array(
            'order' => ++$order_in,
-           'level' => 0,
+           'level' => $level-2,
            'akun' => 'pendanaan',
            'type' => 'hide_index',
            'nama' => 'ARUS KAS DARI AKTIVITAS PENDANAAN',
@@ -3580,7 +3580,7 @@ class Laporan extends MY_Controller {
         foreach ($data_pendanaan as $nama_indeks => $each_pendanaan) {
             $entry_parsed = array(
                'order' => ++$order_in,
-               'level' => 1,
+               'level' => $level-1,
                'akun' => $nama_indeks,
                'type' => 'hide_index',
                'nama' => ucwords(str_replace("_", " ", $nama_indeks)),
@@ -3602,7 +3602,7 @@ class Laporan extends MY_Controller {
                 }
                 $entry_parsed = array(
                    'order' => ++$order_in,
-                   'level' => 2,
+                   'level' => $level,
                    'akun' => $nama_indeks."_".$nama,
                    'type' => 'hide_index',
                    'nama' => ucwords(str_replace("_", " ", $nama)),
