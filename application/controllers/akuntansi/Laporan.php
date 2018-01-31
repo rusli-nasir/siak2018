@@ -2824,7 +2824,7 @@ class Laporan extends MY_Controller {
         
         $entry_neto = array(
            'order' => ++$order_in,
-           'level' => 1,
+           'level' => $level-2,
            'akun' => 'index.neto_awal',
            'type' => 'index',
            'nama' => 'ASET NETO AWAL TAHUN : ',
@@ -2846,7 +2846,7 @@ class Laporan extends MY_Controller {
 
         $entry_aset_bersih_kekayaan_awal = array(
            'order' => ++$order_in,
-           'level' => 2,
+           'level' => $level,
            'akun' => 'entry.aset_bersih_kekayaan_awal',
            'type' => 'entry',
            'nama' => 'Aset Bersih Kekayaan Awal PTN Badan Hukum',
@@ -2864,7 +2864,7 @@ class Laporan extends MY_Controller {
 
         $entry_fluk_aset_bersih = array(
            'order' => ++$order_in,
-           'level' => 2,
+           'level' => $level,
            'akun' => 'entry.fluk_aset_bersih',
            'type' => 'entry',
            'nama' => 'Kenaikan (Penurunan) Aset Bersih Tahun Lalu',
