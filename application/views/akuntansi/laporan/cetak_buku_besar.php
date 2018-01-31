@@ -11,6 +11,8 @@ if(isset($excel)){
 <html>
 	<head>
 		<title>Buku Besar</title>
+		<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
+		<script src="<?php echo base_url();?>/assets/akuntansi/js/jquery.print.js"></script>
 		<style type="text/css">
 		@page{
 			size:landscape;
@@ -64,9 +66,10 @@ if(isset($excel)){
 			<input type="hidden" name="kegiatan" value="<?php echo $this->input->post('kegiatan') ?>">
 			<input type="hidden" name="subkegiatan" value="<?php echo $this->input->post('subkegiatan') ?>">
 			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-			<input class="btn pdf"  type="submit" name="Cetak PDF" value="Cetak PDF">
+			<button class="btn btn-success no-print" type="button" id="print_tabel">Cetak</button>
 		</form>
 		<?php } ?>
+		<div id="printed_table">
 		<div align="center" style="font-weight:bold">
 			<?php echo $teks_unit; ?><br/>
 			BUKU BESAR<br/>
@@ -196,14 +199,12 @@ if(isset($excel)){
 				</tr>';
     		}
     		echo '</tbody>
-    			<tfoot>
     				<tr>
     					<td align="right" colspan="5" style="background-color:#B1E9F2">Jumlah Total</td>
     					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_debet).'</td>
     					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($jumlah_kredit).'</td>
     					<td align="right" style="background-color:#B1E9F2">'.eliminasi_negatif($saldo).'</td>
     				</tr>
-    			</tfoot>
     			</table>';
 		$item++;
 		}
@@ -232,6 +233,7 @@ if(isset($excel)){
 				</tr>
 			</tbody>
 		</table>
+		</div>
 	</body>
 	<script type="text/javascript">
 		function printPDF() {
@@ -240,6 +242,10 @@ if(isset($excel)){
 		    printDoc.autoPrint();
 		    printDoc.output("dataurlnewwindow"); // this opens a new popup,  after this the PDF opens the print window view but there are browser inconsistencies with how this is handled
 		}
+
+		$('#print_tabel').click(function(){
+	        $("#printed_table").print();
+	    })
 	</script>
 </html>
 <?php

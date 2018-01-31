@@ -761,8 +761,8 @@ class Laporan_model extends CI_Model {
                         ->where("tipe <> 'memorial' AND tipe <> 'jurnal_umum' AND tipe <> 'pajak' AND tipe <> 'penerimaan' AND tipe <> 'pengembalian'")
                         // ->order_by('no_bukti')
                         ;
-                    if ($start_date != null and $end_date != null)
-{                        $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
+                    if ($start_date != null and $end_date != null){
+                        $this->db_laporan->where("(tanggal BETWEEN '$start_date' AND '$end_date')");
                     }
 
                     if ($sumber_dana != null){
@@ -898,6 +898,7 @@ class Laporan_model extends CI_Model {
                                  AND (tu.tipe = 'memorial' OR tu.tipe = 'jurnal_umum' $query_pajak1 OR tu.tipe = 'penerimaan' OR tu.tipe = 'pengembalian')
                                  $added_query 
                                  AND (tr.tipe = '$tipe' $query_pajak2)
+                                 AND (tr.jenis = '$jenis')
                                  GROUP BY $added_group
 
                         ";
