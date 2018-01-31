@@ -1898,7 +1898,7 @@ class Laporan extends MY_Controller {
                            'order' => ++$order,
                            'level' => 2,
                            'akun' => $key_3,
-                           'type' => 'index',
+                           'type' => 'entry',
                            'nama' => $nama,
                            'sum_negatif' => null,
                            'start_sum' => null,
@@ -1974,7 +1974,7 @@ class Laporan extends MY_Controller {
                                    'order' => ++$order,
                                    'level' => 4,
                                    'akun' => $key_4,
-                                   'type' => 'index',
+                                   'type' => 'entry',
                                    'nama' => $nama,
                                    'sum_negatif' => null,
                                    'start_sum' => null,
@@ -2136,9 +2136,16 @@ class Laporan extends MY_Controller {
         // }
         // die();
 
-
-        // print_r($parsed);die();
-
+        for ($i=0; $i < count($parsed); $i++) { 
+            if ($parsed[$i]['level'] == $parse_data['level']-2){
+                $temp = 0;
+                $temp = $this->add_jumlah_for($parsed,$parsed[$i]['akun'],'lpk',"dummy",null,null,true);
+                $parsed[$i]['jumlah_last'] = $temp['jumlah_last'];
+                $parsed[$i]['jumlah_now'] = $temp['jumlah_now'];
+                $parsed[$i]['selisih'] = $temp['selisih'];
+                $parsed[$i]['persentase'] = $temp['persentase'];
+            }
+        }
 
         unset($data['posisi']);
         unset($data['saldo']);
@@ -2504,7 +2511,7 @@ class Laporan extends MY_Controller {
                                'order' => ++$order_in,
                                'level' => 2,
                                'akun' => $key_3,
-                               'type' => 'index',
+                               'type' => 'entry',
                                'nama' => $nama,
                                'sum_negatif' => null,
                                'start_sum' => null,
@@ -2581,7 +2588,7 @@ class Laporan extends MY_Controller {
                                        'order' => ++$order_in,
                                        'level' => 4,
                                        'akun' => $key_4,
-                                       'type' => 'index',
+                                       'type' => 'entry',
                                        'nama' => $nama,
                                        'sum_negatif' => null,
                                        'start_sum' => null,
@@ -2718,6 +2725,14 @@ class Laporan extends MY_Controller {
 
         $this->insert_after($parsed,'sum.fluk.7.terikat_permanen',$entry_fluk_neto);
         
+        for ($i=0; $i < count($parsed); $i++) { 
+            if ($parsed[$i]['level'] == $parse_data['level']-2){
+                $temp = 0;
+                $temp = $this->add_jumlah_for($parsed,$parsed[$i]['akun'],'lapak',"dummy",$parsed[$i]['jenis_pembatasan'],null,true);
+                $parsed[$i]['jumlah_now'] = $temp['jumlah_now'];
+                $parsed[$i]['jumlah_last'] = $temp['jumlah_last'];
+            }
+        }
         /*
         BLOCK PROGRAM UNTUK BAGIAN ASET NETO AWAL TAHUN
          */
@@ -2802,11 +2817,6 @@ class Laporan extends MY_Controller {
         // die('aaaa');
 
         $this->insert_after($parsed,'entry.fluk_aset_bersih',$entry_aset_neto_akhir);
-
-        
-        // echo "<pre>";
-        // print_r($parse_data);
-        // die();
 
         $data_parsing['parse'] = $parsed;
 
@@ -3243,7 +3253,7 @@ class Laporan extends MY_Controller {
                                'order' => ++$order_in,
                                'level' => 2,
                                'akun' => $key_3,
-                               'type' => 'index',
+                               'type' => 'entry',
                                'nama' => $nama,
                                'sum_negatif' => null,
                                'start_sum' => null,
@@ -3323,7 +3333,7 @@ class Laporan extends MY_Controller {
                                    'order' => ++$order_in,
                                    'level' => 4,
                                    'akun' => $key_4,
-                                   'type' => 'index',
+                                   'type' => 'entry',
                                    'nama' => $nama,
                                    'sum_negatif' => null,
                                    'start_sum' => null,
@@ -3725,7 +3735,16 @@ class Laporan extends MY_Controller {
         // $this->add_jumlah_for($parsed,5,'laporan_arus',"Jumlah Beban");
         // $this->add_jumlah_for($parsed,41,'laporan_arus',"Jumlah Pendapatan APBN");
         // $this->add_jumlah_for($parsed,42,'laporan_arus',"Jumlah Pendapatan Selain APBN");
-        
+        for ($i=0; $i < count($parsed); $i++) { 
+            if ($parsed[$i]['level'] == $parse_data['level']-2){
+                $temp = 0;
+                $temp = $this->add_jumlah_for($parsed,$parsed[$i]['akun'],'laporan_arus',"dummy",$parsed[$i]['jenis_pembatasan'],null,true);
+                $parsed[$i]['jumlah_last'] = $temp['jumlah_last'];
+                $parsed[$i]['jumlah_now'] = $temp['jumlah_now'];
+                $parsed[$i]['selisih'] = $temp['selisih'];
+                $parsed[$i]['persentase'] = $temp['persentase'];
+            }
+        }
         
 
 
@@ -4003,7 +4022,7 @@ class Laporan extends MY_Controller {
                                 // $data['key_lvl_3'][] = $key_4;
                                 $entry_parsed = array(
                                    'order' => ++$order,
-                                   'level' => 3,
+                                   'level' => 4,
                                    'akun' => $key_4,
                                    'type' => 'index',
                                    'nama' => $nama,
@@ -4039,7 +4058,7 @@ class Laporan extends MY_Controller {
                                     }
                                     $entry_parsed = array(
                                        'order' => ++$order,
-                                       'level' => 5,
+                                       'level' => 6,
                                        'akun' => $key_6,
                                        'type' => 'entry',
                                        'nama' => $nama,
