@@ -2130,6 +2130,16 @@ class Laporan extends MY_Controller {
             $this->change_value_entry($parsed,'lpk',3211,'replace','jumlah_now',$data_aktivitas[6]['terikat_temporer']['balance'] - $data_aktivitas[7]['terikat_temporer']['balance']);
             $this->change_value_entry($parsed,'lpk',3221,'replace','jumlah_now',$data_aktivitas[6]['terikat_permanen']['balance'] - $data_aktivitas[7]['terikat_permanen']['balance']);
         }
+        elseif ($level == 6){
+            $this->add_after_parse($parsed,'lpk','Piutang Netto',112106,array(1131,1132),6,$start_date,$end_date,array('pengurang' => 1133));        
+
+            $this->add_after_parse($parsed,'lpk','',122601,array(1241),6,$start_date,$end_date);
+            $this->add_after_parse($parsed,'lpk','',123201,array(1242),6,$start_date,$end_date);
+
+            $this->change_value_entry($parsed,'lpk',311101,'add','jumlah_now',$data_aktivitas[6]['tidak_terikat']['balance'] - $data_aktivitas[7]['tidak_terikat']['balance']);
+            $this->change_value_entry($parsed,'lpk',321101,'replace','jumlah_now',$data_aktivitas[6]['terikat_temporer']['balance'] - $data_aktivitas[7]['terikat_temporer']['balance']);
+            $this->change_value_entry($parsed,'lpk',322101,'replace','jumlah_now',$data_aktivitas[6]['terikat_permanen']['balance'] - $data_aktivitas[7]['terikat_permanen']['balance']);
+        }
 
         // echo "<pre>";print_r($parsed);die();
 

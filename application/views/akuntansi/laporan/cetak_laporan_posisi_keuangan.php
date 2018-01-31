@@ -91,13 +91,7 @@ if($atribut['cetak']){
 						<?php endif ?>
 					>
 						<td> <?php if ($entry['type'] != 'sum') echo $entry['akun'] ?></td>
-						<td>
-							<?php 
-							for ($i=0; $i < $entry['level']; $i++) { 
-								echo "&nbsp;&nbsp;";
-							}
-
-							 ?>
+						<td style="padding-left: <?php echo $entry['level']*10 ?>">
 							<?php 
 							if ($entry['level'] < $atribut['level']-1) {
 									$entry['nama'] = strtolower($entry['nama']);
