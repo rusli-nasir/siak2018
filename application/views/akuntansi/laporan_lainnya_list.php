@@ -136,7 +136,7 @@
               <?php } ?>
           </div>
       </div>
-    <div class="row">
+    <div class="row" v-show="jenis_laporan != 'Perubahan Aset Neto'">
       <div class="col-sm-4">
         <div class="form-group">
           <label class="col-md-6 control-label">Level Laporan</label>  
