@@ -2743,9 +2743,9 @@ class Laporan extends MY_Controller {
 
         $entry_beban_penyusutan_aset_tetap = array(
            'order' => ++$order_in,
-           'level' => 0,
+           'level' => $level,
            'akun' => 'beban_penyusutan_aset_tetap',
-           'type' => 'sum',
+           'type' => 'entry',
            'nama' => "Beban Penyusutan Aset Tetap",
            'sum_negatif' => null,
            'start_sum' => null,
@@ -2755,6 +2755,7 @@ class Laporan extends MY_Controller {
            'selisih' => null,
            'persentase' => null,
            'jenis_pembatasan' => $jenis_pembatasan,
+           'hide_index' => true
         );
 
         // insert_before(&$parse,$akun,$entry_added,$jenis_pembatasan = null)
@@ -2770,10 +2771,10 @@ class Laporan extends MY_Controller {
 
         $entry_beban_penyusutan_aset_tak_berwujud = array(
            'order' => ++$order_in,
-           'level' => 0,
+           'level' => $level,
            'akun' => 'beban_penyusutan_aset_tak_berwujud',
-           'type' => 'sum',
-           'nama' => "Beban Penyusutan Aset Tak Berwujud",
+           'type' => 'entry',
+           'nama' => "Beban Amortisasi Aset Tidak Berwujud",
            'sum_negatif' => null,
            'start_sum' => null,
            'end_sum' => null,
@@ -2782,6 +2783,7 @@ class Laporan extends MY_Controller {
            'selisih' => null,
            'persentase' => null,
            'jenis_pembatasan' => $jenis_pembatasan,
+           'hide_index' => true
         );
         $this->insert_after($parsed,'beban_penyusutan_aset_tetap',$entry_beban_penyusutan_aset_tak_berwujud);
 
@@ -3520,7 +3522,7 @@ class Laporan extends MY_Controller {
 
         $entry_parsed = array(
            'order' => ++$order_in,
-           'level' => $level-2,
+           'level' => $level-3,
            'akun' => 'investasi',
            'type' => 'hide_index',
            'nama' => 'ARUS KAS DARI AKTIVITAS INVESTASI',
@@ -3567,7 +3569,7 @@ class Laporan extends MY_Controller {
 
         $entry_parsed = array(
            'order' => ++$order_in,
-           'level' => $level-2,
+           'level' => $level-3,
            'akun' => 'pendanaan',
            'type' => 'hide_index',
            'nama' => 'ARUS KAS DARI AKTIVITAS PENDANAAN',
@@ -3585,7 +3587,7 @@ class Laporan extends MY_Controller {
         foreach ($data_pendanaan as $nama_indeks => $each_pendanaan) {
             $entry_parsed = array(
                'order' => ++$order_in,
-               'level' => $level-1,
+               'level' => $level-2,
                'akun' => $nama_indeks,
                'type' => 'hide_index',
                'nama' => ucwords(str_replace("_", " ", $nama_indeks)),

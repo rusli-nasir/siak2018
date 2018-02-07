@@ -385,18 +385,21 @@ if(isset($excel)){
 	</div>
 	</body>
 	<script type="text/javascript">
-		$(function(){
-		    $('#download_excel').click(function(){
-		        var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
-		        this.href = result;
-		        this.download = "neraca_saldo.xls";
-		        return true;
-		    })
-		    $('#print_tabel').click(function(){
-		        $("#printed_table").print();
-		    })
-
+		$('#download_excel').click(function(){
+			// var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+			// this.href = result;
+			// this.download = "Rekap_jurnal.xls";
+			var blob = new Blob([$('#printed_table').html()]);
+	        var blobURL = window.URL.createObjectURL(blob);
+	        var a = document.createElement('a');           
+	        a.href = blobURL;
+	        a.download = 'neraca_saldo.xls';
+	        a.click();
+			return true;
 		})
+	    $('#print_tabel').click(function(){
+	        $("#printed_table").print();
+	    })
 
 	</script>
 </html>
