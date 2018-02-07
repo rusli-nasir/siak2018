@@ -27,6 +27,39 @@ class Login extends MY_Controller {
 		$this->load->view('akuntansi/login',$data);
 	}
 
+	public function audit()
+	{
+		$username = 'auditor';
+		$password = 'auditor';
+		$query 	= $this->login_model->get_user($username, $password);
+		$row = $query->row();
+		$login_data = array(
+					'id'	=>  $row->id,
+					'username'	=>  $set_username,
+					'kode_unit'	=>  $row->kode_unit,
+					'kode_user'	=>  $row->kode_user,
+					'alias'	=>  'auditor',
+					'level'	=>  $row->level,
+					'setting_tahun' => 2017,
+				);
+		$this->session->set_userdata($login_data);
+		redirect(site_url('akuntansi/laporan/lainnya'));
+	}
+
+	public function link_login(){
+		?>
+		<link href="http://10.37.19.95/portal/assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		<link href="http://10.37.19.95/portal/assets/css/style.css" rel="stylesheet">
+		<a href="javascript:void(0);" onclick="return dopost_siak()" target="_blank" class="btn btn-xs btn-white" style="float:right; margin-top: 5px; padding-top: 4px;padding-bottom: 4px;"> <i class="fa fa-angle-double-right"></i></a>
+		<script> 
+			function dopost_siak(){
+				window.open("http://10.69.12.215/rsa/2017/index.php/akuntansi/login/audit","blank") ;
+			}
+		</script>
+		<?php
+	}
+
 	public function login_proses()
 	{
 		$this->cek_session_out();
@@ -93,7 +126,7 @@ class Login extends MY_Controller {
 			} else if($this->session->userdata('level')==9){
 				redirect(site_url('akuntansi/user/manage'));
 			}else if($this->session->userdata('level')==10){
-				redirect(site_url('akuntansi/kuitansi/monitor'));
+				redirect(site_url('akuntansi/laporan/lainnya'));
 			}
 		}
 	}

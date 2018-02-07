@@ -115,7 +115,7 @@
           </select>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="display:none">
       <label class="col-md-2 control-label">Tingkat</label>  
       <div class="col-md-6">
           <select id="tingkat" name="tingkat" class="form-control">
@@ -145,6 +145,9 @@
     <label class="col-md-2 control-label">Tipe</label>  
     <div class="col-md-2 checkbox">
       <label><input type="checkbox" name="tipe[]" value="pengeluaran" onclick="cek()" checked>Transaksi</label>
+   </div>
+    <div class="col-md-2 checkbox">
+      <label><input type="checkbox" name="tipe[]" value="memorial" onclick="cek()" checked>Memorial</label>
    </div>
    <div class="col-md-2 checkbox" v-if="level_laporan == '6'">
      <label><input type="checkbox" name="tipe[]" value="pajak" onclick="cek()">Pajak</label>

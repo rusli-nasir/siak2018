@@ -48,7 +48,7 @@ if(isset($excel)){
 			<input type="hidden" name="kegiatan" value="<?php echo $this->input->post('kegiatan') ?>">
 			<input type="hidden" name="subkegiatan" value="<?php echo $this->input->post('subkegiatan') ?>">
 			<input type="hidden" name="akun[]" value="<?php echo $this->input->post('akun')[0] ?>">
-			<input class="btn excel" type="submit" name="Download excel" value="Download Excel">
+			<a download="buku_besar.xls" id="download_excel" class="no-print"><button  class="btn btn-success" type="button">Download excel</button></a>
 		</form>
 		<?php 
 		$arr_sumber = explode('_', $sumber);
@@ -246,6 +246,13 @@ if(isset($excel)){
 		$('#print_tabel').click(function(){
 	        $("#printed_table").print();
 	    })
+
+	    $('#download_excel').click(function(){
+	        var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+	        this.href = result;
+	        this.download = "buku_besar.xls";
+	        return true;
+	    })
 	</script>
 </html>
 <?php
@@ -266,48 +273,141 @@ function get_nama_unit($kode_unit)
 
 function get_nama_akun_v($kode_akun){
 	$ci =& get_instance();
+	// return $ci->Akun_model->get_nama_akun($kode_akun);
+	$kode_akun = explode('-',$kode_akun);
+	$count_kode = count($kode_akun);
+	$kode_akun = $kode_akun[0];
+	$level = strlen($kode_akun);
 	if (isset($kode_akun)){
-			if (substr($kode_akun,0,1) == 5){
-				return $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
-			} else if (substr($kode_akun,0,1) == 7){
-				$kode_akun[0] = 5;
-				$nama = $ci->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
-				$uraian_akun = explode(' ', $nama);
-				if(isset($uraian_akun[0])){
-		            if($uraian_akun[0]!='beban'){
-		              $uraian_akun[0] = 'beban';
-		            }
-		        }
-	            $hasil_uraian = implode(' ', $uraian_akun);
-	            return $hasil_uraian;
-			} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
-				$kode_akun[0] = 4;
-				$hasil =  $ci->db->get_where('akuntansi_lra_6',array('akun_6' => $kode_akun))->row_array()['nama'];
-				if ($hasil == null) {
-					$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
+		if(strlen($kode_akun)>3){
+			if($count_kode > 1){
+				// if(substr($kode_akun, 0, 3)=='411'){
+				// 	return 'Pemungutan/Penyetoran Pajak';
+				// }else{
+				// 	$query = $ci->db->query("SELECT nama_akun FROM akuntansi_pajak WHERE kode_akun LIKE '".substr($kode_akun, 0, 3)."%' LIMIT 0,1")->row_array();
+				// 	$data = explode(' ',$query['nama_akun']);
+				// 	return $data[0].' '.$data[1].' '.$data[2];
+				// }
+			}else{
+				if (substr($kode_akun,0,1) == 5){
+					if ($level == 6){
+						$selected = 'kode_akun';
+					}else{
+						$selected = "kode_akun".$level."digit";
+					}
+					return $ci->db->get_where('akun_belanja',array($selected => $kode_akun))->row_array()['nama_akun'];
+				} else if (substr($kode_akun,0,1) == 7){
+					$kode_akun[0] = 5;
+					if ($level == 6){
+						$selected = 'kode_akun';
+					}else{
+						$selected = "kode_akun".$level."digit";
+					}
+					$nama = $ci->db->get_where('akun_belanja',array($selected => $kode_akun))->row_array()['nama_akun'];
+					$uraian_akun = explode(' ', $nama);
+					if(isset($uraian_akun[0])){
+			            if($uraian_akun[0]!='beban'){
+			              $uraian_akun[0] = 'Beban';
+			            }
+			        }
+		            $hasil_uraian = implode(' ', $uraian_akun);
+		            return $hasil_uraian;
+				} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
+					$kode_akun[0] = 4;
+					$hasil =  $ci->db->get_where("akuntansi_lra_$level",array("akun_$level" => $kode_akun))->row_array()["nama"];
+					if ($hasil == null) {
+						$hasil = $ci->db->get_where("akuntansi_pajak",array("kode_akun" => $kode_akun))->row_array()["nama_akun"];
+					}
+					return $hasil;
+				}else if (substr($kode_akun,0,1) == 8){
+					$hasil =  $ci->db->get_where("akuntansi_pembiayaan_$level",array("akun_$level" => $kode_akun))->row_array()["nama"];
+					if ($hasil == null) {
+						$hasil = $ci->db->get_where("akuntansi_pajak",array("kode_akun" => $kode_akun))->row_array()["nama_akun"];
+					}
+					return $hasil;
+				} else if (substr($kode_akun,0,1) == 9){
+					return $ci->db->get_where("akuntansi_sal_$level", array("akun_$level" => $kode_akun))->row_array()["nama"];
+				} else if (substr($kode_akun,0,1) == 2){
+					return $ci->db->get_where("akuntansi_hutang_$level", array("akun_$level" => $kode_akun))->row_array()["nama"];
+				} else if (substr($kode_akun,0,1) == 3){
+					return $ci->db->get_where("akuntansi_aset_bersih_$level", array("akun_$level" => $kode_akun))->row_array()["nama"];
+				} else if (substr($kode_akun,0,1) == 1){
+					$hasil = $ci->db->get_where("akuntansi_kas_rekening",array("kode_rekening" => $kode_akun))->row_array()["uraian"];
+					if ($hasil == null){
+						$hasil = $ci->db->get_where("akuntansi_aset_$level",array("akun_$level" => $kode_akun))->row_array()["nama"];
+					}
+					// if ($hasil == null){
+					// 	$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
+					// }
+					return $hasil;
+				} else {
+					return 'Nama tidak ditemukan';
 				}
-				return $hasil;
-			}else if (substr($kode_akun,0,1) == 8){
-				$hasil =  $ci->db->get_where('akuntansi_pembiayaan_6',array('akun_6' => $kode_akun))->row_array()['nama'];
-				if ($hasil == null) {
-					$hasil = $ci->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
-				}
-				return $hasil;
-			} else if (substr($kode_akun,0,1) == 9){
-				return $ci->db->get_where('akuntansi_sal_6', array('akun_6' => $kode_akun))->row_array()['nama'];
-			} else if (substr($kode_akun,0,1) == 1){
-				$hasil = $ci->db->get_where('akuntansi_kas_rekening',array('kode_rekening' => $kode_akun))->row_array()['uraian'];
-				/*if ($hasil == null){
-					$hasil = $ci->db->get_where('akun_kas6',array('kd_kas_6' => $kode_akun))->row_array()['nm_kas_6'];
-				}*/
-				if ($hasil == null){
-					$hasil = $ci->db->get_where('akuntansi_aset_6',array('akun_6' => $kode_akun))->row_array()['nama'];
-				}
-				return $hasil;
-			} else {
-				return 'Nama tidak ditemukan';
 			}
+		}else{
+			switch (substr($kode_akun, 0, 1)) {
+				case 1:
+					$tabelnya = 'akuntansi_aset_3';
+					break;
+				case 2:
+					$tabelnya = 'akuntansi_hutang_3';
+					break;
+				case 3:
+					$tabelnya = 'akuntansi_aset_bersih_3';
+					break;
+				case 4:
+					$tabelnya = 'akuntansi_lra_3';
+					break;
+				case 5:
+					$tabelnya = 'akun_belanja';
+					break;
+				case 6:
+					$kode_akun[0] = 4;
+					$tabelnya = 'akuntansi_lra_3';
+					break;
+				case 7:
+					$kode_akun[0] = 5;
+					$tabelnya = 'akun_belanja';
+					break;
+				case 8:
+					$tabelnya = 'akuntansi_pembiayaan_3';
+					break;
+				case 9:
+					$tabelnya = 'akuntansi_sal_3';
+					break;
+				default:
+					# code...
+					break;
+			}
+
+			if(substr($kode_akun, 0, 1)=='5' OR substr($kode_akun, 0, 1)=='7'){
+				$atribut = 'kode_akun3digit';
+			}else{
+				$atribut = 'akun_3';
+			}
+
+			$query = $ci->db->query('SELECT * FROM '.$tabelnya.' WHERE '.$atribut.'='.$kode_akun.'')->row_array();
+			if($query==null){
+				$query = $ci->db->query('SELECT * FROM akuntansi_pajak WHERE kode_akun LIKE "%kode_akun%"')->row_array();
+				return $query['nama_akun'];
+			}else{
+				if(substr($kode_akun, 0, 1)=='5'){
+					return $query['nama_akun3digit'];
+				}else if(substr($kode_akun, 0, 1)=='7'){
+					$uraian_akun = explode(' ', $query['nama_akun3digit']);
+					if(isset($uraian_akun[0])){
+			            if($uraian_akun[0]!='beban'){
+			              $uraian_akun[0] = 'Beban';
+			            }
+			        }
+			        $hasil_uraian = implode(' ', $uraian_akun);
+			        return $hasil_uraian;
+				}else{
+					return $query['nama'];
+				}	
+			}		
 		}
+	}
 	
 }
 

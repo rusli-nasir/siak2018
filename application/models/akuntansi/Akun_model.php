@@ -171,6 +171,10 @@ class Akun_model extends CI_Model {
 				->like("akun_$level",$kode_akun,'after')
 				->from("akuntansi_".$tabel."_".$level)
 			;
+
+			if ($kode_akun == 8){
+				$this->db->not_like("akun_".$level,825,'after');
+			}
 			// echo $this->db->get_compiled_select();die();
 
 			$hasil = $this->db->get()->result_array();

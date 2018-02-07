@@ -155,9 +155,15 @@ if(isset($excel)){
 
 <script type="text/javascript">
 	$('#download_excel').click(function(){
-		var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
-		this.href = result;
-		this.download = "Rekap_jurnal.xls";
+		// var result = 'data:application/vnd.ms-excel,' + encodeURIComponent($('#printed_table').html()) 
+		// this.href = result;
+		// this.download = "Rekap_jurnal.xls";
+		var blob = new Blob([$('#printed_table').html()]);
+        var blobURL = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');           
+        a.href = blobURL;
+        a.download = 'Rekap_jurnal.xls';
+        a.click();
 		return true;
 	})
 	$('#print_tabel').click(function(){
@@ -168,16 +174,10 @@ if(isset($excel)){
 <?php
 function get_nama_unit($kode_unit)
 {
-	if ($kode_unit == 9999) {
-		return 'Penerimaan';
-	}
 	$ci =& get_instance();
-	$ci->db2 = $ci->load->database('rba', true);
-    $hasil = $ci->db2->where('kode_unit',$kode_unit)->get('unit')->row_array();
-    if ($hasil == null) {
-        return '-';
-    }
-    return $hasil['nama_unit'];
+	$ci->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
+
+	return $ci->Unit_kerja_model->get_nama_unit($kode_unit);
 
 }
 
@@ -286,7 +286,7 @@ function get_nama_akun_v($kode_akun){
 					$tabelnya = 'akuntansi_sal_3';
 					break;
 				default:
-					# code...
+					return 'nama tidak ditemukan';
 					break;
 			}
 

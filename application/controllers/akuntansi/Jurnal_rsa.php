@@ -411,7 +411,7 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
 
                 // $isian['pajak'] = null;
-                // print_r($isian['akun_kas']);die();
+                // print_r($isian);die();
                 // print_r($isian['pajak']);die();
             } else {
                 $isian = $this->Kuitansi_model->get_kuitansi_nk($id_kuitansi);
@@ -436,14 +436,13 @@ class Jurnal_rsa extends MY_Controller {
 
                 // print_r($isian);die();
             }
-            // print_r($isian);die();
-			//$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
+            //$isian['akun_kas'] = $this->Akun_kas_rsa_model->get_all_akun_kas();
             $isian['query_1'] = $this->Memorial_model->read_akun('akuntansi_aset_6');
             $isian['query_2'] = $this->Memorial_model->read_akun('akuntansi_hutang_6');
 
-			$isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
-	        $this->data['tab'] = 'beranda';
-	        $this->data['menu1'] = true;
+            $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+            $this->data['tab'] = 'beranda';
+            $this->data['menu1'] = true;
             $isian['jenis'] = $jenis;
              //get rekening by unit
             if ($this->session->userdata('kode_unit') == 63 and ($jenis == 'TUP_PENGEMBALIAN' or $jenis == 'TUP')){
@@ -452,6 +451,8 @@ class Jurnal_rsa extends MY_Controller {
                 $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
             }
          //    echo "<pre>";
+            // echo "<pre>";
+            // print_r($isian);die();
 	        // print_r($isian['akun_kas']);die();
 	        // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
 			$this->data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);

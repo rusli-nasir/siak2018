@@ -100,7 +100,7 @@ class Laporan extends MY_Controller {
             }
         }else{
             $this->db2 = $this->load->database('rba', true);
-            $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit");
+            $this->data['query_unit'] = $this->db2->query("SELECT * FROM unit WHERE kode_unit != '99'");
 
             if ($tipe == 'kinerja'){
                 $temp_data['content'] = $this->load->view('akuntansi/laporan_kinerja_list',$this->data,true);
@@ -373,6 +373,8 @@ class Laporan extends MY_Controller {
         $date_t = explode(' - ', $daterange);
         $periode_awal = strtodate($date_t[0]);
         $periode_akhir = strtodate($date_t[1]);
+
+        // die('aaa');
 
         $teks_unit = null;
 
@@ -1060,6 +1062,8 @@ class Laporan extends MY_Controller {
         $data['sumber'] = 'get_rekap_jurnal';
         $array_tipe  = $this->input->post('tipe');
 
+        // die('aasa');
+
         //  echo "<pre>";
         // // echo $tanggal_jurnal;
         //  print_r($array_tipe);
@@ -1107,6 +1111,7 @@ class Laporan extends MY_Controller {
         // print_r($this->input->post());die();
         // $akun = array(1,2,3,4,5,6,7,8,9);
         $data['query'] = $this->Laporan_model->read_rekap_jurnal($basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$tanggal_jurnal,$array_tipe);
+        // echo "<pre>";
         // print_r($data['query']);die();
 
         if($tipe=='pdf'){
@@ -3849,7 +3854,7 @@ class Laporan extends MY_Controller {
         $jumlah_tahun_sekarang = 0;
         $jumlah_tahun_awal = 0;
         $array_akun = array(4,5,8);
-        $array_not_akun = array(59,81);
+        $array_not_akun = array(59,81,825);
         $unit = $this->input->post('unit');
         if ($unit == 'all'){
             $unit = null;

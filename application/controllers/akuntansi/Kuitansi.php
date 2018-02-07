@@ -1718,7 +1718,7 @@ class Kuitansi extends MY_Controller {
     	if($this->session->userdata('kode_unit')!=null){
     		$filter = 'WHERE kode_unit="'.$this->session->userdata('kode_unit').'"';
     	}else{
-    		$filter = '';
+    		$filter = "WHERE kode_unit != '99'";
     	}
     	$this->data['query_unit'] = $this->db2->query("SELECT * FROM unit $filter ORDER BY nama_unit ASC");
 

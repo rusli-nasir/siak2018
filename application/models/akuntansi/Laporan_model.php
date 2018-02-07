@@ -275,6 +275,7 @@ class Laporan_model extends CI_Model {
     public function get_neraca($array_akun,$jenis=null,$unit=null,$sumber_dana=null,$start_date=null,$end_date=null,$mode = null,$tingkat = null,$sumber = null, $array_tipe_jurnal = null)
     {
 
+        // die('aaa');
         // echo "<pre>";
 
         if(($sumber_dana=='tidak_terikat' or $sumber_dana == null) and $this->session->userdata('level') == 3 and $unit == null){
@@ -293,8 +294,9 @@ class Laporan_model extends CI_Model {
             // die("BETWEEN $awal_tahun AND $akhir_tahun");
         }
 
-        // $array_tipe_jurnal = array('pengeluaran');
-        $array_all_tipe_jurnal = array('pajak');
+        // $array_tipe_jurnal = array('memorial');
+
+        $array_all_tipe_jurnal = array('pajak','memorial');
 
 
         // $sumber = 'biaya';
@@ -1323,6 +1325,8 @@ class Laporan_model extends CI_Model {
             $array_jenis[] = $jenis;
         }
 
+        $null_pengeluaran = '';
+
         if ($array_tipe != null) {
             if (in_array('pengeluaran', $array_tipe)){
                 $where_tipe = '(1 ';
@@ -1331,6 +1335,8 @@ class Laporan_model extends CI_Model {
                     $where_tipe.= " AND akuntansi_kuitansi_jadi.tipe!='$each_tipe' "; 
                 }
             }else{
+                $null_pengeluaran = "AND tipe != 'pengeluaran'";
+                
                 $where_tipe = '(0 ';
                 foreach ($array_tipe as $each_tipe) {
                     $where_tipe.= " OR akuntansi_kuitansi_jadi.tipe='$each_tipe' ";                
@@ -1390,10 +1396,14 @@ class Laporan_model extends CI_Model {
 
         $this->db_laporan->stop_cache();
 
-        $this->db_laporan->where("tipe != 'memorial' AND tipe != 'jurnal_umum' AND tipe != 'penerimaan' AND tipe != 'pengeluaran' AND tipe != 'pajak' AND tipe != 'pengembalian'");
+        $this->db_laporan->where("tipe != 'memorial' AND tipe != 'jurnal_umum' AND tipe != 'penerimaan' $null_pengeluaran AND tipe != 'pajak' AND tipe != 'pengembalian'");
+
+        // echo $this->db_laporan->get_compiled_select();die();
 
         $query = $this->db_laporan->get('akuntansi_kuitansi_jadi')->result_array();
 
+        // echo "<pre>";
+        // print_r($query);die();
 
         $this->db_laporan->select('*,akuntansi_kuitansi_jadi.tipe as tipe');
         $this->db_laporan->select('akuntansi_relasi_kuitansi_akun.jenis as jenis_relasi');
@@ -1412,6 +1422,7 @@ class Laporan_model extends CI_Model {
         $query2 = $this->db_laporan->get()->result_array();
 
         $query = array_merge($query,$query2);
+
 
 
         $i = 0;
