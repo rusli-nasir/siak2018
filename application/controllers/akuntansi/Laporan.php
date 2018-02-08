@@ -2767,6 +2767,7 @@ class Laporan extends MY_Controller {
            'order' => ++$order_in,
            'level' => $level,
            'akun' => '791',
+           // 'akun' => 'beban_penyusutan_aset_tetap',
            'type' => 'entry',
            'nama' => "Beban Penyusutan Aset Tetap",
            'sum_negatif' => null,
@@ -2777,6 +2778,7 @@ class Laporan extends MY_Controller {
            'selisih' => null,
            'persentase' => null,
            'jenis_pembatasan' => 'tidak_terikat',
+           'hide_index' => true
         );
 
         // insert_before(&$parse,$akun,$entry_added,$jenis_pembatasan = null)
@@ -2804,6 +2806,7 @@ class Laporan extends MY_Controller {
            'selisih' => null,
            'persentase' => null,
            'jenis_pembatasan' => 'tidak_terikat',
+           'hide_index' => true
         );
         $this->insert_after($parsed,'791',$entry_beban_penyusutan_aset_tak_berwujud);
 
@@ -3574,7 +3577,7 @@ class Laporan extends MY_Controller {
 
         $entry_parsed = array(
            'order' => ++$order_in,
-           'level' => $level-2,
+           'level' => $level-3,
            'akun' => 'investasi',
            'type' => 'hide_index',
            'nama' => 'ARUS KAS DARI AKTIVITAS INVESTASI',
@@ -3621,7 +3624,7 @@ class Laporan extends MY_Controller {
 
         $entry_parsed = array(
            'order' => ++$order_in,
-           'level' => $level-2,
+           'level' => $level-3,
            'akun' => 'pendanaan',
            'type' => 'hide_index',
            'nama' => 'ARUS KAS DARI AKTIVITAS PENDANAAN',
@@ -3639,7 +3642,7 @@ class Laporan extends MY_Controller {
         foreach ($data_pendanaan as $nama_indeks => $each_pendanaan) {
             $entry_parsed = array(
                'order' => ++$order_in,
-               'level' => $level-1,
+               'level' => $level-2,
                'akun' => $nama_indeks,
                'type' => 'hide_index',
                'nama' => ucwords(str_replace("_", " ", $nama_indeks)),

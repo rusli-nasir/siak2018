@@ -72,7 +72,7 @@ if($atribut['cetak']){
 				<tr style="background-color:#FFC2FF;height:45px">
 					<th width="5%">No.</th>
 					<th colspan="4" width="60%">URAIAN</th>
-					<th colspan="3" width="20%"><?php echo $this->session->userdata('setting_tahun') ?></th>
+					<th colspan="3" width="20%"><?php echo $atribut['periode_ttd'] ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -100,9 +100,9 @@ if($atribut['cetak']){
 								$entry['nama'] = str_replace(' Ptn ', " PTN ", $entry['nama']);
 								$entry['nama'] = str_replace(' Bh', " BH", $entry['nama']);
 								$entry['nama'] = str_replace(' Pns', " PNS", $entry['nama']);
-								$entry['nama'] = str_replace(' Beban', " Biaya", $entry['nama']);
-								$entry['nama'] = str_replace('Beban', "Biaya", $entry['nama']);
-								$entry['nama'] = str_replace(' BEBAN', " BIAYA", $entry['nama']);
+								$entry['nama'] = str_replace(' Biaya', " Beban", $entry['nama']);
+								$entry['nama'] = str_replace('Biaya', "Beban", $entry['nama']);
+								$entry['nama'] = str_replace(' BIAYA', " BEBAN", $entry['nama']);
 								$entry['nama'] = str_replace('bumu', "BUMU", $entry['nama']);
 							 	echo $entry['nama'];
 							?>
