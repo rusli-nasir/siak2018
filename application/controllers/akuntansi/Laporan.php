@@ -2725,7 +2725,6 @@ class Laporan extends MY_Controller {
         
         $this->add_jumlah_for($parsed,7,'lapak',"Kenaikan/(Penurunan) Aset Bersih Tidak Terikat",'tidak_terikat','fluk');
         $this->add_jumlah_for($parsed,7,'lapak',"Jumlah Beban Tidak Terikat",'tidak_terikat');
- 
 
         $this->add_jumlah_for($parsed,7,'lapak',"Kenaikan/(Penurunan) Aset Bersih Terikat Permanen",'terikat_permanen','fluk');
         $this->add_jumlah_for($parsed,7,'lapak',"Jumlah Beban Terikat Permanen",'terikat_permanen');
@@ -5469,11 +5468,11 @@ class Laporan extends MY_Controller {
 
     public function get_lpe($parse_data){
         $year = $this->session->userdata('setting_tahun');
-        $akun4_tidak_terikat = $this->Laporan_model->get_rekap(array(41),null,'kas',null,'sum',null,"$year-01-01","$year-12-31"); 
-        $akun4_terikat_temporer = $this->Laporan_model->get_rekap(array(42),null,'kas',null,'sum',null,"$year-01-01","$year-12-31"); 
-        $akun5_tidak_terikat = $this->Laporan_model->get_rekap(array(5),null,'kas',null,'sum','tidak_terikat',"$year-01-01","$year-12-31"); 
-        $akun5_terikat_temporer = $this->Laporan_model->get_rekap(array(5),null,'kas',null,'sum','terikat_temporer',"$year-01-01","$year-12-31");
-        $akun_3 = $this->Laporan_model->get_rekap(array(311101),null,'kas',null,'sum',null,"$year-01-01","$year-12-31"); 
+        $akun4_tidak_terikat = $this->Laporan_model->get_rekap(array(6),null,'akrual',null,'sum','tidak_terikat',"$year-01-01","$year-12-31"); 
+        $akun4_terikat_temporer = $this->Laporan_model->get_rekap(array(6),null,'akrual',null,'sum','terikat_temporer',"$year-01-01","$year-12-31"); 
+        $akun5_tidak_terikat = $this->Laporan_model->get_rekap(array(7),null,'akrual',null,'sum','tidak_terikat',"$year-01-01","$year-12-31"); 
+        $akun5_terikat_temporer = $this->Laporan_model->get_rekap(array(7),null,'akrual',null,'sum','terikat_temporer',"$year-01-01","$year-12-31");
+        $akun_3 = $this->Laporan_model->get_rekap(array(3),null,'akrual',null,'sum',null,"$year-01-01","$year-12-31"); 
         // echo "<pre>";
         // print_r ($akun4_tidak_terikat);
         // print_r ($akun4_terikat_temporer);
@@ -5482,6 +5481,7 @@ class Laporan extends MY_Controller {
         // die();
         $data['surplus'] = ($akun4_tidak_terikat['balance'] + $akun4_terikat_temporer['balance']) - ($akun5_tidak_terikat['balance'] + $akun5_terikat_temporer['balance']);
         $data['saldo_awal'] = $akun_3['saldo'];
+        $data['nett'] = $akun_3['nett'];
         $data['atribut'] = $parse_data;
         $data['tahun'] = $year;
 

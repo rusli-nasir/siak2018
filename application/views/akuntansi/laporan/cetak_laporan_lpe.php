@@ -72,20 +72,20 @@ if($atribut['cetak']){
 		<table style="width:60%;font-size:12pt;margin:0 auto" class="border">
 			<tr style="background-color: #7CFFFF">
 				<td>Aset Neto Awal 2017</td>
-				<td align="right"><?php echo eliminasi_negatif($surplus)?></td>
+				<td align="right"><?php echo eliminasi_negatif($saldo_awal)?></td>
 			</tr>
-			<tr class="space">
+			<tr>
 				<td>Kenaikan (Penurunan) Aset Neto Tahun Berjalan</td>
 				<td align="right"><?php echo eliminasi_negatif($surplus)?></td>
 			</tr>
 			<tr>
 				<td>Koreksi/Penyesuaian Kenaikan (Penurunan) Aset Neto Tidak Terikat Tahun Berjalan</td>
-				<td align="right" style="border-bottom: 1px solid black;"><?php echo eliminasi_negatif($saldo_awal) ?></td>
+				<td align="right" style="border-bottom: 1px solid black;"><?php echo eliminasi_negatif($nett) ?></td>
 				<td>+</td>
 			</tr>
 			<tr style="font-weight:bold;background-color: #EDED74">
 				<td>Aset Neto Akhir Per 31 Desember <?php echo $tahun ?></td>
-				<td align="right" style="border-bottom: double;"><?php echo eliminasi_negatif($surplus + $saldo_awal) ?></td>
+				<td align="right" style="border-bottom: double;"><?php echo eliminasi_negatif($surplus + $saldo_awal + $nett) ?></td>
 			</tr>
 		</tbody>
 	</table>
