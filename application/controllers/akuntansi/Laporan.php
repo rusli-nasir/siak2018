@@ -2385,7 +2385,6 @@ class Laporan extends MY_Controller {
 
         $akun_biaya = $this->Akun_biaya_model->get_structure_akun_biaya();
 
-        $parse_data['parsing_date'] = "01 Januari 2017 - 31 Desember 2017";
         $daterange = $parse_data['parsing_date'];
         $date_t = explode(' - ', $daterange);
         $year = $this->session->userdata('setting_tahun');
