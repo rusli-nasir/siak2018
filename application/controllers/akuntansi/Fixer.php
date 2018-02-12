@@ -23,6 +23,7 @@ class Fixer extends MY_Controller {
 
     public function fix_double()
     {
+        die('disabled');
         $data = array();
         $awal = $this->db->query(
                 "SELECT *, COUNT(*) c FROM 
@@ -61,6 +62,7 @@ class Fixer extends MY_Controller {
 
     public function deletion_double($del)
     {
+        die('disabled');
         $hasil = true;
         if ($del['id_pajak'] != null){
             $this->db->where('id_kuitansi_jadi',$del['id_pajak']);
@@ -78,12 +80,35 @@ class Fixer extends MY_Controller {
 
     public function fix_lspg()
     {
+        die('disabled');
         $awal = $this->db->query("SELECT * FROM `akuntansi_kuitansi_jadi` WHERE `jenis` = 'NK' AND `tanggal_jurnal` > '2017-07-19' AND `tipe` != 'pajak'")->result_array();
         foreach ($awal as $entry) {
             $this->deletion_double($entry);
         }
         
     }
+
+    public function fix_kode_kegiatan_lspg()
+    {
+        $data_siak = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE jenis = 'NK' AND LENGTH(kode_kegiatan) = 100")->result_array();
+
+        echo "<pre>";
+
+        foreach ($data_siak as $kuitansi) {
+            $this->db
+                    ->select('detail_belanja')
+                    ->from('kepeg_tr_spmls')
+                    ->where('nomor',$kuitansi['no_spm'])
+                    ->where('flag_proses_akuntansi',1)
+                ;
+
+            echo $kuitansi['kode_kegiatan']."\n";
+            echo $this->db->get()->row_array()['detail_belanja']."\n";
+            echo "\n";
+        }
+    }
+
+
 
     
     }

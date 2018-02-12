@@ -37,6 +37,7 @@ class Akun_model extends CI_Model {
     }
 	
 	public function get_nama_akun($kode_akun){
+
 		if (isset($kode_akun)){
 			if (substr($kode_akun,0,1) == 5){
 				return $this->db->get_where('akun_belanja',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];
@@ -53,7 +54,8 @@ class Akun_model extends CI_Model {
 	            return $hasil_uraian;
 			} else if (substr($kode_akun,0,1) == 6 or substr($kode_akun,0,1) == 4){
 				// $kode_akun[0] = 4;
-				substr_replace($kode_akun,4,0,1);
+				// $temp_kode = substr($kode_akun,0,1);
+				$kode_akun = substr_replace($kode_akun,4,0,1);
 				$hasil =  $this->db->get_where('akuntansi_lra_6',array('akun_6' => $kode_akun))->row_array()['nama'];
 				if ($hasil == null) {
 					$hasil = $this->db->get_where('akuntansi_pajak',array('kode_akun' => $kode_akun))->row_array()['nama_akun'];

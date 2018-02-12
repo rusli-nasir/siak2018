@@ -16,6 +16,7 @@ class Laporan extends MY_Controller {
         $this->load->model('akuntansi/Pajak_model', 'Pajak_model');
         $this->load->model('akuntansi/Program_model', 'Program_model');
         $this->load->model('akuntansi/Pejabat_model', 'Pejabat_model');        
+        $this->load->model('akuntansi/Akun_biaya_model', 'Akun_biaya_model');        
         $this->data['db2'] = $this->load->database('rba',TRUE);
         setlocale(LC_NUMERIC, 'Indonesian');
 
@@ -2082,9 +2083,9 @@ class Laporan extends MY_Controller {
         $data_aktivitas = array();
 
         $array_pembatasan = array(
-            'tidak_terikat' => array(61,73,79),
-            'terikat_temporer' => array(62,73,79),
-            'terikat_permanen' => array(61,621,623,624,626,627,628,629,73,79)
+            'tidak_terikat' => array(61,73),
+            'terikat_temporer' => array(62,73),
+            'terikat_permanen' => array(61,621,623,624,626,627,628,629,73)
         );
 
         $array_akun[6] = array(
@@ -2104,6 +2105,8 @@ class Laporan extends MY_Controller {
                 $data_aktivitas[$key][$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$key][$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'sum',$jenis_pembatasan);
             }
         }
+
+        // $aset_bersih_kekayaan_awal = $this->Laporan_model->get_rekap(array('3'),null,'akrual',null,'sum',null,$start_date,$end_date);
 
         // foreach ($sumber_dana as $jenis_pembatasan) {
         //     $data_aktivitas[$jenis_pembatasan] = $this->Laporan_model->get_rekap($array_akun[$jenis_pembatasan],$array_pembatasan[$jenis_pembatasan],'akrual',null,'sum',$jenis_pembatasan);         
@@ -2374,6 +2377,11 @@ class Laporan extends MY_Controller {
         $data['jumlah_tahun_sekarang'] = $jumlah_tahun_sekarang;
         $data['jumlah_tahun_awal'] = $jumlah_tahun_awal;
         $this->load->view('akuntansi/laporan/cetak_laporan_posisi_keuangan', $data);
+    }
+
+    public function get_laporan_penggunaan_dana()
+    {
+        $this->Akun_biaya_model->get_structure_akun_biaya();
     }
 
     public function get_lapak($level, $parse_data, $tipe = null)
@@ -3022,12 +3030,12 @@ class Laporan extends MY_Controller {
 
         $array_investasi_nett = array('perolehan_aset_tetap','penambahan_hasil_tak_berwujud','hasil_penjualan_aset_tetap');
 
-        $array_pendanaan['pendanaan_masuk']['perolehan_pinjaman'] = array(21,22); // akun 2 di sisi kredit
+        $array_pendanaan['pendanaan_masuk']['perolehan_pinjaman'] = array(811); // akun 811 di sisi kredit
         $array_pendanaan['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = array(22); // di sisi debet
         $array_pendanaan['pendanaan_masuk']['investasi'] = array(1);
 
         $array_pendanaan['pendanaan_keluar']['pemberian_pinjaman_/_investasi'] = array(8214,8215);
-        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array(21);
+        $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array(811); // akun 811 di sisi debet
         $array_pendanaan['pendanaan_keluar']['pembayaran_kewajiban_jangka_panjang'] = array(22); //* nggak ada
 
         $array_uraian_investasi['penerimaan_hasil_investasi'] = array('penerimaan hasil investasi');
@@ -3048,10 +3056,18 @@ class Laporan extends MY_Controller {
         // $array_pendanaan_tipe['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = 'kredit';
 
         // SOLUSI 2
-        $array_pendanaan_nett['pendanaan_masuk']['perolehan_pinjaman'] = true;
+        $array_pendanaan_kredit['pendanaan_masuk']['perolehan_pinjaman'] = true;
+
+        $array_pendanaan_debet['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = true;
+
+        $array_pendanaan_negated['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = true;
+
+        $array_pendanaan_kas['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = true;
+        $array_pendanaan_kas['pendanaan_masuk']['perolehan_pinjaman'] = true;        
+
+
         $array_pendanaan_nett['pendanaan_masuk']['penerimaan_kembali_pokok_pinjaman'] = true;
         $array_pendanaan_nett['pendanaan_masuk']['investasi'] = true;
-        $array_pendanaan_nett['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = true;
 
         $array_uraian['pendanaan_keluar']['pemberian_pinjaman'] = array('pemberian pinjaman');
         $array_uraian['pendanaan_keluar']['pembayaran_kewajiban_jangka_pendek'] = array('pembayaran utang','pembayaran hutang','pembayaran pinjaman jangka pendek','pembayaran utang jangka pendek','pembayaran kewajiban jangka pendek');
@@ -3146,13 +3162,19 @@ class Laporan extends MY_Controller {
                     $array_kata = $array_uraian[$pendanaan][$nama];
                 }
                 // $array_kata = 'hai';
-                $data_pendanaan[$pendanaan][$nama] = $this->Laporan_model->get_rekap($akun,null,'akrual',null,'sum',null,$start_date,$end_date,$array_kata);
+                $basis = 'akrual';
+                if(isset($array_pendanaan_kas[$pendanaan][$nama])){
+                    $basis = 'kas';
+                }
+                $data_pendanaan[$pendanaan][$nama] = $this->Laporan_model->get_rekap($akun,null,$basis,null,'sum',null,$start_date,$end_date,$array_kata);
             }
         }
 
-        // print_r($data_investasi);
         // echo "<pre>";
-        // print_r($data_pendanaan);die();
+        // print_r($data_pendanaan);
+        // die;
+        // $cek = $this->Laporan_model->get_rekap(array(811),null,'kas',null,'sum',null,$start_date,$end_date,null);
+        // print_r($cek);die();
 
 
         // $data = $this->Laporan_model->get_rekap($array_akun,null,'akrual',null,'saldo');
@@ -3658,9 +3680,19 @@ class Laporan extends MY_Controller {
             foreach ($each_pendanaan as $nama => $entry) {
                 if (isset($array_pendanaan_nett[$nama_indeks][$nama])){
                     $jumlah_now = $entry['nett'];
+                }elseif (isset($array_pendanaan_debet[$nama_indeks][$nama])){
+                    $jumlah_now = $entry['debet'];
+                }elseif (isset($array_pendanaan_kredit[$nama_indeks][$nama])){
+                    $jumlah_now = $entry['kredit'];
                 }else{
                     $jumlah_now = $entry['balance'];
                 }
+
+
+                if (isset($array_pendanaan_negated[$nama_indeks][$nama])){
+                    $jumlah_now *= -1;
+                }
+
                 $entry_parsed = array(
                    'order' => ++$order_in,
                    'level' => $level,
@@ -4114,6 +4146,9 @@ class Laporan extends MY_Controller {
 
                                 if ($key_1 == 5  or $key_2 == 82){
                                     $selisih = abs($anggaran) - abs($saldo_sekarang);
+                                    if($key_2 == 82){
+                                        $saldo_sekarang *= -1;
+                                    }
                                 }elseif ($key_1) {
                                     $selisih = abs($saldo_sekarang) - abs($anggaran);                                
                                 }
@@ -4196,6 +4231,9 @@ class Laporan extends MY_Controller {
                                     $nama = $akun_6['nama'];
                                     if ($key_1 == 5 or $key_2 == 82){
                                         $selisih = abs($anggaran) - abs($saldo_sekarang);
+                                        if($key_2 == 82){
+                                            $saldo_sekarang *= -1;
+                                        }
                                     }elseif ($key_1) {
                                         $selisih = abs($saldo_sekarang) - abs($anggaran);                                
                                     }
@@ -4242,6 +4280,9 @@ class Laporan extends MY_Controller {
                             $data['anggaran_awal_lvl_3'][$key_2][] = $anggaran;
                             if ($key_1 == 5  or $key_2 == 82){
                                 $selisih = abs($anggaran) - abs($saldo_sekarang);
+                                if($key_2 == 82){
+                                    $saldo_sekarang *= -1;
+                                }
                             }elseif ($key_1) {
                                 $selisih = abs($saldo_sekarang) - abs($anggaran);                                
                             }
@@ -4409,8 +4450,8 @@ class Laporan extends MY_Controller {
         $entry_jumlah_pembiayaan = $this->get_from_parse($parsed,'akun','sum.82','','','whole');
         $entry_jumlah_pendanaan = $this->get_from_parse($parsed,'akun','sum.81','','','whole');
 
-        $pembiayaan_dan_pendanaan_anggaran = $entry_jumlah_pendanaan['anggaran'] + $entry_jumlah_pembiayaan['anggaran'];
-        $pembiayaan_dan_pendanaan_realisasi = $entry_jumlah_pendanaan['realisasi'] + $entry_jumlah_pembiayaan['realisasi'];
+        $pembiayaan_dan_pendanaan_anggaran = $entry_jumlah_pendanaan['anggaran'] - $entry_jumlah_pembiayaan['anggaran'];
+        $pembiayaan_dan_pendanaan_realisasi = $entry_jumlah_pendanaan['realisasi'] - $entry_jumlah_pembiayaan['realisasi'];
 
         // $pembiayaan_dan_pendanaan_selisih = abs($pembiayaan_dan_pendanaan_realisasi) - abs($pembiayaan_dan_pendanaan_anggaran);
         $pembiayaan_dan_pendanaan_selisih = $pembiayaan_dan_pendanaan_realisasi + $pembiayaan_dan_pendanaan_anggaran;
@@ -4873,6 +4914,7 @@ class Laporan extends MY_Controller {
             // die();
             // echo $jenis_pembatasan;
             $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',$jenis_pembatasan,$start_date,$end_date,null,$tipe_laporan);
+            // echo "<pre>";
             // print_r($data);die();
 
 
