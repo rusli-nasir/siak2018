@@ -13,7 +13,7 @@ class Akun_biaya_model extends CI_Model {
 	{
 		$query = "
 					SELECT 
-						nama_subkomponen, 
+						nama_subkomponen as nama, 
 						concat(kode_kegiatan, kode_output, kode_program, kode_komponen, kode_subkomponen) as kode_subkomponen,
 						biaya
 					FROM  subkomponen_input";
@@ -31,11 +31,19 @@ class Akun_biaya_model extends CI_Model {
 
 		foreach ($ref_akun as $akun) {
 			if (isset($data_subkomponen[$akun['kode_akun_sub']])){
-				$data_akun[$akun['kode_akun']][$akun['kode_akun_sub']] = $data_subkomponen[$akun['kode_akun_sub']];
+				$data_akun[$akun['kode_akun']]['nama'] = $akun['nama_akun'];
+				$data_akun[$akun['kode_akun']]['data'][$akun['kode_akun_sub']]['nama'] = $akun['nama_akun_sub'];
+				$data_akun[$akun['kode_akun']]['data'][$akun['kode_akun_sub']]['data'] = $data_subkomponen[$akun['kode_akun_sub']];
 			}
 		}
-		echo "<pre>";
-		print_r($data_akun);
-		die();
+
+		$data[5]['nama'] = "Biaya";
+		$data[5]['data'] = $data_akun;
+
+		return $data;
+
+		// echo "<pre>";
+		// print_r($data);
+		// die();
 	}
 }

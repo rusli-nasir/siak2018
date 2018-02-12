@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+   <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Laporan_model extends CI_Model {
 	
@@ -860,7 +860,7 @@ class Laporan_model extends CI_Model {
                             $added_select = ",substring(kode_kegiatan,7,$length_kegiatan) as akun";
                             $added_group = "substring(kode_kegiatan,7,$length_kegiatan)";
                             $added_query .= "AND tu.kode_kegiatan <> '' ";
-                            $added_query .= "AND substring(kode_kegiatan,7,$length_kegiatan) NOT LIKE '%0000%' ";
+                            $added_query .= "AND substring(kode_kegiatan,7,$length_kegiatan) NOT LIKE '%000%' ";
                         }
 
                         if ($unit != null){

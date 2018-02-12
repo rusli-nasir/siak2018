@@ -2381,7 +2381,531 @@ class Laporan extends MY_Controller {
 
     public function get_laporan_penggunaan_dana()
     {
-        $this->Akun_biaya_model->get_structure_akun_biaya();
+        error_reporting(E_ALL & ~E_NOTICE);
+
+        $akun_biaya = $this->Akun_biaya_model->get_structure_akun_biaya();
+
+        $parse_data['parsing_date'] = "01 Januari 2017 - 31 Desember 2017";
+        $daterange = $parse_data['parsing_date'];
+        $date_t = explode(' - ', $daterange);
+        $year = $this->session->userdata('setting_tahun');
+
+        $start_date = "$year-01-01";
+
+        $end_date = strtodate($date_t[1]) or null;
+
+        $tanggal_laporan = $date_t[1];
+
+        $param_list_pendapatan = array(
+            array(
+                'akun' => array(4),
+                'not_akun' => null,
+                'jenis_pembatasan' => null,
+                'string' => '',
+                'level_spec' => 3,
+                'tipe_laporan' => null,
+            ),
+        );
+
+        $param_list = array(
+            array(
+                'akun' => array(5),
+                'not_akun' => array(59),
+                'jenis_pembatasan' => 'terikat_temporer',
+                'string' => ' APBN',
+                'tipe_laporan' => 'subkegiatan',
+            ),
+            array(
+                'akun' => array(5),
+                'not_akun' => array(59),
+                'jenis_pembatasan' => 'tidak_terikat',
+                'string' => ' Selain APBN',
+                'tipe_laporan' => 'subkegiatan',
+            ),
+        );
+
+
+        $unit = $this->input->post('unit');
+        if ($unit == 'all'){
+            $unit = null;
+        }
+
+        $chart_length_tingkat = array();
+        $chart_length_tingkat['tujuan'] = 2;
+        $chart_length_tingkat['sasaran'] = 4;
+        $chart_length_tingkat['program'] = 6;
+        $chart_length_tingkat['kegiatan'] = 8;
+        $chart_length_tingkat['subkegiatan'] = 10;    
+
+        $level = $chart_length_tingkat['subkegiatan'];
+        $order = 0;
+        $parsed_data = array();
+        $data_parsing = array();
+        $array_to_jumlah = array();
+        $data_sum = array();
+        $jumlah_anggaran = 0;
+        $jumlah_realisasi = 0;
+        $jumlah_selisih = 0;
+        $program_list = $this->Program_model->get_select_program();
+
+
+
+        foreach ($param_list_pendapatan as $entry_list) {
+            extract($entry_list,EXTR_PREFIX_ALL,'array');
+            $jenis_pembatasan = $array_jenis_pembatasan;
+            $tipe_laporan = $array_tipe_laporan;
+
+            $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',$jenis_pembatasan,$start_date,$end_date,null,$tipe_laporan);
+            
+
+            $tabel_akun = array(
+                4 => 'lra',
+                5 => 'akun_belanja',
+                8 => 'pembiayaan'
+            );
+            $akun = array();
+
+            $level_pendapatan = 4;
+
+            foreach ($array_akun as $kd_awal) {
+                $akun = $akun + $this->Akun_model->get_akun_by_level($kd_awal,$level_pendapatan,$tabel_akun[$kd_awal],$array_not_akun);
+            }
+
+            foreach ($data['posisi'] as $kd_akun => $entry) {
+                foreach ($entry as $inner_entry) {
+                    $rekap[substr($kd_akun,0,$level_pendapatan)][$inner_entry['tipe']] = 0;
+                }
+            }
+     
+            foreach ($data['posisi'] as $kd_akun => $entry) {
+                foreach ($entry as $inner_entry) {
+                    $rekap[substr($kd_akun,0,$level_pendapatan)][$inner_entry['tipe']] += $inner_entry['jumlah'];
+                }
+            }
+
+            foreach ($data['anggaran'] as $kd_akun => $entry) {
+                $rekap[substr($kd_akun,0,$level_pendapatan)]['anggaran'] = 0;
+            }
+
+            foreach ($data['anggaran'] as $kd_akun => $entry) {
+                $rekap[substr($kd_akun,0,$level_pendapatan)]['anggaran'] += $entry;
+            }
+
+
+            foreach ($akun as $key_1 => $akun_1) {
+                $nama = $this->Akun_model->get_nama_akun_by_level($key_1,1,$tabel_akun[$key_1]);
+                $data['nama_lvl_1'][$key_1][] = $nama;
+                $entry_parsed = array(
+                   'order' => ++$order,
+                   'level' => 0,
+                   'akun' => $key_1,
+                   'type' => 'index',
+                   'nama' => $nama . $array_string,
+                   'start_sum' => null,
+                   'end_sum' => null,
+                   'sum_negatif' => null,
+                   'anggaran' => null,
+                   'realisasi' => null,
+                   'selisih' => null,
+                   'persentase' => null,
+                   'jenis_pembatasan' => $jenis_pembatasan,
+                );
+                if (isset($array_level_spec)){
+                    $entry_parsed['level_spec'] = $array_level_spec;
+                }
+                $parsed[] = $entry_parsed;
+                foreach($akun_1 as $key_2 => $akun_2){
+                    $nama = $this->Akun_model->get_nama_akun_by_level($key_2,2,$tabel_akun[$key_1]);
+                    $data['nama_lvl_2'][$key_1][] = $nama;
+                    $data['key_lvl_2'][] = $key_2;
+                    $entry_parsed = array(
+                       'order' => ++$order,
+                       'level' => 1,
+                       'akun' => $key_2,
+                       'type' => 'index',
+                       'nama' => $nama . $array_string,
+                       'start_sum' => null,
+                       'end_sum' => null,
+                       'sum_negatif' => null,
+                       'anggaran' => null,
+                       'realisasi' => null,
+                       'selisih' => null,
+                       'persentase' => null,
+                       'jenis_pembatasan' => $jenis_pembatasan,
+                    );
+                    if (isset($array_level_spec)){
+                        $entry_parsed['level_spec'] = $array_level_spec;
+                    }
+                    $parsed[] = $entry_parsed;
+                    foreach ($akun_2 as $key_3 => $akun_3) {
+                        $nama = $this->Akun_model->get_nama_akun_by_level($key_3,3,$tabel_akun[$key_1]);
+                        $data['nama_lvl_3'][$key_2][] = $nama;
+                        $data['key_lvl_3'][] = $key_3;
+                        $entry_parsed = array(
+                           'order' => ++$order,
+                           'level' => 2,
+                           'akun' => $key_3,
+                           'type' => 'index',
+                           'nama' => $nama,
+                           'start_sum' => null,
+                           'end_sum' => null,
+                           'sum_negatif' => null,
+                           'anggaran' => null,
+                           'realisasi' => null,
+                           'selisih' => null,
+                           'persentase' => null,
+                           'jenis_pembatasan' => $jenis_pembatasan,
+                        );
+                        if (isset($array_level_spec)){
+                            $entry_parsed['level_spec'] = $array_level_spec;
+                        }
+                        $parsed[] = $entry_parsed;
+                        foreach ($akun_3 as $key_4 => $akun_4) {
+                            $debet = (isset($rekap[$key_4]['debet'])) ? $rekap[$key_4]['debet'] : 0 ;
+                            $kredit = (isset($rekap[$key_4]['kredit'])) ? $rekap[$key_4]['kredit'] : 0 ;
+                            $saldo_sekarang = $debet - $kredit;
+                            $anggaran = (isset($rekap[$key_4]['anggaran'])) ? $rekap[$key_4]['anggaran'] : 0 ;
+                            $nama = $akun_4['nama'];
+                            $data['nama_lvl_4'][$key_3][] = $nama;
+                            $data['saldo_sekarang_lvl_4'][$key_3][] = $saldo_sekarang;
+                            $data['anggaran_awal_lvl_4'][$key_3][] = $anggaran;
+                            $selisih = abs($anggaran) - abs($saldo_sekarang);
+                            if ($anggaran == 0) {
+                                $persentase = 0;
+                            } else {
+                                $persentase = abs($saldo_sekarang) / $anggaran * 100;
+                            }
+                            $entry_parsed = array(
+                               'order' => ++$order,
+                               'level' => 3,
+                               'akun' => $key_4,
+                               'type' => 'entry',
+                               'nama' => $nama,
+                               'start_sum' => null,
+                               'end_sum' => null,
+                               'sum_negatif' => null,
+                               'anggaran' => $anggaran,
+                               'realisasi' => $saldo_sekarang,
+                               'selisih' => $selisih,
+                               'persentase' => $persentase,
+                               'jenis_pembatasan' => $jenis_pembatasan,
+                            );
+                            if (isset($array_level_spec)){
+                                $entry_parsed['level_spec'] = $array_level_spec;
+                            }
+                            $parsed[] = $entry_parsed;
+
+                            $iter_index = 1;
+
+                            while ($iter_index < $level_pendapatan){
+                                if (isset($holder_sum[substr($key_4,0,$iter_index)])){
+                                    $holder_sum[substr($key_4,0,$iter_index)]['anggaran'] += $anggaran;
+                                    $holder_sum[substr($key_4,0,$iter_index)]['selisih'] += $selisih;
+                                    $holder_sum[substr($key_4,0,$iter_index)]['realisasi'] += $saldo_sekarang;
+                                }else{
+                                    $holder_sum[substr($key_4,0,$iter_index)]['anggaran'] = $anggaran;
+                                    $holder_sum[substr($key_4,0,$iter_index)]['selisih'] = $selisih;
+                                    $holder_sum[substr($key_4,0,$iter_index)]['realisasi'] = $saldo_sekarang;
+                                }
+                                $iter_index += 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+            $parsed_data = $parsed;
+
+
+            foreach ($parsed_data as $iter_parsed => $dummy_parsed) {
+                if (isset($holder_sum[$parsed_data[$iter_parsed]['akun']])){
+                    $parsed_data[$iter_parsed]['anggaran'] = $holder_sum[$parsed_data[$iter_parsed]['akun']]['anggaran'];
+                    $parsed_data[$iter_parsed]['selisih'] = $holder_sum[$parsed_data[$iter_parsed]['akun']]['selisih'];
+                    $parsed_data[$iter_parsed]['realisasi'] = $holder_sum[$parsed_data[$iter_parsed]['akun']]['realisasi'];
+                    $anggaran = $parsed_data[$iter_parsed]['anggaran'];
+                    $selisih = $parsed_data[$iter_parsed]['selisih'];
+                    $saldo_sekarang = $parsed_data[$iter_parsed]['realisasi'];
+                    if ($anggaran == 0) {
+                        $persentase = 0;
+                    } else {
+                        $persentase = abs($saldo_sekarang) / $anggaran * 100;
+                    }
+                    $parsed_data[$iter_parsed]['persentase'] = $persentase;
+                }
+            }
+
+            foreach ($parsed_data as $iter_parsed => $dummy_parsed) {
+                if(isset($array_level_spec)){
+                    if ($parsed_data[$iter_parsed]['level'] >= $array_level_spec){
+                        // echo $parsed_data[$iter_parsed]['akun'] . "\n";
+                        $parsed_data[$iter_parsed] = null;
+                        unset($parsed_data[$iter_parsed]);
+                        // print_r($parse_data[$iter_parsed]);
+                    }elseif ($parsed_data[$iter_parsed]['level'] == $array_level_spec-1) {
+                        $parsed_data[$iter_parsed]['type'] = 'entry';
+                    }
+                    if($parsed_data[$iter_parsed]['jenis_pembatasan'] != $jenis_pembatasan){
+                        unset($parsed_data[$iter_parsed]);
+                    }
+                }
+            }
+
+            $data_parsing[] = array(
+                'parsed_data' => $parsed_data,
+                'array_to_jumlah' => $array_to_jumlah
+            );
+            $parsed_data = array();
+            $array_to_jumlah = array();
+            $jumlah_anggaran = 0;
+            $jumlah_realisasi = 0;
+            $jumlah_selisih = 0;
+            unset($array_level_spec);
+
+        }
+
+        unset($rekap);
+
+        foreach ($param_list as $entry_list) {
+            $rekap = array();
+            $holder_sum = array();
+            // $entry_list = $param_list[2];
+            extract($entry_list,EXTR_PREFIX_ALL,'array');
+            $jenis_pembatasan = $array_jenis_pembatasan;
+            $tipe_laporan = $array_tipe_laporan;
+            // echo"<pre>";
+            // echo $tipe_laporan;
+            // print_r($array_string);
+            // die();
+            // echo $jenis_pembatasan;
+            $data = $this->Laporan_model->get_rekap($array_akun,$array_not_akun,'kas',$unit,'anggaran',$jenis_pembatasan,$start_date,$end_date,null,$tipe_laporan);
+            // echo "<pre>";
+            // echo "$level\n";
+            // print_r($data);die();
+            // 
+
+
+
+            // foreach ($data['posisi'] as $kd_akun => $entry) {
+            //     foreach ($entry as $inner_entry) {
+            //         $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] = 0;
+            //         die($inner_entry['tipe']);
+            //     }
+            // }
+     
+            // foreach ($data['posisi'] as $kd_akun => $entry) {
+            //     foreach ($entry as $inner_entry) {
+            //         $rekap[substr($kd_akun,0,$level)][$inner_entry['tipe']] += $inner_entry['jumlah'];
+            //     }
+            // }
+
+            // foreach ($data['anggaran'] as $kd_akun => $entry) {
+            //     $rekap[substr($kd_akun,0,$level)]['anggaran'] = 0;
+            // }
+
+            // foreach ($data['anggaran'] as $kd_akun => $entry) {
+            //     $rekap[substr($kd_akun,0,$level)]['anggaran'] += $entry; 
+            // }
+            
+            foreach ($akun_biaya as $biaya){
+                foreach ($biaya['data'] as $kd_biaya => $sub_biaya) {
+                    foreach($sub_biaya['data'] as $kd_sub_biaya => $subkomponen){
+                        $rekap[$kd_sub_biaya]['anggaran'] = 0;
+                        $rekap[$kd_sub_biaya]['debet'] = 0;
+                        $rekap[$kd_sub_biaya]['kredit'] = 0;
+                    }
+                }
+            }
+
+            
+            foreach ($akun_biaya as $biaya){
+                foreach ($biaya['data'] as $kd_biaya => $sub_biaya) {
+                    foreach($sub_biaya['data'] as $kd_sub_biaya => $subkomponen){
+                        foreach($subkomponen['data'] as $kd_subkomponen => $each_subkomponen){
+                            if (isset($data['anggaran'][$kd_subkomponen])){
+                                $rekap[$kd_sub_biaya]['anggaran'] += $data['anggaran'][$kd_subkomponen];
+                            }
+
+                            if (isset($data['posisi'][$kd_subkomponen])){
+                                foreach ($data['posisi'][$kd_subkomponen] as $transaksi) {
+                                    $rekap[$kd_sub_biaya][$transaksi['tipe']] += $transaksi['jumlah'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach ($akun_biaya as $kd_akun_biaya => $biaya){
+                $entry_parsed = array(
+                   'order' => ++$order,
+                   'level' => 0,
+                   'akun' => $kd_akun_biaya,
+                   'type' => 'index',
+                   'nama' => $biaya['nama'] . ,
+                   'start_sum' => null,
+                   'end_sum' => null,
+                   'sum_negatif' => null,
+                   'anggaran' => null,
+                   'realisasi' => null,
+                   'selisih' => null,
+                   'persentase' => null,
+                   'jenis_pembatasan' => $jenis_pembatasan,
+                );
+                if (isset($array_level_spec)){
+                    $entry_parsed['level_spec'] = $array_level_spec;
+                }
+                $parsed_data[] = $entry_parsed;
+                foreach ($biaya['data'] as $kd_biaya => $sub_biaya) {
+                    $entry_parsed = array(
+                       'order' => ++$order,
+                       'level' => 1,
+                       'akun' => $kd_biaya,
+                       'type' => 'index',
+                       'nama' => $sub_biaya['nama'],
+                       'start_sum' => null,
+                       'end_sum' => null,
+                       'sum_negatif' => null,
+                       'anggaran' => null,
+                       'realisasi' => null,
+                       'selisih' => null,
+                       'persentase' => null,
+                       'jenis_pembatasan' => $jenis_pembatasan,
+                    );
+                    if (isset($array_level_spec)){
+                        $entry_parsed['level_spec'] = $array_level_spec;
+                    }
+                    $parsed_data[] = $entry_parsed;
+                    foreach($sub_biaya['data'] as $kd_sub_biaya => $subkomponen){
+                        $debet = (isset($rekap[$kd_sub_biaya]['debet'])) ? $rekap[$kd_sub_biaya]['debet'] : 0 ;
+                        $kredit = (isset($rekap[$kd_sub_biaya]['kredit'])) ? $rekap[$kd_sub_biaya]['kredit'] : 0 ;
+                        $saldo_sekarang = $debet - $kredit;
+                        $anggaran = (isset($rekap[$kd_sub_biaya]['anggaran'])) ? $rekap[$kd_sub_biaya]['anggaran'] : 0 ;
+                        $selisih = abs($anggaran) - abs($saldo_sekarang);
+                        if ($anggaran == 0) {
+                            $persentase = 0;
+                        } else {
+                            $persentase = abs($saldo_sekarang) / $anggaran * 100;
+                        }
+
+                        $jumlah_anggaran += $anggaran;
+                        $jumlah_selisih += $selisih;
+                        $jumlah_realisasi += $saldo_sekarang;
+
+                        $iter_index = 1;
+
+                        while ($iter_index <= 2){
+                            if (isset($holder_sum[substr($kd_sub_biaya,0,$iter_index)])){
+                                $holder_sum[substr($kd_sub_biaya,0,$iter_index)]['anggaran'] += $anggaran;
+                                $holder_sum[substr($kd_sub_biaya,0,$iter_index)]['selisih'] += $selisih;
+                                $holder_sum[substr($kd_sub_biaya,0,$iter_index)]['realisasi'] += $saldo_sekarang;
+                            }else{
+                                $holder_sum[substr($kd_sub_biaya,0,$iter_index)]['anggaran'] = $anggaran;
+                                $holder_sum[substr($kd_sub_biaya,0,$iter_index)]['selisih'] = $selisih;
+                                $holder_sum[substr($kd_sub_biaya,0,$iter_index)]['realisasi'] = $saldo_sekarang;
+                            }
+                            $iter_index += 1;
+                        }
+
+
+
+                        $entry_parsed = array(
+                           'order' => ++$order,
+                           'level' => 5,
+                           'akun' => $kd_sub_biaya,
+                           'type' => 'index',
+                           'nama' => $subkomponen['nama'],
+                           'start_sum' => null,
+                           'end_sum' => null,
+                           'sum_negatif' => null,
+                           'anggaran' => $anggaran,
+                           'realisasi' => $saldo_sekarang,
+                           'selisih' => $selisih,
+                           'persentase' => $persentase,
+                           'jenis_pembatasan' => $jenis_pembatasan,
+                        );   
+                        if (isset($array_level_spec)){
+                            $entry_parsed['level_spec'] = $array_level_spec;
+                        }
+                        $parsed_data[] = $entry_parsed; 
+                    }
+                }
+
+                // print_r($holder_sum);die();
+
+                for ($iter_parsed=0; $iter_parsed < count($parsed_data); $iter_parsed++) { 
+                    if (isset($holder_sum[$parsed_data[$iter_parsed]['akun']])){
+                        $parsed_data[$iter_parsed]['anggaran'] = $holder_sum[$parsed_data[$iter_parsed]['akun']]['anggaran'];
+                        $parsed_data[$iter_parsed]['selisih'] = $holder_sum[$parsed_data[$iter_parsed]['akun']]['selisih'];
+                        $parsed_data[$iter_parsed]['realisasi'] = $holder_sum[$parsed_data[$iter_parsed]['akun']]['realisasi'];
+                        $anggaran = $parsed_data[$iter_parsed]['anggaran'];
+                        $selisih = $parsed_data[$iter_parsed]['selisih'];
+                        $saldo_sekarang = $parsed_data[$iter_parsed]['realisasi'];
+                        if ($anggaran == 0) {
+                            $persentase = 0;
+                        } else {
+                            $persentase = abs($saldo_sekarang) / $anggaran * 100;
+                        }
+                        $parsed_data[$iter_parsed]['persentase'] = $persentase;
+                    }
+                    if(isset($array_level_spec)){
+                        if ($parsed_data[$iter_parsed]['level'] > $array_level_spec){
+                            unset($parsed_data[$iter_parsed]);
+                        }elseif ($parsed_data[$iter_parsed]['level'] == $array_level_spec) {
+                            $parsed_data[$iter_parsed]['type'] = 'entry';
+                        }
+                    }
+                }
+
+
+            }
+
+
+            $data_parsing[] = array(
+                                'parsed_data' => $parsed_data,
+                                'array_to_jumlah' => $array_to_jumlah
+                            );
+            $parsed_data = array();
+            $array_to_jumlah = array();
+            $jumlah_anggaran = 0;
+            $jumlah_realisasi = 0;
+            $jumlah_selisih = 0;
+            unset($array_level_spec);
+        }
+
+        $data_final = array();
+        $array_jumlah_total = array();
+        foreach ($data_parsing as $parsed) {
+            extract($parsed);
+            $data_final = array_merge($data_final,$parsed_data);
+        }
+
+        $data['tanggal_laporan'] = $tanggal_laporan;
+        $data['parse'] = $data_final;
+        $data['atribut'] = $parse_data;
+        $data['atribut']['level'] = 6;
+        $data['tahun'] = $this->session->userdata('setting_tahun');
+        $data['jenis_laporan'] = 'each';
+        $data['nama_unit'] = $this->Unit_kerja_model->get_nama_unit($unit);
+        if ($data['nama_unit'] == '-' or $data['nama_unit'] == 'Penerimaan'){
+            $data['nama_unit'] = 'UNIVERSITAS DIPONEGORO';
+        }
+        if ($unit == null or $unit == 9999) {
+            $kpa = $this->Pejabat_model->get_pejabat('all','rektor');
+            $teks_kpa = "Rektor";
+        } else {
+            $kpa = $this->Pejabat_model->get_pejabat($unit,'kpa');
+            $teks_kpa = "Pengguna Anggaran";
+        }
+
+        $data['kpa'] = $kpa;
+        $data['teks_kpa'] = $teks_kpa;
+        $data['level'] = 6;
+
+        $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
+
+        // echo "<pre>";
+        // print_r($data_final);die();
+
     }
 
     public function get_lapak($level, $parse_data, $tipe = null)
