@@ -2743,6 +2743,7 @@ class Laporan extends MY_Controller {
                    'akun' => $kd_akun_biaya,
                    'type' => 'index',
                    'nama' => $biaya['nama'],
+                   'nama' => $biaya['nama'] . $array_string,
                    'start_sum' => null,
                    'end_sum' => null,
                    'sum_negatif' => null,
