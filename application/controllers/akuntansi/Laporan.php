@@ -98,6 +98,8 @@ class Laporan extends MY_Controller {
             }else if($this->input->post('jenis_laporan')=='Perubahan Aset Neto'){
                 $data['daterange'] = "UNTUK TAHUN YANG BERAKHIR 31 DESEMBER ".$this->session->userdata('setting_tahun');
                 $this->get_lpe($data);
+            }else if($this->input->post('jenis_laporan')=='Laporan Penggunaan Dana'){
+                $this->get_laporan_penggunaan_dana($data);
             }
         }else{
             $this->db2 = $this->load->database('rba', true);
@@ -2379,7 +2381,7 @@ class Laporan extends MY_Controller {
         $this->load->view('akuntansi/laporan/cetak_laporan_posisi_keuangan', $data);
     }
 
-    public function get_laporan_penggunaan_dana()
+    public function get_laporan_penggunaan_dana($parse_data)
     {
         error_reporting(E_ALL & ~E_NOTICE);
 
@@ -2740,7 +2742,7 @@ class Laporan extends MY_Controller {
                    'level' => 0,
                    'akun' => $kd_akun_biaya,
                    'type' => 'index',
-                   'nama' => $biaya['nama'] . ,
+                   'nama' => $biaya['nama'],
                    'start_sum' => null,
                    'end_sum' => null,
                    'sum_negatif' => null,
@@ -2878,7 +2880,7 @@ class Laporan extends MY_Controller {
             $data_final = array_merge($data_final,$parsed_data);
         }
 
-        $data['tanggal_laporan'] = $tanggal_laporan;
+        $data['tanggal_laporan'] = strtoupper($tanggal_laporan);
         $data['parse'] = $data_final;
         $data['atribut'] = $parse_data;
         $data['atribut']['level'] = 6;
@@ -2899,8 +2901,10 @@ class Laporan extends MY_Controller {
         $data['kpa'] = $kpa;
         $data['teks_kpa'] = $teks_kpa;
         $data['level'] = 6;
+        // echo "<pre>";
+        // print_r($data);die();
 
-        $this->load->view('akuntansi/laporan/cetak_laporan_lra', $data);
+        $this->load->view('akuntansi/laporan/cetak_laporan_lpd', $data);
 
         // echo "<pre>";
         // print_r($data_final);die();

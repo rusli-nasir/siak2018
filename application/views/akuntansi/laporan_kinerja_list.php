@@ -107,7 +107,7 @@
               <!-- <option value="Aktifitas" >Aktifitas</option> -->
               <option value="Posisi Keuangan"  >Posisi Keuangan</option>
               <option value="Realisasi Anggaran" >Realisasi Anggaran</option>
-              <!-- <option value="Rekap Realisasi Anggaran" >Rekap Realisasi Anggaran</option> -->
+              <option value="Laporan Penggunaan Dana" >Laporan Penggunaan Dana</option>
               <!-- <option value="Arus Kas" >Arus Kas</option> -->
             </select>
         </div>

@@ -24,9 +24,29 @@ class MY_Controller extends CI_Controller{
 	public function cek_session_out(){
 		if($this->session->userdata('id')!=null){
 			if($this->session->userdata('level')==1){
-				redirect(site_url('akuntansi/kuitansi'));
-			}else{
-				redirect(site_url('akuntansi/kuitansi/jadi'));
+				redirect(site_url('akuntansi/kuitansi/monitor'));
+			} else if($this->session->userdata('level')==2){
+				if($this->session->userdata('kode_unit')==null){
+					redirect(site_url('akuntansi/kuitansi/index'));
+				}else{
+					redirect(site_url('akuntansi/kuitansi/monitor'));
+				}
+			} else if($this->session->userdata('level')==3){
+				redirect(site_url('akuntansi/penerimaan/index'));
+			} else if($this->session->userdata('level')==4){
+				redirect(site_url('akuntansi/kuitansi/monitor'));
+			} else if($this->session->userdata('level')==6){
+				redirect(site_url('akuntansi/kuitansi/monitor'));
+			} else if($this->session->userdata('level')==7){
+				redirect(site_url('akuntansi/laporan/buku_besar'));
+			} else if($this->session->userdata('level')==8){
+				redirect(site_url('akuntansi/penerimaan/index'));
+			} else if($this->session->userdata('level')==5){
+				redirect(site_url('akuntansi/jurnal_umum'));
+			} else if($this->session->userdata('level')==9){
+				redirect(site_url('akuntansi/user/manage'));
+			}else if($this->session->userdata('level')==10){
+				redirect(site_url('akuntansi/laporan/lainnya'));
 			}
 		}
 	}
