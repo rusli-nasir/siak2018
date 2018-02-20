@@ -1042,6 +1042,17 @@ class Laporan extends MY_Controller {
         // $data['query'] = $this->Laporan_model->get_data_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode);
         $data['query'] = $this->Laporan_model->get_buku_besar($array_akun,$basis,$unit,$sumber_dana,$periode_awal,$periode_akhir,$mode,$string_regex);
         // print_r($data['query']);die();
+        $data['check'] = false;
+        if (!array_key_exists($akun, $data['query']) && $periode_awal != "2017-01-01") {
+            $data['check'] = true;
+            $data['periode_awal'] = $this->Jurnal_rsa_model->reKonversiTanggal($periode_awal);
+            $saldo = $this->Laporan_model->get_rekap(array($akun),null,$basis,null,'sum',$sumber_dana,$periode_awal,$periode_akhir);
+            // print_r($saldo);die();
+            $data['query'] = array(
+                            $akun => array(
+                                "saldo" => $saldo['balance']));
+        }
+        //
         if($tipe=='pdf'){
             $this->load->view('akuntansi/laporan/pdf_buku_besar',$data);
         }else if($tipe=='excel'){

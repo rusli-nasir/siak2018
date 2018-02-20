@@ -135,9 +135,7 @@ class Memorial extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
-            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program').$this->input->post('komponen').$this->input->post('subkomponen');
-
-            // print_r($entry);die();
+            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'9999'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program').$this->input->post('komponen').$this->input->post('subkomponen').'99999999';
 
 
 
@@ -321,7 +319,7 @@ class Memorial extends MY_Controller {
             $entry['flag'] = 3;
             $entry['status'] = 4;
             $entry['kode_user'] = $this->session->userdata('kode_user');
-            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'000000'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program').$this->input->post('komponen').$this->input->post('subkomponen');
+            $entry['kode_kegiatan'] = substr($this->input->post('unit_kerja'),0,2).'9999'.$this->input->post('kegiatan').$this->input->post('output').$this->input->post('program').$this->input->post('komponen').$this->input->post('subkomponen').'99999999';
 
             unset($entry['kegiatan']);
             unset($entry['output']);

@@ -155,49 +155,67 @@ if(isset($excel)){
 	    			<tbody>';
     		$iter = 0;
 	    	foreach ($entry as $transaksi) {	
-	    		$iter++;
-	    		if ($iter == 1 and $saldo != null) {
-	    			$saldo = $saldo['saldo_awal'];
+	    		if ($check) {
+	    			$iter++;
+	    			$saldo = $query[$key]['saldo'];
 	    			echo '<tr>
 						<td>'.$iter.'</td>
-						<td>1 Januari '.$teks_tahun.'</td>
+						<td>'.$periode_awal.'</td>
 						<td></td>
-						<td>Saldo Awal</td>
+						<td>Saldo per '.$periode_awal.'</td>
 						<td></td>';
 						echo '<td align="right">0</td>';
 						echo '<td align="right">0</td>';
 						echo '<td align="right">'.eliminasi_negatif($saldo).'</td>';
 						echo '</tr>';
-	    			$iter++;
+						$iter++;
+	    		} else{
+		    		$iter++;
+		    		if ($iter == 1 and $saldo != null) {
+		    			$saldo = $saldo['saldo_awal'];
+		    			echo '<tr>
+							<td>'.$iter.'</td>
+							<td>1 Januari '.$teks_tahun.'</td>
+							<td></td>
+							<td>Saldo Awal</td>
+							<td></td>';
+							echo '<td align="right">0</td>';
+							echo '<td align="right">0</td>';
+							echo '<td align="right">'.eliminasi_negatif($saldo).'</td>';
+							echo '</tr>';
+		    			$iter++;
+		    		}
+		    	}
+		    	if ($transaksi['tanggal'] != NULL) {
+					echo '<tr>
+						<td>'.$iter.'</td>
+						<td>'.$transaksi['tanggal'].'</td>
+						<td>'.$transaksi['no_bukti'].'</td>
+						<td width="350px;">'.$transaksi['uraian'].'</td>
+						<td>_'.$transaksi['jenis'].'_</td>';
+						if ($transaksi['tipe'] == 'debet'){
+		    				echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
+		    				echo '<td align="right">0</td>';
+		    				if ($case_hutang) {
+		                        $saldo -= $transaksi['jumlah'];
+		                    } else {
+		    				    $saldo += $transaksi['jumlah'];
+		                    }
+		    				$jumlah_debet += $transaksi['jumlah'];
+		    			} else if ($transaksi['tipe'] == 'kredit'){
+		    				echo '<td align="right">0</td>';
+							echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
+							if ($case_hutang) {
+		                        $saldo += $transaksi['jumlah'];
+		                    } else {
+		                        $saldo -= $transaksi['jumlah'];
+		                    }
+							$jumlah_kredit += $transaksi['jumlah'];
+		    			}
+					echo '<td align="right">'.eliminasi_negatif($saldo).'</td>
+					</tr>';
 	    		}
-				echo '<tr>
-					<td>'.$iter.'</td>
-					<td>'.$transaksi['tanggal'].'</td>
-					<td>'.$transaksi['no_bukti'].'</td>
-					<td width="350px;">'.$transaksi['uraian'].'</td>
-					<td>_'.$transaksi['jenis'].'_</td>';
-					if ($transaksi['tipe'] == 'debet'){
-	    				echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
-	    				echo '<td align="right">0</td>';
-	    				if ($case_hutang) {
-	                        $saldo -= $transaksi['jumlah'];
-	                    } else {
-	    				    $saldo += $transaksi['jumlah'];
-	                    }
-	    				$jumlah_debet += $transaksi['jumlah'];
-	    			} else if ($transaksi['tipe'] == 'kredit'){
-	    				echo '<td align="right">0</td>';
-						echo '<td align="right">'.eliminasi_negatif($transaksi['jumlah']).'</td>';
-						if ($case_hutang) {
-	                        $saldo += $transaksi['jumlah'];
-	                    } else {
-	                        $saldo -= $transaksi['jumlah'];
-	                    }
-						$jumlah_kredit += $transaksi['jumlah'];
-	    			}
-				echo '<td align="right">'.eliminasi_negatif($saldo).'</td>
-				</tr>';
-    		}
+	    	}
     		echo '</tbody>
     				<tr>
     					<td align="right" colspan="5" style="background-color:#B1E9F2">Jumlah Total</td>
