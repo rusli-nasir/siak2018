@@ -2436,6 +2436,18 @@ class Laporan extends MY_Controller {
             ),
         );
 
+        $array_case_zero[5]['terikat_temporer'] =   
+                                                    array(
+                                                            array(
+                                                                    'akun' => array(511),
+                                                                    'subkegiatan' => '521'
+                                                                ),
+                                                            array(
+                                                                    'akun' => array(513),
+                                                                    'subkegiatan' => '531'
+                                                                )
+                                                    );
+
 
         $unit = $this->input->post('unit');
         if ($unit == 'all'){
@@ -2746,6 +2758,21 @@ class Laporan extends MY_Controller {
                     }
                 }
             }
+
+            if (isset($array_case_zero[$array_akun[0]][$jenis_pembatasan])){
+                foreach ($array_case_zero[$array_akun[0]][$jenis_pembatasan] as $temp_case) {
+                    $temp_data = $this->Laporan_model->get_rekap($temp_case['akun'],null,'kas',$unit,'sum',$jenis_pembatasan,$start_date,$end_date,null,null);
+                    $rekap[$temp_case['subkegiatan']]['saldo'] = $temp_data['saldo'];
+                    $rekap[$temp_case['subkegiatan']]['debet'] = $temp_data['debet'];
+                    $rekap[$temp_case['subkegiatan']]['kredit'] = $temp_data['kredit'];
+                    // echo "<pre>";
+                    // print_r($temp_case);die();
+                    // print_r($rekap[$temp_case['subkegiatan']]);die();
+                }
+            }
+
+            // echo "<pre>";
+            // print_r($rekap);die();
 
             foreach ($akun_biaya as $kd_akun_biaya => $biaya){
                 $entry_parsed = array(
@@ -5154,6 +5181,18 @@ class Laporan extends MY_Controller {
             ),
         );
 
+        $array_case_zero[5]['terikat_temporer'] =   
+                                                    array(
+                                                            array(
+                                                                    'akun' => array(511),
+                                                                    'subkegiatan' => '0403010201'
+                                                                ),
+                                                            array(
+                                                                    'akun' => array(513),
+                                                                    'subkegiatan' => '0403010401'
+                                                                )
+                                                    );
+
 
         //get_rekap($array_akun,$array_not_akun = null,$jenis=null,$unit=null,$laporan = null,$sumber_dana = null,$start_date = null, $end_date = null,$array_uraian = null,$tingkat = null,$sumber = null)
         $unit = $this->input->post('unit');
@@ -5477,6 +5516,22 @@ class Laporan extends MY_Controller {
             foreach ($data['anggaran'] as $kd_akun => $entry) {
                 $rekap[substr($kd_akun,0,$level)]['anggaran'] += $entry;
             }
+
+            if (isset($array_case_zero[$array_akun[0]][$jenis_pembatasan])){
+                foreach ($array_case_zero[$array_akun[0]][$jenis_pembatasan] as $temp_case) {
+                    $temp_data = $this->Laporan_model->get_rekap($temp_case['akun'],null,'kas',$unit,'sum',$jenis_pembatasan,$start_date,$end_date,null,null);
+                    $rekap[$temp_case['subkegiatan']]['saldo'] = $temp_data['saldo'];
+                    $rekap[$temp_case['subkegiatan']]['debet'] = $temp_data['debet'];
+                    $rekap[$temp_case['subkegiatan']]['kredit'] = $temp_data['kredit'];
+                    // echo "<pre>";
+                    // print_r($temp_case);die();
+                    // print_r($rekap[$temp_case['subkegiatan']]);die();
+                }
+            }
+
+            // echo "<pre>";
+            // print_r($rekap);die();
+
 
             $kode_akun = $array_akun[0];
             $nama_akun = ucfirst(strtolower($this->Akun_model->get_nama_akun_by_level($kode_akun,1))) . $array_string;

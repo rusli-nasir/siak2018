@@ -786,11 +786,13 @@ class Laporan_model extends CI_Model {
                     }
 
                     if ($tingkat != null){
-                        $this->db_laporan->where("kode_kegiatan <> ''");
-                        $this->db_laporan->where("kode_kegiatan NOT LIKE '%0000%'");
+                        // $this->db_laporan->where("kode_kegiatan <> ''");
+                        // $this->db_laporan->where("kode_kegiatan NOT LIKE '%0000%'");
                     }else{
                         $this->db_laporan->group_by($kolom[$tipe][$jenis]);
                     }
+
+                    // $this->db_laporan->where("jenis != 'KS'");
 
                     if ($tingkat != null){
                         $this->db_laporan->group_by($group_tingkat);
@@ -846,6 +848,8 @@ class Laporan_model extends CI_Model {
         // $cur_tipe = 'debet';
         $last_tipe = 'debet';
 
+        // echo "<pre>";
+
 
         foreach ($array_tipe as $tipe) {
             foreach ($array_jenis as $jenis) {
@@ -859,8 +863,8 @@ class Laporan_model extends CI_Model {
                             $group_tingkat = "substring(kode_kegiatan,7,$length_kegiatan)";
                             $added_select = ",substring(kode_kegiatan,7,$length_kegiatan) as akun";
                             $added_group = "substring(kode_kegiatan,7,$length_kegiatan)";
-                            $added_query .= "AND tu.kode_kegiatan <> '' ";
-                            $added_query .= "AND substring(kode_kegiatan,7,$length_kegiatan) NOT LIKE '%000%' ";
+                            // $added_query .= "AND tu.kode_kegiatan <> '' ";
+                            // $added_query .= "AND substring(kode_kegiatan,7,$length_kegiatan) NOT LIKE '%000%' ";
                         }
 
                         if ($unit != null){
@@ -918,6 +922,8 @@ class Laporan_model extends CI_Model {
                 }
             }
         }
+
+        // die();
 
 
         foreach ($query1 as $key => $value) {
