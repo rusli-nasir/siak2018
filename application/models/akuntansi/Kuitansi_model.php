@@ -1265,6 +1265,28 @@ class Kuitansi_model extends CI_Model {
         }
     }
 
+    function get_detail_pajak($no_bukti,$jenis)
+    {   
+        $data = array();
+        if (in_array($jenis,array('GP','TP','LK','LN'))) {
+            $tabel = 'rsa_kuitansi_detail_pajak';
+        }elseif ($jenis == 'L3') {
+            $tabel = 'rsa_kuitansi_detail_pajak_lsphk3';
+        }
+        $hasil = $this->db->get_where($tabel,array('no_bukti' => $no_bukti))->result_array();
+        
+        foreach ($hasil as $entry) {
+            $detail = $this->db->get_where('akuntansi_pajak',array('jenis_pajak' => $entry['jenis_pajak']))->row();
+
+            if (!empty($detail)){
+                $data[] = $detail->nama_akun.' '.$entry['persen_pajak']." (Rp. ".number_format($entry['rupiah_pajak'],2,',','.').')';
+            }
+                // $data[] = array_merge($entry,$detail);
+        }
+
+        return $data;
+    }
+
     public function get_kuitansi_posting($id_kuitansi_jadi)
     {
         $hasil = $this->db->get_where('akuntansi_kuitansi_jadi',array('id_kuitansi_jadi'=>$id_kuitansi_jadi))->row_array();
