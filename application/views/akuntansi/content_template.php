@@ -10,6 +10,7 @@
 <link href="<?php echo base_url();?>/assets/akuntansi/css/styles.css" rel="stylesheet">
 <link href="<?php echo base_url();?>/assets/akuntansi/css/my_style.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>frontpage/css/custom.css" rel="stylesheet" />
+
 <!-- datepicker -->
 <link rel="stylesheet" href="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.css'); ?>">
 <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
@@ -17,9 +18,9 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/jquery.PrintArea.js"></script>
 <!--<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>-->
 <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/moment-with-locales.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/notify.min.js"></script>
 <script src="<?php echo base_url('assets/akuntansi/assets/jquery-ui-1.11.4/jquery-ui.js'); ?>"></script>
 <script src="<?php echo base_url();?>/assets/akuntansi/js/bootstrap.min.js"></script>
-<script src="<?php echo base_url();?>/assets/akuntansi/js/notify.min.js"></script>
     <script>
     moment.locale("id");
     </script>

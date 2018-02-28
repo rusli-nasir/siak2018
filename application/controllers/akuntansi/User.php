@@ -46,6 +46,30 @@ class User extends MY_Controller {
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
 
+	public function manage_menu()
+	{
+		$crud = new grocery_crud();
+
+		$crud
+			->set_theme('bootstrap')
+			->unset_bootstrap()
+			->set_table('akuntansi_jenis_user')
+			->set_relation_n_n('pilihan_menu','akuntansi_menu_by_level','akuntansi_menu','level_user','id_menu','nama_menu',null,"is_parent = 1 or parent_id IS NULL")
+		;
+
+		$output = $crud->render(); 
+		$output->title = 'Manajemen Menu Untuk User';
+		$temp_data['content'] = $this->load->view('akuntansi/crud/manage',$output,true);
+		$this->load->view('akuntansi/content_template',$temp_data,false);
+
+	}
+
+	public function cek_menu()
+	{
+		$this->load->view('akuntansi/template/main',$this->data);
+
+	}
+
 	function fill_form_callback($post_array, $primary_key) {
 	 
 	    //Encrypt password only if is not empty. Else don't change the password to an empty field

@@ -9,8 +9,27 @@ class MY_Controller extends CI_Controller{
         
         if($this->session->userdata('level')){
             $this->load->model('akuntansi/Notifikasi_model', 'Notifikasi_model');
+            $this->load->model('akuntansi/User_akuntansi_model', 'User_akuntansi_model');
 
-            $this->data['jumlah_notifikasi'] = $this->Notifikasi_model->get_jumlah_notifikasi();
+			$this->data['jumlah_notifikasi'] = $this->Notifikasi_model->get_jumlah_notifikasi();
+			
+			$this->load->library("multi_menu");
+
+			$config["nav_tag_open"]          = '';
+			$config["nav_tag_close"]          = '';
+			$config["parent_tag_open"]       = '<li>';			
+			$config["parent_anchor_tag"]     = `<a href="%s"><i class="fa fa-envelope"></i> <span class="nav-label">%s {notif} </span><span class="label label-warning pull-right">16/24</span></a>`;	
+			$config["children_tag_open"]     = '<ul class="nav nav-second-level collapse">';			
+			$config["item_divider"]          = "<li class='divider'></li>";
+			$config["jumlah_notifikasi"] = $this->data['jumlah_notifikasi'];
+
+			$this->multi_menu->initialize($config);
+
+			$items = $this->User_akuntansi_model->get_menu_by_level($this->session->userdata('level'));
+
+			$this->multi_menu->set_items($items);
+
+			$this->data['list_menu'] = $this->multi_menu->render(); 
         }
 	}
 

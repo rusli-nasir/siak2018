@@ -63,5 +63,44 @@ class User_akuntansi_model extends CI_Model {
         } else {
             return false;
         }
-	}
+    }
+    
+    
+    public function get_menu_by_level($level)
+    {
+        $query = $this->db
+                ->select("akuntansi_menu.id_menu as id,parent_id as parent, nama_menu as name,icon, alamat as slug, urutan as number,is_parent,notif")
+                ->from('akuntansi_menu')
+                ->join('akuntansi_menu_by_level','akuntansi_menu.id_menu = akuntansi_menu_by_level.id_menu')
+                ->where('level_user',$level)
+                ->order_by('urutan')
+                ->get();
+        ;
+
+        $menu = $query->result_array();
+
+        for ($i=0; $i < count($menu); $i++) { 
+            if ($menu[$i]['is_parent'] == 1){
+                $new_array = $this->get_menu_by_parent_id($menu[$i]['id']);
+                array_splice($menu,$i+1,0,$new_array);
+            }
+        }
+
+        return $menu;
+        
+    }
+
+    public function get_menu_by_parent_id($parent_id)
+    {
+        $query = $this->db
+                ->select("akuntansi_menu.id_menu as id,parent_id as parent, nama_menu as name,icon, alamat as slug, urutan as number,is_parent,notif")
+                ->from('akuntansi_menu')
+                ->order_by('urutan')
+                ->where('parent_id',$parent_id)
+                ->get();
+        ;
+        return $query->result_array();
+    }
+
+
 }
