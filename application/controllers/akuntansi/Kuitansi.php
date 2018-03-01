@@ -34,7 +34,33 @@ class Kuitansi extends MY_Controller {
     public function set_unit_session($kode_unit, $posting=null){
     	$this->session->set_userdata('kode_unit', $kode_unit);
     	if($posting) redirect(site_url('akuntansi/kuitansi/posting')); else redirect(site_url('akuntansi/kuitansi/jadi'));
-    }
+	}
+	
+	public function lihat_kuitansi()
+	{
+		$data_jenis = $this->Kuitansi_model->get_jenis_kuitansi_non_input();
+		
+		if ($this->session->userdata('kuitansi_aktif')){
+			$aktif = $this->session->userdata('kuitansi_aktif');
+		}else{
+			$aktif = 'GP';
+		}
+		for ($i=0; $i < count($data_jenis); $i++) { 
+			$data_jenis[$i]['notif'] = $this->data['jumlah_notifikasi']->$data_jenis[$i]['nama_notifikasi'];
+			$indeks_jadi = $data_jenis[$i]['nama_notifikasi'].'_jadi';
+			$data_jenis[$i]['notif_jadi'] = $this->data['jumlah_notifikasi']->$indeks_jadi;
+			if ($data_jenis[$i]['nama_terjurnal'] == $aktif){
+				$data_jenis[$i]['aktif'] = true;
+			}else {
+				$data_jenis[$i]['aktif'] = false;
+			}
+		}
+		
+		$this->data['all_jenis'] = json_encode($data_jenis);
+		$temp_data['content'] = $this->load->view('akuntansi/kuitansi/daftar_kuitansi',$this->data,true);
+
+		$this->load->view('akuntansi/template/main',$temp_data);
+	}
 
    public function lists($jenis){	
    	//level unit

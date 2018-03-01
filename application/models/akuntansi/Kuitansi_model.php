@@ -274,6 +274,11 @@ class Kuitansi_model extends CI_Model {
 
     }
 
+    public function get_jenis_kuitansi_non_input()
+    {
+        return $this->db->where("basis != 'input'")->get('akuntansi_jenis_transaksi')->result_array();
+    }
+
 
     public function read_spm_rsa($spm,$jumlah,$kode_unit=null)
     {
