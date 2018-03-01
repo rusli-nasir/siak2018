@@ -56,7 +56,8 @@ class Kuitansi extends MY_Controller {
 			}
 		}
 		
-		$this->data['all_jenis'] = json_encode($data_jenis);
+		$this->data['all_jenis'] = json_encode($data_jenis,JSON_PRETTY_PRINT);
+		$this->data['jenis_aktif'] = $aktif;
 		$temp_data['content'] = $this->load->view('akuntansi/kuitansi/daftar_kuitansi',$this->data,true);
 
 		$this->load->view('akuntansi/template/main',$temp_data);

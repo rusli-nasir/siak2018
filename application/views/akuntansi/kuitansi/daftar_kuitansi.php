@@ -37,7 +37,8 @@ $tahun = $this->session->userdata('setting_tahun');
     tab_kuitansi = new Vue({
         el : '#tab-kuitansi',
         data : {
-            'all_jenis' : <?=$all_jenis?>
+            'all_jenis' : <?=$all_jenis?>,
+            'active' : <?=$aktif?>
         },
     });
 </script>
