@@ -96,7 +96,30 @@ class Kuitansi extends MY_Controller {
 
 		$config['per_page'] = 20;
 
-   	if ($jenis == 'gup') {
+		if ($jenis == 'UP') {
+  			$this->data['tab4'] = true;
+
+			//search
+  			if(isset($_POST['keyword_up'])){
+  				$keyword = $this->input->post('keyword_up');
+  				$this->session->set_userdata('keyword_up', $keyword);		
+  			}else{
+  				if($this->session->userdata('keyword_up')!=null){
+  					$keyword = $this->session->userdata('keyword_up');
+  				}else{
+  					$keyword = '';
+  				}
+  			}
+
+  			$total_data = $this->Kuitansi_model->read_up(null, null, $keyword, $kode_unit);
+  			$total = $total_data->num_rows();
+
+  			$query = $this->data['query'] = $this->Kuitansi_model->read_up($config['per_page'], $id, $keyword, $kode_unit)->result_array();
+
+  			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 0)->num_rows();
+  			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 1)->num_rows();
+
+   	} elseif ($jenis == 'GP') {
    		$this->data['tab1'] = true;
 
    		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'GP');
@@ -119,7 +142,7 @@ class Kuitansi extends MY_Controller {
    		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total_gup('GUP',$this->session->userdata('kode_unit'),0)->num_rows();
    		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total_gup('GUP',$this->session->userdata('kode_unit'),1)->num_rows();
 
-   	}elseif ($jenis == 'tup_nihil') {
+   	}elseif ($jenis == 'TUP_NIHIL') {
   			$this->data['tab8'] = true;
 
   			$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'TP');
@@ -142,7 +165,7 @@ class Kuitansi extends MY_Controller {
   			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'TP', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
   			$this->data['jenis_isi'] = "TUP_NIHIL";
 
-   	}elseif ($jenis == 'lsk') {
+   	}elseif ($jenis == 'LK') {
    		$this->data['tab11'] = true;
 
    		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'LK');
@@ -165,7 +188,7 @@ class Kuitansi extends MY_Controller {
    		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'LK', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
    		$this->data['jenis_isi'] = "LK";
 
-   	}elseif ($jenis == 'lsnk') {
+   	}elseif ($jenis == 'LN') {
   			$this->data['tab12'] = true;
 
   			$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'LN');
@@ -188,7 +211,7 @@ class Kuitansi extends MY_Controller {
   			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'LN', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
   			$this->data['jenis_isi'] = "LN";
 
-   	}elseif ($jenis == 'gup_nihil') {
+   	}elseif ($jenis == 'GUP_NIHIL') {
    		if(isset($_POST['keyword_'.$jenis])){
    			$keyword = $this->input->post('keyword');
    			$this->session->set_userdata('keyword', $keyword);		
@@ -219,7 +242,7 @@ class Kuitansi extends MY_Controller {
 			$this->data['jenis'] = 'GUP_NIHIL';
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total_gup('GUP_NIHIL',$this->session->userdata('kode_unit'),0)->num_rows();
 			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total_gup('GUP_NIHIL',$this->session->userdata('kode_unit'),1)->num_rows();
-   	}elseif ($jenis == 'em') {
+   	}elseif ($jenis == 'EM') {
   		
   		$total_data = $this->Kuitansi_model->read_em(null, null, $keyword, $kode_unit);
 		$total = $total_data->num_rows();
@@ -232,30 +255,7 @@ class Kuitansi extends MY_Controller {
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'EM', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'EM', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 
-   	}elseif ($jenis == 'up') {
-  			$this->data['tab4'] = true;
-
-			//search
-  			if(isset($_POST['keyword_up'])){
-  				$keyword = $this->input->post('keyword_up');
-  				$this->session->set_userdata('keyword_up', $keyword);		
-  			}else{
-  				if($this->session->userdata('keyword_up')!=null){
-  					$keyword = $this->session->userdata('keyword_up');
-  				}else{
-  					$keyword = '';
-  				}
-  			}
-
-  			$total_data = $this->Kuitansi_model->read_up(null, null, $keyword, $kode_unit);
-  			$total = $total_data->num_rows();
-
-  			$query = $this->data['query'] = $this->Kuitansi_model->read_up($config['per_page'], $id, $keyword, $kode_unit)->result_array();
-
-  			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 0)->num_rows();
-  			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 1)->num_rows();
-
-   	}elseif ($jenis == 'pup') {
+   	}elseif ($jenis == 'PUP') {
    		$this->data['tab6'] = true;
 		
 			$total_data = $this->Kuitansi_model->read_pup(null, null, $keyword, $kode_unit);
@@ -266,7 +266,7 @@ class Kuitansi extends MY_Controller {
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_pup('SPM-FINAL-KBUU', 0)->num_rows();
 			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_pup('SPM-FINAL-KBUU', 1)->num_rows();
 		
-   	}elseif ($jenis == 'gu') {
+   	}elseif ($jenis == 'GUP') {
   			$this->data['tab9'] = true;
 
 			$total_data = $this->Kuitansi_model->read_gup(null, null, $keyword, $kode_unit);
@@ -279,7 +279,7 @@ class Kuitansi extends MY_Controller {
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_gup('SPM-FINAL-KBUU', 0)->num_rows();
 			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_gup('SPM-FINAL-KBUU', 1)->num_rows();
 
-   	}elseif ($jenis == 'tup') {
+   	}elseif ($jenis == 'TUP') {
 	  		$this->data['tab5'] = true;
 
 			$total_data = $this->Kuitansi_model->read_tup(null, null, $keyword, $kode_unit);
@@ -290,7 +290,7 @@ class Kuitansi extends MY_Controller {
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 0)->num_rows();
 			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 1)->num_rows();
 
-   	}elseif ($jenis == 'ls-pg') {
+   	}elseif ($jenis == 'NK') {
    		$total_data = $this->Kuitansi_model->read_spm(null, null, $keyword);
 			$total = $total_data->num_rows();
 
@@ -304,7 +304,7 @@ class Kuitansi extends MY_Controller {
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'proses'=>5, 'substr(unitsukpa,1,2)'=>$this->session->userdata('kode_unit')), 'kepeg_tr_spmls')->num_rows();
 			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'proses'=>5, 'substr(unitsukpa,1,2)'=>$this->session->userdata('kode_unit')), 'kepeg_tr_spmls')->num_rows();
 
-   	}elseif ($jenis == 'tup_pengembalian') {
+   	}elseif ($jenis == 'TUP_PENGEMBALIAN') {
    		$total_data = $this->Kuitansi_model->read_kuitansi_tup_pengembalian(null, null, $keyword, $kode_unit);
 			$total = $total_data->num_rows();
 
@@ -317,7 +317,7 @@ class Kuitansi extends MY_Controller {
 			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'jenis' => 'TP','substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
 			$this->data['jenis_isi'] = "TUP ISI";
 	  
-   	}elseif ($jenis == 'gup_pengembalian') {
+   	}elseif ($jenis == 'GUP_PENGEMBALIAN') {
    		$total_data = $this->Kuitansi_model->read_kuitansi_pengembalian(null, null, $keyword, $kode_unit, 'GP');
 			$total = $total_data->num_rows();
 
@@ -328,7 +328,7 @@ class Kuitansi extends MY_Controller {
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0, 'cair'=>1,'jenis' => 'GP','substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
 			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1, 'cair'=>1,'jenis' => 'GP','substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi_pengembalian')->num_rows();
   
-   	}elseif ($jenis == 'ks') {
+   	}elseif ($jenis == 'KS') {
    		$total_data = $this->Kuitansi_model->read_ks(null, null, $keyword, $kode_unit);
 			$total = $total_data->num_rows();
 
@@ -2238,29 +2238,29 @@ class Kuitansi extends MY_Controller {
     }
 
     public function get_url($id_kuitansi, $jenis, $trx_spm=null, $trx=null, $id_spmls, $tahun, $kode_unit){
-    switch ($jenis) {
-    	case 'TP':
+    	switch ($jenis) {
+    		case 'TUP_PENGEMBALIAN':
     		$url = site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($trx_spm))).'/'.$kode_unit.'/'.$tahun.'/'.$id_kuitansi;
     		break;
-    	case 'LK':
+    		case 'LK':
     		$url = site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($trx))).'/'.$kode_unit.'/'.$tahun.'/'.$id_kuitansi;
     		break;
-    	case 'LN':
+    		case 'LN':
     		$url = site_url('akuntansi/rsa_lsnk/spm_lsnk_lihat_99/'.urlencode(base64_encode($trx))).'/'.$kode_unit.'/'.$tahun.'/'.$id_kuitansi;
     		break;
-    	case 'TUP':
+    		case 'TUP':
     		$url = site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($trx_spm))).'/'.$kode_unit.'/'.$tahun.'/'.$id_kuitansi;
     		break;
-    	case 'lspg':
+    		case 'NK':
     		$url = site_url('akuntansi/rsa_gup/lspg/'.$id_spmls);
     		break;
-    	
-    	default:
+
+    		default:
     		$url = site_url('akuntansi/rsa_gup/jurnal/'.$id_kuitansi.'/?spm='.urlencode($trx_spm));
     		break;
-    }
+    	}
 
-    return $url;
+    	return $url;
     }
 
 }
