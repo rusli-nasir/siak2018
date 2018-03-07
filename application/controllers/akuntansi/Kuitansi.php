@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Kuitansi extends MY_Controller {
 	public function __construct(){
         parent::__construct();
-        $this->data['menu1'] = true;
+        //$this->data['menu1'] = true;
         $this->cek_session_in();
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->data['db2'] = $this->load->database('rba',TRUE);
@@ -272,8 +272,6 @@ class Kuitansi extends MY_Controller {
 			$total_data = $this->Kuitansi_model->read_gup(null, null, $keyword, $kode_unit);
 			$total = $total_data->num_rows();
 
-			$this->data['halaman'] = $this->pagination->create_links();
-
 			$query = $this->data['query'] = $this->Kuitansi_model->read_gup($config['per_page'], $id, $keyword, $kode_unit)->result_array();
 
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_gup('SPM-FINAL-KBUU', 0)->num_rows();
@@ -294,8 +292,7 @@ class Kuitansi extends MY_Controller {
    		$total_data = $this->Kuitansi_model->read_spm(null, null, $keyword);
 			$total = $total_data->num_rows();
 
-   		$this->data['tab3'] = true;
-  			$query = $this->data['query'] = $this->Kuitansi_model->read_spm($config['per_page'], $id, $keyword)->result_array();
+  		$query = $this->data['query'] = $this->Kuitansi_model->read_spm($config['per_page'], $id, $keyword)->result_array();
 
    		// echo "<pre>";
    		// print_r ($this->data['query']);
@@ -342,10 +339,10 @@ class Kuitansi extends MY_Controller {
    	foreach ($query as $key=>$parse) {
    		$id_spmls = (isset($parse['id_spmls']) ? $parse['id_spmls'] : null);
 
-   		if ($jenis == 'em'|| $jenis == 'up'|| $jenis == 'pup'|| $jenis == 'gu'){
+   		if ($jenis == 'EM'|| $jenis == 'UP'|| $jenis == 'PUP'|| $jenis == 'GUP'){
    			$this->data['query'][$key]['pajak'] = null;
 
-   		} elseif ($jenis == 'ls-pg') {
+   		} elseif ($jenis == 'NK') {
    			$parsed = array();
    			$parse['id_kuitansi'] = $id_spmls;
    			$parse['str_nomor_trx_spm'] = null;
@@ -366,11 +363,11 @@ class Kuitansi extends MY_Controller {
    			$parsed = $this->Kuitansi_model->get_detail_pajak($parse['no_bukti'], $parse['jenis']);
    			$this->data['query'][$key]['pajak'] = $parsed;
    		}
-   		$this->data['query'][$key]['url_bukti'] = $this->get_url($parse['id_kuitansi'], $parse['jenis'], $parse['str_nomor_trx_spm'], $parse['str_nomor_trx'], $id_spmls, $parse['tahun'], $kode_unit);
+   		$this->data['query'][$key]['url_bukti'] = $this->get_url($parse['id_kuitansi'], $jenis, $parse['str_nomor_trx_spm'], $parse['str_nomor_trx'], $id_spmls, $parse['tahun'], $kode_unit);
    		$this->data['query'][$key]['url_jurnal'] = site_url('akuntansi/jurnal_rsa/input_jurnal/'.$parse['id_kuitansi'].'/'.$parse['jenis']);
    	}
-   	echo "<pre>";
-   	print_r ($this->data['query']);
+   	// echo "<pre>";
+   	// print_r ($this->data['query']);
    		// die();
 
 
@@ -394,10 +391,10 @@ class Kuitansi extends MY_Controller {
 
 		//$this->pagination->initialize($config); 
 		//$this->data['halaman'] = $this->pagination->create_links();
-
-		echo json_encode($this->data);
-		// echo "<pre>";
-  //  	print_r($this->data);
+     unset($this->data['list_menu'], $this->data['jumlah_notifikasi'], $this->data['db2']);    
+		echo json_encode($this->data, JSON_PRETTY_PRINT);
+		echo "<pre>";
+   	print_r($this->data);
 
 		// $temp_data['content'] = $this->load->view('akuntansi/kuitansi_list',$this->data,true);
 		// $this->load->view('akuntansi/content_template',$temp_data,false);
@@ -1494,6 +1491,94 @@ class Kuitansi extends MY_Controller {
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}	
 
+  public function list_jadi($jenis = 'GP', $id = 0){
+    //level unit
+    if($this->session->userdata('kode_unit')!=null){
+      $kode_unit = $this->session->userdata('kode_unit');
+    }else{
+      redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+      $kode_unit = null;
+    }
+
+    //search
+    $keyword = '';
+    if(isset($_POST['keyword_jadi_'.$jenis])){
+      $keyword = $this->input->post('keyword_jadi_'.$jenis);
+      $this->session->set_userdata('keyword_jadi_'.$jenis, $keyword);   
+    }else{
+      if($this->session->userdata('keyword_jadi_'.$jenis)!=null){
+        $keyword = $this->session->userdata('keyword_jadi_'.$jenis);
+      }else{
+        $keyword = '';
+      }
+    }
+
+    $total_data = $this->Kuitansi_model->read_kuitansi_jadi(null, null, $keyword, $kode_unit, $jenis);
+    $total = $total_data->num_rows();
+    $this->data['total_a'] = $total_data->num_rows();
+
+    //pagination
+    if($this->uri->segment('5')==null){
+      $id = 0;
+      $this->data['no'] = $id+1;
+    }else{
+      $id = ($id-1)*20;
+      $this->data['no'] = $id+1;
+    }
+
+    $config['per_page'] = '20';
+
+    $this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+    $this->data['query'] = $this->data['query']->result_array();
+        $this->load->model('akuntansi/Akun_model');
+        // echo "<pre>";
+        // print_r ($this->data['query']);
+        // die();
+        foreach($this->data['query'] as $key=>$value){
+            $this->data['query'][$key]['nama_akun_debet'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet']);
+            $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
+            $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
+            $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            if ($this->data['query'][$key]['jenis'] == 'LK' or $this->data['query'][$key]['jenis'] == 'LN' ) {
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_ls($this->data['query'][$key]['no_spm']);          
+            }
+            if ($this->data['query'][$key]['jenis'] == 'EM') {
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_em($this->data['query'][$key]['no_spm']);          
+            }
+            if ($this->data['query'][$key]['jenis'] == 'KS') {
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_tambah_ks');         
+            }
+            $this->data['query'][$key] = (object) $this->data['query'][$key];
+        }
+
+        $tipe = ($jenis == 'NK' ? '<>pajak' : 'pengeluaran');
+
+        $this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>$tipe, 'jenis'=>$jenis, 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif_1'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif_2'] = $this->Kuitansi_model->read_total(array('status'=>'direvisi', 'tipe'=>'pengeluaran', 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+        $this->data['kuitansi_pasif'] = $this->data['kuitansi_pasif_2'] + $this->data['kuitansi_pasif_1'];
+        $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'tipe'=>$tipe, 'jenis'=>$jenis, 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
+
+        if($jenis=='GP'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='TUP_NIHIL'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='LK'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='LN'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='EM'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='KS'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_jadi_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }
+
+        $this->data['jenis'] = $jenis;
+
+        unset($this->data['list_menu'], $this->data['jumlah_notifikasi'], $this->data['db2']);     
+        echo json_encode($this->data, JSON_PRETTY_PRINT);
+  }
+
 	public function jadi($jenis = 'GP', $id = 0){
 		$this->data['menu1'] = null;
 		$this->data['menu2'] = true;
@@ -1747,7 +1832,7 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
             $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
             $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
-            $this->data['query'][$key] = (object) $this->data['query'][$key];
+           $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
 
 		$this->data['kuitansi_ok'] = $this->Kuitansi_model->read_total(array('status'=>'proses', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>2,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
@@ -1756,6 +1841,9 @@ class Kuitansi extends MY_Controller {
         $this->data['kuitansi_pasif'] = $this->data['kuitansi_pasif_2'] + $this->data['kuitansi_pasif_1'];
         $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 		
+        echo "<pre>";
+        print_r ($this->data);
+        die();
         /*print_r($this->data['query']);
         die();*/
 
@@ -1811,6 +1899,93 @@ class Kuitansi extends MY_Controller {
 
 		echo json_encode($query);
 	}
+
+  public function list_posting($jenis = 'GP', $id=0){
+
+    if($this->session->userdata('kode_unit')!=null){
+      $kode_unit = $this->session->userdata('kode_unit');
+    }else{
+      redirect(site_url('akuntansi/kuitansi/pilih_unit'));
+      $kode_unit = null;
+    }
+
+    //search
+    $keyword = '';
+    if(isset($_POST['keyword_jadi_'.$jenis.'_posting'])){
+      $keyword = $this->input->post('keyword_jadi_'.$jenis.'_posting');
+      $this->session->set_userdata('keyword_jadi_'.$jenis.'_posting', $keyword);    
+    }else{
+      if($this->session->userdata('keyword_jadi_'.$jenis.'_posting')!=null){
+        $keyword = $this->session->userdata('keyword_jadi_'.$jenis.'_posting');
+      }else{
+        $keyword = '';
+      }
+    }
+
+    $total_data = $this->Kuitansi_model->read_kuitansi_posting(null, null, $keyword, $kode_unit, $jenis);
+        
+        $this->data['all_query'] = $total_data->result();
+        
+    $total = $total_data->num_rows();
+
+    $config['per_page'] = '20';
+
+    //pagination
+    if($this->uri->segment('5')==null){
+      $id = 0;
+      $this->data['no'] = $id+1;
+    }else{
+      $id = ($id-1)*20;
+      $this->data['no'] = $id+1;
+    }
+
+    if ($jenis == 'NK') {
+      $this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting_spm($config['per_page'], $id, $keyword, $kode_unit);
+    }else{
+    $this->data['query'] = $this->Kuitansi_model->read_kuitansi_posting($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+    }
+
+    $this->data['query'] = $this->data['query']->result_array();
+        $this->load->model('akuntansi/Akun_model');
+        foreach($this->data['query'] as $key=>$value){
+            $this->data['query'][$key]['nama_akun_debet'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet']);
+            $this->data['query'][$key]['nama_akun_debet_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet_akrual']);
+            $this->data['query'][$key]['nama_akun_kredit'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit']);
+            $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
+            if ($this->data['query'][$key]['jenis'] == 'LK' or $this->data['query'][$key]['jenis'] == 'LN' ) {
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_ls($this->data['query'][$key]['no_spm']);          
+            }
+            if ($this->data['query'][$key]['jenis'] == 'EM') {
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_em($this->data['query'][$key]['no_spm']);          
+            }
+            if ($this->data['query'][$key]['jenis'] == 'KS') {
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_tambah_ks');         
+            }
+            $this->data['query'][$key] = (object) $this->data['query'][$key];
+        }
+        
+        if($jenis=='GP'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='TUP_NIHIL'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='GUP_NIHIL'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='LK'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='LN'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='EM'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }else if($jenis=='KS'){
+          $this->data['query_spm'] = $this->Kuitansi_model->read_posting_group_spm($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        }
+
+        $this->data['jenis'] = $jenis;
+
+        unset($this->data['list_menu'], $this->data['jumlah_notifikasi'], $this->data['db2']);     
+        echo json_encode($this->data, JSON_PRETTY_PRINT);
+
+    }
     
     public function posting($jenis = 'GP', $id=0){
 		$this->data['menu3'] = true;
@@ -1888,6 +2063,10 @@ class Kuitansi extends MY_Controller {
             }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
+
+        // echo "<pre>";
+        // print_r ($this->data['query']);
+        // die();
         
         if($jenis=='UP'){
         	$this->data['tab1'] = true;
@@ -2071,6 +2250,10 @@ class Kuitansi extends MY_Controller {
             $this->data['query'][$key]['nama_akun_kredit_akrual'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_kredit_akrual']);
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
+
+        // echo "<pre>";
+        // print_r ($this->data['query']);
+        // die();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/posting_nk_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);
