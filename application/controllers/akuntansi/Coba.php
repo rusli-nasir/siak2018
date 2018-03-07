@@ -20,7 +20,23 @@ class Coba extends MY_Controller {
         $this->load->model('akuntansi/Jurnal_rsa_model', 'Jurnal_rsa_model');
         $this->load->model('akuntansi/Unit_kerja_model', 'Unit_kerja_model');
         $this->load->model('akuntansi/Akun_belanja_rsa_model', 'Akun_belanja_rsa_model');
-	}
+    }
+    
+    public function revert_flag()
+    {
+        $tabel = $this->db->query("SELECT TABLE_NAME
+                        FROM information_schema.COLUMNS 
+                        WHERE 
+                            TABLE_SCHEMA = 'rsa' 
+                        AND COLUMN_NAME = 'flag_proses_akuntansi'")->result_array();
+        echo "<pre>";
+        foreach ($tabel as $each_tabel) {
+            $query = "UPDATE ".$each_tabel['TABLE_NAME']. " SET flag_proses_akuntansi=0 WHERE 1";
+            $this->db->query($query);
+        }
+
+        // print_r($tabel);
+    }
 
     public function array_mesh() {
         // Combine multiple associative arrays and sum the values for any common keys

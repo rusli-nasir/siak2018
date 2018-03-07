@@ -86,11 +86,14 @@ class Kuitansi extends MY_Controller {
 		$id = $this->uri->segment('6');
 		if ($id == null AND ($this->input->get('page') != null) ) {
 			$id = $this->input->get('page');
+			$current_page = $id;
 		}
 		if($id==null){
 			$id = 0;
+			$current_page = $id;
 			$this->data['no'] = $id+1;
 		}else{
+			$current_page = $id;
 			$id = ($id-1)*20;
 			$this->data['no'] = $id+1;
 		}
@@ -115,7 +118,8 @@ class Kuitansi extends MY_Controller {
   			$total_data = $this->Kuitansi_model->read_up(null, null, $keyword, $kode_unit);
   			$total = $total_data->num_rows();
 
-  			$query = $this->data['query'] = $this->Kuitansi_model->read_up($config['per_page'], $id, $keyword, $kode_unit)->result_array();
+			  $query = $this->data['query'] = $this->Kuitansi_model->read_up($config['per_page'], $id, $keyword, $kode_unit)->result_array();
+			  
 
   			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 0)->num_rows();
   			$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_up('SPM-FINAL-KBUU', 1)->num_rows();
@@ -126,10 +130,16 @@ class Kuitansi extends MY_Controller {
    		$total_data = $this->Kuitansi_model->read_kuitansi(null, null, $keyword, $kode_unit,'GP');
    		$total = $total_data->num_rows();
 
-   		$this->data['jenis_isi'] = "GP";
+		   $this->data['jenis_isi'] = "GP";
 
-   		$query = $this->data['query'] = $this->Kuitansi_model->read_kuitansi_gup($config['per_page'], $id, $keyword, $kode_unit,'GUP')->result_array();
-   		$this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_gup($config['per_page'], $id, $keyword, $kode_unit,'GUP',true)->result_array();
+		   $query = $this->data['query'] = $this->Kuitansi_model->read_kuitansi_gup($config['per_page'], $id, $keyword, $kode_unit,'GUP')->result_array();
+
+		//    $last_query = $this->db->last_query();
+		   
+		//    $last_query = strstr($last_query, 'LIMIT', true);
+		//    $this->data['total'] = $this->db->query($last_query)->num_rows();
+		   $this->data['query_spm'] = $this->Kuitansi_model->read_kuitansi_gup($config['per_page'], $id, $keyword, $kode_unit,'GUP',true)->result_array();
+
 
    		// foreach ($query as $key=>$parse) {
    		// 	$parsed = $this->Kuitansi_model->get_detail_pajak($parse['no_bukti'], $parse['jenis']);
@@ -273,8 +283,6 @@ class Kuitansi extends MY_Controller {
 			$total_data = $this->Kuitansi_model->read_gup(null, null, $keyword, $kode_unit);
 			$total = $total_data->num_rows();
 
-			$this->data['halaman'] = $this->pagination->create_links();
-
 			$query = $this->data['query'] = $this->Kuitansi_model->read_gup($config['per_page'], $id, $keyword, $kode_unit)->result_array();
 
 			$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_gup('SPM-FINAL-KBUU', 0)->num_rows();
@@ -346,7 +354,7 @@ class Kuitansi extends MY_Controller {
    		if ($jenis == 'em'|| $jenis == 'up'|| $jenis == 'pup'|| $jenis == 'gu'){
    			$this->data['query'][$key]['pajak'] = null;
 
-   		} elseif ($jenis == 'ls-pg') {
+   		} elseif ($jenis == 'NK') {
    			$parsed = array();
    			$parse['id_kuitansi'] = $id_spmls;
    			$parse['str_nomor_trx_spm'] = null;
@@ -370,8 +378,8 @@ class Kuitansi extends MY_Controller {
    		$this->data['query'][$key]['url_bukti'] = $this->get_url($parse['id_kuitansi'], $parse['jenis'], $parse['str_nomor_trx_spm'], $parse['str_nomor_trx'], $id_spmls, $parse['tahun'], $kode_unit);
    		$this->data['query'][$key]['url_jurnal'] = site_url('akuntansi/jurnal_rsa/input_jurnal/'.$parse['id_kuitansi'].'/'.$parse['jenis']);
    	}
-   	echo "<pre>";
-   	print_r ($this->data['query']);
+   	// echo "<pre>";
+   	// print_r ($this->data['query']);
    		// die();
 
 
@@ -395,8 +403,43 @@ class Kuitansi extends MY_Controller {
 
 		//$this->pagination->initialize($config); 
 		//$this->data['halaman'] = $this->pagination->create_links();
+	   $total = $this->data['kuitansi_non_jadi'];
+	   
+	   $last_page = 1;
+	   $perpage = $config['per_page'];
+	   $current_page = (int)$current_page;
+	   while ($last_page * $perpage < $total) {
+		   $last_page++;
+	   }
+	   if ($current_page == 1){
+		    $next = $current_page + 1;
+			$next_page = site_url('akuntansi/kuitansi/lists/'.$jenis)."?page=$next";
+			$prev_page = null;
+	   }elseif ($current_page == $last_page) {
+		   $prev = $current_page - 1;
+		   $prev_page = site_url('akuntansi/kuitansi/lists/'.$jenis)."?page=$prev";
+		   $next_page = null;
+	   }else{
+			$next = $current_page + 1;
+			$next_page = site_url('akuntansi/kuitansi/lists/'.$jenis)."?page=$next";
+			$prev = $current_page - 1;
+		   	$prev_page = site_url('akuntansi/kuitansi/lists/'.$jenis)."?page=$prev";
+	   }
 
-		echo json_encode($this->data);
+		$this->data["total"] = $total;
+		$this->data["per_page"] = $perpage;
+		$this->data["current_page"] = $current_page;
+		$this->data["last_page"] = $last_page;
+		$this->data["next_page_url"] =  $next_page;
+		$this->data["prev_page_url"] = $prev_page;
+		$this->data["from"] = ($id * ($current_page-1)) + 1;
+		$this->data["to"] = $current_page * $perpage;
+
+		$exported_data = $this->data;
+		unset($exported_data['jumlah_notifikasi']);
+		unset($exported_data['list_menu']);
+
+		echo json_encode($exported_data,JSON_PRETTY_PRINT);
 		// echo "<pre>";
   //  	print_r($this->data);
 
