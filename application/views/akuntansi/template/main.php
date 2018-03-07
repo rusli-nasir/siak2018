@@ -9,6 +9,7 @@
     
     <title>SiAk | Sistem Akuntansi</title>
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css" rel="stylesheet">
     <link href="<?php echo base_url();?>/assets/akuntansi/insinia/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo base_url();?>/assets/akuntansi/insinia/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="<?php echo base_url();?>/assets/akuntansi/insinia/css/animate.css" rel="stylesheet">
@@ -71,7 +72,7 @@
         </div>
     </nav>
 
-        <div id="page-wrapper" class="gray-bg">
+        <div id="page-wrapper" class="gray-bg" style="height:auto;">
         <div class="row border-bottom">
         <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
@@ -82,12 +83,12 @@
                     <span class="m-r-sm text-muted welcome-message"> Selamat Datang di Sistem Akuntansi</span>
                 </li>
                 <li>
-                    <a href="login.html">
+                    <a href="<?php echo site_url('akuntansi/pengaturan/ganti_password');?>">
                         <i class="fa fa-wrench"></i> Ubah Password
                     </a>
                 </li>
                 <li>
-                    <a href="login.html">
+                    <a href="<?php echo site_url('akuntansi/login/logout');?>">
                         <i class="fa fa-sign-out"></i> Log out
                     </a>
                 </li>
@@ -112,7 +113,7 @@
                 </div>
             </div> -->
             <div class="wrapper wrapper-content">
-                <div class="animated fadeInRightBig">
+                <div class="animated fadeInRightBig row">
                     <div class="col-lg-12">
                         <?php if (isset($content)) { 
                             echo $content;
@@ -125,15 +126,15 @@
                 </div>
             </div>
 
-        <div class="footer">
-            <div class="pull-right">
-                SiAk 2018
-            </div>
-            <div>
-                <strong>Copyright</strong> Diponegoro University &copy; 2018
-            </div>
-        </div>
 
+            <div class="footer">
+                <div class="pull-right">
+                    SiAk 2018
+                </div>
+                <div>
+                    <strong>Copyright</strong> Diponegoro University &copy; 2018
+                </div>
+            </div>
         </div>
         </div>
 
