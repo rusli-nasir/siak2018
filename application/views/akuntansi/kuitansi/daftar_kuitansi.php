@@ -77,7 +77,7 @@ $tahun = $this->session->userdata('setting_tahun');
             'panel' : '',
             'page' : 1,
             'changed' : false,
-            'fields' : ['__slot:actions','tgl_kuitansi','str_nomor_trx_spm','kode_usulan_belanja','no_bukti'],
+            'fields' : ['__slot:actions','tgl_kuitansi','str_nomor_trx_spm','uraian','no_bukti','kode_akun','jumlah'],
             'api_url' : '',
         },
         methods : {
