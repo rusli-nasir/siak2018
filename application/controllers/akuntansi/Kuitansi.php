@@ -421,14 +421,19 @@ class Kuitansi extends MY_Controller {
 		   	$prev_page = site_url('akuntansi/kuitansi/lists/'.$jenis)."?page=$prev";
 	   }
 
-		$this->data["total"] = $total;
-		$this->data["per_page"] = $perpage;
-		$this->data["current_page"] = $current_page;
-		$this->data["last_page"] = $last_page;
-		$this->data["next_page_url"] =  $next_page;
-		$this->data["prev_page_url"] = $prev_page;
-		$this->data["from"] = ($id * ($current_page-1)) + 1;
-		$this->data["to"] = $current_page * $perpage;
+	   
+	   $this->data["total"] = $total;
+	   $this->data["per_page"] = $perpage;
+	   $this->data["current_page"] = $current_page;
+	   $this->data["last_page"] = $last_page;
+	   $this->data["next_page_url"] =  $next_page;
+	   $this->data["prev_page_url"] = $prev_page;
+	   $this->data["from"] = ($perpage * ($current_page-1)) + 1;
+	   $this->data["to"] = $current_page * $perpage;
+
+		foreach ($query as $key=>$parse) {
+			$this->data['query'][$key]['urutan'] = $this->data["from"] + $key;
+		}
 
 		$exported_data = $this->data;
 		unset($exported_data['jumlah_notifikasi']);

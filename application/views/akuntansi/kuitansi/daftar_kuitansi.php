@@ -56,7 +56,7 @@ $tahun = $this->session->userdata('setting_tahun');
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.6/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.6/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.min.js"></script>
 
 <script src="https://unpkg.com/vue-loading-overlay@2"></script>
@@ -80,7 +80,7 @@ $tahun = $this->session->userdata('setting_tahun');
             'panel' : '',
             'page' : 1,
             'changed' : false,
-            'fields' : ['__slot:actions','tanggal','str_nomor_trx_spm','uraian','no_bukti','kode_akun','jumlah'],
+            'fields' : ['urutan','__slot:actions','tanggal','str_nomor_trx_spm','uraian','no_bukti','kode_akun','jumlah'],
             'api_url' : '',
         },
         methods : {
