@@ -19,9 +19,12 @@ $tahun = $this->session->userdata('setting_tahun');
                 <div class="tab-content">
                     <div id="tab-10" class="tab-pane active">
                         <div class="panel-body ">
-                            <div v-if="item_loading" class="sk-spinner sk-spinner-double-bounce sk-loading">
-                                <div class="sk-double-bounce1"></div>
-                                <div class="sk-double-bounce2"></div>
+                            <div  v-if="item_loading" class="sk-spinner sk-spinner-wave sk-loading">
+                                    <div class="sk-rect1"></div>
+                                    <div class="sk-rect2"></div>
+                                    <div class="sk-rect3"></div>
+                                    <div class="sk-rect4"></div>
+                                    <div class="sk-rect5"></div>
                             </div>
                             <span v-if="!loading">
                                  <vuetable ref="vuetable"
@@ -77,7 +80,7 @@ $tahun = $this->session->userdata('setting_tahun');
             'panel' : '',
             'page' : 1,
             'changed' : false,
-            'fields' : ['__slot:actions','tgl_kuitansi','str_nomor_trx_spm','uraian','no_bukti','kode_akun','jumlah'],
+            'fields' : ['__slot:actions','tanggal','str_nomor_trx_spm','uraian','no_bukti','kode_akun','jumlah'],
             'api_url' : '',
         },
         methods : {
@@ -85,16 +88,6 @@ $tahun = $this->session->userdata('setting_tahun');
                 this.active = check;
                 this.api_url = '<?=site_url().'/akuntansi/kuitansi/lists/'?>' + this.active + '/' + this.page;
                 this.item_loading = true;
-                // axios.get()
-                // .then(response => {
-                //     this.loading = false;
-                //     console.log(response);
-                //     this.panel = this.active + ' ' + response.data.query
-                // })
-                // .catch(error => {
-                //     this.loading = false;
-                //     this.panel = this.active + ' ' + 'There was an error: ' + error.message
-                // })
             },
             onLoaded (){
                 this.item_loading = false;
