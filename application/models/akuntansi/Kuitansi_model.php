@@ -542,10 +542,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 $query_jenis AND
+            $query = $this->db->query("SELECT *, CONCAT(uraian,'; Penerima : ',nmbendahara) AS uraian FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 $query_jenis AND
             (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 $query_jenis AND
+            $query = $this->db->query("SELECT *, CONCAT(uraian,'; Penerima : ',nmbendahara) FROM rsa_kuitansi_pengembalian WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 $query_jenis AND
             (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
         }
 
@@ -668,10 +668,10 @@ class Kuitansi_model extends CI_Model {
         }
 
 		if($limit!=null OR $start!=null){
-			$query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_up_data AS id_kuitansi FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+			$query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_up_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
 			(str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
 		}else{
-			$query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_up_data AS id_kuitansi FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+			$query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_up_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
 			(str_nomor_trx LIKE '%$keyword%') $unit");
 		}
 		return $query;
@@ -685,10 +685,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
+            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, debet AS jumlah, kd_akun_kas AS kode_akun FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
             (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
+            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, debet AS jumlah, kd_akun_kas AS kode_akun FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
             (str_nomor_trx LIKE '%$keyword%') $unit");
         }
         return $query;
@@ -736,10 +736,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tambah_tup_data AS id_kuitansi FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tambah_tup_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
             (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tambah_tup_data AS id_kuitansi FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tambah_tup_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
             (str_nomor_trx LIKE '%$keyword%') $unit");
         }
         return $query;
@@ -816,9 +816,9 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT kepeg_tr_spmls.*, kepeg_tr_spmls.nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi, untuk_bayar AS uraian FROM kepeg_tr_spmls JOIN kepeg_tr_sppls ON id_tr_sppls=id_sppls WHERE flag_proses_akuntansi=0 AND kepeg_tr_spmls.proses=5 AND kepeg_tr_spmls.nomor LIKE '%$keyword%' $filter_unit LIMIT $start, $limit");
+            $query = $this->db->query("SELECT kepeg_tr_spmls.*, kepeg_tr_spmls.nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi, untuk_bayar AS uraian, SUBSTR(kepeg_tr_spmls.detail_belanja,19,6) AS kode_akun FROM kepeg_tr_spmls JOIN kepeg_tr_sppls ON id_tr_sppls=id_sppls WHERE flag_proses_akuntansi=0 AND kepeg_tr_spmls.proses=5 AND kepeg_tr_spmls.nomor LIKE '%$keyword%' $filter_unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT kepeg_tr_spmls.*, kepeg_tr_spmls.nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi, untuk_bayar AS uraian FROM kepeg_tr_spmls JOIN kepeg_tr_sppls ON id_tr_sppls=id_sppls WHERE flag_proses_akuntansi=0 AND kepeg_tr_spmls.proses=5 AND kepeg_tr_spmls.nomor LIKE '%$keyword%' $filter_unit");
+            $query = $this->db->query("SELECT kepeg_tr_spmls.*, kepeg_tr_spmls.nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi, untuk_bayar AS uraian, SUBSTR(kepeg_tr_spmls.detail_belanja,19,6) AS kode_akun FROM kepeg_tr_spmls JOIN kepeg_tr_sppls ON id_tr_sppls=id_sppls WHERE flag_proses_akuntansi=0 AND kepeg_tr_spmls.proses=5 AND kepeg_tr_spmls.nomor LIKE '%$keyword%' $filter_unit");
         }
         return $query;
     }
@@ -1291,6 +1291,13 @@ class Kuitansi_model extends CI_Model {
 
         return $data;
     }
+
+    function get_kuitansi_jumlah($id_kuitansi){
+
+        $query = $this->db->query("SELECT SUM(volume*harga_satuan) AS pengeluaran FROM rsa_kuitansi_detail WHERE id_kuitansi='$id_kuitansi'")->row();
+        return number_format($query->pengeluaran);
+    }
+
 
     public function get_kuitansi_posting($id_kuitansi_jadi)
     {
