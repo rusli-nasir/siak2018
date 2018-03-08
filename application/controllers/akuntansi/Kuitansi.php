@@ -340,9 +340,9 @@ class Kuitansi extends MY_Controller {
       }
       
 
-		if (!isset($parse['tanggal'])){
-			$this->data['query'][$key]['tanggal'] = $this->data['query'][$key]['tgl_kuitansi'];
-		}
+		// if (!isset($parse['tanggal'])){
+		// 	$this->data['query'][$key]['tanggal'] = $this->data['query'][$key]['tgl_kuitansi'];
+		// }
 		   
 
    		if ($jenis == 'EM'|| $jenis == 'UP'|| $jenis == 'PUP'|| $jenis == 'GUP' || $jenis == 'TUP' || $jenis == 'KS' || $jenis == 'TUP_PENGEMBALIAN' || $jenis == 'GUP_PENGEMBALIAN'){
