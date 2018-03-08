@@ -671,7 +671,7 @@ class Kuitansi_model extends CI_Model {
 			$query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_up_data AS id_kuitansi FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
 			(str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
 		}else{
-			$query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, , id_trx_spm_up_data AS id_kuitansi FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+			$query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_up_data AS id_kuitansi FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
 			(str_nomor_trx LIKE '%$keyword%') $unit");
 		}
 		return $query;
@@ -685,10 +685,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
+            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
             (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
+            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
             (str_nomor_trx LIKE '%$keyword%') $unit");
         }
         return $query;
@@ -812,13 +812,13 @@ class Kuitansi_model extends CI_Model {
             }else{
                 $alias = $this->session->userdata('alias');
             }
-            $filter_unit = "AND substr(nomor,7,3)='".$alias."'";
+            $filter_unit = "AND substr(kepeg_tr_spmls.nomor,7,3)='".$alias."'";
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT *, nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi FROM kepeg_tr_spmls WHERE flag_proses_akuntansi=0 AND proses=5 AND nomor LIKE '%$keyword%' $filter_unit LIMIT $start, $limit");
+            $query = $this->db->query("SELECT kepeg_tr_spmls.*, kepeg_tr_spmls.nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi, untuk_bayar AS uraian FROM kepeg_tr_spmls JOIN kepeg_tr_sppls ON id_tr_sppls=id_sppls WHERE flag_proses_akuntansi=0 AND kepeg_tr_spmls.proses=5 AND kepeg_tr_spmls.nomor LIKE '%$keyword%' $filter_unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT *, nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi FROM kepeg_tr_spmls WHERE flag_proses_akuntansi=0 AND proses=5 AND nomor LIKE '%$keyword%' $filter_unit");
+            $query = $this->db->query("SELECT kepeg_tr_spmls.*, kepeg_tr_spmls.nomor AS str_nomor_trx_spm, id_spmls AS id_kuitansi, untuk_bayar AS uraian FROM kepeg_tr_spmls JOIN kepeg_tr_sppls ON id_tr_sppls=id_sppls WHERE flag_proses_akuntansi=0 AND kepeg_tr_spmls.proses=5 AND kepeg_tr_spmls.nomor LIKE '%$keyword%' $filter_unit");
         }
         return $query;
     }
