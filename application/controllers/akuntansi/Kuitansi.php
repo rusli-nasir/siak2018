@@ -348,7 +348,12 @@ class Kuitansi extends MY_Controller {
    	}
 
    	foreach ($query as $key=>$parse) {
-   		$id_spmls = (isset($parse['id_spmls']) ? $parse['id_spmls'] : null);
+		$id_spmls = (isset($parse['id_spmls']) ? $parse['id_spmls'] : null);
+
+		if (!isset($parse['tanggal'])){
+			$this->data['query'][$key]['tanggal'] = $this->data['query'][$key]['tgl_kuitansi'];
+		}
+		   
 
    		if ($jenis == 'EM'|| $jenis == 'UP'|| $jenis == 'PUP'|| $jenis == 'GUP'){
    			$this->data['query'][$key]['pajak'] = null;
