@@ -1270,7 +1270,7 @@
                                     $data = array(
                                         'kode_unit_subunit' => $kd_unit,
                                         'posisi' => $proses,
-                                        'id_trx_nomor_tambah_tup' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
+                                        'id_trx_nomor_tup_spm' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
                                         'ket' => $ket,
                                         'aktif' => '1',
                                         'tahun' => $tahun,
@@ -1393,7 +1393,7 @@
                                     $data = array(
                                         'kode_unit_subunit' => $kd_unit,
                                         'posisi' => $proses,
-                                        'id_trx_nomor_tambah_tup' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
+                                        'id_trx_nomor_tup_spm' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
                                         'ket' => $ket,
                                         'aktif' => '1',
                                         'tahun' => $tahun,
@@ -1438,7 +1438,7 @@
                             $data = array(
                                 'kode_unit_subunit' => $kd_unit,
                                 'posisi' => $proses,
-                                'id_trx_nomor_tambah_tup' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
+                                'id_trx_nomor_tup_spm' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
                                 'ket' => $ket,
                                 'aktif' => '1',
                                 'tahun' => $tahun,
@@ -1491,7 +1491,7 @@
                             $data = array(
                                 'kode_unit_subunit' => $kd_unit,
                                 'posisi' => $proses,
-                                'id_trx_nomor_tambah_tup' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
+                                'id_trx_nomor_tup_spm' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup($jenis,$kd_unit,$this->cur_tahun),
                                 'ket' => $ket,
                                 'aktif' => '1',
                                 'tahun' => $tahun,
@@ -1585,7 +1585,7 @@
                         $kd_unit = $this->input->post('kd_unit');
                         $data = array(
                             'kode_unit_subunit' => $kd_unit,
-                            'id_trx_nomor_tambah_tup' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup('SPM',$kd_unit,$this->input->post('tahun')),
+                            'id_trx_nomor_tup_spm' => $this->rsa_tambah_tup_model->get_id_nomor_tambah_tup('SPM',$kd_unit,$this->input->post('tahun')),
                             'posisi' => $proses,
                             'ket' => $ket,
                             'aktif' => '1',

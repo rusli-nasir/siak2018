@@ -265,9 +265,9 @@ class Coba_model extends CI_Model {
 		$array_primary = array (
 						'trx_spm_up_data' => 'id_trx_spm_up_data',
 						'trx_spm_gup_data' => 'id_trx_spm_gup_data',
-						'trx_spm_tambah_tup_data' => 'id_trx_spm_tambah_tup_data',
-						'trx_spm_tambah_up_data' => 'id_trx_spm_tambah_up_data',
-						'trx_spm_tup_data' => 'id_trx_spm_gup_data',
+						'trx_spm_tup_data' => 'id_trx_spm_tup_data',
+						'trx_spm_pup_data' => 'id_trx_spm_pup_data',
+						'trx_spm_tup_nihil_data' => 'id_trx_spm_gup_data',
 						'trx_spm_lsphk3_data' => 'id_trx_spm_lsphk3_data',
 						'rsa_kuitansi' => 'id_kuitansi'
 			);

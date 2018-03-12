@@ -17,7 +17,7 @@ class Spm_model extends CI_Model {
 	{
     // die($jenis);
     if ($jenis == 'TP' or $jenis == 'TUP_NIHIL' or $jenis == 'TUP') {
-      $data = $this->db->get_where('trx_spm_tup_data',array('str_nomor_trx' => $no_spm))->row_array();
+      $data = $this->db->get_where('trx_spm_tup_nihil_data',array('str_nomor_trx' => $no_spm))->row_array();
       return $data['tgl_spm'];
     }
 
@@ -39,7 +39,7 @@ class Spm_model extends CI_Model {
     }
 
     if ($jenis == 'TUP_PENGEMBALIAN') {
-      $data = $this->db->get_where('trx_spm_tup_data',array('str_nomor_trx' => $no_spm))->row_array();
+      $data = $this->db->get_where('trx_spm_tup_nihil_data',array('str_nomor_trx' => $no_spm))->row_array();
       return $data['tgl_spm'];
     }
 
@@ -140,8 +140,8 @@ class Spm_model extends CI_Model {
           'GUP_NIHIL' => 'trx_spm_gup_data',
           'LK' => 'trx_spm_lsk_data',
           'LN' => 'trx_spm_lsnk_data',
-          'TUP_PENGEMBALIAN' => 'trx_spm_tup_data',
-          'TUP_NIHIL' => 'trx_spm_tup_data',
+          'TUP_PENGEMBALIAN' => 'trx_spm_tup_nihil_data',
+          'TUP_NIHIL' => 'trx_spm_tup_nihil_data',
     );
   }
 
@@ -152,9 +152,9 @@ class Spm_model extends CI_Model {
 						'UP' => 'trx_spm_up_data',
             'GUP' => 'trx_spm_gup_data',
 						// 'GUP_NIHIL' => 'trx_spm_gup_data',
-						'TUP' => 'trx_spm_tambah_tup_data',
-            'PUP' => 'trx_spm_tambah_up_data',
-						'KS' => 'trx_spm_tambah_ks_data',
+						'TUP' => 'trx_spm_tup_data',
+            'PUP' => 'trx_spm_pup_data',
+						'KS' => 'trx_spm_ks_data',
             'TUP_NIHIL' => 'rsa_kuitansi',
             // 'EM' => 'trx_spm_em_data',
             // 'LK' => 'rsa_kuitansi',
@@ -171,10 +171,10 @@ class Spm_model extends CI_Model {
       'GUP' => 'trx_spm_gup_data',
       'LSK' => 'trx_spm_lsk_data',
       'LSNK' => 'trx_spm_lsnk_data',
-      'KS' => 'trx_spm_tambah_ks_data',
-      'TUP' => 'trx_spm_tambah_tup_data',
-      'TUP_NIHIL' => 'trx_spm_tup_data',
-      'PUP' => 'trx_spm_tambah_up_data',
+      'KS' => 'trx_spm_ks_data',
+      'TUP' => 'trx_spm_tup_data',
+      'TUP_NIHIL' => 'trx_spm_tup_nihil_data',
+      'PUP' => 'trx_spm_pup_data',
       'UP' => 'trx_spm_up_data',
     );
   }
@@ -190,8 +190,8 @@ class Spm_model extends CI_Model {
             'SPM-UP' => 'trx_spm_up_data',
             'SPM-GUP' => 'trx_spm_gup_data',
             'SPP-GUP' => 'trx_spm_gup_data',
-            'SPM-TUP' => 'trx_spm_tambah_tup_data',
-            'SPM-PUP' => 'trx_spm_tambah_up_data',
+            'SPM-TUP' => 'trx_spm_tup_data',
+            'SPM-PUP' => 'trx_spm_pup_data',
             'SPM-TUP-NIHIL' => 'rsa_kuitansi',
             'SPM-LS PGW' => 'rsa_kuitansi',
             'SPM-LSK' => 'rsa_kuitansi',

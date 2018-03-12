@@ -1881,12 +1881,12 @@
                                 if($this->rsa_tambah_ks_model->proses_nomor_spm_tambah_ks($kd_unit,$data)){
 
                                     $id_trx_nomor_tambah_ks = $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks_by_nomor_trx($nomor_trx_spp) ;
-                                    $id_trx_nomor_tambah_ks_spm = $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks_by_nomor_trx($nomor_trx) ;
+                                    $id_trx_nomor_ks_spm = $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks_by_nomor_trx($nomor_trx) ;
 
                                     $data_spm = array(
                                         'kode_unit_subunit' => $kd_unit,
                                         // 'nomor_trx_spm' => $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks($jenis,$kd_unit,$this->cur_tahun),
-                                        'nomor_trx_spm' => $id_trx_nomor_tambah_ks_spm,
+                                        'nomor_trx_spm' => $id_trx_nomor_ks_spm,
                                         'str_nomor_trx' => $nomor_trx,
                                         'jumlah_bayar' => $this->input->post('jumlah_bayar'),
                                         'terbilang' => $this->input->post('terbilang'),
@@ -1919,7 +1919,7 @@
                                         'nomor_trx_spp' => $id_trx_nomor_tambah_ks,
                                         'str_nomor_trx_spp' => $nomor_trx_spp,
                                         // 'nomor_trx_spm' => $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks('SPM',$kd_unit,$this->cur_tahun),
-                                        'nomor_trx_spm' => $id_trx_nomor_tambah_ks_spm,
+                                        'nomor_trx_spm' => $id_trx_nomor_ks_spm,
                                         'str_nomor_trx_spm' =>$nomor_trx,
                                         'jenis_trx' => 'KS',
                                         'tahun' => $tahun,
@@ -1930,7 +1930,7 @@
                                         'posisi' => $proses,
                                         // 'id_trx_nomor_tambah_ks' => $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks($jenis,$kd_unit,$this->cur_tahun),
                                         'id_trx_nomor_tambah_ks' => $id_trx_nomor_tambah_ks,
-                                        'id_trx_nomor_tambah_ks_spm' => $id_trx_nomor_tambah_ks_spm,
+                                        'id_trx_nomor_ks_spm' => $id_trx_nomor_ks_spm,
                                         'ket' => $ket,
                                         'aktif' => '1',
                                         'tahun' => $tahun,
@@ -2034,7 +2034,7 @@
                                 'posisi' => $proses,
                                 // 'id_trx_nomor_tambah_ks' => $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks($jenis,$kd_unit,$this->cur_tahun),
                                 'id_trx_nomor_tambah_ks' => $id_nomor_tambah_ks,
-                                'id_trx_nomor_tambah_ks_spm' => $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks_by_nomor_trx($nomor_trx),
+                                'id_trx_nomor_ks_spm' => $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks_by_nomor_trx($nomor_trx),
                                 'ket' => $ket,
                                 'aktif' => '1',
                                 'tahun' => $tahun,
@@ -2137,7 +2137,7 @@
                         
                         // $id_trx_nomor_lsnk = $this->rsa_lsnk_model->get_id_nomor_lsnk_by_nomor_trx($nomor_trx_spp) ;
                         $id_trx_nomor_tambah_ks = $this->input->post('id_nomor_tambah_ks') ;
-                        $id_trx_nomor_tambah_ks_spm = $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks_by_nomor_trx($nomor_trx_spm) ;
+                        $id_trx_nomor_ks_spm = $this->rsa_tambah_ks_model->get_id_nomor_tambah_ks_by_nomor_trx($nomor_trx_spm) ;
 
                         $nomor_trx_spp = $this->rsa_tambah_ks_model->get_spp_by_spm($nomor_trx_spm);
 
@@ -2145,7 +2145,7 @@
                                     'kode_unit_subunit' => $kd_unit,
                                     'posisi' => $proses,
                                     'id_trx_nomor_tambah_ks' => $id_trx_nomor_tambah_ks,
-                                    'id_trx_nomor_tambah_ks_spm' => $id_trx_nomor_tambah_ks_spm,
+                                    'id_trx_nomor_ks_spm' => $id_trx_nomor_ks_spm,
                                     'ket' => $ket,
                                     'aktif' => '1',
                                     'tahun' => $this->input->post('tahun'),
