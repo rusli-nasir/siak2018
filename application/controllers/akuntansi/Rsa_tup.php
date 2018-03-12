@@ -101,7 +101,7 @@
                 }
                 
                 function check_tup_(){
-                    $mysql = "SELECT data_kuitansi FROM trx_spm_tup_data WHERE str_nomor_trx = '00001/SVO/SPM-TUP-NIHIL/JUN/2017' " ;
+                    $mysql = "SELECT data_kuitansi FROM trx_spm_tup_nihil_data WHERE str_nomor_trx = '00001/SVO/SPM-TUP-NIHIL/JUN/2017' " ;
 
                     $q = $this->db->query($mysql) ;
 
@@ -138,7 +138,7 @@
                 }
 
                 function check_tup_data(){
-                    $mysql = "SELECT data_kuitansi FROM trx_spm_tup_data WHERE str_nomor_trx = '00003/LPM/SPM-TUP-NIHIL/JUN/2017' " ;
+                    $mysql = "SELECT data_kuitansi FROM trx_spm_tup_nihil_data WHERE str_nomor_trx = '00003/LPM/SPM-TUP-NIHIL/JUN/2017' " ;
 
                     $q = $this->db->query($mysql) ;
 
@@ -178,7 +178,7 @@
 
                 function check_tup_data_tgl(){
 
-                    $mysql = "SELECT data_kuitansi FROM trx_spm_tup_data WHERE str_nomor_trx = '00001/SVO/SPM-TUP-NIHIL/JUN/2017' " ;
+                    $mysql = "SELECT data_kuitansi FROM trx_spm_tup_nihil_data WHERE str_nomor_trx = '00001/SVO/SPM-TUP-NIHIL/JUN/2017' " ;
 
                     $q = $this->db->query($mysql) ;
 
@@ -191,7 +191,7 @@
 
                     // echo $str ; // die  ;
 
-                    $mysql2 = "SELECT trx_tup.tgL_proses FROM  trx_spm_tup_data JOIN trx_tup ON trx_spm_tup_data.nomor_trx_spm = trx_tup.id_trx_nomor_tup WHERE trx_spm_tup_data.str_nomor_trx = '00001/SVO/SPM-TUP-NIHIL/JUN/2017' AND trx_tup.posisi = 'SPM-FINAL-KBUU' " ; 
+                    $mysql2 = "SELECT trx_tup_nihil.tgL_proses FROM  trx_spm_tup_nihil_data JOIN trx_tup_nihil ON trx_spm_tup_nihil_data.nomor_trx_spm = trx_tup_nihil.id_trx_nomor_tup WHERE trx_spm_tup_nihil_data.str_nomor_trx = '00001/SVO/SPM-TUP-NIHIL/JUN/2017' AND trx_tup_nihil.posisi = 'SPM-FINAL-KBUU' " ; 
 
                     // echo $mysql2 ; die ;
 

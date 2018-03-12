@@ -6181,8 +6181,8 @@ class Laporan extends MY_Controller {
             $filter_unit_gu = "AND substr(trx_gup.kode_unit_subunit,1,2)='".$kode_unit."'";
             $filter_unit_up = "AND substr(trx_up.kode_unit_subunit,1,2)='".$kode_unit."'";
             $filter_unit_gup = "AND substr(kode_unit,1,2)='".$kode_unit."'";
-            $filter_unit_pup = "AND substr(trx_tambah_up.kode_unit_subunit,1,2)='".$kode_unit."'";
-            $filter_unit_tup = "AND substr(trx_tambah_tup.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_pup = "AND substr(trx_pup.kode_unit_subunit,1,2)='".$kode_unit."'";
+            $filter_unit_tup = "AND substr(trx_tup.kode_unit_subunit,1,2)='".$kode_unit."'";
             $filter_unit_lsphk3 = "AND substr(trx_lsphk3.kode_unit_subunit,1,2)='".$kode_unit."'";
             $filter_unit_ls3 = "AND substr(tk.kode_unit,1,2)='".$kode_unit."'";
             $filter_unit_lspg = "AND P.unitsukpa=".$kode_unit."";
@@ -6210,22 +6210,22 @@ class Laporan extends MY_Controller {
         }
 
         //up
-        $this->data['up'] = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
+        $this->data['up'] = $this->db->query("SELECT * FROM trx_spm_up_data, trx_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_up_spm AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
             $filter_unit_up $filter_periode");
 
         //gu
-        $this->data['gu'] = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND untuk_bayar !='GUP NIHIL' AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND kredit=0 
+        $this->data['gu'] = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND untuk_bayar !='GUP NIHIL' AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND kredit=0 
             $filter_unit_gu $filter_periode");
         // gu
-        // $this->data['gu'] = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup AND uraian !='GUP NIHIL' AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND kredit=0 
+        // $this->data['gu'] = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND uraian !='GUP NIHIL' AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx AND kredit=0 
         //     $filter_unit_gu $filter_periode");
 
         //pup
-        $this->data['pup'] = $this->db->query("SELECT * FROM trx_spm_tambah_up_data, trx_tambah_up, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_up AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx 
+        $this->data['pup'] = $this->db->query("SELECT * FROM trx_spm_pup_data, trx_pup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_pup_spm AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx 
             $filter_unit_pup $filter_periode");
 
         //tup
-        $this->data['tup'] = $this->db->query("SELECT * FROM trx_spm_tambah_tup_data, trx_tambah_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tambah_tup AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
+        $this->data['tup'] = $this->db->query("SELECT * FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tup_spm AND posisi='SPM-FINAL-KBUU' AND no_spm = str_nomor_trx
             $filter_unit_tup $filter_periode");
 
         //ls3
