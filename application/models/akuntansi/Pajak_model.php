@@ -216,7 +216,7 @@ class Pajak_model extends CI_Model {
 
     public function get_detail_pajak($no_bukti,$jenis)
     {
-    	// $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
+        // $hasil = $this->db->get_where($this->get_tabel_by_jenis($jenis),array('no_bukti' => $no_bukti))->result_array();
 
         $tabel_detail = $this->get_tabel_detail_by_jenis($jenis);
         $tabel_utama = $this->get_tabel_utama_by_jenis($jenis);
