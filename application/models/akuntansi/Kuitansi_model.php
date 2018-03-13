@@ -469,12 +469,17 @@ class Kuitansi_model extends CI_Model {
             $unit_req = '';
         }
 
+        if ($spm_group == null){
+            $spm_group = "GROUP BY id_kuitansi";
+        }
+
 		if($limit!=null OR $start!=null){
 			$query = $this->db->query("
                 SELECT 
-                        tk.* FROM rsa_kuitansi as tk, trx_spm_gup_data as tg 
+                        tk.*,SUBSTR(td.kode_usulan_belanja,-6) as kode_akun FROM rsa_kuitansi as tk, trx_spm_gup_data as tg,rsa_kuitansi_detail as td
                 WHERE 
                         tk.str_nomor_trx_spm = tg.str_nomor_trx AND 
+                        tk.id_kuitansi = td.id_kuitansi AND
                         $jenis_req AND
                         $unit_req AND 
                         (tk.no_bukti LIKE '%$keyword%' OR tk.str_nomor_trx_spm LIKE '%$keyword%') AND
@@ -490,9 +495,10 @@ class Kuitansi_model extends CI_Model {
 		}else{
 			$query = $this->db->query("
                 SELECT 
-                        tk.* FROM rsa_kuitansi as tk, trx_spm_gup_data as tg 
+                        tk.*,SUBSTR(td.kode_usulan_belanja,-6) as kode_akun FROM rsa_kuitansi as tk, trx_spm_gup_data as tg,rsa_kuitansi_detail as td
                 WHERE 
                         tk.str_nomor_trx_spm = tg.str_nomor_trx AND 
+                        tk.id_kuitansi = td.id_kuitansi AND
                         tg.untuk_bayar = 'GUP NIHIL' AND
                         tk.cair = 1
                         AND (tk.no_bukti LIKE '%$keyword%' OR tk.str_nomor_trx_spm LIKE '%$keyword%')
