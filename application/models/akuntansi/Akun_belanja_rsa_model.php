@@ -34,6 +34,7 @@ class Akun_belanja_rsa_model extends CI_Model {
 
         $hasil = array_unique($hasil,SORT_REGULAR);
 
+        $hasil = null; //disable temporary
 
         return $hasil;
     }

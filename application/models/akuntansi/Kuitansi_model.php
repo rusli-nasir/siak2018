@@ -690,11 +690,12 @@ class Kuitansi_model extends CI_Model {
             $unit = '';
         }
 
+
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, debet AS jumlah, kd_akun_kas AS kode_akun FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
+            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, debet AS jumlah, kd_akun_kas AS kode_akun FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND untuk_bayar != 'GUP NIHIL' AND
             (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
         }else{
-            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, debet AS jumlah, kd_akun_kas AS kode_akun FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 AND untuk_bayar != 'GUP NIHIL' AND
+            $query = $this->db->query("SELECT *, id_trx_spm_gup_data AS id_kuitansi, str_nomor_trx AS str_nomor_trx_spm, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, debet AS jumlah, kd_akun_kas AS kode_akun FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND untuk_bayar != 'GUP NIHIL' AND
             (str_nomor_trx LIKE '%$keyword%') $unit");
         }
         return $query;

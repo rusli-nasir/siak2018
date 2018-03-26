@@ -119,6 +119,7 @@ class Notifikasi_model extends CI_Model {
         // echo "SELECT COUNT(*) FROM `kepeg_tr_spmls` WHERE `flag_proses_akuntansi` =$level AND `proses` = 5 AND substr(unitsukpa,1,2) $subunit) AS spm";
         // echo "<pre>";
         // print_r($temp);
+        // die("SELECT count(*) FROM trx_spm_gup_data, trx_gup WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND posisi='SPM-FINAL-KBUU' AND untuk_bayar != 'GUP NIHIL' AND flag_proses_akuntansi=$level AND substr(trx_gup.kode_unit_subunit,1,2) $subunit");
         // die("SELECT Count(*) FROM trx_spm_em_data, trx_em, kas_undip WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx $em_string");
         // die("SELECT Count(*) FROM trx_spm_em_data, trx_em WHERE nomor_trx_spm = id_trx_nomor_em_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0  $em_string");
         // die("SELECT Count(*) FROM trx_spm_ks_data, trx_ks, kas_kerjasama WHERE nomor_trx_spm = id_trx_nomor_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx $ks_string");

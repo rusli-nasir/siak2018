@@ -2369,7 +2369,7 @@ class Kuitansi extends MY_Controller {
     	}
 		
 		//gu
-		$gu = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND posisi='SPM-FINAL-KBUU' AND untuk_bayar != 'GUP NIHIL' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND kredit=0 
+		$gu = $this->db->query("SELECT * FROM trx_spm_gup_data, trx_gup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_gup_spm AND posisi='SPM-FINAL-KBUU' AND untuk_bayar != 'GUP NIHIL' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx 
 			AND substr(trx_gup.kode_unit_subunit,1,2)='".$kode_unit."'");
 		$gu = $gu->num_rows();
 
