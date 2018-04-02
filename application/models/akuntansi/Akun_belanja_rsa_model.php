@@ -22,7 +22,6 @@ class Akun_belanja_rsa_model extends CI_Model {
             $akun_konversi[$entry['dari']] = $entry['ke'];
         }
 
-
         foreach ($data as $entry){
             $kode = $entry['kode_akun'];
             if (isset($akun_konversi[$kode])) {
@@ -31,13 +30,10 @@ class Akun_belanja_rsa_model extends CI_Model {
             }
             $hasil[] = $entry;
         }
-
         $hasil = array_unique($hasil,SORT_REGULAR);
 
-        $hasil = null; //disable temporary
 
         return $hasil;
     }
 
-    
 }
