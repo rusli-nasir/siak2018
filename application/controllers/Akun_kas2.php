@@ -24,6 +24,7 @@ Class Akun_kas2 extends CI_Controller {
             parent::__construct();
 		/*	Load library, helper, dan Model	*/
 		$this->load->library(array('form_validation'));
+		$this->load->helper('vayes_helper');
 		$this->load->helper('form');
 		$this->load->model(array('akun_kas2_model'));
 	}
@@ -34,18 +35,20 @@ Class Akun_kas2 extends CI_Controller {
 		show_404('page');
 	}
 	
-	function daftar_akun_kas2()
+	function daftar_akun_kas2($kode_akun1digit)
 	{
 		/* check session	*/
 		if($this->check_session->user_session() && ($this->check_session->get_level()==100)||($this->check_session->get_level()==11)){
 			/*	Set data untuk main template */
-			$data['user_menu']	= $this->load->view('user_menu','',TRUE);
-			$data['main_menu']	= $this->load->view('main_menu','',TRUE);		
+			$data['user_menu']								= $this->load->view('user_menu','',TRUE);
+			$data['main_menu']								= $this->load->view('main_menu','',TRUE);		
 			$tahun = $this->setting_model->get_tahun();
-			$subdata['cur_tahun'] = $tahun;
-			$subdata_akun_kas2['result_akun_kas2'] 	= $this->akun_kas2_model->get_akun_kas2();
-			$subdata['row_akun_kas2'] 				= $this->load->view("akun_kas2/row_akun_kas2",$subdata_akun_kas2,TRUE);
-			$data['main_content'] 						= $this->load->view("akun_kas2/daftar_akun_kas2",$subdata,TRUE);
+			$subdata['cur_tahun'] 							= $tahun;
+			$subdata_akun_kas2['result_akun_kas2'] 	= $this->akun_kas2_model->get_akun_kas2($kode_akun1digit);
+			// vdebug($subdata_akun_kas2);
+			$subdata['row_akun_kas2'] 						= $this->load->view("akun_kas2/row_akun_kas2",$subdata_akun_kas2,TRUE);
+			$subdata['result_akun_kas']					= $this->akun_kas2_model->get_akun_sebelum($kode_akun1digit);
+			$data['main_content'] 							= $this->load->view("akun_kas2/daftar_akun_kas2",$subdata,TRUE);
 			//$data['breadcrumb']	= $this->load->view('breadcrumb_',array('list'=>array(array('Kas 2','class="current"'))),TRUE);
 			/*	Load main template	*/
 			//var_dump($subdata);die;

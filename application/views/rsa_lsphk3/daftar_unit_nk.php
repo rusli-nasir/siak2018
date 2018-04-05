@@ -155,7 +155,8 @@ $(document).on("click",".tb-lihat",function(){
                                             <button class="btn btn-warning tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                             <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$u->kode_unit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
                                             <?php else: ?>
-                                            <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                         
+											 <button class="btn btn-warning tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                             <?php endif; ?>
                                         </td>
                                     </tr>

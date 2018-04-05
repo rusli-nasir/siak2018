@@ -1,3 +1,12 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    // $("#notif-dpa").load( "<?=site_url('dpa/get_notif_dpa')?>");
+     // $("#notif-dpa-gup").load( "<?=site_url('dpa/get_notif_dpa_siap/1')?>");
+
+     $("#notif-up-spp-spm").load( "<?=site_url('rsa_up/get_notif_approve')?>");
+     $("#notif-tambah-up-spp-spm").load( "<?=site_url('rsa_tambah_up/get_notif_approve')?>");
+});
+</script>
 <div id="page-wrapper" >
             <div id="page-inner">
                 <div class="row">
@@ -39,6 +48,18 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
+                      <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span>
+                     
+                  </div>
+                    
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_up/daftar_unit_kbuu" >
+ <i class="fa fa-arrow-circle-up fa-5x"></i>
+                      <h4>PUP</h4>
+                      </a>
+                      </div>
+                       <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
                      
                      
                   </div>
@@ -73,7 +94,18 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
+                     <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span>
                      
+                  </div>
+                    
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_up/daftar_unit" >
+ <i class="fa fa-arrow-circle-up fa-5x"></i>
+                      <h4>PUP</h4>
+                      </a>
+                      </div>
+                     <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
                      
                   </div>
                     
@@ -95,7 +127,7 @@
                       <div class="div-square">
                            <a href="<?php echo base_url(); ?>index.php/rsa_tambah_up/spp_tambah_up" >
  <i class="fa fa-arrow-circle-up fa-5x"></i>
-                      <h4>Tambah UP</h4>
+                      <h4>PUP</h4>
                       </a>
                       </div>
                      
@@ -123,13 +155,24 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
-                     
+                     <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span>
                      
                   </div>
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_up/spp_up" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_up/spm_tambah_up" >
+ <i class="fa fa-arrow-circle-up fa-5x"></i>
+                      <h4>PUP</h4>
+                      </a>
+                      </div>
+                     <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
+                     
+                  </div>
+                    
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <a href="<?php echo base_url(); ?>index.php/rsa_up/daftar_spm" >
  <i class="fa fa-bars fa-5x"></i>
                       <h4>Daftar SPM</h4>
                       </a>
@@ -146,7 +189,20 @@
                       <h4>SPM UP</h4>
                       </a>
                       </div>
+                       <span class="badge badge-danger bg-notif" id="notif-up-spp-spm">0</span> 
+                        
                      
+                     
+                  </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_up/spm_tambah_up_kpa" >
+ <i class="fa fa-arrow-circle-up fa-5x"></i>
+                      <h4>PUP</h4>
+                      </a>
+                      </div>
+                     <span class="badge badge-danger bg-notif" id="notif-tambah-up-spp-spm">0</span>
                      
                   </div>
                     

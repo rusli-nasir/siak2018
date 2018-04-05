@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 class Welcome extends CI_Controller {
+
 	/**
 	 * Index Page for this controller.
 	 *
@@ -22,7 +24,9 @@ class Welcome extends CI_Controller {
 	public function __construct()
     {
             parent::__construct();
+
             $this->cur_tahun = $this->setting_model->get_tahun();
+
             // Your own constructor code
             if(!$this->check_session->user_session()){	/*	Jika session user belum diset	*/
                 /*	Load Model, helper dan Library	*/
@@ -38,6 +42,7 @@ class Welcome extends CI_Controller {
 	
 			}
 			else{	/*	Jika session user sudah diset	*/
+
 				if($this->check_session->get_level()==100){	/*	Jika session user yang aktif unit pusat	*/
 					redirect('dashboard','refresh');
 				}
@@ -60,11 +65,13 @@ class Welcome extends CI_Controller {
 				}
 			}
     }
+
+
 	public function index()
 	{
 		$data['cur_tahun'] = $this->cur_tahun ;
 		
-		$data['main_content']	= $this->load->view('home','',TRUE);
+		$data['main_content']	= $this->load->view('home',array('cur_tahun'=>$this->cur_tahun),TRUE);
 		$data['main_menu']	= $this->load->view('form_login','',TRUE);
 		$list["menu"]           = $this->menu_model->show();
                 $list["submenu"]        = $this->menu_model->show();
@@ -72,4 +79,5 @@ class Welcome extends CI_Controller {
 		// $data['message']	= validation_errors();
 		$this->load->view('main_template',$data);
 	}
+
 }

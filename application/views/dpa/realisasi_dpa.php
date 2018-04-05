@@ -298,7 +298,7 @@ $cur_tahun=$tgl['year']+1;
                         <table class="table table-striped">
                             <thead>
                                 <tr >
-                                        <th class="col-md-3" >Program</th>
+                                        <th class="col-md-3" >IKU</th>
                                         <th class="col-md-3" >Kegiatan</th>
                                         <th class="col-md-3" >Sub Kegiatan</th>
                                         <th class="col-md-1" >RKAT</th>
@@ -334,13 +334,9 @@ $cur_tahun=$tgl['year']+1;
                                         
                                             <td align="center">
                                                
-												<?php if($jenis=='4'){
-												?>
-												 <buttton type="button" class="btn btn-warning btn-sm tb-buat-tor-lsphk3" rel="<?=$u->kode_rka?><?php //$u->k_unit.$u->kode_rka;?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</buttton>
-												<?php }else if ($jenis=='6'){
-													?>
-													 <buttton type="button" class="btn btn-sm btn-warning tb-buat-tor-lsphk3" rel="<?=$u->kode_rka?><?php //$u->k_unit.$u->kode_rka;?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</buttton>
-												<?php }else{ ?>
+												<?php // if($jenis=='4'){ ?>
+												 <!-- <buttton type="button" class="btn btn-warning btn-sm tb-buat-tor-lsphk3" rel="<?=$u->kode_rka?><?php //$u->k_unit.$u->kode_rka;?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</buttton> -->
+												<?php // }else{ ?>
 												
 
                                                     <?php if($u->jml_proses > 0){ ?>
@@ -351,7 +347,7 @@ $cur_tahun=$tgl['year']+1;
 
                                                     <?php } ?>
 
-												<?php } ?>
+												<?php // } ?>
 												
                                             </td>
                                         

@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
-    
+
      $('#spm_tab a').click(function(e) {
         e.preventDefault();
         $(this).tab('show');
@@ -17,14 +17,14 @@ $(document).ready(function(){
       var hash = window.location.hash;
       $('#spm_tab a[href="' + hash + '"]').tab('show');
       var id_cetak = 'div-cetak' ;
-    
+
     var id_cetak_2 = 'div-cetak-2' ;
-    
+
     var id_cetak_3 = 'div-cetak-lampiran-spj' ;
-    
+
     var keluaran = [];
 //    var pj_p_nilai_all = [];
-    
+
     $('#myCarousel').on('slid.bs.carousel', function (e) {
   // do something…
         var id = e.relatedTarget.id;
@@ -35,7 +35,7 @@ $(document).ready(function(){
             id_cetak = 'div-cetak-f1a' ;
         }
     });
-    
+
     $('#myCarouselSPM').on('slid.bs.carousel', function (e) {
   // do something…
         var id = e.relatedTarget.id;
@@ -46,7 +46,7 @@ $(document).ready(function(){
             id_cetak_2 = 'div-cetak-f1a-2' ;
         }
     });
-    
+
     $('#myCarouselLampiran').on('slid.bs.carousel', function (e) {
   // do something…
         var id = e.relatedTarget.id;
@@ -57,8 +57,8 @@ $(document).ready(function(){
             id_cetak_3 = 'div-cetak-lampiran-rekapakun' ;
         }
     });
-    
-    
+
+
     $("#cetak").click(function(){
                     var mode = 'iframe'; //popup
                     var close = mode == "popup";
@@ -66,7 +66,7 @@ $(document).ready(function(){
 //                    console.log($("#" + id_cetak).html());
                     $("#" + id_cetak).printArea( options );
                 });
-                
+
     $("#cetak-spm").click(function(){
                     var mode = 'iframe'; //popup
                     var close = mode == "popup";
@@ -74,7 +74,7 @@ $(document).ready(function(){
 //                    console.log($("#" + id_cetak_2).html());
                     $("#" + id_cetak_2).printArea( options );
                 });
-    
+
     $("#cetak-lampiran").click(function(){
                     var mode = 'iframe'; //popup
                     var close = mode == "popup";
@@ -82,7 +82,7 @@ $(document).ready(function(){
 //                    console.log($("#" + id_cetak).html());
                     $("#" + id_cetak_3).printArea( options );
                 });
-    
+
     $(document).on("click",'#proses_spm_kpa',function(){
         if(confirm('Apakah anda yakin ?')){
             var data = 'proses=' +'SPM-FINAL-VERIFIKATOR' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM'  + '&kd_unit=' + '<?=$kd_unit?>' + '&tahun=' + '<?=$cur_tahun?>'+ '&kuitansi_id=' + $('#kuitansi_id').html();
@@ -97,12 +97,12 @@ $(document).ready(function(){
                         if(data=='sukses'){
                             location.reload();
                         }
-//                        
+//
                 }
             });
         }
     });
-    
+
     $(document).on("click",'#tolak_spm_kpa',function(){
         if(confirm('Apakah anda yakin ?')){
             var data = 'proses=' + 'SPM-DITOLAK-VERIFIKATOR' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val() + '&kd_unit=' + '<?=$kd_unit?>' + '&tahun=' + '<?=$cur_tahun?>'+ '&kuitansi_id=' + $('#kuitansi_id').html();
@@ -117,17 +117,17 @@ $(document).ready(function(){
                         if(data=='sukses'){
                             location.reload();
                         }
-//                        
+//
                 }
             });
         }
     });
-    
+
     $('#myModalTolakSPMPPK').on('shown.bs.modal', function (e) {
         // do something...
         $('#ket').focus();
       })
-    
+
     $(document).on("click","#down",function(){
                     var uri = $("#table_spp_lsphk3").excelexportjs({
                                     containerid: "table_spp_lsphk3"
@@ -138,9 +138,9 @@ $(document).ready(function(){
         $('#dtable').val(uri);
         $('#form_spp').submit();
 
-    
+
     });
-    
+
     $(document).on("click","#down_2",function(){
                     var uri = $("#table_spm_lsphk3").excelexportjs({
                                     containerid: "table_spm_lsphk3"
@@ -151,7 +151,7 @@ $(document).ready(function(){
         $('#dtable_2').val(uri);
         $('#form_spm').submit();
 
-    
+
     });
 
 });
@@ -180,8 +180,8 @@ function b64toBlob(b64Data, contentType, sliceSize) {
     var blob = new Blob(byteArrays, {type: contentType});
     return blob;
 }
-</script>  
- 
+</script>
+
 <?php
 $u = isset($kontrak_id[0])?$kontrak_id[0]:'';
 $i = isset($pekerjaan[0])?$pekerjaan[0]:'';
@@ -192,50 +192,50 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
 <div id="page-inner">
     <div class="row">
                     <div class="col-lg-12">
-                     <h2>SPP/SPM</h2>    
+                     <h2>SPP/SPM</h2>
                     </div>
                 </div>
                 <hr />
 
-                <div class="row">  
+                <div class="row">
                     <div class="col-lg-12">
-                        
-    <?php 
+
+    <?php
     $stts_bendahara = '';
     $stts_ppk = '';
     $stts_kpa = '';
     $stts_verifikator = '';
     $stts_kbuu = '';
     ?>
-                        
+
     <?php if($doc_lsphk3 == ''){ $stts_bendahara = 'active'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPP LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> belum diusulkan oleh bendahara.</div>
     <?php }elseif($doc_lsphk3 == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
         <div class="alert alert-info" style="border:1px solid #a94442;">SPP LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
     <?php }elseif($doc_lsphk3 == 'SPP-DITOLAK'){ $stts_bendahara = 'active'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPP LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >PPK SUKPA</span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_lsphk3 == 'SPP-FINAL'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; ?>   
+    <?php }elseif($doc_lsphk3 == 'SPP-FINAL'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; ?>
         <div class="alert alert-info" style="border:1px solid #a94442;">SPP LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah diterima oleh <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'active'; ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'active'; ?>
         <div class="alert alert-info" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KPA </span></b> .</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>
         <div class="alert alert-info" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >VERIFIKATOR </span></b> .</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'active'; ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'active'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KPA </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'active'; ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'active'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >VERIFIKATOR </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done' ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done' ?>
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah disetujui oleh <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'active'; ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'active'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KUASA BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-FINAL-BUU'){ $stts_bendahara = 'done'; ?> 
+    <?php }elseif($doc_lsphk3 == 'SPM-FINAL-BUU'){ $stts_bendahara = 'done'; ?>
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah difinalisasi oleh <b><span class="text-danger" >BUU </span></b> .</div>
-    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'active'; ?>   
+    <?php }elseif($doc_lsphk3 == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'active'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM LS PIHAK 3 Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php } ?>
-        
+
 <div class="progress-round">
   <div class="circle <?=$stts_bendahara?>">
     <span class="label">1</span>
@@ -262,8 +262,8 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
     <span class="title">KBUU</span>
   </div>
 </div>
-    
-<div id="temp" style="display:none"></div> 
+
+<div id="temp" style="display:none"></div>
 
 <div>
 
@@ -276,7 +276,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
   <!-- Tab panes -->
   <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="spp">
-          
+
           <div style="background-color: #EEE; padding: 10px;">
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
 <div class="carousel-inner" role="listbox">
@@ -287,7 +287,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                             <tr >
                                 <td colspan="5" style="text-align: right;font-size: 30px;padding: 10px;"><b>F1</b></td>
                             </tr>
-                            
+
                             <tr >
                                 <td colspan="5" style="text-align: center;padding-top: 5px;padding-bottom: 5px;"><img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60"></td>
                             </tr>
@@ -314,7 +314,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td colspan="5" ><b>Unit Kerja : <?=$unit_kerja?> &nbsp;&nbsp; Kode Unit Kerja : <?=$unit_id?></b></td>
                                 </tr>
 				<tr style="border-bottom: none;">
-                                    
+
                                     <td colspan="4" style="border-right: none;border-bottom: none;">&nbsp;</td>
                                     <td style="line-height: 16px;border-left: none;border-bottom: none;">Kepada Yth.<br>
                                                     Pengguna Anggaran<br>
@@ -332,27 +332,26 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar_spp"><?php echo isset($detail_lsphk3['nom'])?number_format($detail_lsphk3['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?></span></b>)</li>
-                                                <li>Untuk Pekerjaan : <span id="untuk_bayar_spp"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
-                                                <li>Nama Pihak Ketiga : <span id="penerima_spp"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
-                                                <li>Alamat : <span id="alamat_spp"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
-                                                <li>Nama Bank : <span id="nmbank_spp"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
-                                                <li>No. Rekening Bank : <span id="rekening_spp"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
-												
-                                                <li>No. NPWP :<span id="npwp_spp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo $detail_lsphk3['terbilang']; ?><?php echo substr($detail_lsphk3['terbilang'],strlen($detail_lsphk3['terbilang'])-6,6) == 'Rupiah' ? '' : ' Rupiah' ; ?></span></b>)</li>
+                                                <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=$u->deskripsi?></span></li>
+                                                <li>Nama Pihak Ketiga : <span id="penerima"><?=$u->nama_rekanan?></span></li>
+                                                <li>Alamat : <span id="alamat"><?=$u->alamat_rekanan?></span></li>
+                                                <li>Nama Bank : <span id="nmbank"><?=$u->bank_rekanan?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening"><?=$u->rekening_rekanan?></span></li>
+                                                <li>No. NPWP : <span id="npwp"><?=$u->npwp?></span></li>
 												<span id="kuitansi_id" style="display:none;"><?=$u->kuitansi_id?></span>
                                         </ol>
-										
+
                                     </td>
                                 </tr>
-                                                               
-                                                                
+
+
                                 <tr>
                                         <td colspan="5" style="border-top: none;border-bottom:none;">
-                                        Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :<br>							
+                                        Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :<br>
                                         </td>
-				
-                                
+
+
                                 </tr>
 							<tr >
                                                             <td colspan="3" style="vertical-align: top;border-bottom: none;border-top:none;padding-left: 0;">
@@ -416,7 +415,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                                             Dikurangi : Jumlah potongan untuk pihak lain
                                                                         </td>
                                                                         <td  style="text-align: right;">
-                                                                            <?php $tot_pajak__ = 0 ; 
+                                                                            <?php $tot_pajak__ = 0 ;
                                                                             if(!empty($data_spp_pajak)){
                                                                                 foreach($data_spp_pajak as $data){
                                                                                    $tot_pajak__ = $tot_pajak__ + $data->rupiah ;
@@ -471,7 +470,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                                     <?php foreach($data_spp_pajak as $data):?>
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000;">
-                                                                                    <?php 
+                                                                                    <?php
                                                                                     if($data->jenis == 'PPN'){
                                                                                             echo 'Pajak Pertambahan Nilai';
                                                                                     }elseif($data->jenis == 'PPh'){
@@ -513,11 +512,11 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                 </tr>
 				<tr style="border-bottom: none;">
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top:none;">
-						SPP Sebagaimana dimaksud diatas, disusun sesuai dengan dokumen lampiran yang persyaratkan dan disampaikan secara bersamaan serta merupakan bagian yang tidak terpisahkan dari surat ini.<br><br>														
+						SPP Sebagaimana dimaksud diatas, disusun sesuai dengan dokumen lampiran yang persyaratkan dan disampaikan secara bersamaan serta merupakan bagian yang tidak terpisahkan dari surat ini.<br><br>
 					</td>
 				<tr>
-				<tr style="border-top: none;"> 
-				
+				<tr style="border-top: none;">
+
                                     <td colspan="4" style="border-right: none;border-top:none;">&nbsp;</td>
 								<td  style="line-height: 16px;border-left: none;border-top:none;" class="ttd">
 									Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
@@ -624,7 +623,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                             <td class="text-center">e = c + d</td>
                             <td class="text-center">f = b - e</td>
                         </tr>
-                        
+
                         <?php $jml_pengeluaran = 0; ?>
                         <?php $sub_kegiatan = '' ; ?>
                         <?php $i = 1 ; ?>
@@ -645,14 +644,14 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                         <?php $pagu_rkat = 0 ;?>
                          <?php $jml_spm_lalu = 0 ;?>
                         <?php $sub_kegiatan = $data->nama_subkomponen ; ?>
-                        <?php $i = $i + 1 ; ?> 
+                        <?php $i = $i + 1 ; ?>
                         <?php endif; ?>
                             <tr>
                                 <td class="text-center">&nbsp;</td>
                                 <td style="padding-left: 10px;"><?=$data->nama_akun5digit?></td>
-                                <?php if(!empty($data_akun_rkat)):?> 
+                                <?php if(!empty($data_akun_rkat)):?>
                                     <?php foreach($data_akun_rkat as $da): ?>
-                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
+                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?>
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style="padding-right: 10px;"><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
                                             <?php $pagu_rkat =  $da->pagu_rkat ;?>
@@ -663,9 +662,9 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                 <td class="text-right" style="padding-right: 10px;"><?=number_format('0', 0, ",", ".")?></td>
                                 <?php $pagu_rkat =  0 ;?>
                                 <?php endif;?>
-                                <?php if(!empty($data_akun_pengeluaran_lalu)):?> 
+                                <?php if(!empty($data_akun_pengeluaran_lalu)):?>
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
-                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
+                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?>
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style="padding-right: 10px;"><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
@@ -711,7 +710,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                 </ol>
                             </td>
                             <td class="text-left" style="border-left: none; border-right:none;" colspan="2" >
-                                <ol style="list-style: none;margin: 10px;"> 
+                                <ol style="list-style: none;margin: 10px;">
                                     <li>: </li>
                                 </ol>
                             </td>
@@ -764,11 +763,11 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
 </div>
 </div>
 
-    
-    
+
+
 </div>
 
-    
+
 <!-- Left and right controls -->
 <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev" style="background-image: none;width: 25px;">
   <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" style="color: #f00"></span>
@@ -780,27 +779,27 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
 </a>
 
 </div>
-    
+
 </div>
 <br />
 <form action="<?=site_url('rsa_lsphk3/cetak_spp')?>" id="form_spp" method="post" style="display: none"  >
     <input type="text" name="dtable" id="dtable" value="" />
 </form>
             <div class="alert alert-warning" style="text-align:center">
-                
+
                 <?php if($doc_lsphk3 == 'SPP-DRAFT'){ ?>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
-                   
-                <?php }else{ ?> 
+
+                <?php }else{ ?>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
-                   
+
                 <?php } ?>
 
               </div>
-          
+
       </div>
       <div role="tabpanel" class="tab-pane" id="spm">
-          
+
           <div style="background-color: #EEE; padding: 10px;">
 <div id="myCarouselSPM" class="carousel slide" data-ride="carousel" data-interval="false">
 <div class="carousel-inner" role="listbox">
@@ -811,7 +810,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                             <tr >
                                 <td colspan="5" style="text-align: right;font-size: 30px;padding: 10px;"><b>F2</b></td>
                             </tr>
-                            
+
                             <tr >
                                 <td colspan="5" style="text-align: center;padding-top: 5px;padding-bottom: 5px;"><img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60"></td>
                             </tr>
@@ -838,7 +837,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                     <td colspan="5"><b>Unit Kerja : <?=$unit_kerja?> &nbsp;&nbsp; Kode Unit Kerja : <?=$unit_id?></b></td>
                                 </tr>
                 <tr style="border-bottom: none;">
-                                    
+
                                     <td colspan="4" style="border-right: none;border-bottom: none;">&nbsp;</td>
                                     <td style="line-height: 16px;border-left: none;border-bottom: none;">Kepada Yth.<br>
                                                     Bendahara Umum Undip ( BUU )<br>
@@ -852,13 +851,13 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                         <td colspan="5" style="border-bottom: none;border-top: none;">Dengan Berpedoman pada Dokumen SPP yang disampaikan bendahara pengeluaran dan telah diteliti keabsahan dan kebenarannya oleh PPK-SUKPA. bersama ini kami memerintahkan kepada Kuasa BUU untuk membayar sebagai berikut :
                                 </tr>
                 <tr>
-				<?php 
+				<?php
 				//var_dump($i);die;?>
-				
+
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?php echo isset($detail_lsphk3['nom'])?number_format($detail_lsphk3['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_lsphk3['terbilang'])?ucwords($detail_lsphk3['terbilang']):''; ?></span></b>)</li>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo $detail_lsphk3['terbilang']; ?><?php echo substr($detail_lsphk3['terbilang'],strlen($detail_lsphk3['terbilang'])-6,6) == 'Rupiah' ? '' : ' Rupiah' ; ?></span></b>)</li>
                                                 <li>Untuk Pekerjaan : <span id="untuk_bayar"><?=isset($detail_pic_spm->untuk_bayar)?$detail_pic_spm->untuk_bayar:''?></span></li>
                                                 <li>Nama Pihak Ketiga : <span id="penerima"><?=isset($detail_pic_spm->penerima)?$detail_pic_spm->penerima:''?></span></li>
                                                 <li>Alamat : <span id="alamat"><?=$u->alamat_rekanan?></span></li>
@@ -869,17 +868,17 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                         </ol>
                                     </td>
                                 </tr>
-                                                               
-                                                                
+
+
                                 <tr>
                                         <td colspan="5" style="border-top: none;border-bottom:none;">
-                                        Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :<br>                         
+                                        Pembayaran sebagaimana tersebut diatas, dibebankan pada pengeluaran dengan uraian sebagai berikut :<br>
                                         </td>
-                
-                                
+
+
                                 </tr>
-                        
-                                            
+
+
                                     </tr>
 
                             <tr >
@@ -944,7 +943,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                                             Dikurangi : Jumlah potongan untuk pihak lain
                                                                         </td>
                                                                         <td  style="text-align: right;">
-                                                                            <?php $tot_pajak__ = 0 ; 
+                                                                            <?php $tot_pajak__ = 0 ;
                                                                             if(!empty($data_spp_pajak)){
                                                                                 foreach($data_spp_pajak as $data){
                                                                                    $tot_pajak__ = $tot_pajak__ + $data->rupiah ;
@@ -999,7 +998,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                                     <?php foreach($data_spp_pajak as $data):?>
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000;">
-                                                                                    <?php 
+                                                                                    <?php
                                                                                     if($data->jenis == 'PPN'){
                                                                                             echo 'Pajak Pertambahan Nilai';
                                                                                     }elseif($data->jenis == 'PPh'){
@@ -1039,14 +1038,14 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                         <tr >
                                         <td colspan="5" style="border-bottom: none;border-top: none;">&nbsp;</td>
                                 </tr>
-    
+
                 <tr style="border-bottom: none;">
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top:none;">
-                        Surat Perintah Membayar ( SPM ) Sebagaimana dimaksud diatas, disusun sesuai dengan dokumen lampiran yang persyaratkan dan disampaikan secara bersamaan serta merupakan bagian yang tidak terpisahkan dari surat ini.<br><br>                                                        
+                        Surat Perintah Membayar ( SPM ) Sebagaimana dimaksud diatas, disusun sesuai dengan dokumen lampiran yang persyaratkan dan disampaikan secara bersamaan serta merupakan bagian yang tidak terpisahkan dari surat ini.<br><br>
                     </td>
                 <tr>
-                <tr style="border-top: none;"> 
-                                    
+                <tr style="border-top: none;">
+
                                     <td colspan="3" style="line-height: 16px;border-right: none;border-top:none;">
                                     Dokumen SPM, dan lampirannya telah diverifikasi keabsahannya<br>
                                                                         PPK-SUKPA<br>
@@ -1057,17 +1056,17 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                                                         <span id="nmppk"><?=isset($detail_ppk->nm_lengkap)?$detail_ppk->nm_lengkap:''?></span><br>
                                                                         NIP. <span id="nipppk"><?=isset($detail_ppk->nomor_induk)?$detail_ppk->nomor_induk:''?></span><br>
                                 </td>
-                
+
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
                                 <td  style="line-height: 16px;border-left: none;border-top:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-                                    <?php 
+                                    <?php
 									if($unit_id==91){
 									?>
 									Pejabat Penandatangan SPM
 									<?php }else{
 										?>
-									
+
 										Kuasa Pengguna Anggaran
 									<?php }?><br>
                                                                         <br>
@@ -1215,7 +1214,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                             <td class="text-center">e = c + d</td>
                             <td class="text-center">f = b - e</td>
                         </tr>
-                        
+
                         <?php $jml_pengeluaran = 0; ?>
                         <?php $sub_kegiatan = '' ; ?>
                         <?php $i = 1 ; ?>
@@ -1236,14 +1235,14 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                         <?php $pagu_rkat = 0 ;?>
                          <?php $jml_spm_lalu = 0 ;?>
                         <?php $sub_kegiatan = $data->nama_subkomponen ; ?>
-                        <?php $i = $i + 1 ; ?> 
+                        <?php $i = $i + 1 ; ?>
                         <?php endif; ?>
                             <tr>
                                 <td class="text-center">&nbsp;</td>
                                 <td style="padding-left: 10px;"><?=$data->nama_akun5digit?></td>
-                                <?php if(!empty($data_akun_rkat)):?> 
+                                <?php if(!empty($data_akun_rkat)):?>
                                     <?php foreach($data_akun_rkat as $da): ?>
-                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
+                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?>
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style="padding-right: 10px;"><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
                                             <?php $pagu_rkat =  $da->pagu_rkat ;?>
@@ -1254,9 +1253,9 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                 <td class="text-right" style="padding-right: 10px;"><?=number_format('0', 0, ",", ".")?></td>
                                 <?php $pagu_rkat =  0 ;?>
                                 <?php endif;?>
-                                <?php if(!empty($data_akun_pengeluaran_lalu)):?> 
+                                <?php if(!empty($data_akun_pengeluaran_lalu)):?>
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
-                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
+                                        <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?>
                                             <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style="padding-right: 10px;"><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
@@ -1302,7 +1301,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
                                 </ol>
                             </td>
                             <td class="text-left" style="border-left: none; border-right:none;" colspan="2" >
-                                <ol style="list-style: none;margin: 10px;"> 
+                                <ol style="list-style: none;margin: 10px;">
                                     <li>: </li>
                                 </ol>
                             </td>
@@ -1355,11 +1354,11 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
 </div>
 </div>
 
-    
-    
+
+
 </div>
 
-    
+
 <!-- Left and right controls -->
 <a class="left carousel-control" href="#myCarouselSPM" role="button" data-slide="prev" style="background-image: none;width: 25px;">
   <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" style="color: #f00"></span>
@@ -1371,34 +1370,34 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
 </a>
 
 </div>
-    
+
 </div>
 <br />
 <form action="<?=site_url('rsa_lsphk3/cetak_spm')?>" id="form_spp" method="post" style="display: none"  >
     <input type="text" name="dtable" id="dtable" value="" />
 </form>
             <div class="alert alert-warning" style="text-align:center">
-                
+
            <?php if($doc_lsphk3 == 'SPM-DRAFT-KPA'){ ?>
                     <a href="#" class="btn btn-warning" id="proses_spm_kpa"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Setujui SPM</a>
                     <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#myModalTolakSPMPPK"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tolak SPM</a>
                     <!--<a href="#" class="btn btn-success" id="down_2"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</a>-->
                     <button type="button" class="btn btn-info" id="cetak-spm" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
-                <?php }else{ ?> 
+                <?php }else{ ?>
                     <a href="#" class="btn btn-warning" disabled="disabled" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Setujui SPM</a>
                     <a href="#" class="btn btn-warning" disabled="disabled"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tolak SPM</a>
                     <!--<a href="#" class="btn btn-success" id="down_2"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</a>-->
                     <button type="button" class="btn btn-info" id="cetak-spm" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                 <?php } ?>
-                
-                
 
-                    
+
+
+
 
               </div>
-          
+
       </div>
-          
+
       </div>
   </div>
 
@@ -1409,7 +1408,7 @@ $d = isset($detkontrak[0])?$detkontrak[0]:'';
 
 
 	</div>
-      
+
 	</div>
 
 <img id="status_spp" style="display: none" src="<?php echo base_url(); ?>/assets/img/verified.png" width="150">

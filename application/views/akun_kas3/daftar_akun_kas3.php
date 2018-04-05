@@ -184,19 +184,24 @@ var status_edit = true;
 
 <div id="temp" style="display:none"></div>
 <?php
+	$akun_kas = isset($result_akun_kas[0])?$result_akun_kas[0]:'';
 	$akun_kas2 = isset($result_akun_kas2[0])?$result_akun_kas2[0]:'';
 ?>
 <table class="table table-striped table-bordered">
 <tbody>
 
 <tr>
+	<td class="col-md-2">NAMA KAS 1 DIGIT</td>
+	<td ><span id="kd_kas_2"><?=isset($akun_kas->kode_akun1digit)?$akun_kas->kode_akun1digit:''?></span> - <?=isset($akun_kas->nama_akun1digit)?$akun_kas->nama_akun1digit:''?> [ <a href="<?php echo site_url("akun_kas/daftar_akun_kas/")?>" style="text-decoration:underline">lihat</a> ]</td>
+</tr>
+<tr>
 	<td class="col-md-2">KODE KAS 2 DIGIT</td>
-	<td ><span id="kd_kas_2"><?=isset($akun_kas2->kd_kas_2)?$akun_kas2->kd_kas_2:''?></span></td>
+	<td ><span id="kd_kas_2"><?=isset($akun_kas2->kode_akun2digit)?$akun_kas2->kode_akun2digit:''?></span></td>
 </tr>
 <tr>
 	<td class="col-md-2">NAMA KAS 2 DIGIT</td>
 
-	<td><?=isset($akun_kas2->nm_kas_2)?$akun_kas2->nm_kas_2:''?></td>
+	<td><?=isset($akun_kas2->nama_akun2digit)?$akun_kas2->nama_akun2digit:''?></td>
 </tr>
 
 </tbody>
@@ -204,24 +209,24 @@ var status_edit = true;
 </table>
 <div id="temp" style="display:none"></div>
 <form id="form_edit_akun_kas3" onsubmit="return false">
-<table class="table table-striped">
+<table class="table table-striped table-bordered table-hover">
 <thead>
 	<tr>
 		<th class="col-md-2">Kode Kas 3</th>
 		<th class="col-md-9">Nama Kas 3</th>
-		<th class="col-md-1" colspan="2" style="text-align:center">Aksi</th>
+		<!-- <th class="col-md-1" colspan="2" style="text-align:center">Aksi</th> -->
 	</tr>
-	<tr>
+<!-- 	<tr>
 		<th colspan="2" align="center"><input type="text" name="filter" class="form-control" id="filter_akun_kas3" value="- Masukkan kata kunci untuk memfilter data -" style="text-align:center"></td>
 		<th colspan="2" align="center"><input type="button" class="btn btn-default" name="tampil_semua" id="tampil_semua" value="Tampilkan Semua"></th>
-	</tr>
+	</tr> -->
 </thead>
 <tbody id="row_space">
 <?=isset($row_akun_kas3)?$row_akun_kas3:""?>
 </tbody>
 </table>
 </form>
-<form id="form_add_akun_kas3" onsubmit="return false">
+<!-- <form id="form_add_akun_kas3" onsubmit="return false">
 <input type=hidden name=kd_kas_2 id=kd_kas_2_ed value="<?php echo !empty($akun_kas2->kd_kas_2)?$akun_kas2->kd_kas_2:''; ?>" />
 <table class="table table-striped">
 <tbody>
@@ -239,12 +244,12 @@ var status_edit = true;
 				<button type="submit" class="btn btn-default btn-sm" id="add" aria-label="Left Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
 				<button type="reset" class="btn btn-default btn-sm" id="reset" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 			</div>
-			<!-- <input type="submit" class="btn btn-default" name="submit" id="add" value="simpan"> -->
+			<input type="submit" class="btn btn-default" name="submit" id="add" value="simpan">
 		</td>
 </tr>
 </tbody>
 </table>
-</form>
+</form> -->
 
 </div>
 </div>

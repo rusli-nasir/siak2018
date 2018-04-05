@@ -417,7 +417,7 @@ class Spm_model extends CI_Model {
 	{
 		$temp = $spm;
 
-		$no_bukti = $jenis ."-". substr($temp,6,3) . substr($temp,0,5);
+		$no_bukti = $jenis ."-". substr($temp,5,3) . substr($temp,0,4);
 		
 		return $no_bukti;
 	}

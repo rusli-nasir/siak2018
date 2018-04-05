@@ -7,6 +7,7 @@ Class Akun_kas3 extends CI_Controller{
 		/*	Load library, helper, dan Model	*/
 		$this->load->library(array('form_validation','option'));
 		$this->load->helper('form');
+		$this->load->helper('vayes_helper');
 		$this->load->model(array('akun_kas3_model','akun_kas2_model','menu_model'));
 	}
 	
@@ -17,18 +18,20 @@ Class Akun_kas3 extends CI_Controller{
 	}
 	
 	/* Method untuk menampilkan daftar data output */
-	function daftar_akun_kas3($kd_akun_kas2){
+	function daftar_akun_kas3($kode_akun2digit){
 		/* check session	*/
 		if($this->check_session->user_session() && ($this->check_session->get_level()==100)||($this->check_session->get_level()==11)){
 			/*	Set data untuk main template */
-			$data['user_menu']	= $this->load->view('user_menu','',TRUE);
-			$data['main_menu']	= $this->load->view('main_menu','',TRUE);		
+			$data['user_menu']								= $this->load->view('user_menu','',TRUE);
+			$data['main_menu']								= $this->load->view('main_menu','',TRUE);		
 			$tahun = $this->setting_model->get_tahun();
-			$subdata['cur_tahun'] = $tahun;
-			$subdata_akun_kas3['result_akun_kas3'] 	= $this->akun_kas3_model->search_akun_kas3($kd_akun_kas2);
-			$subdata['row_akun_kas3']				= $this->load->view("akun_kas3/row_akun_kas3",$subdata_akun_kas3,TRUE);
-			$subdata['result_akun_kas2']			= $this->akun_kas2_model->get_akun_kas2($kd_akun_kas2);
-			$data['main_content']					= $this->load->view("akun_kas3/daftar_akun_kas3",$subdata,TRUE);
+			$subdata['cur_tahun'] 							= $tahun;
+			$subdata_akun_kas3['result_akun_kas3'] 	= $this->akun_kas3_model->get_akun_kas3($kode_akun2digit);
+			// vdebug($subdata_akun_kas3);
+			$subdata['row_akun_kas3']						= $this->load->view("akun_kas3/row_akun_kas3",$subdata_akun_kas3,TRUE);
+			$subdata['result_akun_kas']					= $this->akun_kas2_model->get_akun_sebelum(substr($kode_akun2digit,0,1));
+			$subdata['result_akun_kas2']					= $this->akun_kas3_model->get_akun_sebelum($kode_akun2digit);
+			$data['main_content']							= $this->load->view("akun_kas3/daftar_akun_kas3",$subdata,TRUE);
 			//var_dump($subdata);die;
 			///*	Load main template	*/
 			$this->load->view('main_template',$data);

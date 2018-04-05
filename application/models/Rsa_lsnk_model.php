@@ -63,9 +63,10 @@ class Rsa_lsnk_model extends CI_Model {
                     . "FROM trx_nomor_lsnk AS tt1 "
                     . "JOIN trx_lsnk AS t1 ON t1.id_trx_nomor_lsnk = tt1.id_trx_nomor_lsnk "
                     . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_lsnk AS t2 "
-                        . "WHERE t2.id_trx_nomor_lsnk = t1.id_trx_nomor_lsnk )" ;
+                    . "AND t1.id_trx_lsnk = ( 
+SELECT MAX(t2.id_trx_lsnk) FROM trx_lsnk AS t2 WHERE t2.id_trx_nomor_lsnk = t1.id_trx_nomor_lsnk )" ;
+
+// echo $query; die;
 
             $q = $this->db->query($query);
 //            var_dump($q->num_rows());die;
@@ -93,8 +94,8 @@ class Rsa_lsnk_model extends CI_Model {
                     . "FROM trx_nomor_lsnk AS tt1 "
                     . "JOIN trx_lsnk AS t1 ON t1.id_trx_nomor_lsnk = tt1.id_trx_nomor_lsnk "
                     . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_lsnk AS t2 "
+                    . "AND t1.id_trx_lsnk = ( "
+                        . "SELECT MAX(t2.id_trx_lsnk) FROM trx_lsnk AS t2 "
                         . "WHERE t2.id_trx_nomor_lsnk = t1.id_trx_nomor_lsnk )" ;
 
             $q = $this->db->query($query);
@@ -140,12 +141,12 @@ class Rsa_lsnk_model extends CI_Model {
         function proses_lsnk($kode_unit,$data,$id_nomor_lsnk){
             
             if(($data['posisi'] == 'SPP-DITOLAK')||($data['posisi'] == 'SPM-DITOLAK-KPA')||($data['posisi'] == 'SPM-DITOLAK-VERIFIKATOR')||($data['posisi'] == 'SPM-DITOLAK-KBUU')){
-                    $this->db->where('tahun', $data['tahun']);
+                    // $this->db->where('tahun', $data['tahun']);
+                    // // $this->db->where('aktif', '1');
                     // $this->db->where('aktif', '1');
-                    $this->db->where('aktif', '1');
-                    $this->db->where('id_trx_nomor_lsnk', $id_nomor_lsnk);
-                    $this->db->where('kode_unit_subunit', $kode_unit);
-                    $this->db->update('trx_nomor_lsnk', array('aktif'=>'0'));    
+                    // $this->db->where('id_trx_nomor_lsnk', $id_nomor_lsnk);
+                    // $this->db->where('kode_unit_subunit', $kode_unit);
+                    // $this->db->update('trx_nomor_lsnk', array('aktif'=>'0'));    
             }
             
             $this->db->where('tahun', $data['tahun']);
@@ -220,22 +221,19 @@ class Rsa_lsnk_model extends CI_Model {
 //            if($q->num_rows() > 0){
 //               return $q->row()->tgl_proses ;
 //            }else{
-                $x = intval($q->row()->nt) + 1;
-		if(strlen($x)==1){
-				$x = '0000'.$x;
-		}
-		elseif(strlen($x)==2){
-				$x = '000'.$x;
-		}
-		elseif(strlen($x)==3){
-				$x = '00'.$x;
-		}
-                elseif(strlen($x)==4){
-				$x = '0'.$x;
-		}
-                elseif(strlen($x)==5){
-				$x = $x;
-		}
+        $x = intval($q->row()->nt) + 1;
+        if(strlen($x)==1){
+                $x = '000'.$x;
+        }
+        elseif(strlen($x)==2){
+                $x = '00'.$x;
+        }
+        elseif(strlen($x)==3){
+                $x = '0'.$x;
+        }
+        elseif(strlen($x)==4){
+                $x = $x;
+        }
 
 		return $x;
 //            } 
@@ -249,18 +247,15 @@ class Rsa_lsnk_model extends CI_Model {
 //            }else{
                 $x = intval($q->row()->nt) + 1;
 		if(strlen($x)==1){
-				$x = '0000'.$x;
-		}
-		elseif(strlen($x)==2){
 				$x = '000'.$x;
 		}
-		elseif(strlen($x)==3){
+		elseif(strlen($x)==2){
 				$x = '00'.$x;
 		}
-                elseif(strlen($x)==4){
+		elseif(strlen($x)==3){
 				$x = '0'.$x;
 		}
-                elseif(strlen($x)==5){
+        elseif(strlen($x)==4){
 				$x = $x;
 		}
 
@@ -493,18 +488,18 @@ class Rsa_lsnk_model extends CI_Model {
         
         function get_lsnk_unit_usul($tahun){
             
-            // $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,rsa.trx_tup.posisi,rsa.trx_tup.aktif,rsa.trx_tup.tgl_proses,rsa.trx_tup.tahun "
-                    // . "FROM rba.unit LEFT JOIN rsa.trx_tup ON rba.unit.kode_unit = rsa.trx_tup.kode_unit_subunit "
-                    // . "WHERE ( rsa.trx_tup.aktif = '1' OR rsa.trx_tup.aktif IS NULL ) "
-                    // . "AND ( rsa.trx_tup.tahun = '{$tahun}' OR rsa.trx_tup.tahun IS NULL ) "
-                    // . "GROUP BY rba.unit.kode_unit "
-                    // . "ORDER BY rba.unit.kode_unit ASC";
+            // $query = "SELECT rba_2018.unit.nama_unit,rba_2018.unit.kode_unit,rsa_2018.trx_tup.posisi,rsa_2018.trx_tup.aktif,rsa_2018.trx_tup.tgl_proses,rsa_2018.trx_tup.tahun "
+                    // . "FROM rba_2018.unit LEFT JOIN rsa_2018.trx_tup ON rba_2018.unit.kode_unit = rsa_2018.trx_tup.kode_unit_subunit "
+                    // . "WHERE ( rsa_2018.trx_tup.aktif = '1' OR rsa_2018.trx_tup.aktif IS NULL ) "
+                    // . "AND ( rsa_2018.trx_tup.tahun = '{$tahun}' OR rsa_2018.trx_tup.tahun IS NULL ) "
+                    // . "GROUP BY rba_2018.unit.kode_unit "
+                    // . "ORDER BY rba_2018.unit.kode_unit ASC";
 
             $query = "SELECT t1.nama_unit,t1.kode_unit,IFNULL(t3.jml,0) AS jml
-FROM rba.unit t1
+FROM rba_2018.unit t1
 LEFT JOIN (
     SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
-    FROM rsa.trx_lsnk AS tr1 
+    FROM rsa_2018.trx_lsnk AS tr1 
     WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-FINAL-VERIFIKATOR'  AND tr1.aktif = '1'
     GROUP BY tr1.kode_unit_subunit
 ) AS t3
@@ -526,18 +521,18 @@ ORDER BY t1.kode_unit ASC";
         
         function get_lsnk_subunit_usul($tahun){
             
-            // $query = "SELECT rba.subunit.nama_subunit,rba.subunit.kode_subunit,rsa.trx_tup.posisi,rsa.trx_tup.aktif,rsa.trx_tup.tgl_proses,rsa.trx_tup.tahun "
-            //         . "FROM rba.subunit LEFT JOIN rsa.trx_tup ON rba.subunit.kode_subunit = rsa.trx_tup.kode_unit_subunit "
-            //         . "WHERE ( rsa.trx_tup.aktif = '1' OR rsa.trx_tup.aktif IS NULL ) "
-            //         . "AND ( rsa.trx_tup.tahun = '{$tahun}' OR rsa.trx_tup.tahun IS NULL ) "
-            //         . "GROUP BY rba.subunit.kode_subunit "
-            //         . "ORDER BY rba.subunit.kode_subunit ASC";
+            // $query = "SELECT rba_2018.subunit.nama_subunit,rba_2018.subunit.kode_subunit,rsa_2018.trx_tup.posisi,rsa_2018.trx_tup.aktif,rsa_2018.trx_tup.tgl_proses,rsa_2018.trx_tup.tahun "
+            //         . "FROM rba_2018.subunit LEFT JOIN rsa_2018.trx_tup ON rba_2018.subunit.kode_subunit = rsa_2018.trx_tup.kode_unit_subunit "
+            //         . "WHERE ( rsa_2018.trx_tup.aktif = '1' OR rsa_2018.trx_tup.aktif IS NULL ) "
+            //         . "AND ( rsa_2018.trx_tup.tahun = '{$tahun}' OR rsa_2018.trx_tup.tahun IS NULL ) "
+            //         . "GROUP BY rba_2018.subunit.kode_subunit "
+            //         . "ORDER BY rba_2018.subunit.kode_subunit ASC";
 
             $query = "SELECT t1.nama_subunit,t1.kode_subunit,IFNULL(t3.jml,0) AS jml
-FROM rba.subunit t1
+FROM rba_2018.subunit t1
 LEFT JOIN (
     SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
-    FROM rsa.trx_lsnk AS tr1 
+    FROM rsa_2018.trx_lsnk AS tr1 
     WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-FINAL-VERIFIKATOR' AND tr1.aktif = '1'
     GROUP BY tr1.kode_unit_subunit
 ) AS t3
@@ -560,11 +555,11 @@ ORDER BY t1.kode_subunit ASC";
         function get_lsnk_unit_usul_verifikator($id_user_verifikator,$tahun){
             
             $query = "SELECT t1.nama_unit,t1.kode_unit,IFNULL(t3.jml,0) AS jml
-FROM rba.unit t1
-JOIN rsa.rsa_verifikator_unit AS t2 ON t1.kode_unit = t2.kode_unit_subunit 
+FROM rba_2018.unit t1
+JOIN rsa_2018.rsa_verifikator_unit AS t2 ON t1.kode_unit = t2.kode_unit_subunit 
 LEFT JOIN (
     SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
-    FROM rsa.trx_lsnk AS tr1 
+    FROM rsa_2018.trx_lsnk AS tr1 
     WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-DRAFT-KPA'  AND tr1.aktif = '1'
     GROUP BY tr1.kode_unit_subunit
 ) AS t3
@@ -588,11 +583,11 @@ ORDER BY t1.kode_unit ASC";
         function get_lsnk_subunit_usul_verifikator($id_user_verifikator,$tahun){
 
 //             $query = "SELECT t1.nama_unit,t1.kode_unit,IFNULL(t3.jml,0) AS jml
-// FROM rba.unit t1
-// JOIN rsa.rsa_verifikator_unit AS t2 ON t1.kode_unit = t2.kode_unit_subunit 
+// FROM rba_2018.unit t1
+// JOIN rsa_2018.rsa_verifikator_unit AS t2 ON t1.kode_unit = t2.kode_unit_subunit 
 // LEFT JOIN (
 //     SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
-//     FROM rsa.trx_lsnk AS tr1 
+//     FROM rsa_2018.trx_lsnk AS tr1 
 //     WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-DRAFT-KPA'
 //     GROUP BY tr1.kode_unit_subunit
 // ) AS t3
@@ -602,11 +597,11 @@ ORDER BY t1.kode_unit ASC";
 // ORDER BY t1.kode_unit ASC";
             
              $query = "SELECT t1.nama_subunit,t1.kode_subunit,IFNULL(t3.jml,0) AS jml
-FROM rba.subunit t1
-JOIN rsa.rsa_verifikator_unit AS t2 ON SUBSTR(t1.kode_subunit,1,2) = t2.kode_unit_subunit 
+FROM rba_2018.subunit t1
+JOIN rsa_2018.rsa_verifikator_unit AS t2 ON SUBSTR(t1.kode_subunit,1,2) = t2.kode_unit_subunit 
 LEFT JOIN (
     SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
-    FROM rsa.trx_lsnk AS tr1 
+    FROM rsa_2018.trx_lsnk AS tr1 
     WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-DRAFT-KPA' AND tr1.aktif = '1'
     GROUP BY tr1.kode_unit_subunit
 ) AS t3
@@ -629,12 +624,12 @@ ORDER BY t1.kode_subunit ASC";
         
         function get_up_unit($tahun){
             
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,rsa.kas_bendahara.saldo "
-                    . "FROM rba.unit "
-                    . "LEFT JOIN rsa.kas_bendahara ON rba.unit.kode_unit = rsa.kas_bendahara.kd_unit "
-                    . "WHERE ( rsa.kas_bendahara.aktif = '1' OR rsa.kas_bendahara.saldo IS NULL ) "
-                    . "AND ( rsa.kas_bendahara.tahun = '{$tahun}' OR rsa.kas_bendahara.tahun IS NULL ) "
-                    . "ORDER BY rba.unit.kode_unit ASC" ;
+            $query = "SELECT rba_2018.unit.nama_unit,rba_2018.unit.kode_unit,rsa_2018.kas_bendahara.saldo "
+                    . "FROM rba_2018.unit "
+                    . "LEFT JOIN rsa_2018.kas_bendahara ON rba_2018.unit.kode_unit = rsa_2018.kas_bendahara.kd_unit "
+                    . "WHERE ( rsa_2018.kas_bendahara.aktif = '1' OR rsa_2018.kas_bendahara.saldo IS NULL ) "
+                    . "AND ( rsa_2018.kas_bendahara.tahun = '{$tahun}' OR rsa_2018.kas_bendahara.tahun IS NULL ) "
+                    . "ORDER BY rba_2018.unit.kode_unit ASC" ;
                         
 //                        echo $query; die;
 
@@ -801,12 +796,32 @@ ORDER BY t1.kode_subunit ASC";
                     . "WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' "
                     . "AND jenis = 'SPP' "
                     . "AND tt1.tahun = '{$tahun}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_lsnk AS t2 "
+                    . "AND t1.id_trx_lsnk = ( "
+                        . "SELECT MAX(t2.id_trx_lsnk) FROM trx_lsnk AS t2 "
                         . "WHERE t2.id_trx_nomor_lsnk = t1.id_trx_nomor_lsnk ) " 
                     . "ORDER BY tt1.id_trx_nomor_lsnk " ;
 
-            $query = "SELECT tt1.str_nomor_trx AS str_nomor_trx_spp,t3.str_nomor_trx AS str_nomor_trx_spm,t1.tgl_proses,t2.jumlah_bayar, t1.posisi FROM trx_nomor_lsnk AS tt1 JOIN trx_lsnk AS t1 ON t1.id_trx_nomor_lsnk = tt1.id_trx_nomor_lsnk JOIN trx_spp_lsnk_data AS t2 ON t2.nomor_trx_spp = tt1.id_trx_nomor_lsnk LEFT JOIN trx_spm_lsnk_data AS t3 ON t3.nomor_trx_spm = t1.id_trx_nomor_lsnk_spm WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP' AND tt1.tahun = '{$tahun}' AND t1.aktif = '1' AND t1.tgl_proses GROUP BY tt1.id_trx_nomor_lsnk ORDER BY tt1.id_trx_nomor_lsnk" ;
+            $query = "SELECT tt1.str_nomor_trx AS str_nomor_trx_spp,
+                            t2.alias_spp,t3.alias_spm,
+                            t3.str_nomor_trx AS str_nomor_trx_spm,
+                            t2.tgl_spp AS tgl_proses,
+                            t2.jumlah_bayar,
+                            t1.posisi,
+                            t2.untuk_bayar
+                        FROM trx_nomor_lsnk AS tt1
+                        JOIN trx_lsnk AS t1
+                            ON t1.id_trx_nomor_lsnk = tt1.id_trx_nomor_lsnk
+                        JOIN trx_spp_lsnk_data AS t2
+                            ON t2.nomor_trx_spp = tt1.id_trx_nomor_lsnk
+                        LEFT JOIN trx_spm_lsnk_data AS t3
+                            ON t3.nomor_trx_spm = t1.id_trx_nomor_lsnk_spm
+                        WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}'
+                            AND jenis = 'SPP' 
+                            AND tt1.tahun = '{$tahun}' 
+                            AND t1.aktif = '1' 
+                            AND t1.tgl_proses
+                        GROUP BY tt1.id_trx_nomor_lsnk
+                        ORDER BY tt1.id_trx_nomor_lsnk DESC" ;
                         
             // echo $query; die;
 
@@ -821,14 +836,14 @@ ORDER BY t1.kode_subunit ASC";
 
         function get_daftar_spm($kode_unit_subunit,$tahun){
             
-            $query = "SELECT *,t1.tgl_proses AS tgl_proses_status "
+            $query2 = "SELECT *,t1.tgl_proses AS tgl_proses_status "
                     . "FROM trx_nomor_tup AS tt1 "
                     . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
                     . "WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' "
                     . "AND jenis = 'SPM' "
                     . "AND tt1.tahun = '{$tahun}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_tup AS t2 "
+                    . "AND t1.id_trx_lsnk = ( "
+                        . "SELECT MAX(t2.id_trx_lsnk) FROM trx_tup AS t2 "
                         . "WHERE t2.id_trx_nomor_tup = t1.id_trx_nomor_tup )" ;
                         
 //                        echo $query; die;
@@ -849,7 +864,7 @@ ORDER BY t1.kode_subunit ASC";
         function get_data_spp($str_nomor_trx){
             $this->db->where('str_nomor_trx',$str_nomor_trx);
             $query = $this->db->get("trx_spp_lsnk_data");
-    	// print_r($query);die;
+    //	print_r($query);die;
 //            if($query->num_rows()>0){
                     return $query->row();
 //            }else{
@@ -956,12 +971,12 @@ ORDER BY t1.kode_subunit ASC";
                 // foreach($rel_kuitansi as $rel){
     //                $this->db->where('id_kuitansi', $rel);
     //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                    $nw = date('Y-m-d H:i:s');
+                    // $nw = date('Y-m-d H:i:s');
                         $query = "UPDATE rsa_detail_belanja_ "
                             . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
                             . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
                             . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                            . "SET rsa_detail_belanja_.proses = '66', rsa_detail_belanja_.tanggal_transaksi = '{$nw}' "
+                            . "SET rsa_detail_belanja_.proses = '66', rsa_detail_belanja_.tanggal_transaksi = '{$data['tgl_proses']}' "
                             . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
     //                echo $query ; die;
                     $this->db->query($query);
@@ -1022,7 +1037,7 @@ ORDER BY t1.kode_subunit ASC";
         function get_nomer_spm_cair_lalu($kode_unit_subunit,$tahun){
             $str = "SELECT t1.str_nomor_trx_spm FROM trx_urut_spm_cair AS t1 "
                     . "WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.jenis_trx = 'LSNK' AND t1.tahun = '{$tahun}' "
-                    . "AND tgl_proses = ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'LSNK' AND t2.tahun = '{$tahun}' ) " ;
+                    . "AND id_trx_urut_spm_cair = ( SELECT MAX(id_trx_urut_spm_cair) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'LSNK' AND t2.tahun = '{$tahun}' ) " ;
 //                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
             
 //                    echo $str; die;
@@ -1200,6 +1215,16 @@ ORDER BY t1.kode_subunit ASC";
 
         }
 
+        function check_exist_lsnk($nomor_trx,$tahun){
+            $this->db->where('str_nomor_trx',$nomor_trx);
+            $this->db->where('tahun',$tahun);
+            $query = $this->db->get('trx_nomor_lsnk');
+            if ($query->num_rows()>0){
+                return true;
+            }else{
+                return false;
+            }
+        }
 
 
 

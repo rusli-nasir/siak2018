@@ -25,6 +25,7 @@ Class User extends CI_Controller {
 		/*	Load library, helper, dan Model	*/
 		$this->load->library(array('form_validation','option'));
 		$this->load->helper('form');
+		$this->load->helper('vayes_helper');
 		$this->load->model('user_model');
 		$this->load->model('menu_model');
 		$this->load->model('login_model');
@@ -39,6 +40,10 @@ Class User extends CI_Controller {
 		}else{
 			redirect('welcome','refresh');	// redirect ke halaman home
 		}
+	}
+
+	function tes(){
+		phpinfo();
 	}
 
 	function daftar_user()
@@ -56,14 +61,125 @@ Class User extends CI_Controller {
 			$subdata['aktif']					= $this->option->flag_aktif();
 			$subdata['level']					= $this->option->user_level();
 			$subdata['opt_subunit']				= $this->user_model->get_subunit2();
+			$subdata['opt_unit_verifikator']				= $this->user_model->get_unit_verifikator();
+			$subdata['user_verifikator']				= $this->user_model->get_user_verifikator_unit();
+			$subdata['opt_nama_verifikator']				= $this->user_model->get_nama_verifikator();
+			$subdata['opt_verifikator']	= $this->user_model->get_nama_verifikator();
+			$subdata['kd_unit']				= $this->input->post("unit");
+			// vdebug($subdata['user_verifikator']);
+			// $subdata['opt_subunit2']				= $this->user_model->get_2digit();
+			// vdebug($subdata_user['result_user']);
 			$data['main_content'] 				= $this->load->view("rsa_user/daftar_user",$subdata,TRUE);
 			/*	Load main template	*/
 //			echo '<pre>';var_dump($data);echo '</pre>';die;
+
 			$this->load->view('main_template',$data);
 		}else{
 			redirect('welcome','refresh');	// redirect ke halaman home
 		}
 	}
+
+	function mapping()
+	{
+		/* check session	*/
+		if($this->check_session->user_session() && ( ($this->check_session->get_level()==100)||($this->check_session->get_level()==11)) ){
+			/*	Set data untuk main template */
+			$data['user_menu']	= $this->load->view('user_menu','',TRUE);
+			$tahun = $this->setting_model->get_tahun();
+			//$data['main_content']	= $this->load->view('main_content','',TRUE);
+			$data['main_menu']	= $this->load->view('main_menu','',TRUE);
+			$subdata['cur_tahun'] = $tahun;
+
+			$subdata['opt_unit_verifikator']				= $this->user_model->get_unit_verifikator();
+			$subdata['user_verifikator']				= $this->user_model->get_user_verifikator_unit();
+			$subdata['opt_nama_verifikator']				= $this->user_model->get_nama_verifikator();
+			$subdata['opt_verifikator']	= $this->user_model->get_nama_verifikator();
+			$subdata['kd_unit']				= $this->input->post("unit");
+			// vdebug($subdata['user_verifikator']);
+			// $subdata['opt_subunit2']				= $this->user_model->get_2digit();
+			// vdebug($subdata_user['result_user']);
+			$data['main_content'] 				= $this->load->view("rsa_user/mapping",$subdata,TRUE);
+			/*	Load main template	*/
+//			echo '<pre>';var_dump($data);echo '</pre>';die;
+
+			$this->load->view('main_template',$data);
+		}else{
+			redirect('welcome','refresh');	// redirect ke halaman home
+		}
+	}
+
+
+
+
+	// function get_dropdown_verifikator(){
+	// 	$unit = $this->input->post("unit");
+
+	// 	$subdata['opt_verifikator']	= $this->user_model->get_nama_verifikator();
+	// 	$subdata['kd_unit']				= $unit;
+		
+	// 	// $data = json_encode($subdata['opt_subunit']);
+	// 	// echo $data;
+	// 	$this->load->view('rsa_user/daftar_verif',$subdata);                                                                                                                                                                                                    
+	// 	// vdebug($this->user_model->get_2digit());
+	// }
+
+	function get_dropdown_unit(){
+		$level = $this->input->post("level");
+		$kd_unit = '';
+
+		$kd_unit = $this->input->post("kode_unit");
+
+		if ($level == 2 || $level == 13 || $level == 14) {
+			$subdata['opt_subunit']			= $this->user_model->get_2digit();
+			$subdata['kd_unit']				= $kd_unit;
+		}
+		elseif($level == 4 || $level == 15 || $level == 16){
+			$subdata['opt_subunit']			= $this->user_model->get_subunit2();
+			$subdata['kd_unit']				= $kd_unit;
+		}
+		elseif($level == 1 || $level == 3 || $level == 5 || $level == 17){
+			$subdata['opt_subunit']			= $this->user_model->get_subunit_pusat();
+			$subdata['kd_unit']				= $kd_unit;
+		}
+		// $data = json_encode($subdata['opt_subunit']);
+		// echo $data;
+		$this->load->view('rsa_user/daftar_unit_user',$subdata);                                                                                                                                                                                                    
+		// vdebug($this->user_model->get_2digit());
+	}
+
+		function is_kpa_unit() {
+		    $level = $this->input->post('level');
+		    $subunit = $this->input->post('subunit');
+		    $exists = $this->user_model->is_kpa_unit($level,$subunit);
+
+		    if($exists){
+		            $msg = array(
+		            'valid' => false,
+		            'msg'   => $subunit);
+		        }else{
+		            $msg = array(
+		            'valid' => true,
+		            'msg'   => 'Akun berhasil dibuat ! silahkan verifikasi email anda');
+		            
+		        }
+		        echo json_encode($msg);
+		}
+
+		function is_verifikator() {
+		    $unit = $this->input->post('unit');
+		    $exists = $this->user_model->is_verifikator($unit);
+
+		    if($exists){
+		            $msg = array(
+		            'valid' => false);
+		        }else{
+		            $msg = array(
+		            'valid' => true);
+		            
+		        }
+		        echo json_encode($msg);
+		}
+
 
 	/* Method untuk filter data user */
 	function filter_user(){
@@ -170,7 +286,6 @@ Class User extends CI_Controller {
 					else {
 						$kode_unit_subunit = $this->input->post("subunit");
 					}
-
 					$data = array(
 						"username" 			=> $this->input->post("user_username"),
 						"password"			=> sha1(sha1(md5($this->input->post("user_password")))),
@@ -181,6 +296,7 @@ Class User extends CI_Controller {
 						"nomor_induk"		=> $this->input->post("nomor_induk"),
 						"no_rek"			=> $this->input->post("no_rek"),
 						"npwp"				=> $this->input->post("npwp"),
+						"alamat"				=> $this->input->post("alamat"),
 						//"kd_pisah"			=> $this->input->post("kd_pisah"),
 					);
 
@@ -228,8 +344,14 @@ Class User extends CI_Controller {
 				if ($this->form_validation->run()){
 
 				$username = $this->input->post("user_username");
+				
 				if ($this->input->post("level")==2){
-					$kode_unit_subunit = substr($this->input->post("subunit"),0,2);
+					// if (strlen($this->input->post("subunit")) == 4) {
+					if (substr($this->input->post("subunit"), 0, 1) == 4) {					
+						$kode_unit_subunit = $this->input->post("subunit");
+					}else{
+						$kode_unit_subunit = substr($this->input->post("subunit"),0,2);
+					}
 				} else {
 					$kode_unit_subunit = $this->input->post("subunit");
 				}
@@ -250,10 +372,102 @@ Class User extends CI_Controller {
 					$data_edit["password"] = sha1(sha1(md5($this->input->post("user_password"))));
 				}
 				$this->user_model->edit_user($data_edit,$username);
-				echo "berhasil";
+					echo "berhasil";
 				} else {
 					echo validation_errors();
 				}
+				//$data["result_user"] = $this->user_model->search_user($username,'id');
+				//$this->load->view('row_user',$data);
+		}
+		else{
+				show_404('page');
+		}
+	}
+
+
+	function exec_verifikator(){
+		if($this->check_session->user_session() && ($this->check_session->get_level()==11 || $this->check_session->get_level()==2)){
+				$this->form_validation->set_rules('unit_verifikator','Unit_verifikator','required');
+				$this->form_validation->set_rules('nama_verifikator','Nama_verifikator','required');
+
+
+				if ($this->form_validation->run()){
+
+					$id_unit = $this->input->post("unit_verifikator");
+
+					$data = array(
+						"kode_unit_subunit"				=> $id_unit,
+						"id_user_verifikator"	=> $this->input->post("nama_verifikator")
+					);
+
+					
+
+						if($this->user_model->check_mapping_exist($id_unit)){
+							$this->user_model->update_verifikator($data,$id_unit);
+							echo "berhasil";
+							
+
+						}else{
+
+							$this->user_model->insert_mapping_verifikator($data);
+							echo "berhasil";
+
+
+						}
+				} else {
+					echo validation_errors();
+				}
+
+
+				
+				//$data["result_user"] = $this->user_model->search_user($username,'id');
+				//$this->load->view('row_user',$data);
+		}
+		else{
+				show_404('page');
+		}
+	}
+
+
+		function exec_verifikator_tambah(){
+		if($this->check_session->user_session() && ($this->check_session->get_level()==11 || $this->check_session->get_level()==2)){
+				$this->form_validation->set_rules('unit_verifikator','Unit_verifikator','required');
+				$this->form_validation->set_rules('nama_verifikator','Nama_verifikator','required');
+
+				if ($this->form_validation->run()){
+
+				$id_unit = $this->input->post("unit_verifikator");
+
+				$data = array(
+					"kode_unit_subunit"				=> $id_unit,
+					"id_user_verifikator"	=> $this->input->post("nama_verifikator")
+				);
+
+				$this->user_model->tambah_verifikator($data);
+					echo "berhasil";
+				} else {
+					echo validation_errors();
+				}
+				//$data["result_user"] = $this->user_model->search_user($username,'id');
+				//$this->load->view('row_user',$data);
+		}
+		else{
+				show_404('page');
+		}
+	}
+
+		function exec_verifikator_delete(){
+		if($this->check_session->user_session() && ($this->check_session->get_level()==11 || $this->check_session->get_level()==2)){
+
+
+				$id = $this->input->post("unit");
+				// $data = array(
+				// 	"id_user_verifikator"	=> 00
+				// );
+
+				$this->user_model->delete_mapping_verifikator($id);
+				echo "berhasil";
+			
 				//$data["result_user"] = $this->user_model->search_user($username,'id');
 				//$this->load->view('row_user',$data);
 		}
@@ -445,43 +659,53 @@ Class User extends CI_Controller {
 
 					}
                                         
-                                        $kode = $row->kode_unit_subunit;
-                                        
-//                                        echo $kode ; die;
+                    $kode = $row->kode_unit_subunit;
+
+                    // var_dump($hasil) ; die ;
 
 					$nama_unit = $this->login_model->get_nama_user($kode,$level);
 					
-	                                $alias = $this->login_model->get_alias_user($kode,$level);
+	                $alias = $this->login_model->get_alias_user($kode,$level);
                                         
-                                       // echo $nama_unit . ' ' . $alias . ' ' . $kode . ' ' . $level ; die;
+                    // echo $nama_unit . ' ' . $alias . ' ' . $kode . ' ' . $level ; die;
 
-	                                // var_dump($alias);die;
+	                // var_dump($alias);die;
 
 					$this->check_session->set_session($username,$kode,$level,$nama_unit,$alias);	/*	Set user session	*/
 
-	                                $sebagai = $this->convertion->get_user_level($level);
-                                        if(strlen($kode)=='2'){
-                                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
-                                        }elseif(strlen($kode)=='4'){
-                                            if($sebagai == 'KPA'){
-                                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . get_h_unit(substr($kode,0,2)) . ' - ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
-                                            }elseif($sebagai == 'PPK SUKPA'){
-                                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . get_h_unit(substr($kode,0,2)) . ' - ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
-                                            }
-                                            elseif($sebagai == 'BENDAHARA'){
-                                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . get_h_unit(substr($kode,0,2)) . ' - ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
-                                            }elseif($sebagai == 'PUMK'){
-                                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
-                                            }
-                                        }elseif(strlen($kode)=='6'){
-                                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
-                                        }
+	                $sebagai = $this->convertion->get_user_level($level);
+	                // vdebug($this->session->userdata());
+
+					// echo $kode ; die ;
+
+                    if(strlen($kode)=='2'){
+                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
+                    }elseif(strlen($kode)=='4'){
+                        if($sebagai == 'KPA'){
+                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . get_h_unit(substr($kode,0,2)) . ' - ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
+                        }elseif($sebagai == 'PPK SUKPA'){
+                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . get_h_unit(substr($kode,0,2)) . ' - ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
+                        }
+                        elseif($sebagai == 'BENDAHARA'){
+                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . get_h_unit(substr($kode,0,2)) . ' - ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
+
+                        }elseif($sebagai == 'PUMK'){
+                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
+                        }
+                    }elseif(strlen($kode)=='6'){
+                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Login berhasil, sebagai <b><span class="text-warning" style="text-transform: uppercase">'.$sebagai. ' : ' . $this->check_session->get_nama_unit() .'</span></b>.</div>');
+                    }
 
 
-//                                        die;
-                    redirect('serpis/index','refresh');                    	
+					// die;
 
-					// redirect('dashboard','refresh');
+                   	if(($sebagai == 'BENDAHARA')||($sebagai == 'PUMK')){
+						// redirect('serpis/index','refresh');                    	
+					}else{
+						// redirect('dashboard','refresh');
+					}
+
+					redirect('dashboard','refresh');
 				}else{
 					$this->session->set_flashdata('message', '<div class="alert alert-danger" style="text-align:center"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> Login anda salah, atau user tsb sudah <u>ditutup</u>.</div>');
 					redirect('welcome','refresh');

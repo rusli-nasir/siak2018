@@ -29,12 +29,23 @@ class Akun_kas2_model extends CI_Model {
 	}
 	
 	/* Method untuk mengambil data kegiatan */
-	function get_akun_kas2($where=""){
-		if(!$where==""){
-			$this->db->where('kd_kas_2',$where);
+	function get_akun_kas2($kode_akun1digit){
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun2digit,nama_akun2digit FROM akun_belanja WHERE kode_akun1digit = '{$kode_akun1digit}' ORDER BY kode_akun2digit";
+		$query = $rba->query($query);
+
+		if($query->num_rows()>0){
+			return $query->result();
+		}else{
+			return array();
 		}
-		$this->db->order_by("kd_kas_2");
-		$query = $this->db->get("akun_kas2");
+	}
+
+	function get_akun_sebelum($kode_akun1digit){
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun1digit,nama_akun1digit FROM akun_belanja WHERE kode_akun1digit = '{$kode_akun1digit}'";
+		$query = $rba->query($query);
+
 		if($query->num_rows()>0){
 			return $query->result();
 		}else{

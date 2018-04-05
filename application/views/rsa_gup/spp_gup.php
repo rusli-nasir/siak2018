@@ -124,6 +124,11 @@ function ConvertFromTable(tbl) {
 }
 
 $(document).ready(function(){
+
+    // bootbox.alert({
+    //     title: "PESAN",
+    //     message: "MOHON MAAF JANGAN PROSES GUP DULU YA."
+    // });
     
     var id_cetak = 'div-cetak' ;
 
@@ -175,7 +180,7 @@ $(document).ready(function(){
 
     $("#xls").click(function(){
 
-        console.log('t');
+        // console.log('t');
         var uri = $("#" + id_xls).excelexportjs({
                                     containerid: id_xls
                                     , datatype: "table"
@@ -199,7 +204,9 @@ $(document).ready(function(){
         // tablesToExcel(['1', '2'], ['first', 'second'], 'myfile.xls');
     });
 
-    <?php if(($doc_gup == '')&&($detail_gup['nom']== '0'))://if($detail_gup['nom'] == '0'):?>
+    // <?php echo $detail_gup['pengembalian']; ?>
+
+    <?php if(($doc_gup == '')&&($detail_gup['nom']== '0')&&($detail_gup['pengembalian']=='0'))://if($detail_gup['nom'] == '0'):?>
             $('#myModalKonfirmKuitansi').modal({
                 backdrop: 'static',
                 keyboard: true
@@ -220,26 +227,35 @@ $(document).ready(function(){
         $('#myModalKonfirm').on('show.bs.modal', function (e) {
             // do something...
             // alert('te');
-            var ok = true;
+            var pengeluaran_m = <?=$detail_gup['nom']?> ;
+            var pengembalian_n = <?=$detail_gup['pengembalian']?> ;
+
+            if(pengeluaran_m > 0){
+
+                var ok = true;
         
-            $('[class^="keluaran_"]').each(function(){
-                if($( ".td_zonk" ).length){
-                    ok = false ; 
+                $('[class^="keluaran_"]').each(function(){
+                    if($( ".td_zonk" ).length){
+                        ok = false ; 
+                        return false;
+                    }
+                });
+                
+                if(keluaran.length == 0){ 
+
+                    ok = false ;
+                }
+                
+                if(ok){
+                    return true;
+                }else{
+                    $('#myModalKonfirmZonk').modal('show');
+                    $('#myCarousel').carousel(1);
                     return false;
                 }
-            });
-            
-            if(keluaran.length == 0){ 
 
-                ok = false ;
-            }
-            
-            if(ok){
-                return true;
             }else{
-                $('#myModalKonfirmZonk').modal('show');
-                $('#myCarousel').carousel(1);
-                return false;
+               return true; 
             }
             
         })    
@@ -254,24 +270,31 @@ $(document).ready(function(){
     
     $(document).on("click",'#proses_spp',function(){
         
+        var pengeluaran_m = <?=$detail_gup['nom']?> ;
+        var pengembalian_n = <?=$detail_gup['pengembalian']?> ;
+
         var ok = true;
-        
-        $('[class^="keluaran_"]').each(function(){
-            if($( ".td_zonk" ).length){
-                ok = false ; 
-                return false;
-            }
-        });
-        
-        if(keluaran.length == 0){ 
+
+        if(pengeluaran_m > 0){
             
-            ok = false ;
+            $('[class^="keluaran_"]').each(function(){
+                if($( ".td_zonk" ).length){
+                    ok = false ; 
+                    return false;
+                }
+            });
+            
+            if(keluaran.length == 0){ 
+                
+                ok = false ;
+            }
+
         }
         
         if(ok){
         
             if(confirm('Apakah anda yakin ?')){
-                var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&keluaran=' + JSON.stringify(keluaran) + '&nm_subkomponen=' + JSON.stringify(nm_subkomponen) ;
+                var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&keluaran=' + encodeURIComponent(JSON.stringify(keluaran)) + '&nm_subkomponen=' + JSON.stringify(nm_subkomponen) + '&jumlah_pengembalian=' + '<?=$detail_gup['pengembalian']?>' + '&rel_kuitansi_pengembalian=' + encodeURIComponent('<?=$rel_kuitansi_pengembalian?>') ;
                 $.ajax({
                     type:"POST",
                     url :"<?=site_url('rsa_gup/usulkan_spp_gup')?>",
@@ -514,7 +537,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPP GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> belum diusulkan oleh bendahara.</div>
     <?php }elseif($doc_gup == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
         <div class="alert alert-info" style="border:1px solid #a94442;">SPP GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >PPK </span></b> .</div>
-    <?php }elseif($doc_gup == 'SPP-DITOLAK'){ $stts_bendahara = 'active'; ?>
+    <?php }elseif($doc_gup == 'SPP-DITOLAK'){ $stts_bendahara = 'done';  ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPP GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >PPK </span></b> <b>[ <a href="javascript:void(0);" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php }elseif($doc_gup == 'SPP-FINAL'){ $stts_bendahara = 'done';  $stts_ppk = 'done'; ?>   
         <div class="alert alert-info" style="border:1px solid #a94442;">SPP GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah diterima oleh <b><span class="text-danger" >PPK </span></b> .</div>
@@ -522,15 +545,15 @@ function b64toBlob(b64Data, contentType, sliceSize) {
         <div class="alert alert-info" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KPA </span></b> .</div>
     <?php }elseif($doc_gup == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
         <div class="alert alert-info" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >VERIFIKATOR </span></b> .</div>
-    <?php }elseif($doc_gup == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'active'; ?>   
+    <?php }elseif($doc_gup == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; ?>   
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KPA </span></b> <b>[ <a href="javascript:void(0);" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php }elseif($doc_gup == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_gup == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'active'; ?>   
+    <?php }elseif($doc_gup == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; ?>   
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >VERIFIKATOR </span></b> <b>[ <a href="javascript:void(0);" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php }elseif($doc_gup == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done' ?>   
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah disetujui oleh <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_gup == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'active'; ?>   
+    <?php }elseif($doc_gup == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; ?>   
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KUASA BUU </span></b> <b>[ <a href="javascript:void(0);" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php }elseif($doc_gup == 'SPM-FINAL-BUU'){ $stts_bendahara = 'done'; ?> 
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM GUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah difinalisasi oleh <b><span class="text-danger" >BUU </span></b> .</div>
@@ -605,7 +628,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : GUP</b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : GUP<?php if($detail_gup['pengembalian']!='0'){echo '-NIHIL';} ?></b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
@@ -638,12 +661,21 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar" style='mso-number-format:"\@";'><?=number_format($detail_gup['nom'], 0, ",", ".")?></span>,-<br>
                                                 &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_gup['terbilang'])?> <?php echo substr($detail_gup['terbilang'],strlen($detail_gup['terbilang'])-6,6) == 'Rupiah' ? '' : 'Rupiah' ; ?></span></b>)</li>
+                                                <?php if($detail_gup['pengembalian']=='0'): ?>
                                                 <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'Penggantian uang persediaan'?></span></li>
                                                 <li>Nama bendahara pengeluaran : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
                                                 <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
                                                 <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
                                                 <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
                                                 <li>No. NPWP : <span id="npwp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li>
+                                                <?php else: ?>
+                                                <li>Untuk keperluan : <span id="untuk_bayar">GUP NIHIL</span></li>
+                                                <li>Nama bendahara pengeluaran : <span id="penerima">-</span></li>
+                                                <li>Alamat : <span id="alamat">-</span></li>
+                                                <li>Nama Bank : <span id="nmbank">-</span></li>
+                                                <li>No. Rekening Bank : <span id="rekening">-</span></li>
+                                                <li>No. NPWP : <span id="npwp">-</span></li>
+                                                <?php endif; ?>
                                         </ol>
                                     </td>
                                 </tr>
@@ -772,13 +804,14 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000;">
                                                                                     <?php 
-                                                                                    if($data->jenis == 'PPN'){
-                                                                                            echo 'Pajak Pertambahan Nilai';
-                                                                                    }elseif($data->jenis == 'PPh'){
-                                                                                            echo 'Pajak Penghasilan';
-                                                                                    }else{
-                                                                                            echo 'Lainnya';
-                                                                                    }
+                                                                                    // if($data->jenis == 'PPN'){
+                                                                                    //         echo 'Pajak Pertambahan Nilai';
+                                                                                    // }elseif($data->jenis == 'PPh'){
+                                                                                    //         echo 'Pajak Penghasilan';
+                                                                                    // }else{
+                                                                                    //         echo 'Lainnya';
+                                                                                    // }
+                                                                                    echo $data->jenis;
                                                                                     ?>
                                                                             </td>
                                                                             <td  style='text-align: right;mso-number-format:"\@";'>
@@ -1235,13 +1268,14 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                             </td>
                                 <td style="border:none;">
                                         <?php 
-                                        if($data->jenis == 'PPN'){
-                                                echo 'Pajak Pertambahan Nilai';
-                                        }elseif($data->jenis == 'PPh'){
-                                                echo 'Pajak Penghasilan';
-                                        }else{
-                                                echo 'Lainnya';
-                                        }
+                                        // if($data->jenis == 'PPN'){
+                                        //         echo 'Pajak Pertambahan Nilai';
+                                        // }elseif($data->jenis == 'PPh'){
+                                        //         echo 'Pajak Penghasilan';
+                                        // }else{
+                                        //         echo 'Lainnya';
+                                        // }
+                                        echo $data->jenis;
                                         ?>
                                 </td>
                                 <td style='border:none;mso-number-format:"\@";' class="text-right">

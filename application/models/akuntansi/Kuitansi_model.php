@@ -440,11 +440,44 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
-            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC LIMIT $start, $limit");
+            $query = $this->db->query("
+                                            SELECT 
+                                                tk.*,
+                                                SUBSTR(td.kode_usulan_belanja,-6) as kode_akun 
+                                            FROM 
+                                                rsa_kuitansi AS tk, 
+                                                rsa_kuitansi_detail as td 
+                                            WHERE 
+                                                $added_query AND 
+                                                tk.id_kuitansi = td.id_kuitansi AND 
+                                                cair=1 AND 
+                                                flag_proses_akuntansi=0 AND
+                                                (tk.no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') 
+                                                $unit 
+                                            ORDER BY 
+                                                str_nomor_trx_spm ASC, 
+                                                tk.no_bukti ASC 
+                                            LIMIT $start, $limit
+                                    ");
         }else{
-            $query = $this->db->query("SELECT * FROM rsa_kuitansi WHERE $added_query AND cair=1 AND flag_proses_akuntansi=0 AND
-            (no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') $unit ORDER BY str_nomor_trx_spm ASC, no_bukti ASC");
+            $query = $this->db->query("
+                                            SELECT 
+                                                tk.*,
+                                                SUBSTR(td.kode_usulan_belanja,-6) as kode_akun 
+                                            FROM 
+                                                rsa_kuitansi AS tk, 
+                                                rsa_kuitansi_detail as td 
+                                            WHERE 
+                                                $added_query AND 
+                                                tk.id_kuitansi = td.id_kuitansi AND 
+                                                cair=1 AND 
+                                                flag_proses_akuntansi=0 AND
+                                                (tk.no_bukti LIKE '%$keyword%' OR str_nomor_trx_spm LIKE '%$keyword%') 
+                                                $unit 
+                                            ORDER BY 
+                                                str_nomor_trx_spm ASC, 
+                                                tk.no_bukti ASC 
+                                    ");
         }
         return $query;
     }
@@ -1009,6 +1042,9 @@ class Kuitansi_model extends CI_Model {
 
         $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
+        $hasil['kode_akun'] = $this->db->query('SELECT SUBSTR(kode_usulan_belanja,-6) as kode_akun FROM rsa_kuitansi_detail WHERE id_kuitansi='.$hasil['id_kuitansi'])->row_array()['kode_akun'];
+        $hasil['kode_usulan_belanja'] = $this->db->query('SELECT kode_usulan_belanja FROM rsa_kuitansi_detail WHERE id_kuitansi='.$hasil['id_kuitansi'])->row_array()['kode_usulan_belanja'];
+
         $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);
 
         $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
@@ -1018,8 +1054,9 @@ class Kuitansi_model extends CI_Model {
             $hasil['akun_debet'] = $this->Akun_model->get_akun_belanja_bbm()['akun_6'];
         }
 
-        $query = "SELECT SUM(rsa.$tabel_detail.volume*rsa.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa.$tabel.id_kuitansi";
+        $query = "SELECT SUM(rsa_2018.$tabel_detail.volume*rsa_2018.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa_2018.$tabel.id_kuitansi";
         $hasil['jumlah_debet'] = $this->db->query($query)->row_array()['pengeluaran'];
+
 
 
         $hasil['tanggal'] = $this->Spm_model->get_tanggal_spm($hasil['str_nomor_trx_spm'],$jenis);
@@ -1037,8 +1074,9 @@ class Kuitansi_model extends CI_Model {
             }
         }
 
-
+        // print_r($hasil);die();
         return $hasil;
+
     }
 
     public function get_kuitansi_jadi($id_kuitansi_jadi)

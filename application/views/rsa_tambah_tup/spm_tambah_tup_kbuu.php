@@ -45,7 +45,7 @@ $(document).ready(function(){
             }else{
                 if(confirm('Apakah anda yakin ?')){
                     
-                    var data = 'proses=' + 'SPM-FINAL-KBUU' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&tahun=' + '<?=$cur_tahun?>' +'&kd_unit=' + '<?=$kd_unit?>' + '&kd_akun_kas=' + kd_akun_kas + '&kredit=' + '<?php echo isset($detail_tup['nom'])?$detail_tup['nom']:''?>' + '&deskripsi=' + 'PUP <?=$alias?>' + '&nominal=' + jumlah_bayar ;
+                    var data = 'proses=' + 'SPM-FINAL-KBUU' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&tahun=' + '<?=$cur_tahun?>' +'&kd_unit=' + '<?=$kd_unit?>' + '&kd_akun_kas=' + kd_akun_kas + '&kredit=' + '<?php echo isset($detail_tup['nom'])?$detail_tup['nom']:''?>' + '&deskripsi=' + 'TUP <?=$alias?>' + '&nominal=' + jumlah_bayar ;
                     $.ajax({
                         type:"POST",
                         url :"<?=site_url('rsa_tambah_tup/proses_final_tambah_tup')?>",

@@ -180,7 +180,7 @@ $cur_tahun=$tgl['year']+1;
                         <table class="table table-striped">
                             <thead>
                                 <tr >
-                                        <th class="col-md-3" >Program</th>
+                                        <th class="col-md-3" >IKU</th>
                                         <th class="col-md-3" >Kegiatan</th>
                                         <th class="col-md-3" >Sub Kegiatan</th>
                                         <th class="col-md-1" >RKAT</th>

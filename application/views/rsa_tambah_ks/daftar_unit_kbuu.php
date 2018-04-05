@@ -41,7 +41,7 @@ function refresh_row(){
 
 $(document).on("click","#show",function(){
     if($("#form_").validationEngine("validate")){
-        window.location = "<?=site_url('rsa_up/daftar_unit_kbuu/')?>" + $('#tahun').val();
+        window.location = "<?=site_url('rsa_tambah_ks/daftar_unit_kbuu/')?>" + $('#tahun').val();
         
  
     }
@@ -124,7 +124,7 @@ $(document).on("click",".tb-lihat",function(){
                             <tbody id="tb-isi" >
                                 <?php foreach($unit_usul as $i => $u){ ?>
                                     <?php if(($u->kode_unit == '41')||($u->kode_unit == '42')||($u->kode_unit == '43')||($u->kode_unit == '44')): ?>
-                                        <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
+                                            <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                                 <td class=""><b><?=$u->kode_unit?></b></td>
                                                 <td class="text-danger"><b><?=$u->nama_unit?></b></td>
                                                 <td class="">&nbsp;</td>
@@ -136,17 +136,17 @@ $(document).on("click",".tb-lihat",function(){
                                         <tr rel="<?=$uu->kode_subunit?>" class="tr-unit warning" height="25px">
                                             <td class="" style="padding-left: 30px"><b><?=$uu->kode_subunit?></b></td>
                                             <td class="text-danger" style="padding-left: 30px"><b><?=$uu->nama_subunit?></b></td>
-                                            <td class=""><?=$uu->posisi?></td>
-                                            <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($uu->tgl_proses)?'':strftime("%d %B %Y", strtotime($uu->tgl_proses)); ?></td>
+                                            <td class="">usulan baru : <span class="badge badge-danger"><?=$uu->jml?></span></td>
+                                            <td style="">&nbsp;</td>
                                             <td align="center">
-                                                <?php if($uu->posisi=='SPM-FINAL-VERIFIKATOR'): ?>
-                                                <button class="btn btn-success tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-                                                <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
-                                                <?php elseif(($uu->posisi=='SPM-FINAL-KBUU')||($uu->posisi=='SPM-FINAL-BUU')): ?>
-                                                <button class="btn btn-danger tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-                                                <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
+                                                <?php if($uu->jml > 0): ?>
+
+                                                <a href="<?=site_url("rsa_tambah_ks/daftar_spm_kbuu/".$cur_tahun.'/'.$uu->kode_subunit)?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>
+
                                                 <?php else: ?>
-                                                <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+
+                                                <a href="<?=site_url("rsa_tambah_ks/daftar_spm_kbuu/".$cur_tahun.'/'.$uu->kode_subunit)?>" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>
+
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
@@ -156,17 +156,17 @@ $(document).on("click",".tb-lihat",function(){
                                     <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                         <td class=""><b><?=$u->kode_unit?></b></td>
                                         <td class="text-danger"><b><?=$u->nama_unit?></b></td>
-                                        <td class=""><?=$u->posisi?></td>
-                                        <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($u->tgl_proses)?'':strftime("%d %B %Y", strtotime($u->tgl_proses)); ?></td>
+                                        <td class="">usulan baru : <span class="badge badge-danger"><?=$u->jml?></span></td>
+                                        <td style="">&nbsp;</td>
                                         <td align="center">
-                                            <?php if($u->posisi=='SPM-FINAL-VERIFIKATOR'): ?>
-                                            <button class="btn btn-success btn-sm tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-                                            <!--<a href="<?=site_url('rsa_up/spm_up_kbuu/').$u->kode_unit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
-                                            <?php elseif(($u->posisi=='SPM-FINAL-KBUU')||($u->posisi=='SPM-FINAL-BUU')): ?>
-                                            <button class="btn btn-danger btn-sm tb-lihat" rel="<?=$u->kode_unit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
-                                            <!--<a href="<?=site_url('rsa_up/spm_up_kbuu/').$u->kode_unit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
+                                            <?php if($u->jml > 0): ?>
+
+                                            <a href="<?=site_url("rsa_tambah_ks/daftar_spm_kbuu/".$cur_tahun.'/'.$u->kode_unit)?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>
+
                                             <?php else: ?>
-                                            <button disabled="disabled" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+
+                                            <a href="<?=site_url("rsa_tambah_ks/daftar_spm_kbuu/".$cur_tahun.'/'.$u->kode_unit)?>" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>
+
                                             <?php endif; ?>
                                         </td>
                                     </tr>

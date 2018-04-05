@@ -16,7 +16,7 @@
 				}
 			});
 		});
-		
+
 		$('#form-ipp-lihat').on('submit',function(e){
 			e.preventDefault();
 			$('#kriteria_ipp_lihat').modal('hide');
@@ -32,7 +32,7 @@
 				}
 			});
 		});
-		
+
 		// checkbox
 		$('.master_unit_id').change(function () {
 	    if ($(this).prop('checked')) {
@@ -63,23 +63,23 @@
 			cek_checked();
 		});
 		//$('#master_status').trigger('change');
-		
+
 		// modal madul // reset status jika cancel
 		$('#kriteria_ipp').on('hidden.bs.modal', function () {
 				$('#form-ipp')[0].reset();
 				cek_checked();
 		});
-		
+
 		$('input[type=checkbox]').each(function(){
 			$(this).on('change',function(){
 				cek_checked();
 			});
 		});
-		
+
 		cek_checked();
-		
+
 	});
-	
+
 	$(document).on('click','#proses_2',function(e){
 		e.preventDefault();
 		$.post('<?php echo site_url('modul_gaji/ipp_proses'); ?>', {'act':'ipp_proses2'}, function(data){
@@ -93,7 +93,7 @@
 			}
 		});
 	});
-	
+
 	function cek_checked(){
 		//var sList = "";
 		$('input[type=checkbox]').each(function () {
@@ -147,7 +147,7 @@
     <div class="modal-content">
       <form id="form-ipp" method="post" enctype="multipart/form-data">
         <input type="hidden" id="act" name="act" value="ipp_proses"/>
-        <input type="hidden" id="tahun" name="tahun" value="<?php echo $cur_tahun; ?>"/>
+        <!-- <input type="hidden" id="tahun" name="tahun" value="<?php echo $cur_tahun; ?>"/> -->
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span></button>
@@ -185,7 +185,8 @@
 								</div>
 								<div class="col-md-12">
 	            <?php
-								$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar');
+							/*
+								$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar', '13'=>'Diberhentikan sementara');
 								foreach ($stt as $k => $v) {
 									$ch = "";
 									if(isset($_SESSION['ipp']['status']) && in_array($k,$_SESSION['ipp']['status'])){
@@ -200,6 +201,8 @@
 		              </div>
 							<?php
 								}
+								*/
+								echo $this->cantik_model->opsiStatusKepeg($_SESSION['ipp']['status']);
 							?>
 								</div>
 							</div>
@@ -228,7 +231,7 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>Tahun Pencairan IPP:</label>
-	              <input type="text" class="form-control input-sm" value="<?php echo $cur_tahun; ?>" readonly="readonly"/>
+	              <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['ipp']['tahun']; ?>" name="tahun" id="tahun"/>
 	            </div>
 						</div>
 						<div class="col-md-4">
@@ -274,7 +277,7 @@
     <div class="modal-content">
       <form id="form-ipp-lihat" method="post" enctype="multipart/form-data">
         <input type="hidden" id="act" name="act" value="ipp_lihat"/>
-        <input type="hidden" id="tahun" name="tahun" value="<?php echo $cur_tahun; ?>"/>
+        <!-- <input type="hidden" id="tahun" name="tahun" value="<?php echo $cur_tahun; ?>"/> -->
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span></button>
@@ -312,7 +315,8 @@
 								</div>
 								<div class="col-md-12">
 	            <?php
-								$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar');
+							/*
+								$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar', '13'=>'Diberhentikan sementara');
 								foreach ($stt as $k => $v) {
 									$ch = "";
 									if(isset($_SESSION['ipp']['status']) && in_array($k,$_SESSION['ipp']['status'])){
@@ -327,6 +331,8 @@
 		              </div>
 							<?php
 								}
+								*/
+								echo $this->cantik_model->opsiStatusKepeg($_SESSION['ipp']['status']);
 							?>
 								</div>
 							</div>
@@ -356,7 +362,7 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>Tahun Pencairan IPP:</label>
-	              <input type="text" class="form-control input-sm" value="<?php echo $cur_tahun; ?>" readonly="readonly"/>
+	              <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['ipp']['tahun']; ?>" name="tahun" id="tahun"/>
 	            </div>
 						</div>
 						<div class="col-md-4">

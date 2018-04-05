@@ -5,7 +5,7 @@
 			e.preventDefault();
 			$('#kriteria_ipp').modal('hide');
 			$.post('<?php echo site_url('kontrak/proses'); ?>',$('#form-ipp').serialize(),function(data){
-				if(data!=1){
+				if(!$.isNumeric(data)){
 					$('#myModalMsg .body-msg-text').html(data);
 					$('#myModalMsg').modal('show');
 					return false;
@@ -19,15 +19,12 @@
 		$('#form-ipp-lihat').on('submit',function(e){
 			e.preventDefault();
 			$('#kriteria_ipp_lihat').modal('hide');
-			$.post('<?php echo site_url('kontrak/proses_lihat'); ?>',$('#form-ipp-lihat').serialize(),function(data){
-				if(data!=1){
-					$('#myModalMsg .body-msg-text').html(data);
+			$.post('<?php echo site_url('kontrak/proses_lihat'); ?>',$('#form-ipp-lihat').serialize(),function(r){
+				if(r != 1){
+					$('#myModalMsg .body-msg-text').html(r);
 					$('#myModalMsg').modal('show');
-					return false;
 				}else{
 					window.location='<?php echo site_url('kontrak/daftar'); ?>';
-					return false;
-					//$('#form-ipp')[0].reset();
 				}
 			});
 		});

@@ -133,7 +133,7 @@
                   </td>
                   <td><?php echo $v->tugas_tambahan; ?> <?php echo $v->det_tgs_tambahan; ?><br/><?php echo $this->cantik_model->getUnit($v->unit_id);?></td>
                   <td><?php echo $this->cantik_model->getStatus($v->status); ?></td>
-                  <td><?php echo $rek->nmbank; ?><br /><?php echo $rek->nmpemilik; ?><br /><?php echo $rek->norekening; ?></td>
+                  <td><?php echo $rek->kelompok_bank; ?><br /><?php echo $rek->nmpemilik; ?><br /><?php echo $rek->norekening; ?></td>
                   <td align="right"><?php echo $this->cantik_model->number($v->nominal); ?></td>
                   <td align="right"><?php echo $this->cantik_model->pajak($v->pajak); ?></td>
                   <td align="right"><?php echo $this->cantik_model->number($v->nom_pajak); ?></td>

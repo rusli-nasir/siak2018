@@ -798,7 +798,128 @@ class Rsa_kas_model extends CI_Model {
 		
 		return $total;
 	}
+		//edited by fahmi
+	function get_daftar_kas(){
+		$query = "SELECT *
+		FROM kas_undip";
+		$query = $this->db->query($query);
+
+        // vdebug($query2->result());
+		if ($query->num_rows() > 0){
+			return $query->result();
+		}else{
+			return false;
+		}
+	}
+
+	function get_saldo(){
+		$query = "SELECT DISTINCT a.kd_akun_kas,a.saldo,b.nama_akun 
+		FROM kas_undip as a
+		LEFT JOIN rba_2018.akun_belanja as b
+		ON a.kd_akun_kas = b.kode_akun
+		WHERE aktif = '1'";
+		$query = $this->db->query($query);
+
+       // vdebug($query->result());
+		if ($query->num_rows() > 0){
+			return $query->result();
+		}else{
+			return false;
+		}
+	}
+
+	function get_no_spm_kas(){
+		$query = "SELECT id_kas_bendahara,no_spm 
+		FROM kas_undip 
+		ORDER BY id_kas_bendahara";
+		$query = $this->db->query($query);
+		if ($query->num_rows() > 0){
+			$no_spm = $query->result();
+			foreach($no_spm as $row){
+				$opt_spm["$row->id_kas_bendahara"] = array(
+					'id_kas_bendahara' => $row->id_kas_bendahara,
+					'no_spm' => $row->no_spm
+				);
+			}
+
+			return $opt_spm;
+                // vdebug($opt_username);
+		}else{
+			return array();
+		}
+	}
+
+	function get_isi_kas($no_spm){
+		$query = "SELECT kd_akun_kas, kd_unit, deskripsi, kredit, saldo
+		FROM kas_undip
+		WHERE no_spm = '{$no_spm}'";
+		$query = $this->db->query($query);
+
+        // vdebug($query->result());
+		if ($query->num_rows() > 0){
+			return $query->row();
+		}else{
+			return null;
+		}
+	}
+
+	function get_no_kas(){
+		$query = "SELECT kd_akun_kas 
+		FROM kas_undip 
+		";
+		$query = $this->db->query($query);
+		if ($query->num_rows() > 0){
+			$no_kd_akun = $query->result();
+			foreach($no_kd_akun as $row){
+				$opt_kd_akun_kas["$row->kd_akun_kas"] = array(
+					'kd_akun_kas' => $row->kd_akun_kas,
+				);
+			}
+			return $opt_kd_akun_kas;
+                // vdebug($opt_username);
+		}else{
+			return array();
+		}
+	}
+
+	function get_saldo_aktif($kode){
+		$query = "SELECT saldo
+					FROM kas_undip
+					WHERE kd_akun_kas = '{$kode}' AND aktif = 1 ";
+
+		$query = $this->db->query($query);
+		if ($query->num_rows() > 0){
+			return $query->row()->saldo;
+		}else{
+			return 0;
+		}
+
+	}
+
+	function add_data($data){
+
+		$insert = $this->db->insert('kas_undip', $data);
+
+		if ($insert) {
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+	}
+
+	function update_data($value){
+
+		$query ="UPDATE kas_undip 
+					SET aktif='0' 
+					WHERE kd_akun_kas = '{$value}' AND aktif = 1 ";
 		
+		$update = $this->db->query($query);
+		if ($update) {
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+	}
 
 	
 }

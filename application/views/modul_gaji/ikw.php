@@ -15,7 +15,7 @@
 				}
 			});
 		});
-		
+
 		$('#form-ikw-lihat').on('submit',function(e){
 			e.preventDefault();
 			$('#kriteria_ikw_lihat').modal('hide');
@@ -31,7 +31,7 @@
 				}
 			});
 		});
-		
+
 		// checkbox
 		$('.master_unit_id').change(function () {
 	    if ($(this).prop('checked')) {
@@ -62,23 +62,23 @@
 			cek_checked();
 		});
 		//$('#master_status').trigger('change');
-		
+
 		// modal madul // reset status jika cancel
 		$('#kriteria_ikw').on('hidden.bs.modal', function () {
 				$('#form-ikw')[0].reset();
 				cek_checked();
 		});
-		
+
 		$('input[type=checkbox]').each(function(){
 			$(this).on('change',function(){
 				cek_checked();
 			});
 		});
-		
+
 		cek_checked();
-		
+
 	});
-	
+
 	$(document).on('click','#proses_2',function(e){
 		e.preventDefault();
 		$.post('<?php echo site_url('ikw/ikw_proses'); ?>', {'act':'ikw_proses2'}, function(data){
@@ -90,7 +90,7 @@
 			}
 		});
 	});
-	
+
 	function cek_checked(){
 		//var sList = "";
 		$('input[type=checkbox]').each(function () {
@@ -184,6 +184,7 @@
 								</div>
 								<div class="col-md-12">
 	            <?php
+							/*
 								$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar', '13'=>'Diberhentikan sementara');
 								foreach ($stt as $k => $v) {
 									$ch = "";
@@ -199,6 +200,8 @@
 		              </div>
 							<?php
 								}
+								*/
+								echo $this->cantik_model->opsiStatusKepeg($_SESSION['ikw']['status']);
 							?>
 								</div>
 							</div>
@@ -226,13 +229,13 @@
             </div>
 						<div class="col-md-4">
 							<div class="form-group">
-								<label>Tahun Pencairan IPP:</label>
+								<label>Tahun Pencairan IKW:</label>
 	              <input type="text" class="form-control input-sm" value="<?php echo $cur_tahun; ?>" readonly="readonly"/>
 	            </div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
-		            <label for="bulan">Bulan Pencairan IPP:</label>
+		            <label for="bulan">Bulan Pencairan IKW:</label>
 		            <select name="bulan" id="bulan" class="form-control input-sm">
 						<?php
 							echo $bulanOption;
@@ -302,6 +305,7 @@
 								</div>
 								<div class="col-md-12">
 	            <?php
+								/*
 								$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar', '13'=>'Diberhentikan sementara');
 								foreach ($stt as $k => $v) {
 									$ch = "";
@@ -317,6 +321,8 @@
 		              </div>
 							<?php
 								}
+								*/
+								echo $this->cantik_model->opsiStatusKepeg($_SESSION['ikw']['status']);
 							?>
 								</div>
 							</div>

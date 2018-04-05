@@ -30,7 +30,7 @@
         <?php if($ul->kode_usulan_belanja == $u->kode_usulan_belanja): ?>
             <tr id="<?php echo $ul->id_rsa_detail ;?>" height="25px">
                 <td style="text-align: right">
-                    <?php if(substr($ul->proses,1,1)=='1'){echo '<span class="badge badge-gup">GP</span>';}elseif(substr($ul->proses,1,1)=='3'){echo '<span class="badge badge-tup">TP</span>';}elseif(substr($ul->proses,1,1)=='2'){echo '<span class="badge badge-lp">LP</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-l3">L3</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-ks">KS</span>';}elseif(substr($ul->proses,1,1)=='6'){echo '<span class="badge badge-lsnk">L3NK</span>';}else{} ?> <?=$ul->kode_akun_tambah?>
+                    <?php if(substr($ul->proses,1,1)=='1'){echo '<span class="badge badge-gup">GP</span>';}elseif(substr($ul->proses,1,1)=='3'){echo '<span class="badge badge-tup">TP</span>';}elseif(substr($ul->proses,1,1)=='2'){echo '<span class="badge badge-lp">LP</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-l3">L3</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-ks">KS</span>';}elseif(substr($ul->proses,1,1)=='6'){echo '<span class="badge badge-ln">LN</span>';}elseif(substr($ul->proses,1,1)=='7'){echo '<span class="badge badge-em">EM</span>';}else{} ?>  <?=$ul->kode_akun_tambah?>
                     <input type="hidden" id="proses_<?php echo $ul->id_rsa_detail;?>" value="3<?=substr($ul->proses,1,1)?>" />
                 </td>
                 <td ><?=$ul->deskripsi?></td>
@@ -139,31 +139,7 @@
 
         <?php endif; ?>
     <?php } ?>
-            <!--
-    <tr id="form_add_detail_<?=$u->kode_usulan_belanja?>" class="alert alert-success">
-            <td >
-                <input name="revisi" id="revisi_<?=$u->kode_usulan_belanja?>" type="hidden" value="<?=$u->revisi?>" />
-                <input name="impor" id="impor_<?=$u->kode_usulan_belanja?>" type="hidden" value="<?=$impor?>" />
-                <input name="kode_akun_tambah" class="form-control" rel="<?=$u->kode_usulan_belanja?>" id="kode_akun_tambah_<?=$u->kode_usulan_belanja?>" type="text" value="" readonly="readonly" />
-            </td>
-            <td >
-                <textarea name="deskripsi" class="validate[required] form-control" rel="<?=$u->kode_usulan_belanja?>" id="deskripsi_<?=$u->kode_usulan_belanja?>" rows="1"></textarea>
-            </td>
-            <td ><input name="volume" class="validate[required,funcCall[checkfloat]] calculate form-control xfloat" rel="<?=$u->kode_usulan_belanja?>" id="volume_<?=$u->kode_usulan_belanja?>" type="text" value="" data-toggle="tooltip" data-placement="top" title="Silahkan masukan angka bulat atau pecahan. Kalo masih error silahkan kontak sy. thx" /></td>
-            <td ><input name="satuan" class="validate[required,maxSize[30]] form-control" rel="<?=$u->kode_usulan_belanja?>" id="satuan_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
-            <td ><input name="tarif" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" rel="<?=$u->kode_usulan_belanja?>" id="tarif_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
-            <td ><input name="jumlah" rel="<?=$u->kode_usulan_belanja?>" id="jumlah_<?=$u->kode_usulan_belanja?>" type="text" class="form-control" readonly="readonly" value="" /></td>
-            <td align="center" >
-                    <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm" rel="<?=$u->kode_usulan_belanja?>" id="tambah_<?=$u->kode_usulan_belanja?>" aria-label="Left Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
-                                    <button type="button" class="btn btn-default btn-sm" rel="<?=$u->kode_usulan_belanja?>" id="reset_<?=$u->kode_usulan_belanja?>" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 
-
-                            </div>
-            </td>
-            <td>&nbsp;</td>
-    </tr>  
-            -->
     <tr class="alert alert-danger">
         <td colspan="4" style="text-align: right;">Usulan</td> 
         <td style="text-align: right;">:</td>
@@ -191,13 +167,3 @@
 
 
 <?php } ?>
-    <tr id="" height="25px">
-        <td colspan="8">&nbsp;</td>
-    </tr>
-    <tr id="" height="25px" class="alert alert-danger" style="font-weight: bold">
-        <td colspan="4" style="text-align: center">Total </td>
-        <td style="text-align: right">:</td>
-        <td style="text-align: right"><?=number_format($total_, 0, ",", ".")?></td>
-        <td >&nbsp;</td>
-        <td >&nbsp;</td> 
-    </tr>

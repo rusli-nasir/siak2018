@@ -40,49 +40,49 @@ class Login_model extends CI_Model {
 	/*	Fungsi untuk mendapatkan nama user	*/
 	function get_nama_user($ori_username='',$level=''){
 		
-                if(($level==1)||($level==11)||($level==3)||($level==5)){	// jika user yang aktif unit pusat
+        if(($level==1)||($level==11)||($level==3)||($level==5)||($level==17)||($level==55)){	// jika user yang aktif unit pusat
 			return	'Unit Pusat';
 		}
 		else{
-			if($level==2){	// jika user yang aktif unit
+			if($level==2){	// KPA
 				/*	Set table name n field*/
                             if(strlen($ori_username) == '2'){
-				$table	= 'rba.unit';
-				$field	= 'kode_unit';
-				$result	= 'nama_unit';
-				$value	= $ori_username;
+                				$table	= 'rba_2018.unit';
+                				$field	= 'kode_unit';
+                				$result	= 'nama_unit';
+                				$value	= $ori_username;
                             }elseif(strlen($ori_username) == '4'){
-                                $table	= 'rba.subunit';
-				$field	= 'kode_subunit';
-				$result	= 'nama_subunit';
-				$value	= $ori_username;
+                                $table	= 'rba_2018.subunit';
+                				$field	= 'kode_subunit';
+                				$result	= 'nama_subunit';
+                				$value	= $ori_username;
                             }else{
                                 
                             }
-			}else if($level==13){	// jika user yang aktif sub unit
+			}else if($level==13){	// BENDAHARA
 				/*	Set table name n field*/
                             if(strlen($ori_username) == '2'){
-				$table	= 'rba.unit';
-				$field	= 'kode_unit';
-				$result	= 'nama_unit';
-				$value	= $ori_username;
+                				$table	= 'rba_2018.unit';
+                				$field	= 'kode_unit';
+                				$result	= 'nama_unit';
+                				$value	= $ori_username;
                             }elseif(strlen($ori_username) == '4'){
-                                $table	= 'rba.subunit';
-				$field	= 'kode_subunit';
-				$result	= 'nama_subunit';
-				$value	= $ori_username;
+                                $table	= 'rba_2018.subunit';
+                				$field	= 'kode_subunit';
+                				$result	= 'nama_subunit';
+                				$value	= $ori_username;
                             }else{
                                 
                             }
-			}else if($level==14){	// jika user yang aktif sub unit
+			}else if($level==14){	// PPK SUKPA
 				/*	Set table name n field*/
 				if(strlen($ori_username) == '2'){
-				$table	= 'rba.unit';
+				$table	= 'rba_2018.unit';
 				$field	= 'kode_unit';
 				$result	= 'nama_unit';
 				$value	= $ori_username;
                             }elseif(strlen($ori_username) == '4'){
-                                $table	= 'rba.subunit';
+                                $table	= 'rba_2018.subunit';
 				$field	= 'kode_subunit';
 				$result	= 'nama_subunit';
 				$value	= $ori_username;
@@ -91,30 +91,30 @@ class Login_model extends CI_Model {
                             }
 			}else if ($level==4){ // PUMK USER VARIASI 4 dan 6 DIGIT
                             if(strlen($ori_username) == '2'){
-				$table	= 'rba.unit';
+				$table	= 'rba_2018.unit';
 				$field	= 'kode_unit';
 				$result	= 'nama_unit';
 				$value	= $ori_username;
                             }elseif(strlen($ori_username) == '4'){
-                                if((substr($ori_username,0,2)=='41')||(substr($ori_username,0,2)=='42')||(substr($ori_username,0,2)=='43')||(substr($ori_username,0,2)=='44')){
-                                    $table	= 'rba.subunit';
+                                if((substr($ori_username,0,2)=='14')||(substr($ori_username,0,2)=='15')||(substr($ori_username,0,2)=='16')||(substr($ori_username,0,2)=='17')){
+                                    $table	= 'rba_2018.subunit';
                                     $field	= 'kode_subunit';
                                     $result	= 'nama_subunit';
                                     $value	= $ori_username;
                                 }else{
-                                    $table	= 'rba.subunit';
+                                    $table	= 'rba_2018.subunit';
                                     $field	= 'kode_subunit';
                                     $result	= 'nama_subunit';
                                     $value	= $ori_username;
                                 }
                             }elseif(strlen($ori_username) == '6'){
-                                if((substr($ori_username,0,2)=='41')||(substr($ori_username,0,2)=='42')||(substr($ori_username,0,2)=='43')||(substr($ori_username,0,2)=='44')){
-                                    $table	= 'rba.sub_subunit';
+                                if((substr($ori_username,0,2)=='14')||(substr($ori_username,0,2)=='15')||(substr($ori_username,0,2)=='16')||(substr($ori_username,0,2)=='17')){
+                                    $table	= 'rba_2018.sub_subunit';
                                     $field	= 'kode_sub_subunit';
                                     $result	= 'nama_sub_subunit';
                                     $value	= $ori_username;
                                 }else{
-                                    $table	= 'rba.sub_subunit';
+                                    $table	= 'rba_2018.sub_subunit';
                                     $field	= 'kode_sub_subunit';
                                     $result	= 'nama_sub_subunit';
                                     $value	= $ori_username;
@@ -124,25 +124,18 @@ class Login_model extends CI_Model {
                             }
                        
 			}
-//                        else if ($level==15){
-//				$table	= 'rba.unit';
-//				$field	= 'kode_unit';
-//				$value	= $ori_username;
-//				$result	= 'nama_unit';
-//                        }
-//			else if($level==31){	// jika user yang aktif sub sub unit ADDED BY IDRIS
-//				/*	Set table name n field*/
-//				$table	= 'sub_subunit';
-//				$field	= 'kode_sub_subunit';
-//				$value	= $ori_username;
-//				$result	= 'nama_sub_subunit';
-//			}
-                        else if ($level==100){
+            else if ($level==100){
 				return 'REKTOR';
-			}
+			}else{
+                echo 'MAAF ANDA TIDAK BISA LOGIN <a href="' . base_url() . '">KEMBALI</a>' ;
+                die;
+            }
 			
 			/*	Running query	*/
-			$query		= $this->db->query("SELECT {$result} FROM {$table} WHERE {$field}='{$value}'");
+
+            // echo "SELECT {$result} FROM {$table} WHERE {$field}='{$value}'"; die;
+
+            $query		= $this->db->query("SELECT {$result} FROM {$table} WHERE {$field}='{$value}'");
 			//var_dump($query);die;
 			if ($query->num_rows() > 0){
 			   foreach ($query->result() as $row)
@@ -156,7 +149,7 @@ class Login_model extends CI_Model {
 	}
         
         function get_alias_user($ori_username='',$level=''){
-        if(($level==1)||($level==11)||($level==3)||($level==5)){	
+        if(($level==1)||($level==11)||($level==3)||($level==5)||($level==17)||($level==55)){	
 			return	'Unit Pusat';
 		}
 		else{
@@ -164,12 +157,12 @@ class Login_model extends CI_Model {
 				/*	Set table name n field*/
                             
                             if(strlen($ori_username) == 2){
-				$table	= 'rba.unit';
+				$table	= 'rba_2018.unit';
 				$field	= 'kode_unit';
 				$result	= 'alias';
 				$value	= $ori_username;
                             }elseif(strlen($ori_username) == 4){
-                                $table	= 'rba.subunit';
+                                $table	= 'rba_2018.subunit';
 				$field	= 'kode_subunit';
 				$result	= 'nama_subunit';
 				$value	= $ori_username;
@@ -180,12 +173,12 @@ class Login_model extends CI_Model {
 			}else if($level==13){	// jika user yang aktif sub unit
 				/*	Set table name n field*/
                             if(strlen($ori_username) == 2){
-                				$table	= 'rba.unit';
+                				$table	= 'rba_2018.unit';
                 				$field	= 'kode_unit';
                 				$result	= 'alias';
                 				$value	= $ori_username;
                             }elseif(strlen($ori_username) == 4){
-                                $table	= 'rba.subunit';
+                                $table	= 'rba_2018.subunit';
                 				$field	= 'kode_subunit';
                 				$result	= 'nama_subunit';
                 				$value	= $ori_username;
@@ -195,12 +188,12 @@ class Login_model extends CI_Model {
 			}else if($level==14){	// jika user yang aktif sub unit
 				/*	Set table name n field*/
                             if(strlen($ori_username) == 2){
-				$table	= 'rba.unit';
+				$table	= 'rba_2018.unit';
 				$field	= 'kode_unit';
 				$result	= 'alias';
 				$value	= $ori_username;
                             }elseif(strlen($ori_username) == 4){
-                                $table	= 'rba.subunit';
+                                $table	= 'rba_2018.subunit';
 				$field	= 'kode_subunit';
 				$result	= 'nama_subunit';
 				$value	= $ori_username;
@@ -210,30 +203,30 @@ class Login_model extends CI_Model {
 			}else if($level==4){ // PUMK USER VARIASI 4 dan 6 DIGIT	// jika user yang aktif sub unit
 				/*	Set table name n field*/
                             if(strlen($ori_username) == 2){
-                				$table	= 'rba.unit';
+                				$table	= 'rba_2018.unit';
                 				$field	= 'kode_unit';
                 				$result	= 'alias';
                 				$value	= $ori_username;
                             }elseif(strlen($ori_username) == 4){
-                                if((substr($ori_username,0,2)=='41')||(substr($ori_username,0,2)=='42')||(substr($ori_username,0,2)=='43')||(substr($ori_username,0,2)=='44')){
-                                    $table	= 'rba.subunit';
+                                if((substr($ori_username,0,2)=='14')||(substr($ori_username,0,2)=='15')||(substr($ori_username,0,2)=='16')||(substr($ori_username,0,2)=='17')){
+                                    $table	= 'rba_2018.subunit';
                                     $field	= 'kode_subunit';
                                     $result	= 'nama_subunit';
                                     $value	= $ori_username;
                                 }else{
-                                    $table	= 'rba.unit';
+                                    $table	= 'rba_2018.unit';
                                     $field	= 'kode_unit';
                                     $result	= 'alias';
                                     $value	= substr($ori_username,0,2);
                                 }
                             }elseif(strlen($ori_username) == 6){
-                                if((substr($ori_username,0,2)=='41')||(substr($ori_username,0,2)=='42')||(substr($ori_username,0,2)=='43')||(substr($ori_username,0,2)=='44')){
-                                    $table	= 'rba.sub_subunit';
+                                if((substr($ori_username,0,2)=='14')||(substr($ori_username,0,2)=='15')||(substr($ori_username,0,2)=='16')||(substr($ori_username,0,2)=='17')){
+                                    $table	= 'rba_2018.sub_subunit';
                                     $field	= 'kode_sub_subunit';
                                     $result	= 'nama_sub_subunit';
                                     $value	= $ori_username;
                                 }else{
-                                    $table	= 'rba.unit';
+                                    $table	= 'rba_2018.unit';
                                     $field	= 'kode_unit';
                                     $result	= 'alias';
                                     $value	= substr($ori_username,0,2);
@@ -250,18 +243,19 @@ class Login_model extends CI_Model {
 //				$result	= 'nama_sub_subunit';
 //			}
             else if ($level==15){
-				$table	= 'rba.unit';
+				$table	= 'rba_2018.unit';
 				$field	= 'kode_unit';
 				$value	= $ori_username;
 				$result	= 'nama_unit';
                         
-			}else if ($level==100){
+			}
+			else if ($level==100){
 				return 'TESTER';
 			}
 			
 			/*	Running query	*/
 			$query		= $this->db->query("SELECT {$result} FROM {$table} WHERE {$field}='{$value}'");
-            // echo "SELECT {$result} FROM {$table} WHERE {$field}='{$value}'" ; 
+            // echo "SELECT {$result} FROM {$table} WHERE {$field}='{$value}'" ; die;
 			// var_dump($query->result());die;
 			if ($query->num_rows() > 0){
 			   foreach ($query->result() as $row)
@@ -269,65 +263,65 @@ class Login_model extends CI_Model {
                                if(strlen($ori_username) == 2){
                                    return $row->$result;
                                }elseif(strlen($ori_username) == 4){
-                                    if(substr($ori_username,0,2) == '41'){
+                                    if(substr($ori_username,0,2) == '14'){
                                         switch ($row->$result){
-                                            case 'BAA'     : return 'W11'; break;
-                                            case 'BAK'     : return 'W12'; break;
-                                            case 'BAUK'    : return 'W13'; break;
-                                            case 'BAPSI'   : return 'W14'; break;
+                                            case 'Biro Administrasi Akademik'     : return 'W11'; break;
+                                            case 'Biro Administrasi Umum dan Keuangan'     : return 'W12'; break;
+                                            case 'Biro Administrasi Kemahasiswaan'    : return 'W13'; break;
+                                            case 'Biro Administrasi Perencanaan dan Sistem Informasi'   : return 'W14'; break;
                                         }
-                                    }elseif(substr($ori_username,0,2) == '42'){
+                                    }elseif(substr($ori_username,0,2) == '15'){
                                         switch ($row->$result){
-                                            case 'BAA'     : return 'W21'; break;
-                                            case 'BAK'     : return 'W22'; break;
-                                            case 'BAUK'    : return 'W23'; break;
-                                            case 'BAPSI'   : return 'W24'; break;
+                                            case 'Biro Administrasi Akademik'    : return 'W21'; break;
+                                            case 'Biro Administrasi Umum dan Keuangan'    : return 'W22'; break;
+                                            case 'Biro Administrasi Kemahasiswaan'    : return 'W23'; break;
+                                            case 'Biro Administrasi Perencanaan dan Sistem Informasi'    : return 'W24'; break;
                                         }
-                                    }elseif(substr($ori_username,0,2) == '43'){
+                                    }elseif(substr($ori_username,0,2) == '16'){
                                         switch ($row->$result){
-                                            case 'BAA'     : return 'W31'; break;
-                                            case 'BAK'     : return 'W32'; break;
-                                            case 'BAUK'    : return 'W33'; break;
-                                            case 'BAPSI'   : return 'W34'; break;
+                                            case 'Biro Administrasi Akademik'     : return 'W31'; break;
+                                            case 'Biro Administrasi Umum dan Keuangan'    : return 'W32'; break;
+                                            case 'Biro Administrasi Kemahasiswaan'     : return 'W33'; break;
+                                            case 'Biro Administrasi Perencanaan dan Sistem Informasi'    : return 'W34'; break;
                                         }
-                                    }elseif(substr($ori_username,0,2) == '44'){
+                                    }elseif(substr($ori_username,0,2) == '17'){
                                         switch ($row->$result){
-                                            case 'BAA'     : return 'W41'; break;
-                                            case 'BAK'     : return 'W42'; break;
-                                            case 'BAUK'    : return 'W43'; break;
-                                            case 'BAPSI'   : return 'W44'; break;
+                                            case 'Biro Administrasi Akademik'    : return 'W41'; break;
+                                            case 'Biro Administrasi Umum dan Keuangan'     : return 'W42'; break;
+                                            case 'Biro Administrasi Kemahasiswaan'    : return 'W43'; break;
+                                            case 'Biro Administrasi Perencanaan dan Sistem Informasi'    : return 'W44'; break;
                                         }
                                     }else{
                                         return $row->$result;
                                     }
                                }elseif(strlen($ori_username) == 6){
-                                    if(substr($ori_username,0,2) == '41'){
+                                    if(substr($ori_username,0,2) == '14'){
                                         switch (substr($ori_username,0,4)){
-                                            case '4111'    : return 'W11'; break;
-                                            case '4113'    : return 'W12'; break;
-                                            case '4112'    : return 'W13'; break;
-                                            case '4114'    : return 'W14'; break;
+                                            case '1401'    : return 'W11'; break;
+                                            case '1402'    : return 'W12'; break;
+                                            case '1403'    : return 'W13'; break;
+                                            case '1404'    : return 'W14'; break;
                                         }
-                                    }elseif(substr($ori_username,0,2) == '42'){
+                                    }elseif(substr($ori_username,0,2) == '15'){
                                         switch (substr($ori_username,0,4)){
-                                            case '4211'    : return 'W21'; break;
-                                            case '4213'    : return 'W22'; break;
-                                            case '4212'    : return 'W23'; break;
-                                            case '4214'    : return 'W24'; break;
+                                            case '1501'    : return 'W21'; break;
+                                            case '1502'    : return 'W22'; break;
+                                            case '1503'    : return 'W23'; break;
+                                            case '1504'    : return 'W24'; break;
                                         }
-                                    }elseif(substr($ori_username,0,2) == '43'){
+                                    }elseif(substr($ori_username,0,2) == '16'){
                                         switch (substr($ori_username,0,4)){
-                                            case '4311'    : return 'W31'; break;
-                                            case '4313'    : return 'W32'; break;
-                                            case '4312'    : return 'W33'; break;
-                                            case '4314'    : return 'W34'; break;
+                                            case '1601'    : return 'W31'; break;
+                                            case '1602'    : return 'W32'; break;
+                                            case '1603'    : return 'W33'; break;
+                                            case '1604'    : return 'W34'; break;
                                         }
-                                    }elseif(substr($ori_username,0,2) == '44'){
+                                    }elseif(substr($ori_username,0,2) == '17'){
                                         switch (substr($ori_username,0,4)){
-                                            case '4411'    : return 'W41'; break;
-                                            case '4413'    : return 'W42'; break;
-                                            case '4412'    : return 'W43'; break;
-                                            case '4414'    : return 'W44'; break;
+                                            case '1701'    : return 'W41'; break;
+                                            case '1702'    : return 'W42'; break;
+                                            case '1703'    : return 'W43'; break;
+                                            case '1704'    : return 'W44'; break;
                                         }
                                     }else{
                                         return $row->$result;

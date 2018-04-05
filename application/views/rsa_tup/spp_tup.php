@@ -199,7 +199,7 @@ $(document).ready(function(){
         // tablesToExcel(['1', '2'], ['first', 'second'], 'myfile.xls');
     });
 
-    <?php if(($doc_tup == '')&&($detail_tup['nom']== '0'))://if($detail_tup['nom'] == '0'):?>
+    <?php if(($doc_tup == '')&&($detail_tup['nom'] == '0')&&($detail_tup['pengembalian'] == '0'))://if($detail_tup['nom'] == '0'):?>
             $('#myModalKonfirmKuitansi').modal({
                 backdrop: 'static',
                 keyboard: true
@@ -220,27 +220,37 @@ $(document).ready(function(){
         $('#myModalKonfirm').on('show.bs.modal', function (e) {
             // do something...
             // alert('te');
-            var ok = true;
+            var pengeluaran_m = <?=$detail_tup['nom']?> ;
+            var pengembalian_n = <?=$detail_tup['pengembalian']?> ;
+
+            if(pengeluaran_m > 0){
+
+                var ok = true;
         
-            $('[class^="keluaran_"]').each(function(){
-                if($( ".td_zonk" ).length){
-                    ok = false ; 
+                $('[class^="keluaran_"]').each(function(){
+                    if($( ".td_zonk" ).length){
+                        ok = false ; 
+                        return false;
+                    }
+                });
+                
+                if(keluaran.length == 0){ 
+
+                    ok = false ;
+                }
+                
+                if(ok){
+                    return true;
+                }else{
+                    $('#myModalKonfirmZonk').modal('show');
+                    $('#myCarousel').carousel(1);
                     return false;
                 }
-            });
-            
-            if(keluaran.length == 0){ 
 
-                ok = false ;
-            }
-            
-            if(ok){
-                return true;
             }else{
-                $('#myModalKonfirmZonk').modal('show');
-                $('#myCarousel').carousel(1);
-                return false;
+               return true; 
             }
+
             
         })    
 
@@ -253,25 +263,32 @@ $(document).ready(function(){
     
     
     $(document).on("click",'#proses_spp',function(){
-        
+
+        var pengeluaran_m = <?=$detail_tup['nom']?> ;
+        var pengembalian_n = <?=$detail_tup['pengembalian']?> ;
+
         var ok = true;
-        
-        $('[class^="keluaran_"]').each(function(){
-            if($( ".td_zonk" ).length){
-                ok = false ; 
-                return false;
-            }
-        });
-        
-        if(keluaran.length == 0){ 
+
+        if(pengeluaran_m > 0){
             
-            ok = false ;
+            $('[class^="keluaran_"]').each(function(){
+                if($( ".td_zonk" ).length){
+                    ok = false ; 
+                    return false;
+                }
+            });
+            
+            if(keluaran.length == 0){ 
+                
+                ok = false ;
+            }
+
         }
         
         if(ok){
         
             if(confirm('Apakah anda yakin ?')){
-                var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&keluaran=' + JSON.stringify(keluaran) + '&nm_subkomponen=' + JSON.stringify(nm_subkomponen) ;
+                var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&keluaran=' + encodeURIComponent(JSON.stringify(keluaran)) + '&nm_subkomponen=' + JSON.stringify(nm_subkomponen) + '&jumlah_pengembalian=' + '<?=$detail_tup['pengembalian']?>' + '&rel_kuitansi_pengembalian=' + encodeURIComponent('<?=$rel_kuitansi_pengembalian?>') ;
                 $.ajax({
                     type:"POST",
                     url :"<?=site_url('rsa_tup/usulkan_spp_tup')?>",
@@ -639,11 +656,11 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                             <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar" style='mso-number-format:"\@";'><?=number_format($detail_tup['nom'], 0, ",", ".")?></span>,-<br>
                                                 &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_tup['terbilang'])?> <?php echo substr($detail_tup['terbilang'],strlen($detail_tup['terbilang'])-6,6) == 'Rupiah' ? '' : 'Rupiah' ; ?></span></b>)</li>
                                                 <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'Pertanggungjawaban tambahan uang persediaan'?></span></li>
-                                                <li>Nama bendahara pengeluaran : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
-                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
-                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
-                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
-                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li>
+                                                <li>Nama bendahara pengeluaran : <span id="penerima">-</span></li>
+                                                <li>Alamat : <span id="alamat">-</span></li>
+                                                <li>Nama Bank : <span id="nmbank">-</span></li>
+                                                <li>No. Rekening Bank : <span id="rekening">-</span></li>
+                                                <li>No. NPWP : <span id="npwp">-</span></li>
                                         </ol>
                                     </td>
                                 </tr>
@@ -772,13 +789,14 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000;">
                                                                                     <?php 
-                                                                                    if($data->jenis == 'PPN'){
-                                                                                            echo 'Pajak Pertambahan Nilai';
-                                                                                    }elseif($data->jenis == 'PPh'){
-                                                                                            echo 'Pajak Penghasilan';
-                                                                                    }else{
-                                                                                            echo 'Lainnya';
-                                                                                    }
+                                                                                    // if($data->jenis == 'PPN'){
+                                                                                    //         echo 'Pajak Pertambahan Nilai';
+                                                                                    // }elseif($data->jenis == 'PPh'){
+                                                                                    //         echo 'Pajak Penghasilan';
+                                                                                    // }else{
+                                                                                    //         echo 'Lainnya';
+                                                                                    // }
+                                                                                    echo $data->jenis;
                                                                                     ?>
                                                                             </td>
                                                                             <td  style='text-align: right;mso-number-format:"\@";'>
@@ -1235,13 +1253,14 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                             </td>
                                 <td style="border:none;">
                                         <?php 
-                                        if($data->jenis == 'PPN'){
-                                                echo 'Pajak Pertambahan Nilai';
-                                        }elseif($data->jenis == 'PPh'){
-                                                echo 'Pajak Penghasilan';
-                                        }else{
-                                                echo 'Lainnya';
-                                        }
+                                        // if($data->jenis == 'PPN'){
+                                        //         echo 'Pajak Pertambahan Nilai';
+                                        // }elseif($data->jenis == 'PPh'){
+                                        //         echo 'Pajak Penghasilan';
+                                        // }else{
+                                        //         echo 'Lainnya';
+                                        // }
+                                        echo $data->jenis;
                                         ?>
                                 </td>
                                 <td style='border:none;mso-number-format:"\@";' class="text-right">
@@ -1700,10 +1719,11 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                     <a href="#" data-toggle="modal" class="btn btn-warning" data-target="#myModalKonfirm" id="proses_spp_"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>
                     <!--<a href="#" data-toggle="modal" class="btn btn-warning" data-target="#myModalKonfirm" id="proses_spp_"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>-->
                     <a href="#" class="btn btn-warning" style="display: none" id="proses_spp"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Proses SPP</a>
-                    <a href="<?=site_url('kuitansi/daftar_kuitansi/GP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
+                    <a href="<?=site_url('kuitansi/daftar_kuitansi/TP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                     <button type="button" class="btn btn-default" id="xls" rel=""><span class="fa fa-file-excel-o" aria-hidden="true"></span> Unduh .xls</button>
                     <!--<a href="#" class="btn btn-success" id="down"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span></span> Download</a>-->
+                    <!--<button type="button" class="btn btn-danger" id="xls" rel=""><span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span> Upload refund</button>-->
                 <?php }elseif(($doc_tup == 'SPP-DITOLAK')||($doc_tup == 'SPM-DITOLAK-KPA')||($doc_tup == 'SPM-DITOLAK-VERIFIKATOR')||($doc_tup == 'SPM-DITOLAK-KBUU')||($doc_tup == 'SPM-DITOLAK-BUU')){ ?>
                     <?php if($detail_tup['nom'] == '0'):?>
                     <a href="#" class="btn btn-warning" disabled="disabled"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>
@@ -1712,16 +1732,18 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                     <?php endif; ?>
                     <!--<a href="#" data-toggle="modal" class="btn btn-warning" data-target="#myModalKonfirm" id="proses_spp_"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>-->
                     <a href="#" class="btn btn-warning" style="display: none" id="proses_spp"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Proses SPP</a>
-                    <a href="<?=site_url('kuitansi/daftar_kuitansi/GP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
+                    <a href="<?=site_url('kuitansi/daftar_kuitansi/TP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                     <button type="button" class="btn btn-default" id="xls" rel=""><span class="fa fa-file-excel-o" aria-hidden="true"></span> Unduh .xls</button>
                     <!--<a href="#" class="btn btn-success" id="down"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span></span> Download</a>-->
+                    
                 <?php }else{ ?>
                     <a href="#" class="btn btn-warning" disabled="disabled"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Proses SPP</a>
-                    <a href="<?=site_url('kuitansi/daftar_kuitansi/GP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
+                    <a href="<?=site_url('kuitansi/daftar_kuitansi/TP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                     <button type="button" class="btn btn-default" id="xls" rel=""><span class="fa fa-file-excel-o" aria-hidden="true"></span> Unduh .xls</button>
                     <!--<a href="#" class="btn btn-success" id="down"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span></span> Download</a>-->
+                    
                 <?php } ?>
                     
 
@@ -1806,7 +1828,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
         </p>
       </div>
       <div class="modal-footer">
-        <a href="<?=site_url('kuitansi/daftar_kuitansi/GP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
+        <a href="<?=site_url('kuitansi/daftar_kuitansi/TP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -1850,7 +1872,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
               </form>
       </div>
       <div class="modal-footer">
-        <!--<a href="<?=site_url('kuitansi/daftar_kuitansi/GP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>-->
+        <!--<a href="<?=site_url('kuitansi/daftar_kuitansi/TP')?>" class="btn btn-success" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Daftar Kuitansi</a>-->
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

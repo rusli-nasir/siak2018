@@ -865,6 +865,8 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_gup($config['per_page'], $id, $keyword, $kode_unit);
 
+		// print_r($this->data['query']->result_array());die();
+
 
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_gup('SPM-FINAL-KBUU', 0)->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_gup('SPM-FINAL-KBUU', 1)->num_rows();
@@ -1329,7 +1331,8 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>0,'jenis'=>'EM', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->read_total(array('flag_proses_akuntansi'=>1,'jenis'=>'EM', 'cair'=>1,'substr(kode_unit,1,2)'=>$this->session->userdata('kode_unit')), 'rsa_kuitansi')->num_rows();
-		// print_r($this->data['query']);die();
+		// echo "<pre>";
+		// print_r($this->data['query']->result_array());die();
 		
 		$temp_data['content'] = $this->load->view('akuntansi/misc_kuitansi_list',$this->data,true);
 		$this->load->view('akuntansi/content_template',$temp_data,false);

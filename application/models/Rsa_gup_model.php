@@ -11,44 +11,12 @@ class Rsa_gup_model extends CI_Model {
 				
         }
 	
-	function search_rsa_up($kata_kunci=''){
-		/*	Filter xss n sepecial char */
-		$kata_kunci	= form_prep($kata_kunci);
-		if($kata_kunci!='')
-		{
-			$this->db->like('kd_transaksi', $kata_kunci);
-			//$this->db->or_like('no_spm', $kata_kunci);
-		}
-		$this->db->order_by("no_up", "asc"); 
-		/* running query	*/
-		$query		= $this->db->get('rsa_up');
-		if ($query->num_rows()>0){
-			return $query->result();
-		}else{
-			return array();
-		}
-	}
-	function add_rsa_up($data){
-		//print_r($data);die;
-		return $this->db->insert("rsa_up",$data);
-		
-	}
-	function get_rsa_up($where=""){
-		if(!$where==""){
-			$this->db->where('no_up',$where);
-		}
-		$this->db->order_by("no_up");
-		$query = $this->db->get("rsa_up");
-	//	print_r($query);die;
-		if($query->num_rows()>0){
-			return $query->result();
-		}else{
-			return array();
-		}
-	}
         
-        function check_dokumen_gup($kode_unit_subunit,$tahun){
-            $q = $this->db->query("SELECT posisi FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
+        function check_dokumen_gup($kode_unit_subunit,$tahun,$id_trx_nomor_gup = ""){
+
+            // echo "SELECT posisi FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' AND id_trx_nomor_gup = '{$id_trx_nomor_gup}' " ; die;
+            
+            $q = $this->db->query("SELECT posisi FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' AND id_trx_nomor_gup = '{$id_trx_nomor_gup}' ");
 //            var_dump($q->num_rows());die;
             if($q->num_rows() > 0){
                return $q->row()->posisi ;
@@ -59,53 +27,38 @@ class Rsa_gup_model extends CI_Model {
 
         function check_dokumen_gup_by_str_trx($no_str_trx){
 
-            $query = "SELECT t1.posisi "
+            $query = "SELECT posisi "
                     . "FROM trx_nomor_gup AS tt1 "
                     . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
                     . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
-                        . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
+                    . "AND t1.id_trx_gup = ( 
+SELECT MAX(t2.id_trx_gup) FROM trx_gup AS t2 WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
 
+// echo $query; die;
 
             $q = $this->db->query($query);
 //            var_dump($q->num_rows());die;
             if($q->num_rows() > 0){
-               if($q->row()->posisi == 'SPP-FINAL'){
-                    $query = "SELECT str_nomor_trx_spm FROM trx_spp_spm WHERE str_nomor_trx_spp = '{$no_str_trx}' " ;
-
-                     $q = $this->db->query($query);
-
-                     if($q->num_rows() > 0){
-
-                        $str_ = $q->row()->str_nomor_trx_spm ;
-                        
-                        $query = "SELECT t1.posisi "
-                            . "FROM trx_nomor_gup AS tt1 "
-                            . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
-                            . "WHERE tt1.str_nomor_trx = '{$str_}' "
-                            . "AND t1.tgl_proses IN ( "
-                                . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
-                                . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
-
-                        $q = $this->db->query($query);
-                        if($q->num_rows() > 0){
-                            return $q->row()->posisi;
-                        }
-                        
-                     }
-
-                    
-               }else{
-                        return $q->row()->posisi;
-               }
+               return $q->row()->posisi ;
             }else{
                 return '';
             }
         }
         
-        function lihat_ket($kode_unit_subunit,$tahun){
-            $q = $this->db->query("SELECT ket FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
+
+        function lihat_ket_by_str_trx($no_str_trx){
+            // $q = $this->db->query("SELECT ket FROM trx_tup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
+
+            $query = "SELECT ket "
+                    . "FROM trx_nomor_gup AS tt1 "
+                    . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
+                    . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
+                    . "AND t1.id_trx_gup = ( "
+                        . "SELECT MAX(t2.id_trx_gup) FROM trx_gup AS t2 "
+                        . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
+
+            $q = $this->db->query($query);
+
 //            var_dump($q->num_rows());die;
             if($q->num_rows() > 0){
                return $q->row()->ket ;
@@ -113,62 +66,14 @@ class Rsa_gup_model extends CI_Model {
                 return '';
             }
         }
-
-        function lihat_ket_by_str_trx($no_str_trx){
-            // $q = $this->db->query("SELECT ket FROM trx_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1'  AND tahun = '{$tahun}' ");
-
-            $query = "SELECT t1.posisi,t1.ket "
-                    . "FROM trx_nomor_gup AS tt1 "
-                    . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
-                    . "WHERE tt1.str_nomor_trx = '{$no_str_trx}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
-                        . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
-
-            $q = $this->db->query($query);
-
-//            var_dump($q->num_rows());die;
-            if($q->num_rows() > 0){
-               if($q->row()->posisi == 'SPP-FINAL'){
-                    $query = "SELECT str_nomor_trx_spm FROM trx_spp_spm WHERE str_nomor_trx_spp = '{$no_str_trx}' " ;
-
-                     $q = $this->db->query($query);
-
-                     if($q->num_rows() > 0){
-
-                        $str_ = $q->row()->str_nomor_trx_spm ;
-                        
-                        $query = "SELECT t1.posisi,t1.ket "
-                            . "FROM trx_nomor_gup AS tt1 "
-                            . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
-                            . "WHERE tt1.str_nomor_trx = '{$str_}' "
-                            . "AND t1.tgl_proses IN ( "
-                                . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
-                                . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
-
-                        $q = $this->db->query($query);
-                        if($q->num_rows() > 0){
-                            return $q->row()->ket;
-                        }
-                        
-                     }
-
-                    
-               }else{
-                        return $q->row()->ket;
-               }
-            }else{
-                return '';
-            }
-        }
         
         function proses_nomor_spp_gup($kode_unit,$data){
             
-            $this->db->where('tahun', $data['tahun']);
-            $this->db->where('aktif', '1');
-            $this->db->where('jenis', 'SPP');
-            $this->db->where('kode_unit_subunit', $kode_unit);
-            $this->db->update('trx_nomor_gup', array('aktif'=>'0')); 
+            // $this->db->where('tahun', $data['tahun']);
+            // $this->db->where('aktif', '1');
+            // $this->db->where('jenis', 'SPP');
+            // $this->db->where('kode_unit_subunit', $kode_unit);
+            // $this->db->update('trx_nomor_gup', array('aktif'=>'0')); 
             
             return $this->db->insert('trx_nomor_gup',$data);
             
@@ -176,11 +81,11 @@ class Rsa_gup_model extends CI_Model {
                
         function proses_nomor_spm_gup($kode_unit,$data){
             
-            $this->db->where('tahun', $data['tahun']);
-            $this->db->where('aktif', '1');
-            $this->db->where('jenis', 'SPM');
-            $this->db->where('kode_unit_subunit', $kode_unit);
-            $this->db->update('trx_nomor_gup', array('aktif'=>'0')); 
+            // $this->db->where('tahun', $data['tahun']);
+            // $this->db->where('aktif', '1');
+            // $this->db->where('jenis', 'SPM');
+            // $this->db->where('kode_unit_subunit', $kode_unit);
+            // $this->db->update('trx_nomor_gup', array('aktif'=>'0')); 
             
             return $this->db->insert('trx_nomor_gup',$data);
             
@@ -192,20 +97,23 @@ class Rsa_gup_model extends CI_Model {
             
         }
         
-        function proses_gup($kode_unit,$data){
+        function proses_gup($kode_unit,$data,$id_nomor_gup){
             
             if(($data['posisi'] == 'SPP-DITOLAK')||($data['posisi'] == 'SPM-DITOLAK-KPA')||($data['posisi'] == 'SPM-DITOLAK-VERIFIKATOR')||($data['posisi'] == 'SPM-DITOLAK-KBUU')){
-                    $this->db->where('tahun', $data['tahun']);
-                    $this->db->where('aktif', '1');
-                    $this->db->where('kode_unit_subunit', $kode_unit);
-                    $this->db->update('trx_nomor_gup', array('aktif'=>'0'));    
+                    // $this->db->where('tahun', $data['tahun']);
+                    // // $this->db->where('aktif', '1');
+                    // $this->db->where('aktif', '1');
+                    // $this->db->where('id_trx_nomor_gup', $id_nomor_gup);
+                    // $this->db->where('kode_unit_subunit', $kode_unit);
+                    // $this->db->update('trx_nomor_gup', array('aktif'=>'0'));    
             }
             
             $this->db->where('tahun', $data['tahun']);
-            $this->db->where('aktif', '1');
+            // $this->db->where('aktif', '1');
             $this->db->where('kode_unit_subunit', $kode_unit);
+            $this->db->where('id_trx_nomor_gup', $id_nomor_gup);
             $this->db->update('trx_gup', array('aktif'=>'0')); 
-            
+
             return $this->db->insert('trx_gup',$data);
             
         }
@@ -215,16 +123,18 @@ class Rsa_gup_model extends CI_Model {
             
             
             $this->db->where('tahun', $data['tahun']);
+            $this->db->where('jenis','UP');
             $this->db->where('aktif', '1');
             $this->db->where('kd_unit', $kode_unit);
             $this->db->update('kas_bendahara', array('aktif'=>'0'));
-            
+
+            // vdebug($this->db);die;
             return $this->db->insert('kas_bendahara',$data);
             
         }
         
         function get_tgl_spp($kode_unit_subunit,$tahun){
-            $q = $this->db->query("SELECT MAX(tgl_proses) AS tgl_proses FROM trx_nomor_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP'  AND tahun = '{$tahun}' AND aktif='1' ");
+            $q = $this->db->query("SELECT MAX(tgl_proses) AS tgl_proses FROM trx_nomor_tup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP'  AND tahun = '{$tahun}' AND aktif='1' ");
     //            var_dump($q->num_rows());die;
                 if($q->num_rows() > 0){
                    return $q->row()->tgl_proses ;
@@ -241,7 +151,7 @@ class Rsa_gup_model extends CI_Model {
 
 //            echo "SELECT str_nomor_trx AS nt FROM trx_nomor_up WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP'  AND tahun = '{$tahun}' AND aktif = '1' ";die;
             
-            $q = $this->db->query("SELECT str_nomor_trx AS nt FROM trx_nomor_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP'  AND tahun = '{$tahun}' AND aktif = '1' ");
+            $q = $this->db->query("SELECT str_nomor_trx AS nt FROM trx_nomor_tup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP'  AND tahun = '{$tahun}' AND aktif = '1' ");
             
             
             
@@ -272,22 +182,19 @@ class Rsa_gup_model extends CI_Model {
 //            if($q->num_rows() > 0){
 //               return $q->row()->tgl_proses ;
 //            }else{
-                $x = intval($q->row()->nt) + 1;
-		if(strlen($x)==1){
-				$x = '0000'.$x;
-		}
-		elseif(strlen($x)==2){
-				$x = '000'.$x;
-		}
-		elseif(strlen($x)==3){
-				$x = '00'.$x;
-		}
-                elseif(strlen($x)==4){
-				$x = '0'.$x;
-		}
-                elseif(strlen($x)==5){
-				$x = $x;
-		}
+        $x = intval($q->row()->nt) + 1;
+        if(strlen($x)==1){
+                $x = '000'.$x;
+        }
+        elseif(strlen($x)==2){
+                $x = '00'.$x;
+        }
+        elseif(strlen($x)==3){
+                $x = '0'.$x;
+        }
+        elseif(strlen($x)==4){
+                $x = $x;
+        }
 
 		return $x;
 //            } 
@@ -301,18 +208,15 @@ class Rsa_gup_model extends CI_Model {
 //            }else{
                 $x = intval($q->row()->nt) + 1;
 		if(strlen($x)==1){
-				$x = '0000'.$x;
-		}
-		elseif(strlen($x)==2){
 				$x = '000'.$x;
 		}
-		elseif(strlen($x)==3){
+		elseif(strlen($x)==2){
 				$x = '00'.$x;
 		}
-                elseif(strlen($x)==4){
+		elseif(strlen($x)==3){
 				$x = '0'.$x;
 		}
-                elseif(strlen($x)==5){
+        elseif(strlen($x)==4){
 				$x = $x;
 		}
 
@@ -330,9 +234,20 @@ class Rsa_gup_model extends CI_Model {
             
             }
         }
+
+        function get_id_nomor_gup_by_nomor_trx($str_nomor_trx){
+//            echo "SELECT id_trx_nomor_ks FROM trx_nomor_ks WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = '{$jenis}' AND tahun = '{$tahun}' AND aktif='1' "; die;
+            $q = $this->db->query("SELECT id_trx_nomor_gup FROM trx_nomor_gup WHERE str_nomor_trx = '{$str_nomor_trx}' ");
+//            var_dump($q->num_rows());die;
+            if($q->num_rows() > 0){
+               return $q->row()->id_trx_nomor_gup ;
+            }else{
+            
+            }
+        }
         
         function get_tgl_spm($kode_unit_subunit,$tahun){
-            $q = $this->db->query("SELECT tgl_proses AS tgl_proses FROM trx_nomor_gup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPM'  AND tahun = '{$tahun}' AND aktif='1' ");
+            $q = $this->db->query("SELECT tgl_proses AS tgl_proses FROM trx_nomor_tup WHERE kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPM'  AND tahun = '{$tahun}' AND aktif='1' ");
     //            var_dump($q->num_rows());die;
                 if($q->num_rows() > 0){
                    return $q->row()->tgl_proses ;
@@ -345,12 +260,12 @@ class Rsa_gup_model extends CI_Model {
         
         function get_tgl_spm_kpa($kode_unit_subunit,$tahun,$nomor_trx_spm){
             
-            $str = "SELECT trx_gup.tgl_proses FROM trx_nomor_gup "
-                    . "JOIN trx_gup ON trx_nomor_gup.id_trx_nomor_gup = trx_gup.id_trx_nomor_gup "
-                    . "WHERE trx_nomor_gup.kode_unit_subunit = '{$kode_unit_subunit}' "
-                    . "AND trx_nomor_gup.str_nomor_trx = '{$nomor_trx_spm}' "
-                    . "AND trx_gup.posisi = 'SPM-DRAFT-KPA' AND trx_nomor_gup.tahun = '{$tahun}' "
-                    . "AND trx_nomor_gup.aktif = '1'";
+            $str = "SELECT trx_tup.tgl_proses FROM trx_nomor_tup "
+                    . "JOIN trx_tup ON trx_nomor_tup.id_trx_nomor_tup = trx_tup.id_trx_nomor_tup "
+                    . "WHERE trx_nomor_tup.kode_unit_subunit = '{$kode_unit_subunit}' "
+                    . "AND trx_nomor_tup.str_nomor_trx = '{$nomor_trx_spm}' "
+                    . "AND trx_tup.posisi = 'SPM-DRAFT-KPA' AND trx_nomor_tup.tahun = '{$tahun}' "
+                    . "AND trx_nomor_tup.aktif = '1'";
                     
 //            var_dump($str);die;
                     
@@ -374,7 +289,28 @@ class Rsa_gup_model extends CI_Model {
                     . "AND trx_gup.posisi = 'SPM-DRAFT-KPA'" ;
                 
                     
-//            var_dump($str);die;
+           // var_dump($str);die;
+                    
+            $q = $this->db->query($str);
+    //            var_dump($q->num_rows());die;
+                if($q->num_rows() > 0){
+                   return $q->row()->tgl_proses ;
+                }else{
+                    return '';
+                } 
+            
+            
+        }
+
+        function get_tgl_spm_kpa_by_spp($nomor_trx_spp){
+
+            $str = "SELECT trx_gup.tgl_proses FROM trx_nomor_gup "
+                    . "JOIN trx_gup ON trx_nomor_gup.id_trx_nomor_gup = trx_gup.id_trx_nomor_gup "
+                    . "WHERE trx_nomor_gup.str_nomor_trx = '{$nomor_trx_spp}' "
+                    . "AND trx_gup.posisi = 'SPM-DRAFT-KPA'" ;
+                
+                    
+           // var_dump($str);die;
                     
             $q = $this->db->query($str);
     //            var_dump($q->num_rows());die;
@@ -389,12 +325,12 @@ class Rsa_gup_model extends CI_Model {
         
         function get_tgl_spm_verifikator($kode_unit_subunit,$tahun,$nomor_trx_spm){
             
-            $str = "SELECT trx_gup.tgl_proses FROM trx_nomor_gup "
-                    . "JOIN trx_gup ON trx_nomor_gup.id_trx_nomor_gup = trx_gup.id_trx_nomor_gup "
-                    . "WHERE trx_nomor_gup.kode_unit_subunit = '{$kode_unit_subunit}' "
-                    . "AND trx_nomor_gup.str_nomor_trx = '{$nomor_trx_spm}' "
-                    . "AND trx_gup.posisi = 'SPM-FINAL-VERIFIKATOR' AND trx_nomor_gup.tahun = '{$tahun}' "
-                    . "AND trx_nomor_gup.aktif = '1'";
+            $str = "SELECT trx_tup.tgl_proses FROM trx_nomor_tup "
+                    . "JOIN trx_tup ON trx_nomor_tup.id_trx_nomor_tup = trx_tup.id_trx_nomor_tup "
+                    . "WHERE trx_nomor_tup.kode_unit_subunit = '{$kode_unit_subunit}' "
+                    . "AND trx_nomor_tup.str_nomor_trx = '{$nomor_trx_spm}' "
+                    . "AND trx_tup.posisi = 'SPM-FINAL-VERIFIKATOR' AND trx_nomor_tup.tahun = '{$tahun}' "
+                    . "AND trx_nomor_tup.aktif = '1'";
                     
            // var_dump($str);die;
                     
@@ -428,15 +364,35 @@ class Rsa_gup_model extends CI_Model {
             
             
         }
-        
-        function get_tgl_spm_kbuu($kode_unit_subunit,$tahun,$nomor_trx_spm){
+
+        function get_tgl_spm_verifikator_by_spp($nomor_trx_spp){
             
             $str = "SELECT trx_gup.tgl_proses FROM trx_nomor_gup "
                     . "JOIN trx_gup ON trx_nomor_gup.id_trx_nomor_gup = trx_gup.id_trx_nomor_gup "
-                    . "WHERE trx_nomor_gup.kode_unit_subunit = '{$kode_unit_subunit}' "
-                    . "AND trx_nomor_gup.str_nomor_trx = '{$nomor_trx_spm}' "
-                    . "AND trx_gup.posisi = 'SPM-FINAL-KBUU' AND trx_nomor_gup.tahun = '{$tahun}' "
-                    . "AND trx_nomor_gup.aktif = '1'";
+                    . "WHERE trx_nomor_gup.str_nomor_trx = '{$nomor_trx_spp}' "
+                    . "AND trx_gup.posisi = 'SPM-FINAL-VERIFIKATOR'";
+                    
+           // var_dump($str);die;
+                    
+            $q = $this->db->query($str);
+    //            var_dump($q->num_rows());die;
+                if($q->num_rows() > 0){
+                   return $q->row()->tgl_proses ;
+                }else{
+                    return '';
+                } 
+            
+            
+        }
+        
+        function get_tgl_spm_kbuu($kode_unit_subunit,$tahun,$nomor_trx_spm){
+            
+            $str = "SELECT trx_tup.tgl_proses FROM trx_nomor_tup "
+                    . "JOIN trx_tup ON trx_nomor_tup.id_trx_nomor_tup = trx_tup.id_trx_nomor_tup "
+                    . "WHERE trx_nomor_tup.kode_unit_subunit = '{$kode_unit_subunit}' "
+                    . "AND trx_nomor_tup.str_nomor_trx = '{$nomor_trx_spm}' "
+                    . "AND trx_tup.posisi = 'SPM-FINAL-KBUU' AND trx_nomor_tup.tahun = '{$tahun}' "
+                    . "AND trx_nomor_tup.aktif = '1'";
                     
 //            var_dump($str);die;
                     
@@ -470,15 +426,47 @@ class Rsa_gup_model extends CI_Model {
             
 
         }
+
+        function get_tgl_spm_kbuu_by_spp($nomor_trx_spp){
+            
+            $str = "SELECT trx_gup.tgl_proses FROM trx_nomor_gup "
+                    . "JOIN trx_gup ON trx_nomor_gup.id_trx_nomor_gup = trx_gup.id_trx_nomor_gup "
+                    . "WHERE trx_nomor_gup.str_nomor_trx = '{$nomor_trx_spp}' "
+                    . "AND trx_gup.posisi = 'SPM-FINAL-KBUU'";
+                    
+//            var_dump($str);die;
+                    
+            $q = $this->db->query($str);
+    //            var_dump($q->num_rows());die;
+                if($q->num_rows() > 0){
+                   return $q->row()->tgl_proses ;
+                }else{
+                    return '';
+                } 
+            
+
+        }
         
         function get_gup_unit_usul($tahun){
             
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,rsa.trx_gup.posisi,rsa.trx_gup.aktif,rsa.trx_gup.tgl_proses,rsa.trx_gup.tahun "
-                    . "FROM rba.unit LEFT JOIN rsa.trx_gup ON rba.unit.kode_unit = rsa.trx_gup.kode_unit_subunit "
-                    . "WHERE ( rsa.trx_gup.aktif = '1' OR rsa.trx_gup.aktif IS NULL ) "
-                    . "AND ( rsa.trx_gup.tahun = '{$tahun}' OR rsa.trx_gup.tahun IS NULL ) "
-                    . "GROUP BY rba.unit.kode_unit "
-                    . "ORDER BY rba.unit.kode_unit ASC";
+            // $query = "SELECT rba_2018.unit.nama_unit,rba_2018.unit.kode_unit,rsa_2018.trx_tup.posisi,rsa_2018.trx_tup.aktif,rsa_2018.trx_tup.tgl_proses,rsa_2018.trx_tup.tahun "
+                    // . "FROM rba_2018.unit LEFT JOIN rsa_2018.trx_tup ON rba_2018.unit.kode_unit = rsa_2018.trx_tup.kode_unit_subunit "
+                    // . "WHERE ( rsa_2018.trx_tup.aktif = '1' OR rsa_2018.trx_tup.aktif IS NULL ) "
+                    // . "AND ( rsa_2018.trx_tup.tahun = '{$tahun}' OR rsa_2018.trx_tup.tahun IS NULL ) "
+                    // . "GROUP BY rba_2018.unit.kode_unit "
+                    // . "ORDER BY rba_2018.unit.kode_unit ASC";
+
+            $query = "SELECT t1.nama_unit,t1.kode_unit,IFNULL(t3.jml,0) AS jml
+FROM rba_2018.unit t1
+LEFT JOIN (
+    SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
+    FROM rsa_2018.trx_gup AS tr1 
+    WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-FINAL-VERIFIKATOR'  AND tr1.aktif = '1'
+    GROUP BY tr1.kode_unit_subunit
+) AS t3
+ON t1.kode_unit = t3.kode_unit
+GROUP BY t1.kode_unit 
+ORDER BY t1.kode_unit ASC";
                         
 //                        echo $query; die;
 
@@ -494,12 +482,24 @@ class Rsa_gup_model extends CI_Model {
         
         function get_gup_subunit_usul($tahun){
             
-            $query = "SELECT rba.subunit.nama_subunit,rba.subunit.kode_subunit,rsa.trx_gup.posisi,rsa.trx_gup.aktif,rsa.trx_gup.tgl_proses,rsa.trx_gup.tahun "
-                    . "FROM rba.subunit LEFT JOIN rsa.trx_gup ON rba.subunit.kode_subunit = rsa.trx_gup.kode_unit_subunit "
-                    . "WHERE ( rsa.trx_gup.aktif = '1' OR rsa.trx_gup.aktif IS NULL ) "
-                    . "AND ( rsa.trx_gup.tahun = '{$tahun}' OR rsa.trx_gup.tahun IS NULL ) "
-                    . "GROUP BY rba.subunit.kode_subunit "
-                    . "ORDER BY rba.subunit.kode_subunit ASC";
+            // $query = "SELECT rba_2018.subunit.nama_subunit,rba_2018.subunit.kode_subunit,rsa_2018.trx_tup.posisi,rsa_2018.trx_tup.aktif,rsa_2018.trx_tup.tgl_proses,rsa_2018.trx_tup.tahun "
+            //         . "FROM rba_2018.subunit LEFT JOIN rsa_2018.trx_tup ON rba_2018.subunit.kode_subunit = rsa_2018.trx_tup.kode_unit_subunit "
+            //         . "WHERE ( rsa_2018.trx_tup.aktif = '1' OR rsa_2018.trx_tup.aktif IS NULL ) "
+            //         . "AND ( rsa_2018.trx_tup.tahun = '{$tahun}' OR rsa_2018.trx_tup.tahun IS NULL ) "
+            //         . "GROUP BY rba_2018.subunit.kode_subunit "
+            //         . "ORDER BY rba_2018.subunit.kode_subunit ASC";
+
+            $query = "SELECT t1.nama_subunit,t1.kode_subunit,IFNULL(t3.jml,0) AS jml
+FROM rba_2018.subunit t1
+LEFT JOIN (
+    SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
+    FROM rsa_2018.trx_gup AS tr1 
+    WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-FINAL-VERIFIKATOR' AND tr1.aktif = '1'
+    GROUP BY tr1.kode_unit_subunit
+) AS t3
+ON t1.kode_subunit = t3.kode_unit
+GROUP BY t1.kode_subunit 
+ORDER BY t1.kode_subunit ASC";
                         
 //                        echo $query; die;
 
@@ -515,17 +515,21 @@ class Rsa_gup_model extends CI_Model {
         
         function get_gup_unit_usul_verifikator($id_user_verifikator,$tahun){
             
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,rsa.trx_gup.posisi,rsa.trx_gup.aktif,rsa.trx_gup.tgl_proses,rsa.trx_gup.tahun "
-                    . "FROM rba.unit "
-                    . "JOIN rsa_verifikator_unit ON rba.unit.kode_unit = rsa_verifikator_unit.kode_unit_subunit "
-                    . "LEFT JOIN rsa.trx_gup ON rba.unit.kode_unit = rsa.trx_gup.kode_unit_subunit "
-                    . "WHERE rsa_verifikator_unit.id_user_verifikator = '{$id_user_verifikator}' "
-                    . "AND ( rsa.trx_gup.aktif = '1' OR rsa.trx_gup.aktif IS NULL ) "
-                    . "AND ( rsa.trx_gup.tahun = '{$tahun}' OR rsa.trx_gup.tahun IS NULL ) "
-                    . "GROUP BY rba.unit.kode_unit "
-                    . "ORDER BY rba.unit.kode_unit ASC";
+            $query = "SELECT t1.nama_unit,t1.kode_unit,IFNULL(t3.jml,0) AS jml
+FROM rba_2018.unit t1
+JOIN rsa_2018.rsa_verifikator_unit AS t2 ON t1.kode_unit = t2.kode_unit_subunit 
+LEFT JOIN (
+    SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
+    FROM rsa_2018.trx_gup AS tr1 
+    WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-DRAFT-KPA'  AND tr1.aktif = '1'
+    GROUP BY tr1.kode_unit_subunit
+) AS t3
+ON t1.kode_unit = t3.kode_unit
+WHERE t2.id_user_verifikator = '{$id_user_verifikator}' 
+GROUP BY t1.kode_unit 
+ORDER BY t1.kode_unit ASC";
                         
-//                        echo $query; die;
+                       // echo $query; die;
 
                 $q = $this->db->query($query);
 
@@ -538,18 +542,36 @@ class Rsa_gup_model extends CI_Model {
         }
         
         function get_gup_subunit_usul_verifikator($id_user_verifikator,$tahun){
+
+//             $query = "SELECT t1.nama_unit,t1.kode_unit,IFNULL(t3.jml,0) AS jml
+// FROM rba_2018.unit t1
+// JOIN rsa_2018.rsa_verifikator_unit AS t2 ON t1.kode_unit = t2.kode_unit_subunit 
+// LEFT JOIN (
+//     SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
+//     FROM rsa_2018.trx_gup AS tr1 
+//     WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-DRAFT-KPA'
+//     GROUP BY tr1.kode_unit_subunit
+// ) AS t3
+// ON t1.kode_unit = SUBSTR(t3.kode_unit,1,2)
+// WHERE t2.id_user_verifikator = '{$id_user_verifikator}' 
+// GROUP BY t1.kode_unit 
+// ORDER BY t1.kode_unit ASC";
             
-            $query = "SELECT rba.subunit.nama_subunit,rba.subunit.kode_subunit,rsa.trx_gup.posisi,rsa.trx_gup.aktif,rsa.trx_gup.tgl_proses,rsa.trx_gup.tahun "
-                    . "FROM rba.subunit "
-                    . "JOIN rsa_verifikator_unit ON SUBSTR(rba.subunit.kode_subunit,1,2) = rsa_verifikator_unit.kode_unit_subunit "
-                    . "LEFT JOIN rsa.trx_gup ON rba.subunit.kode_subunit = rsa.trx_gup.kode_unit_subunit "
-                    . "WHERE rsa_verifikator_unit.id_user_verifikator = '{$id_user_verifikator}' "
-                    . "AND ( rsa.trx_gup.aktif = '1' OR rsa.trx_gup.aktif IS NULL ) "
-                    . "AND ( rsa.trx_gup.tahun = '{$tahun}' OR rsa.trx_gup.tahun IS NULL ) "
-                    . "GROUP BY rba.subunit.kode_subunit "
-                    . "ORDER BY rba.subunit.kode_subunit ASC";
+             $query = "SELECT t1.nama_subunit,t1.kode_subunit,IFNULL(t3.jml,0) AS jml
+FROM rba_2018.subunit t1
+JOIN rsa_2018.rsa_verifikator_unit AS t2 ON SUBSTR(t1.kode_subunit,1,2) = t2.kode_unit_subunit 
+LEFT JOIN (
+    SELECT tr1.kode_unit_subunit AS kode_unit,COUNT(tr1.posisi) AS jml 
+    FROM rsa_2018.trx_gup AS tr1 
+    WHERE tr1.tahun = '{$tahun}' AND tr1.posisi = 'SPM-DRAFT-KPA' AND tr1.aktif = '1'
+    GROUP BY tr1.kode_unit_subunit
+) AS t3
+ON t1.kode_subunit = t3.kode_unit
+WHERE t2.id_user_verifikator = '{$id_user_verifikator}' 
+GROUP BY t1.kode_subunit 
+ORDER BY t1.kode_subunit ASC";
                         
-//                        echo $query; die;
+                       // echo $query; die;
 
                 $q = $this->db->query($query);
 
@@ -563,12 +585,12 @@ class Rsa_gup_model extends CI_Model {
         
         function get_up_unit($tahun){
             
-            $query = "SELECT rba.unit.nama_unit,rba.unit.kode_unit,rsa.kas_bendahara.saldo "
-                    . "FROM rba.unit "
-                    . "LEFT JOIN rsa.kas_bendahara ON rba.unit.kode_unit = rsa.kas_bendahara.kd_unit "
-                    . "WHERE ( rsa.kas_bendahara.aktif = '1' OR rsa.kas_bendahara.saldo IS NULL ) "
-                    . "AND ( rsa.kas_bendahara.tahun = '{$tahun}' OR rsa.kas_bendahara.tahun IS NULL ) "
-                    . "ORDER BY rba.unit.kode_unit ASC" ;
+            $query = "SELECT rba_2018.unit.nama_unit,rba_2018.unit.kode_unit,rsa_2018.kas_bendahara.saldo "
+                    . "FROM rba_2018.unit "
+                    . "LEFT JOIN rsa_2018.kas_bendahara ON rba_2018.unit.kode_unit = rsa_2018.kas_bendahara.kd_unit "
+                    . "WHERE ( rsa_2018.kas_bendahara.aktif = '1' OR rsa_2018.kas_bendahara.saldo IS NULL ) "
+                    . "AND ( rsa_2018.kas_bendahara.tahun = '{$tahun}' OR rsa_2018.kas_bendahara.tahun IS NULL ) "
+                    . "ORDER BY rba_2018.unit.kode_unit ASC" ;
                         
 //                        echo $query; die;
 
@@ -585,9 +607,9 @@ class Rsa_gup_model extends CI_Model {
 //        function get_verifikator($kode_unit_subunit,$tahun,$nomor_trx_spm){
 //            $str = "SELECT rsa_user.nm_lengkap,rsa_user.nip FROM trx_spm_verifikator "
 //                    . "JOIN rsa_user ON rsa_user.id = trx_spm_verifikator.id_rsa_user_verifikator "
-//                    . "JOIN trx_nomor_gup ON trx_nomor_gup.nomor_trx = trx_spm_verifikator.nomor_trx_spm "
-//                    . "WHERE trx_nomor_gup.kode_unit_subunit = '{$kode_unit_subunit}' "
-//                    . "AND trx_nomor_gup.nomor_trx = '{$nomor_trx_spm}' "
+//                    . "JOIN trx_nomor_tup ON trx_nomor_tup.nomor_trx = trx_spm_verifikator.nomor_trx_spm "
+//                    . "WHERE trx_nomor_tup.kode_unit_subunit = '{$kode_unit_subunit}' "
+//                    . "AND trx_nomor_tup.nomor_trx = '{$nomor_trx_spm}' "
 //                    . "AND trx_spm_verifikator.tahun = '{$tahun}' ";
 //                    
 //            $nomor_ = explode('/',$nomor_trx_spm);
@@ -703,75 +725,67 @@ class Rsa_gup_model extends CI_Model {
             
         }
         
+//         function get_daftar_spp($kode_unit_subunit,$tahun){
+            
+//             $query = "SELECT *,t1.tgl_proses AS tgl_proses_status "
+//                     . "FROM trx_nomor_tup AS tt1 "
+//                     . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
+//                     . "WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' "
+//                     . "AND jenis = 'SPP' "
+//                     . "AND tt1.tahun = '{$tahun}' "
+//                     . "AND t1.tgl_proses IN ( "
+//                         . "SELECT MAX(t2.tgl_proses) FROM trx_tup AS t2 "
+//                         . "WHERE t2.id_trx_nomor_tup = t1.id_trx_nomor_tup )" ;
+                        
+// //                        echo $query; die;
+
+//                 $q = $this->db->query($query);
+
+// 		$result = $q->result();
+                
+// //                var_dump($result);die;
+
+// 		return $result ;
+//         }
+
         function get_daftar_spp($kode_unit_subunit,$tahun){
             
-            $query2 = "SELECT tt1.str_nomor_trx AS str_nomor_trx_spp,t3.str_nomor_trx_spm AS str_nomor_trx_spm,t1.tgl_spp,t2.jumlah_bayar, t1.posisi "
+            $query2 = "SELECT *,t1.tgl_proses,t2.jumlah_bayar AS tgl_proses_status "
                     . "FROM trx_nomor_gup AS tt1 "
                     . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
-                    . "JOIN trx_spp_gup_data AS t2 ON tt1.id_trx_nomor_gup = t2.nomor_trx_spp "
-                    . "LEFT JOIN trx_spp_spm AS t3 ON t1.id_trx_nomor_gup = t3.nomor_trx_spp "
+                    . "JOIN trx_spp_gup_data AS t2 ON t2.nomor_trx_spp = tt1.id_trx_nomor_gup "
                     . "WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' "
                     . "AND jenis = 'SPP' "
-                    . "AND t3.jenis_trx = 'GUP' "
                     . "AND tt1.tahun = '{$tahun}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t22.tgl_proses) FROM trx_gup AS t22 "
-                        . "WHERE t22.id_trx_nomor_gup = t1.id_trx_nomor_gup GROUP BY t22.kode_unit_subunit)" ;
+                    . "AND t1.id_trx_gup = ( "
+                        . "SELECT MAX(t2.id_trx_gup) FROM trx_gup AS t2 "
+                        . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup ) " 
+                    . "ORDER BY tt1.id_trx_nomor_gup " ;
 
-            $query = "SELECT t1.str_nomor_trx AS str_nomor_trx_spp,t2.str_nomor_trx_spm,t3.posisi AS posisi_spp,t4.posisi AS posisi_spm,t1.tgl_spp,t1.jumlah_bayar 
-FROM trx_spp_gup_data AS t1
-JOIN trx_spp_spm AS t2
-ON t1.str_nomor_trx = t2.str_nomor_trx_spp
-JOIN (
-    SELECT t31.kode_unit_subunit,t31.id_trx_nomor_gup,t31.posisi,t31.tgl_proses
-    FROM trx_gup AS t31
-    WHERE t31.kode_unit_subunit = '{$kode_unit_subunit}' AND t31.tahun = '{$tahun}' 
-    AND t31.tgl_proses IN (
-        SELECT MAX(t311.tgl_proses) AS tgl_proses 
-        FROM trx_gup AS t311
-        WHERE t311.kode_unit_subunit = '{$kode_unit_subunit}' AND t311.tahun = '{$tahun}' 
-        GROUP BY t311.id_trx_nomor_gup
-    )
-
-) AS t3
-ON t1.nomor_trx_spp = t3.id_trx_nomor_gup
-JOIN (
-    SELECT t41.kode_unit_subunit,t41.id_trx_nomor_gup,t41.posisi,t41.tgl_proses
-    FROM trx_gup AS t41
-    WHERE t41.kode_unit_subunit = '{$kode_unit_subunit}' AND t41.tahun = '{$tahun}' 
-    AND t41.tgl_proses IN (
-        SELECT MAX(t411.tgl_proses) AS tgl_proses 
-        FROM trx_gup AS t411
-        WHERE t411.kode_unit_subunit = '{$kode_unit_subunit}' AND t411.tahun = '{$tahun}' 
-        GROUP BY t411.id_trx_nomor_gup
-    )
-
-) AS t4
-ON t2.nomor_trx_spm = t4.id_trx_nomor_gup
-WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " ;
+            $query = "SELECT tt1.str_nomor_trx AS str_nomor_trx_spp,t2.alias_spp,t3.alias_spm,t3.str_nomor_trx AS str_nomor_trx_spm,t2.tgl_spp AS tgl_proses,t2.jumlah_bayar, t1.posisi, t2.untuk_bayar FROM trx_nomor_gup AS tt1 JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup JOIN trx_spp_gup_data AS t2 ON t2.nomor_trx_spp = tt1.id_trx_nomor_gup LEFT JOIN trx_spm_gup_data AS t3 ON t3.nomor_trx_spm = t1.id_trx_nomor_gup_spm WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' AND jenis = 'SPP' AND tt1.tahun = '{$tahun}' AND t1.aktif = '1' AND t1.tgl_proses GROUP BY tt1.id_trx_nomor_gup ORDER BY tt1.id_trx_nomor_gup DESC" ;
                         
-                       // echo $query; die;
+            // echo $query; die;
 
                 $q = $this->db->query($query);
 
-		$result = $q->result();
+        $result = $q->result();
                 
 //                var_dump($result);die;
 
-		return $result ;
+        return $result ;
         }
 
         function get_daftar_spm($kode_unit_subunit,$tahun){
             
             $query = "SELECT *,t1.tgl_proses AS tgl_proses_status "
-                    . "FROM trx_nomor_gup AS tt1 "
-                    . "JOIN trx_gup AS t1 ON t1.id_trx_nomor_gup = tt1.id_trx_nomor_gup "
+                    . "FROM trx_nomor_tup AS tt1 "
+                    . "JOIN trx_tup AS t1 ON t1.id_trx_nomor_tup = tt1.id_trx_nomor_tup "
                     . "WHERE tt1.kode_unit_subunit = '{$kode_unit_subunit}' "
                     . "AND jenis = 'SPM' "
                     . "AND tt1.tahun = '{$tahun}' "
-                    . "AND t1.tgl_proses IN ( "
-                        . "SELECT MAX(t2.tgl_proses) FROM trx_gup AS t2 "
-                        . "WHERE t2.id_trx_nomor_gup = t1.id_trx_nomor_gup )" ;
+                    . "AND t1.id_trx_gup = ( "
+                        . "SELECT MAX(t2.id_trx_gup) FROM trx_tup AS t2 "
+                        . "WHERE t2.id_trx_nomor_tup = t1.id_trx_nomor_tup )" ;
                         
 //                        echo $query; die;
 
@@ -829,17 +843,20 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
             // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // foreach($rel_kuitansi as $rel){
-//                $this->db->where('id_kuitansi', $rel);
-//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                    $query = "UPDATE rsa_detail_belanja_ "
-                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                        . "SET rsa_detail_belanja_.proses = '41' "
-                        . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
-//                echo $query ; die;
-                $this->db->query($query);
+            // if(count($rel_kuitansi)>0){
+
+                // foreach($rel_kuitansi as $rel){
+    //                $this->db->where('id_kuitansi', $rel);
+    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                        $query = "UPDATE rsa_detail_belanja_ "
+                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                            . "SET rsa_detail_belanja_.proses = '41' "
+                            . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
+    //                echo $query ; die;
+                    $this->db->query($query);
+                // }
             // }
 
         }
@@ -848,17 +865,19 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
             // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // foreach($rel_kuitansi as $rel){
-//                $this->db->where('id_kuitansi', $rel);
-//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                    $query = "UPDATE rsa_detail_belanja_ "
-                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                        . "SET rsa_detail_belanja_.proses = '31' "
-                        . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
-//                echo $query ; die;
-                $this->db->query($query);
+            // if(count($rel_kuitansi)>0){
+                // foreach($rel_kuitansi as $rel){
+    //                $this->db->where('id_kuitansi', $rel);
+    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                        $query = "UPDATE rsa_detail_belanja_ "
+                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                            . "SET rsa_detail_belanja_.proses = '31' "
+                            . "WHERE rsa_kuitansi.str_nomor_trx = '{$data['str_nomor_trx']}'" ; 
+    //                echo $query ; die;
+                    $this->db->query($query);
+                // }
             // }
 
         }
@@ -867,17 +886,19 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
             // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // foreach($rel_kuitansi as $rel){
-//                $this->db->where('id_kuitansi', $rel);
-//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                    $query = "UPDATE rsa_detail_belanja_ "
-                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                        . "SET rsa_detail_belanja_.proses = '51' "
-                        . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
-//                echo $query ; die;
-                $this->db->query($query);
+            // if(count($rel_kuitansi)>0){
+                // foreach($rel_kuitansi as $rel){
+    //                $this->db->where('id_kuitansi', $rel);
+    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                        $query = "UPDATE rsa_detail_belanja_ "
+                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                            . "SET rsa_detail_belanja_.proses = '51' "
+                            . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
+    //                echo $query ; die;
+                    $this->db->query($query);
+                // }
             // }
 
         }
@@ -886,18 +907,21 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
             // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // foreach($rel_kuitansi as $rel){
-//                $this->db->where('id_kuitansi', $rel);
-//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                $nw = date('Y-m-d H:i:s');
-                    $query = "UPDATE rsa_detail_belanja_ "
-                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                        . "SET rsa_detail_belanja_.proses = '61', rsa_detail_belanja_.tanggal_transaksi = '{$nw}' "
-                        . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
-//                echo $query ; die;
-                $this->db->query($query);
+            // if(count($rel_kuitansi)>0){
+
+                // foreach($rel_kuitansi as $rel){
+    //                $this->db->where('id_kuitansi', $rel);
+    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                    $nw = date('Y-m-d H:i:s');
+                        $query = "UPDATE rsa_detail_belanja_ "
+                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                            . "SET rsa_detail_belanja_.proses = '61', rsa_detail_belanja_.tanggal_transaksi = '{$nw}' "
+                            . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
+    //                echo $query ; die;
+                    $this->db->query($query);
+                // }
             // }
 
         }
@@ -906,18 +930,20 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
             // $rel_kuitansi = json_decode($data['rel_kuitansi']);
 
-            // foreach($rel_kuitansi as $rel){
-//                $this->db->where('id_kuitansi', $rel);
-//                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
-                    $query = "UPDATE rsa_detail_belanja_ "
-                        . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
-                        . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
-                        . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
-                        . "SET rsa_detail_belanja_.proses = '31' "
-                        . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
-//                echo $query ; die;
-                $this->db->query($query);
-            // }
+            // if(count($rel_kuitansi)>0){
+                // foreach($rel_kuitansi as $rel){
+    //                $this->db->where('id_kuitansi', $rel);
+    //                $this->db->update('rsa_kuitansi', array('str_nomor_trx'=>$data['str_nomor_trx']));
+                        $query = "UPDATE rsa_detail_belanja_ "
+                            . "JOIN rsa_kuitansi_detail ON rsa_kuitansi_detail.kode_usulan_belanja = rsa_detail_belanja_.kode_usulan_belanja "
+                            . "AND rsa_kuitansi_detail.kode_akun_tambah = rsa_detail_belanja_.kode_akun_tambah "
+                            . "JOIN rsa_kuitansi ON rsa_kuitansi.id_kuitansi = rsa_kuitansi_detail.id_kuitansi "
+                            . "SET rsa_detail_belanja_.proses = '31' "
+                            . "WHERE rsa_kuitansi.str_nomor_trx_spm = '{$data['str_nomor_trx_spm']}'" ; 
+    //                echo $query ; die;
+                    $this->db->query($query);
+                // }
+            // }       
 
         }
         
@@ -952,7 +978,7 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
         function get_nomer_spm_cair_lalu($kode_unit_subunit,$tahun){
             $str = "SELECT t1.str_nomor_trx_spm FROM trx_urut_spm_cair AS t1 "
                     . "WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.jenis_trx = 'GUP' AND t1.tahun = '{$tahun}' "
-                    . "AND tgl_proses = ( SELECT MAX(tgl_proses) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'GUP' AND t2.tahun = '{$tahun}' ) " ;
+                    . "AND id_trx_urut_spm_cair = ( SELECT MAX(id_trx_urut_spm_cair) FROM trx_urut_spm_cair AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit_subunit}' AND t2.jenis_trx = 'GUP' AND t2.tahun = '{$tahun}' ) " ;
 //                    . "AND t1.str_nomor_trx_spm NOT LIKE '%{$trx_spm}%' " ;
             
 //                    echo $str; die;
@@ -977,12 +1003,15 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
         }
 
 
+
         function get_notif_approve($kode_unit_subunit,$level,$id_user_verifikator){
 
                     $query = '' ;
 
-                    if($level == '14'){ // PPK SUKPA
-                           $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPP-DRAFT' AND kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1' " ; 
+                        if($level == '14'){ // PPK SUKPA
+                           $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE ( posisi = 'SPP-DRAFT' OR posisi = 'SPP-FINAL' ) AND kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1' " ; 
+
+                           // echo $query; die;
 
                         }else if($level == '2'){ // KPA
                             $query = "SELECT COUNT(posisi) AS jml FROM trx_gup WHERE posisi = 'SPM-DRAFT-PPK' AND kode_unit_subunit = '{$kode_unit_subunit}' AND aktif = '1' " ; 
@@ -1020,21 +1049,128 @@ WHERE t1.kode_unit_subunit = '{$kode_unit_subunit}' AND t1.tahun = '{$tahun}' " 
 
         }
 
-        function get_last_spp($kode_unit,$tahun){
-            $query = "SELECT t1.*
-FROM
-trx_spp_gup_data AS t1
-WHERE t1.kode_unit_subunit = '{$kode_unit}' AND t1.tahun = '{$tahun}'
-AND t1.id_trx_spp_gup_data = (SELECT MAX(id_trx_spp_gup_data) FROM trx_spp_gup_data AS t2 WHERE t2.kode_unit_subunit = '{$kode_unit}' AND t2.tahun = '{$tahun}' GROUP BY t2.kode_unit_subunit )" ;
+        function tup_to_nihil($data_tup_to_nihil){
 
-            $q = $this->db->query($query);
-            if($q->num_rows() > 0){
-               return $q->row();
-            }else{
-                return array();
+                // var_dump($data_tup_to_nihil) ; die ;
+
+
+                $this->db->where('tahun', $data_tup_to_nihil['tahun']);
+                $this->db->where('status', '1');
+                $this->db->where('kode_unit_subunit', $data_tup_to_nihil['kode_unit_subunit']);
+
+                return $this->db->update("trx_tambah_tup_to_nihil",$data_tup_to_nihil);
+
             }
 
+
+
+        function get_nomor_spp_urut($unit,$tahun){
+
+            $query = "SELECT MAX(id_trx_nomor_gup) AS id_max FROM  trx_nomor_gup WHERE kode_unit_subunit = '{$unit}' AND tahun = '{$tahun}' AND jenis = 'SPP' " ;
+
+            // echo $query ; die;
+
+
+            $q = $this->db->query($query);
+
+                    if(!is_null($q->row()->id_max)){
+                       return $q->row()->id_max;
+                    }else{
+                        return '0';
+                    }
+
+
+
         }
+
+
+        function get_nomor_spp_urut_by_nomor_spp($str_nomor_trx_spp){
+
+            $query = "SELECT id_trx_nomor_gup FROM  trx_nomor_gup WHERE str_nomor_trx = '{$str_nomor_trx_spp}' " ;
+
+            // echo $query ; die;
+
+
+            $q = $this->db->query($query);
+
+                    if(!is_null($q->row()->id_trx_nomor_gup)){
+                       return $q->row()->id_trx_nomor_gup;
+                    }else{
+                        return '0';
+                    }
+
+
+
+        }
+
+        function get_data_untuk_pekerjaan($q,$kode_unit_subunit,$tahun){
+
+            $query = "SELECT DISTINCT(untuk_bayar) FROM  trx_spp_gup_data WHERE untuk_bayar LIKE '%{$q}%' AND kode_unit_subunit = '{$kode_unit_subunit}' AND tahun = '{$tahun}' " ;
+
+            // echo $query ; die;
+
+
+            $q = $this->db->query($query);
+
+                    if($q->num_rows() > 0){
+                       return $q->result();
+                    }else{
+                        return array();
+                    }
+
+        }
+
+        function get_data_penerima($q,$kode_unit_subunit,$tahun){
+
+            $query = "SELECT DISTINCT(CONCAT(penerima,'|',alamat,'|',nmbank,'|',nmrekening,'|',rekening,'|',npwp)) AS str_penerima FROM  trx_spp_gup_data WHERE penerima LIKE '%{$q}%' AND kode_unit_subunit = '{$kode_unit_subunit}' AND tahun = '{$tahun}' " ;
+
+            // echo $query ; die;
+
+
+            $q = $this->db->query($query);
+
+                    if($q->num_rows() > 0){
+                       return $q->result();
+                    }else{
+                        return array();
+                    }
+
+        }
+
+        function get_data_json($data,$kode_unit_subunit,$tahun){
+
+            $key = array_keys($data);
+
+            $query = "SELECT DISTINCT({$key[0]}) FROM  trx_spp_gup_data WHERE {$key[0]} LIKE '%{$data[$key[0]]}%' AND kode_unit_subunit = '{$kode_unit_subunit}' AND tahun = '{$tahun}' " ;
+
+            // echo $query ; die;
+
+
+            $q = $this->db->query($query);
+
+                    if($q->num_rows() > 0){
+                       return $q->result();
+                    }else{
+                        return array();
+                    }
+
+        }
+
+        function check_exist_gup($nomor_trx,$tahun){
+            $this->db->where('str_nomor_trx',$nomor_trx);
+            $this->db->where('tahun',$tahun);
+            $query = $this->db->get('trx_nomor_gup');
+            if ($query->num_rows()>0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+
+
+
+
 
 	
 	

@@ -13,7 +13,7 @@ class Tutam_rsnd extends CI_Controller {
 
 		$this->cur_tahun = $this->setting_model->get_tahun();
 		// Your own constructor code
-		if(!$this->check_session->user_session() || ( intval($_SESSION['rsa_kode_unit_subunit'])!=51 && intval(substr($_SESSION['rsa_kode_unit_subunit'],0,2))!=42 )){	/*	Jika session user belum diset	*/
+		if(!$this->check_session->user_session() || intval($_SESSION['rsa_kode_unit_subunit'])!=18 ){	/*	Jika session user belum diset	*/
 			redirect('/','refresh');
 		}else{	/*	Jika session user sudah diset	*/
 			$this->load->helper('form');
@@ -23,82 +23,66 @@ class Tutam_rsnd extends CI_Controller {
 			$this->load->library('form_validation');
 			$this->load->library('revisi_session');
 			$this->load->model('cantik_model');
-			$this->load->model('setting_model');
-			
-			// otomatis set tahun
-			if(!isset($_SESSION['tutam_rsnd']['tahun'])){
-				$_SESSION['tutam_rsnd']['tahun'] = $this->cur_tahun;
-			}
-			
+			$this->load->model('cantik2_model');
+			$this->load->model('setting_model');			
 		}
   }
 
 
 	public function index()
 	{
-		$subdata['pegawaiRSNDOption'] = $this->cantik_model->get_dosen_rsnd();
-		$subdata['jabatanRSNDOption'] = $this->cantik_model->get_jabatan_rsnd();
-    $subdata['cur_tahun'] = $this->cur_tahun;
-		$subdata['bulanOption'] = $this->cantik_model->getBulanOption(date('m'));
-		$subdata['dt'] = $this->cantik_model->get_data_pegawai_tutam();
-		$data['main_content']	= $this->load->view('modul_gaji/tutam_rsnd',$subdata,TRUE);
-    $list["menu"]           = $this->menu_model->show();
-    $list["submenu"]        = $this->menu_model->show();
-    $data['main_menu']	= $this->load->view('main_menu','',TRUE);
-    $data['message']	= validation_errors();
-    $this->load->view('main_template',$data);
+    	$subdata['cur_tahun'] = $this->cur_tahun;
+    	$bulan = date('m');
+    	if(isset($_SESSION['tutam_rsnd']['bulan'])){
+    		$bulan = $_SESSION['tutam_rsnd']['bulan'];
+    	}
+			$subdata['bulanOption'] = $this->cantik_model->getBulanOption($bulan);
+			$data['main_content']	= $this->load->view('kepegawaian/rsnd/tutam',$subdata,TRUE);
+	    $data['main_menu']	= $this->load->view('main_menu','',TRUE);
+	    $data['message']	= validation_errors();
+	    $this->load->view('main_template',$data);
 	}
 	
 	public function tutam_proses(){
 		if(isset($_POST)){
 			if(isset($_POST['act']) && $_POST['act']=='tutam_proses'){
 				$_SESSION['tutam_rsnd']['bulan'] = $_POST['bulan'];
-				$p = $_POST['personal'];
-				foreach($p as $k => $v){
-					$a = explode(" - ",$v);
-					$nip = $a[0];
-					$nama = $a[1];
-					$tgs_tambahan_id = $a[2];
-					$tugas_tambahan = $a[3];
-					$sql = "SELECT a.nama, a.nip, a.golongan_id, a.unit_id, a.status, d.kelompok, e.nmbank, e.norekening
-									FROM kepeg_tb_pegawai a
-									LEFT JOIN kepeg_tb_golongan d ON a.golongan_id = d.id
-									LEFT JOIN kepeg_tb_rekening e ON a.id = e.pegawai_id WHERE a.nip LIKE '".$nip."' AND jenisrek = 2";
-					$dt = $this->db->query($sql)->row();
-					$sql = "SELECT id FROM kepeg_tr_tutam_rsnd WHERE nip LIKE '".$nip."' AND tahun LIKE '".$_SESSION['tutam']['tahun']."' AND bulan LIKE '".$_SESSION['tutam']['bulan']."' AND tgs_tambahan_id = ".$tgs_tambahan_id;
+				$_SESSION['tutam_rsnd']['tahun'] = $_POST['tahun'];
+				$d = $this->cantik2_model->get_data_tutam_rsnd();
+				$sql_e = array();
+				foreach($d as $k => $v){
+					$sql = "SELECT id FROM kepeg_tr_tutam WHERE pegid LIKE '".$v->id."' AND tahun LIKE '".$_SESSION['tutam_rsnd']['tahun']."' AND bulan LIKE '".$_SESSION['tutam_rsnd']['bulan']."' AND fk_rsa_unit LIKE '".$_SESSION['rsa_kode_unit_subunit']."'";
+					// echo $sql."<br/>";
 					$q = $this->db->query($sql);
 					if($q->num_rows()<=0){
-						$nominal = $this->cantik_model->get_nominal_tutam_rsnd($tgs_tambahan_id, $dt->kelompok);
-						if(intval($dt->kelompok) == 4){
-							$pajak = 0.15;
-						}else{
-							$pajak = 0.05;
-						}
-						$nom_pajak = ceil($nominal*$pajak);
-						$bersih = $nominal - $nom_pajak;
-						$sql_e[] = "('".$_SESSION['tutam_rsnd']['tahun']."', '".$_SESSION['tutam_rsnd']['bulan']."', '".$dt->nama."', '".$dt->nip."', '".$dt->golongan_id."', '".$dt->unit_id."', '".$dt->status."', '".$dt->kelompok."', '".$tgs_tambahan_id."', '".$tugas_tambahan."', 'Rumah Sakit Pendidikan', '".$dt->nmbank."', '".$dt->norekening."', '".$nominal."', '".$pajak."', '".$nom_pajak."', '".$bersih."', NOW())";
+						$sql_e[] = "('".$_SESSION['tutam_rsnd']['tahun']."', '".$_SESSION['tutam_rsnd']['bulan']."', '".$v->pegid."', '".$this->cantik_model->encodeText(addslashes($v->nama))."', '".$v->nip."', '".$v->golongan_id."', '".$v->golpeg."', '".$v->unit_id."', '".$v->status."', '".$v->kelompok."', '".$v->tgs_tambahan_id."', '".$v->tugas_tambahan."', '".$v->det_tgs_tambahan."', '".$v->npwp."', '".$v->nmbank."', '".$this->cantik_model->encodeText(addslashes($v->nmpemilik))."', '".$this->cantik_model->encodeText(addslashes($v->norekening))."', '".$v->nominal."', '".$v->pajak."', '".$v->nom_pajak."', '".$v->bersih."', NOW(), '".$_SESSION['rsa_kode_unit_subunit']."')";
+						// echo "('".$_SESSION['tutam_rsnd']['tahun']."', '".$_SESSION['tutam_rsnd']['bulan']."', '".$v->id."', '".$this->cantik_model->encodeText(addslashes($v->nama))."', '".$v->nip."', '".$v->golongan_id."', '".$v->golpeg."', '".$v->unit_id."', '".$v->status."', '".$v->kelompok."', '".$v->tgs_tambahan_id."', '".$v->tugas_tambahan."', '".$v->det_tgs_tambahan."', '".$v->npwp."', '".$v->nmbank."', '".$this->cantik_model->encodeText(addslashes($v->nmpemilik))."', '".$this->cantik_model->encodeText(addslashes($v->norekening))."', '".$v->nominal."', '".$v->pajak."', '".$v->nom_pajak."', '".$v->bersih."', NOW(), '".$_SESSION['rsa_kode_unit_subunit']."')<br />";
 					}
+					// echo "('".$_SESSION['tutam_rsnd']['tahun']."', '".$_SESSION['tutam_rsnd']['bulan']."', '".$v->pegid."', '".$this->cantik_model->encodeText(addslashes($v->nama))."', '".$v->nip."', '".$v->golongan_id."', '".$v->golpeg."', '".$v->unit_id."', '".$v->status."', '".$v->kelompok."', '".$v->tgs_tambahan_id."', '".$v->tugas_tambahan."', '".$v->det_tgs_tambahan."', '".$v->npwp."', '".$v->nmbank."', '".$this->cantik_model->encodeText(addslashes($v->nmpemilik))."', '".$this->cantik_model->encodeText(addslashes($v->norekening))."', '".$v->nominal."', '".$v->pajak."', '".$v->nom_pajak."', '".$v->bersih."', NOW(), '".$_SESSION['rsa_kode_unit_subunit']."')<br />";
 				}
+				// exit;
 				if(count($sql_e)>0){
-					$sql="INSERT INTO kepeg_tr_tutam_rsnd(tahun, bulan, nama, nip, golongan_id, unit_id, status, kelompok, tgs_tambahan_id, tugas_tambahan, det_tgs_tambahan, nmbank, norekening, nominal, pajak, nom_pajak, bersih, waktu_proses) VALUES".implode(", ",$sql_e);
-					//echo $sql; exit;
-					$this->db->query($sql);
+					$sql="INSERT INTO kepeg_tr_tutam(tahun, bulan, pegid, nama, nip, golongan_id, golpeg, unit_id, status, kelompok, tgs_tambahan_id, tugas_tambahan, det_tgs_tambahan, npwp, nmbank, nmpemilik, norekening, nominal, pajak, nom_pajak, bersih, waktu_proses,fk_rsa_unit) VALUES".implode(", ",$sql_e);
+					if(!$this->db->query($sql)){
+						echo $this->cantik_model->msgGagal("Gagal melakukan eksekusi perintah."); exit;
+					}
 				}
 				echo "1"; exit;
 			}
 			
 			if(isset($_POST['act']) && $_POST['act']=='tutam_lihat'){
 				$_SESSION['tutam_rsnd']['bulan'] = $_POST['bulan'];
+				$_SESSION['tutam_rsnd']['tahun'] = $_POST['tahun'];
 				echo "1"; exit;
 			}
 			
 			if(isset($_POST['act']) && $_POST['act']=='tutam_hapus_single'){
 				if(isset($_POST['id'])){
-          $sql = "DELETE FROM `kepeg_tr_tutam_rsnd` WHERE `id` = ".intval($_POST['id']);
+          			$sql = "DELETE FROM `kepeg_tr_tutam` WHERE `id` = ".intval($_POST['id']);
 					$this->db->query($sql);
-          echo 1; exit;
-        }
-        echo $this->cantik_model->msgGagal("Tidak ada yang dapat dihapus."); exit;
+			          echo 1; exit;
+			    }
+        		echo $this->cantik_model->msgGagal("Tidak ada yang dapat dihapus."); exit;
 			}
 			
 			
@@ -109,27 +93,77 @@ class Tutam_rsnd extends CI_Controller {
 	{
 		$subdata['cur_tahun'] = $this->cur_tahun;
 		$subdata['bulanOption'] = $this->cantik_model->getBulanOption($_SESSION['tutam_rsnd']['bulan']);
-		$subdata['dt'] = $this->cantik_model->get_data_tutam_rsnd();
-		$data['main_content']	= $this->load->view('modul_gaji/tutam_rsnd_daftar',$subdata,TRUE);
-    $list["menu"]           = $this->menu_model->show();
-    $list["submenu"]        = $this->menu_model->show();
-    $data['main_menu']	= $this->load->view('main_menu','',TRUE);
-    $data['message']	= validation_errors();
-    $this->load->view('main_template',$data);
+		// $subdata['dt'] = $this->cantik2_model->get_data_tutam();
+		$data['main_content']	= $this->load->view('kepegawaian/rsnd/tutam_daftar',$subdata,TRUE);
+    	$list["menu"]           = $this->menu_model->show();
+    	$list["submenu"]        = $this->menu_model->show();
+    	$data['main_menu']	= $this->load->view('main_menu','',TRUE);
+    	$data['message']	= validation_errors();
+    	$this->load->view('main_template',$data);
+	}
+	public function daftar_ajax(){
+		$subdata['dt'] = $this->cantik2_model->getDataTutam();
+		$this->load->view('kepegawaian/rsnd/tutam_daftar_ajax',$subdata);
 	}
 	
 	public function daftar_cetak()
 	{
 		$subdata['cur_tahun'] = $this->cur_tahun;
-		$subdata['dt'] = $this->cantik_model->get_data_tutam_rsnd();
+		$subdata['dt'] = $this->cantik2_model->getDataTutam();
 		$subdata['ppk'] = $this->user_model->get_detail_rsa_user($_SESSION['rsa_kode_unit_subunit'], '14');
 		$subdata['bpp'] = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
-		$data['main_content']	= $this->load->view('modul_gaji/tutam_rsnd_daftar_cetak',$subdata,TRUE);
-    $list["menu"]           = $this->menu_model->show();
-    $list["submenu"]        = $this->menu_model->show();
-    //$data['main_menu']	= $this->load->view('main_menu','',TRUE);
-    $data['message']	= validation_errors();
-    $this->load->view('cetak_template_excel',$data);
+		$subdata['filename'] = date('Ymd')."_tutam_rsnd.xls";
+		$data['main_content']	= $this->load->view('kepegawaian/rsnd/tutam_daftar_cetak',$subdata,TRUE);
+	    $data['message']	= validation_errors();
+	    $this->load->view('cetak_template_excel',$data);
+	}
+	public function hapus_daftar_tutam(){
+		$sql = "DELETE FROM `kepeg_tr_tutam` WHERE `bulan` LIKE '".$_SESSION['tutam_rsnd']['bulan']."' AND `tahun` LIKE '".$_SESSION['tutam_rsnd']['tahun']."' AND `fk_rsa_unit` LIKE '".$_SESSION['rsa_kode_unit_subunit']."%'";
+		// echo $sql; exit;
+		if($this->db->query($sql)){
+			echo 1; exit;
+		}
+		echo $this->cantik_model->msgGagal('Gagal menghapus daftar tugas tambahan.'); exit;
+	}
+
+	public function daftar_rsnd_ajax()
+	{
+		$subdata['dt'] = $this->cantik2_model->get_data_tutam_rsnd(); // dapatkan list mwa dari data yang dimasukkan scara manual.
+		$this->load->view('kepegawaian/rsnd/tutam_daftar_rsnd',$subdata);
+	}
+
+	public function daftar_rsnd_ajax_update()
+	{
+		$post = $this->input->post();
+		if($post['field'] == 'nominal'){
+			$post['value'] = str_replace(".", "", $post['value']);
+			$post['value'] = str_replace(",", ".", $post['value']);
+		}
+		echo $this->cantik2_model->update_data_tutam_rsnd($post);
+	}
+
+	public function daftar_rsnd_ajax_delete()
+	{
+		$post = $this->input->post();
+		$post['id'] = intval($post['id']);
+		echo $this->cantik2_model->delete_data_tutam_rsnd($post);
+	}
+
+	public function daftar_rsnd_ajax_add()
+	{
+		$post = $this->input->post();
+		echo $this->cantik2_model->add_data_tutam_rsnd($post);
+	}
+
+	public function daftar_rsnd_ajax_pegawai()
+	{
+		$q = $this->input->post('q');
+		echo $this->cantik2_model->pegawai_data_tutam_rsnd($q);
+	}
+
+	public function daftar_rsnd_ajax_pegawai_id(){
+		$id = $this->input->post('id');
+		echo json_encode($this->cantik2_model->get_data_pegawai_id($id));
 	}
 
 }

@@ -3,14 +3,15 @@ $(function(){
 	$('.home').on('click', function(e){
 		window.location = '<?php echo site_url('kontrak'); ?>';
 	});
-	
+
 	$('.cetak_daftar').on('click', function(e){
 		window.location = '<?php echo site_url('kontrak/daftar_cetak'); ?>';
 	});
-	
+
 	$('.lihat_data').on('click',function(e){
+		e.preventDefault();
 		$('#kriteria_ipp_lihat').modal('hide');
-		$.post($('#form-ipp-lihat').attr('action'),$('#form-ipp-lihat').serialize(),function(data){
+		$.post('<?php echo site_url('kontrak/proses_lihat'); ?>',$('#form-ipp-lihat').serialize(),function(data){
 			if(data!=1){
 				$('#myModalMsg .body-msg-text').html(data);
 				$('#myModalMsg').modal('show');
@@ -19,7 +20,7 @@ $(function(){
 			}
 		});
 	});
-	
+
 	// checkbox
 	$('.master_unit_id').change(function () {
 		if ($(this).prop('checked')) {
@@ -50,39 +51,41 @@ $(function(){
 		cek_checked();
 	});
 	//$('#master_status').trigger('change');
-	
+
 	// modal madul // reset status jika cancel
 	$('#kriteria_ipp').on('hidden.bs.modal', function () {
 			$('#form-ipp-lihat')[0].reset();
 			cek_checked();
 	});
-	
+
 	$('input[type=checkbox]').each(function(){
 		$(this).on('change',function(){
 			cek_checked();
 		});
 	});
-	
+
 	cek_checked();
-	
-	$('.trash').on('click',function(){
+
+	$('.trash').on('click',function(e){
+		e.preventDefault();
 		var a=confirm('Yakin akan menghapus data ini?');
 		if(a){
-		$.post('<?php echo site_url('kontrak/hapus'); ?>',{'id':$(this).attr('id'), 'act':'hapus_single'},function(data){ 
+		$.post('<?php echo site_url('kontrak/hapus'); ?>',{'id':$(this).attr('id'), 'act':'hapus_single'},function(data){
 			if(data!='1'){$('#myModalMsg .body-msg-text').html(data);$('#myModalMsg').modal('show');}else{
 				window.location.reload();}});
 		}
 	});
 
-	$('.hapus_daftar').on('click',function(){
+	$('.hapus_daftar').on('click',function(e){
+		e.preventDefault();
 		var a=confirm('Yakin akan menghapus daftar data ini?');
 		if(a){
-		$.post('<?php echo site_url('kontrak/hapus_daftar'); ?>',{'act':'hapus_semua'},function(data){ 
+		$.post('<?php echo site_url('kontrak/hapus_daftar'); ?>',{'act':'hapus_semua'},function(data){
 			if(data!='1'){$('#myModalMsg .body-msg-text').html(data);$('#myModalMsg').modal('show');}else{
 				window.location.reload();}});
 		}
 	});
-	
+
 });
 
 function cek_checked(){
@@ -163,9 +166,15 @@ if(isset($dt) && is_array($dt) && count($dt)>0){
 		// 	$nmpemilik = $nb->nmpemilik;
 		// 	$norekening = $nb->norekening;
 		// }
-		$nmbank = $v->kelompok_bank;
-		$nmpemilik = $v->nmpemilik;
-		$norekening = $v->norekening;
+		// $nmbank = $v->kelompok_bank;
+		// $nmpemilik = $v->nmpemilik;
+		// $norekening = $v->norekening;
+		$rek = $this->cantik_model->getDataRekening($v->pegid, 1);
+		$opsi = "<select name=\"opsiPilihRekening\" class=\"form-control input-sm ganti_opsi\">";
+		foreach ($rek as $k1 => $v1) {
+			$opsi.="<option value=\"".$v1->idrek."\">".$v1->kelompok_bank." -> ".$v1->norekening."</option>";
+		}
+		$opsi.= "</select>";
 ?>
                   <tr>
                     <td><?php echo $i; ?></td>
@@ -173,9 +182,9 @@ if(isset($dt) && is_array($dt) && count($dt)>0){
                     <td><?php echo $v->unit_short; ?></td>
                     <td><?php echo $this->cantik_model->get_nama_jabatan_by_id($v->jabid); ?></td>
                     <td><?php echo $this->cantik_model->getStatus($v->status); ?></td>
-                    <td nowrap="nowrap"><?php echo $nmbank."<br />".$nmpemilik."<br/>".$norekening; ?></td>
+                    <td nowrap="nowrap"><?php echo $opsi; ?><?php //print_r($rek); ?></td>
                     <td class="text-right"><?php echo $this->cantik_model->number($v->nominalg); ?></td>
-                    <td><button type="button" class="btn btn-danger btn-sm trash" title="hapus data ini dari daftar" 
+                    <td><button type="button" class="btn btn-danger btn-sm trash" title="hapus data ini dari daftar"
                     id="<?php echo $v->id; ?>"><i class="glyphicon glyphicon-trash"></i></button></td>
                   </tr>
 <?php
@@ -221,7 +230,7 @@ if(isset($dt) && is_array($dt) && count($dt)>0){
   <!-- /.modal-content -->
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <form id="form-ipp-lihat" action="<?php echo site_url('kontrak/proses_lihat'); ?>" method="post" enctype="multipart/form-data">
+      <form id="form-ipp-lihat" method="post" enctype="multipart/form-data">
         <input type="hidden" id="act" name="act" value="ipp_lihat"/>
         <input type="hidden" id="tahun" name="tahun" value="<?php echo $cur_tahun; ?>"/>
         <div class="modal-header">

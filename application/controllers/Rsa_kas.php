@@ -122,7 +122,118 @@ Class Rsa_kas extends CI_Controller {
                 }
 	}
 
-	
+    //edited by fahmi
+
+
+
+	function transaksi_kas(){
+        $data['cur_tahun'] = $this->cur_tahun ;
+      if($this->check_session->user_session() && $this->check_session->get_level() == 11){
+            $list["menu"] = $this->menu_model->show();
+            $list["submenu"] = $this->menu_model->show();
+            $data['main_menu']  = $this->load->view('main_menu','',TRUE);
+            
+            $subdata['daftar_transaksi_kas']            = $this->rsa_kas_model->get_daftar_kas();
+            $subdata['daftar_saldo']            = $this->rsa_kas_model->get_saldo();
+                // vdebug($subdata['daftar_saldo']);
+                
+            $data['main_content'] = $this->load->view('rsa_kas/transaksi_kas',$subdata,TRUE);
+            $this->load->view('main_template',$data);
+            // vdebug($subdata);
+        }else{
+            redirect('welcome','refresh');  
+         }
+
+    }
+
+    function ganti_kas(){
+        $subdata['opt_spm']            = $this->rsa_kas_model->get_no_spm_kas();
+        $subdata['opt_kd_akun_kas']            = $this->rsa_kas_model->get_no_kas();
+        // vdebug( $subdata['opt_spm']);
+        $this->load->view('rsa_kas/ganti_kas',$subdata);
+    }
+
+    function get_isi_kas(){
+        $no_spm = $this->input->post("no_spm");
+        $subdata['isi_kas']            = $this->rsa_kas_model->get_isi_kas($no_spm);
+
+        // vdebug( $subdata['opt_spm']);
+        $this->load->view('rsa_kas/isi_kas',$subdata);
+    }
+
+
+    function exec_add_ganti_kas(){
+        if($this->input->post()){
+            if($this->check_session->user_session()){
+
+                $this->form_validation->set_rules('no_spm','No_spm','required'); 
+                $this->form_validation->set_rules('kd_akun_kas_1','Kd_akun_kas_1','required');
+                $this->form_validation->set_rules('deskripsi','Deskripsi','required');
+                $this->form_validation->set_rules('kd_unit','Kd_unit','required');
+                $this->form_validation->set_rules('kredit_awal','Kredit_awal','required');
+                $this->form_validation->set_rules('kd_akun_kas_2','Kd_akun_kas_2','required');
+
+
+                if ($this->form_validation->run()){
+                    $kode1 = $this->input->post("kd_akun_kas_1");
+                    $kode2 = $this->input->post("kd_akun_kas_2");
+                    $saldo1 = $this->rsa_kas_model->get_saldo_aktif($kode1);
+                    $saldo2 = $this->rsa_kas_model->get_saldo_aktif($kode2);
+
+                    if ($kode1 != $kode2) {
+                        $data1 = array(
+                            "tgl_trx"                   => date('Y-m-d H:i:s'),
+                            "kd_akun_kas"               => $this->input->post("kd_akun_kas_1"),
+                            "kd_unit"                   => $this->input->post("kd_unit"),
+                            "deskripsi"                 => $this->input->post("deskripsi"),
+                            "no_spm"                    => $this->input->post("no_spm"),
+                            "debet"                     => $this->input->post("kredit_awal"),
+                            "kredit"                    => '0',
+                            "saldo"                     => $saldo1 + $this->input->post("kredit_awal"),
+                            "aktif"                     => '1'
+                        );
+
+                        $data2 = array(
+                            "tgl_trx"                   => date('Y-m-d H:i:s'),
+                            "kd_akun_kas"               => $this->input->post("kd_akun_kas_2"),
+                            "kd_unit"                   => $this->input->post("kd_unit"),
+                            "deskripsi"                 => $this->input->post("deskripsi"),
+                            "no_spm"                    => $this->input->post("no_spm"),
+                            "debet"                     => '0',
+                            "kredit"                    => $this->input->post("kredit_awal"),
+                            "saldo"                     => $saldo2 - $this->input->post("kredit_awal"),
+                            "aktif"                     => '1'
+                        );
+
+
+                        $update1 = $this->rsa_kas_model->update_data($kode1);
+                        $update2 = $this->rsa_kas_model->update_data($kode2);
+
+                        $add_data1 = $this->rsa_kas_model->add_data($data1);
+                        $add_data2 = $this->rsa_kas_model->add_data($data2);
+                    }else{
+                        $this->session->set_flashdata('error', 'Data tidak tersimpan karena pindah akun yang sama');
+                        redirect('rsa_kas/transaksi_kas','refresh'); 
+                    }
+                    
+                    
+                    if($update1 && $update2 && $add_data1 && $add_data2){
+                         redirect('rsa_kas/transaksi_kas','refresh'); 
+                    }
+                    else{
+                        $this->session->set_flashdata('error', 'Data tidak tersimpan ada yang salah');
+                        redirect('rsa_kas/get_isi_kas','refresh');
+                    }  
+                }
+                else{
+                   vdebug($this->form_validation->run()); 
+                } 
+            }else{
+                show_404('page');
+            }
+        }
+    }
+
 
 
 }

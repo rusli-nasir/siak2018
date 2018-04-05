@@ -95,6 +95,7 @@ $(document).ready(function(){
                             $('#proses_spp_').removeAttr('disabled');
                             $('#proses_spp_').attr('data-target','#myModalKonfirm')
                             $('#nomor_trx').text(data);
+                            $('.tgl_spp').text('');
                             $('#myModalTambahUP').modal('hide');
 //                        }
 //                        
@@ -456,7 +457,7 @@ function terbilang(bilangan) {
                                     <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : PUP</b></td>
                                 </tr>
                                 <tr style="border-top: none;">
-                                    <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
+                                    <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <span class="tgl_spp"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></span></b></td>
                                     <td style="text-align: center;border-left: none;border-right: none;border-top:none;" colspan="2" >&nbsp;</td>
                                                                                                                           <td style="border-left: none;border-top:none;"><b>Nomor : <span id="nomor_trx"><?=$nomor_spp?></span><!--00001/<?=$alias?>/SPP-UP/JAN/<?=$cur_tahun?>--></b></td>
                                 </tr>
@@ -639,7 +640,7 @@ function terbilang(bilangan) {
 				
                                     <td colspan="4" style="border-right: none;border-top:none;">&nbsp;</td>
 								<td  style="line-height: 16px;border-left: none;border-top:none;" class="ttd">
-									Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
+									Semarang, <span class="tgl_spp"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?></span> <br>
 									Bendahara Pengeluaran SUKPA<br>
                                                                         <br>
                                                                         <br>

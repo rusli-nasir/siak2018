@@ -660,8 +660,8 @@ $(document).on("click",".tb-print",function(){
                     <div class="col-md-12">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" id="a-undip" ><a href="<?=site_url('serapan/index')?>" target="_blank" >AKUN UNDIP</a></li>
-                            <li role="presentation" id="a-dikti" ><a href="#" >AKUN DIKTI</a></li>
+                            <li role="presentation" id="a-undip" ><a href="<?=site_url('serapan/index')?>" >AKUN UNDIP</a></li>
+                            <li role="presentation" id="a-dikti" ><a href="<?=site_url('serapan/dikti')?>" >AKUN DIKTI</a></li>
                         </ul>
                     </div>
 
@@ -774,15 +774,15 @@ $(document).on("click",".tb-print",function(){
                                         <?php endif; ?>
                                         <tr >
                                             <td style="padding-left:60px"><?=$d->kode_akun_sub.' - '.$d->nama_akun_sub?></td>
-                                            <td style="text-align:right" rel="<?=$d->kode_akun_sub?>" class="kode_akun_a_<?=$d->kode_akun_sub?>"><?=number_format($d->anggaran, 0, ",", ".")?></td>
+                                            <td style="text-align:right" rel="<?=$d->kode_akun_sub?>" class="kode_akun_a_<?=$d->kode_akun_sub?>"><?=number_format($data_anggaran[$d->kode_akun_sub], 0, ",", ".")?></td>
                                             <?php // number_format($d->jum, 0, ",", "."); ?>
-                                            <td style="text-align:right" rel="<?=$d->kode_akun_sub?>" class="kode_akun_s_<?=$d->kode_akun_sub?>"><?=number_format($d->serapan, 0, ",", ".")?></td>
+                                            <td style="text-align:right" rel="<?=$d->kode_akun_sub?>" class="kode_akun_s_<?=$d->kode_akun_sub?>"><?=number_format($data_serapan[$d->kode_akun_sub], 0, ",", ".")?></td>
                                             <td style="text-align:right" rel="<?=$d->kode_akun_sub?>" class="kode_akun_b_<?=$d->kode_akun_sub?>">0</td>
                                             <td style="text-align:right" rel="<?=$d->kode_akun_sub?>" class="kode_akun_c_<?=$d->kode_akun_sub?>">0</td>
                                         </tr>
                                         <?php $tot_biaya    = $tot_biaya ; ?>
-                                        <?php $tot_anggaran = $tot_anggaran + $d->anggaran ; ?>
-                                        <?php $tot_serapan  = $tot_serapan + $d->serapan ; ?>
+                                        <?php $tot_anggaran = $tot_anggaran + $data_anggaran[$d->kode_akun_sub] ; ?>
+                                        <?php $tot_serapan  = $tot_serapan + $data_serapan[$d->kode_akun_sub] ; ?>
                                     <?php endforeach; ?>
                                     <tr >
                                             <td style="text-align:center;"><b>Jumlah Biaya</b></td>

@@ -21,15 +21,7 @@
                     
                         var type = window.location.hash.substr(1);
 
-                            window.location = "<?=site_url("rsa_gup/daftar_spp")?>/" + $("#tahun").val() + '#' + type;
-
-
-                    });
-                    $(document).on("click","#pilih_tahun_pup",function(){
-                    
-                        var type = window.location.hash.substr(1);
-
-                            window.location = "<?=site_url("rsa_gup/daftar_spp")?>/" + $("#tahun_pup").val() + '#' + type;
+                            window.location = "<?=site_url("rsa_ks/daftar_spp")?>/" + $("#tahun").val() + '#' + type;
 
 
                     });

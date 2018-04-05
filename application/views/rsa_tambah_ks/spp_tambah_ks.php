@@ -2,45 +2,142 @@
 
 $(document).ready(function(){
     
-    <?php if($doc_tup == ''):?>
+    <?php if($doc_tambah_ks == ''):?>
     
-    <?php // if(($doc_tup == '')||($doc_tup == 'SPP-DITOLAK')||($doc_tup == 'SPM-DITOLAK-KPA')||($doc_tup == 'SPM-DITOLAK-VERIFIKATOR')||($doc_tup == 'SPM-DITOLAK-KBUU')||($doc_tup == 'SPM-DITOLAK-BUU')):?>
+    <?php // if(($doc_tambah_ks == '')||($doc_tambah_ks == 'SPP-DITOLAK')||($doc_tambah_ks == 'SPM-DITOLAK-KPA')||($doc_tambah_ks == 'SPM-DITOLAK-VERIFIKATOR')||($doc_tambah_ks == 'SPM-DITOLAK-KBUU')||($doc_tambah_ks == 'SPM-DITOLAK-BUU')):?>
     
-        <?php if($detail_tup['nom'] == '0' ): ?>
+        <?php if($detail_tambah_ks['nom'] == '0' ): ?>
+
+            <?php // if(!($this->session->flashdata('message'))): ?>
                 $('#myModalTambahUP').modal({
                     backdrop: 'static',
                     keyboard: true
                   });
+            <?php // endif; ?>
         <?php endif; ?>
             
             $('#btn_batal_2').hide();
             $('#btn_batal_1').show();
         
-    <?php elseif(($doc_tup == 'SPP-DITOLAK')||($doc_tup == 'SPM-DITOLAK-KPA')||($doc_tup == 'SPM-DITOLAK-VERIFIKATOR')||($doc_tup == 'SPM-DITOLAK-KBUU')||($doc_tup == 'SPM-DITOLAK-BUU')):?>
-        $('#myModalKonfirmDitolak').modal({
-                backdrop: 'static',
-                keyboard: true
-              });
+    <?php elseif(($doc_tambah_ks == 'SPP-DITOLAK')||($doc_tambah_ks == 'SPM-DITOLAK-KPA')||($doc_tambah_ks == 'SPM-DITOLAK-VERIFIKATOR')||($doc_tambah_ks == 'SPM-DITOLAK-KBUU')||($doc_tambah_ks == 'SPM-DITOLAK-BUU')):?>
+
+        // $('#myModalKonfirmDitolak').modal({
+        //         backdrop: 'static',
+        //         keyboard: true
+        //       });
             
-            $('#btn_batal_1').hide();
-            $('#btn_batal_2').show();
+        //     $('#btn_batal_1').hide();
+        //     $('#btn_batal_2').show();
             
             
-    <?php elseif($doc_tup == 'SPM-FINAL-KBUU'):?>
-        $('#myModalKonfirmDiterima').modal({
-                backdrop: 'static',
-                keyboard: true
-              });
+    <?php elseif($doc_tambah_ks == 'SPM-FINAL-KBUU'):?>
+    
+        // $('#myModalKonfirmDiterima').modal({
+        //         backdrop: 'static',
+        //         keyboard: true
+        //       });
               
-            $('#btn_batal_1').hide();
-            $('#btn_batal_2').show();
+        //     $('#btn_batal_1').hide();
+        //     $('#btn_batal_2').show();
             
     <?php endif; ?>
+
+
+    $("#untuk_pekerjaan").typeahead({
+          source: function(query, process) {
+                    return $.get("<?=site_url('rsa_tambah_ks/get_data_untuk_pekerjaan')?>", { query : query }, function (data) {
+                        // console.log(data);
+                        data = $.parseJSON(data);
+                        return process(data);
+                    });
+            },
+          autoSelect: true
+        });
+
+
+    $("#nama_pihak_ketiga").typeahead({
+          source: function(query, process) {
+                    return $.get("<?=site_url('rsa_tambah_ks/get_data_penerima')?>", { query : query }, function (data) {
+                        // console.log(item);
+                        data = $.parseJSON(data);
+                        return process(data);
+                        // var results = data.map(function(item) {
+                        // var someItem = { nama_pihak_ketiga: item.nama_pihak_ketiga, alamat_ketiga: item.alamat_ketiga };
+                        //     return JSON.stringify(someItem.contactname);
+                        // });
+                        // return process(results);
+                    });
+            },
+             updater: function (obj) {
+                // var item = JSON.parse(obj);
+                // console.log(obj);
+                // $('#nama_pihak_ketiga').attr('value', item.id);
+                // $('#alamat_ketiga').attr('value', item.alamat_ketiga);
+
+                var arr = obj.split('|');
+                $('#alamat_ketiga').val(arr[1]);
+                $('#nama_bank').val(arr[2]);
+                $('#nama_rek_bank').val(arr[3]);
+                $('#nomor_rek_bank').val(arr[4]);
+                $('#nomor_npwp').val(arr[5]);
+                return arr[0];
+            },
+          autoSelect: true
+        });
+
+
+    // $(document).on("click",'#btn_simpan_rincian_spp',function(){
+
+
+    //     if($("#simpan_rincian_spp").validationEngine("validate")){
+
+    //         $('#untuk_bayar').text($('#untuk_pekerjaan').val());
+
+    //         $('#penerima').text($('#nama_pihak_ketiga').val());
+
+    //         $('#alamat').text($('#alamat_ketiga').val());
+
+    //         $('#nmbank').text($('#nama_bank').val());
+
+    //         $('#nmrekening').text($('#nama_rek_bank').val());
+
+    //         $('#rekening').text($('#nomor_rek_bank').val());
+
+    //         $('#npwp').text($('#nomor_npwp').val());
+
+    //         $('#myModalTambahUP').modal('hide');
+    //     }
+
+    // });
+
+    $(document).on("click",'#btn-edit-rincian',function(){
+
+        // if($("#simpan_rincian_spp").validationEngine("validate")){
+            $('#untuk_pekerjaan').val($('#untuk_bayar').text());
+
+            $('#nama_pihak_ketiga').val($('#penerima').text());
+
+            $('#alamat_ketiga').val($('#alamat').text());
+
+            $('#nama_bank').val($('#nmbank').text());
+
+            $('#nama_rek_bank').val($('#nmrekening').text());
+
+            $('#nomor_rek_bank').val($('#rekening').text());
+
+            $('#nomor_npwp').val($('#npwp').text());
+
+            $('#myModalTambahUP').modal('show');
+        // }
+
+        return false;
+
+    });
         
     
     $("#cetak").click(function(){
-                    var mode = 'iframe'; //poTUP
-                    var close = mode == "poTUP";
+                    var mode = 'iframe'; //poTAMBAH KS
+                    var close = mode == "popup";
                     var options = { mode : mode, popClose : close};
                     $("#div-cetak").printArea( options );
                 });
@@ -73,8 +170,32 @@ $(document).ready(function(){
         });
     
     $(document).on("click",'#btn_penyesuaian',function(){
-        if($('#jml_penyesuaian').validationEngine('validate')){
+        
+        // if($('#jml_penyesuaian').validationEngine('validate')){
 //            console.log($('#jml_penyesuaian').val());
+
+
+        if($("#simpan_rincian_spp").validationEngine("validate")){
+
+            $('#untuk_bayar').text($('#untuk_pekerjaan').val());
+
+            $('#penerima').text($('#nama_pihak_ketiga').val());
+
+            $('#alamat').text($('#alamat_ketiga').val());
+
+            $('#nmbank').text($('#nama_bank').val());
+
+            $('#nmrekening').text($('#nama_rek_bank').val());
+
+            $('#rekening').text($('#nomor_rek_bank').val());
+
+            $('#npwp').text($('#nomor_npwp').val());
+
+            $('#myModalTambahUP').modal('hide');
+
+        // }
+
+
             var jml = $('#jml_penyesuaian').val(); 
             $('#jumlah_bayar').text(angka_to_string(jml));
             $('.jumlah_bayar').text(angka_to_string(jml));
@@ -82,7 +203,7 @@ $(document).ready(function(){
             
             $.ajax({
                 type:"POST",
-                url :"<?=site_url('rsa_tambah_tup/get_next_nomor_spp')?>",
+                url :"<?=site_url('rsa_tambah_ks/get_next_nomor_spp')?>",
                 data:'' ,
                 success:function(data){
 //                        console.log(data)
@@ -91,7 +212,7 @@ $(document).ready(function(){
 //                        if(data=='sukses'){
                             
                             $('#btn_buat_lagi').attr('disabled','disabled');
-                            $('#edit-TUP').removeAttr('disabled');
+                            $('#edit-tambah-ks').removeAttr('disabled');
                             $('#proses_spp_').removeAttr('disabled');
                             $('#proses_spp_').attr('data-target','#myModalKonfirm')
                             $('#nomor_trx').text(data);
@@ -104,7 +225,7 @@ $(document).ready(function(){
         }
     });
     
-    $(document).on("click",'#edit-TUP',function(){
+    $(document).on("click",'#edit-tambah-ks',function(){
         $('#myModalTambahUP').modal({
                 backdrop: 'static',
                 keyboard: true
@@ -115,18 +236,28 @@ $(document).ready(function(){
     
     $(document).on("click",'#proses_spp',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() ;
+            var data = 'proses=' + 'SPP-DRAFT' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&nmrekening=' + $('#nmrekening').text() + '&npwp=' + $('#npwp').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#nipbendahara').text() + '&id_nomor_tambah_ks=' + '<?=$id_nomor_tambah_ks?>' ;
             $.ajax({
                 type:"POST",
-                url :"<?=site_url('rsa_tambah_tup/usulkan_spp_tambah_tup')?>",
+                url :"<?=site_url('rsa_tambah_ks/usulkan_spp_tambah_ks')?>",
                 data:data,
                 success:function(data){
 //                        console.log(data)
 //                        $('#no_bukti').html(data);
 //                        $('#myModalKuitansi').modal('show');
+                        // if(data!='gagal'){
+                        //     window.location = "<?=site_url('rsa_tambah_ks/spp_tambah_ks_lihat/')?>" + data;
+                        // }else{
+                        //   location.reload();
+                        // }
+
                         if(data=='sukses'){
-                            location.reload();
+
+                                window.location = "<?=site_url('rsa_tambah_ks/daftar_spp')?>" ;
+                                
                         }
+
+                        
 //                        
                 }
             });
@@ -135,8 +266,8 @@ $(document).ready(function(){
     
     $(document).on("click","#down",function(){
                     $("#status_spp").replaceWith( "<br><br><br>" );
-                    var uri = $("#table_spp_tup").excelexportjs({
-                                    containerid: "table_spp_tup"
+                    var uri = $("#table_spp_tambah_ks").excelexportjs({
+                                    containerid: "table_spp_tambah_ks"
                                     , datatype: "table"
                                     , returnUri: true
                                 });
@@ -373,32 +504,32 @@ function terbilang(bilangan) {
     $stts_kbuu = '';
     ?>
                         
-    <?php if($doc_tup == ''){ $stts_bendahara = 'active'; ?>
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> belum diusulkan oleh bendahara.</div>
-    <?php }elseif($doc_tup == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
-    <?php }elseif($doc_tup == 'SPP-DITOLAK'){ $stts_bendahara = 'active'; ?>
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >PPK SUKPA</span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPP-FINAL'){ $stts_bendahara = 'done';  $stts_ppk = 'done'; ?>   
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah diterima oleh <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done';  $stts_kpa = 'active'; ?>   
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KPA </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >VERIFIKATOR </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KPA </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
-        <div class="alert alert-success" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >VERIFIKATOR </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done' ?>   
-        <div class="alert alert-success" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah disetujui oleh <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KUASA BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPM-FINAL-BUU'){ $stts_bendahara = 'done'; ?> 
-        <div class="alert alert-success" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah difinalisasi oleh <b><span class="text-danger" >BUU </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php if($doc_tambah_ks == ''){ $stts_bendahara = 'active'; ?>
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> belum diusulkan oleh bendahara.</div>
+    <?php }elseif($doc_tambah_ks == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPP-DITOLAK'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; ?>
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >PPK SUKPA</span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPP-FINAL'){ $stts_bendahara = 'done';  $stts_ppk = 'done'; ?>   
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah diterima oleh <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done';  $stts_kpa = 'active'; ?>   
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KPA </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >VERIFIKATOR </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KPA </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
+        <div class="alert alert-success" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KUASA BUU </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'active'; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >VERIFIKATOR </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done' ?>   
+        <div class="alert alert-success" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah disetujui oleh <b><span class="text-danger" >KUASA BUU </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'active'; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KUASA BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-FINAL-BUU'){ $stts_bendahara = 'done'; ?> 
+        <div class="alert alert-success" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah difinalisasi oleh <b><span class="text-danger" >BUU </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'active'; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php } ?>
         
                         
@@ -453,7 +584,7 @@ function terbilang(bilangan) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : TUP</b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : KS</b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
@@ -484,14 +615,15 @@ function terbilang(bilangan) {
 				<tr>
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
-                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?=number_format($detail_tup['nom'], 0, ",", ".")?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_tup['terbilang'])?> <?php echo substr($detail_tup['terbilang'],strlen($detail_tup['terbilang'])-6,6) == 'Rupiah' ? '' : 'Rupiah' ; ?></span></b>)</li>
-                                                <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'Tambahan uang persediaan'?></span></li>
-                                                <li>Nama bendahara pengeluaran : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
-                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
-                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
-                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
-                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li>
+                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?=number_format($detail_tambah_ks['nom'], 0, ",", ".")?></span>,-<br>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_tambah_ks['terbilang'])?> <?php echo substr($detail_tambah_ks['terbilang'],strlen($detail_tambah_ks['terbilang'])-6,6) == 'Rupiah' ? '' : 'Rupiah' ; ?></span></b>)</li>
+                                                <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'-'?></span></li>
+                                                <li>Nama PIC : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:'-'?></span></li>
+                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:'-'?></span></li>
+                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:'-'?></span></li>
+                                                <li>Nama Rekening Bank : <span id="nmrekening"><?=isset($detail_pic->nama_rek_penerima)?$detail_pic->nama_rek_penerima:'-'?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:'-'?></span></li>
+                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:'-'?></span> <!--[ <a href="#" id="btn-edit-rincian">edit</a> ]--></li>
                                         </ol>
                                     </td>
                                 </tr>
@@ -533,13 +665,13 @@ function terbilang(bilangan) {
                                                         </tr>
 							<tr>
 								<td>
-									Kas di bendahara pengeluaran
+									Kas di PIC Kerja Sama
 								</td>
 								<td  style="text-align: center;">
-									12111
+									13111
 								</td>
                                                                 <td style="text-align: right;padding-right: 10px;">
-                                                                    Rp. <span class="jumlah_bayar"><?=number_format($detail_tup['nom'], 0, ",", ".")?></span>
+                                                                    Rp. <span class="jumlah_bayar"><?=number_format($detail_tambah_ks['nom'], 0, ",", ".")?></span>
 								</td>
                                                                 <td  style="text-align: center;">&nbsp;</td>
 								<td  style="text-align: right;">&nbsp;</td>
@@ -592,7 +724,7 @@ function terbilang(bilangan) {
 								Jumlah Pengeluaran
 								</td>
 								<td style="text-align: right;padding-right: 10px;">
-                                                                    Rp. <span class="jumlah_bayar"><?=number_format($detail_tup['nom'], 0, ",", ".")?></span>
+                                                                    Rp. <span class="jumlah_bayar"><?=number_format($detail_tambah_ks['nom'], 0, ",", ".")?></span>
 								</td>
 								<td>
 									&nbsp;
@@ -620,7 +752,7 @@ function terbilang(bilangan) {
 								<strong>Jumlah dana yang dikeluarkan</strong>
 								</td>
 								<td  style="text-align: right;padding-right: 10px;">
-                                                                    Rp. <span class="jumlah_bayar"><?=number_format($detail_tup['nom'], 0, ",", ".")?></span>
+                                                                    Rp. <span class="jumlah_bayar"><?=number_format($detail_tambah_ks['nom'], 0, ",", ".")?></span>
 								</td>
                                                                 <td style="padding-left: 10px;">
 									<b>Jumlah Potongan</b>
@@ -665,24 +797,24 @@ function terbilang(bilangan) {
 </div>
 <img id="status_spp" style="display: none" src="<?php echo base_url(); ?>/assets/img/verified.png" width="150">
 <br />
-<form action="<?=site_url('rsa_tup/cetak_spp')?>" id="form_spp" method="post" style="display: none"  >
+<form action="<?=site_url('rsa_tambah_ks/cetak_spp')?>" id="form_spp" method="post" style="display: none"  >
     <input type="text" name="dtable" id="dtable" value="" />
     <input type="text" name="dunit" id="dunit" value="<?=$alias?>" />
     <input type="text" name="dtahun" id="dtahun" value="<?=$cur_tahun?>" />
 </form>
             <div class="alert alert-warning" style="text-align:center">
-                <?php if(($doc_tup == '')||($doc_tup == 'SPP-DITOLAK')||($doc_tup == 'SPM-DITOLAK-KPA')||($doc_tup == 'SPM-DITOLAK-VERIFIKATOR')||($doc_tup == 'SPM-DITOLAK-KBUU')||($doc_tup == 'SPM-DITOLAK-BUU')){ ?>
+                <?php if(($doc_tambah_ks == '')||($doc_tambah_ks == 'SPP-DITOLAK')||($doc_tambah_ks == 'SPM-DITOLAK-KPA')||($doc_tambah_ks == 'SPM-DITOLAK-VERIFIKATOR')||($doc_tambah_ks == 'SPM-DITOLAK-KBUU')||($doc_tambah_ks == 'SPM-DITOLAK-BUU')){ ?>
                     <a href="#" data-toggle="modal" class="btn btn-warning" id="proses_spp_" disabled="disabled"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>
                     <a href="#" class="btn btn-warning" style="display: none" id="proses_spp"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>
                     <button type="button" class="btn btn-success" id="btn_buat_lagi" ><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Buat Lagi</button>
-                    <button type="button" class="btn btn-success" id="edit-TUP" disabled="disabled" rel=""><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Edit</button>
+                    <button type="button" class="btn btn-success" id="edit-tambah-ks" disabled="disabled" rel=""><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Edit</button>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                     <!--<a href="#" class="btn btn-success" id="down"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span></span> Download</a>-->
-                <?php }elseif($doc_tup == 'SPM-FINAL-KBUU'){ ?>
+                <?php }elseif($doc_tambah_ks == 'SPM-FINAL-KBUU'){ ?>
                     <a href="#" data-toggle="modal" class="btn btn-warning" id="proses_spp_" disabled="disabled"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>
                     <a href="#" class="btn btn-warning" style="display: none" id="proses_spp"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></span> Proses SPP</a>
                     <button type="button" class="btn btn-success" id="btn_buat_lagi" ><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Buat Lagi</button>
-                    <button type="button" class="btn btn-success" id="edit-TUP" disabled="disabled" rel=""><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Edit</button>
+                    <button type="button" class="btn btn-success" id="edit-tambah-ks" disabled="disabled" rel=""><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Edit</button>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                     <!--<a href="#" class="btn btn-success" id="down"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span></span> Download</a>-->
                 <?php }else{ ?>
@@ -757,23 +889,68 @@ function terbilang(bilangan) {
 
 <!-- Modal -->
 <div class="modal" id="myModalTambahUP" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">TUP</h4>
+        <h4 class="modal-title">TAMBAH KS</h4>
       </div>
     <div class="modal-body">
-        <p>
-            <div class="form-group">
-                <div class="input-group input-group-lg col-md-8">
-                    <input type="text" class="form-control validate[required,custom[integer],min[1]] xnumber" placeholder="" id="jml_penyesuaian" aria-describedby="" value="0">
+         <form class="form-horizontal" id="simpan_rincian_spp">
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Untuk Keperluan</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required]" id="untuk_pekerjaan" placeholder="" data-provide="typeahead">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Nama PIC</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required]" id="nama_pihak_ketiga" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Alamat</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required]" id="alamat_ketiga" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Nama Bank</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required]" id="nama_bank" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Nama Rekening</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required]" id="nama_rek_bank" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">No Rekening Bank</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required]" id="nomor_rek_bank" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">No NPWP</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required]" id="nomor_npwp" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+              <label class="col-sm-3 control-label">Jumlah</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control validate[required,custom[integer],min[1]] xnumber" placeholder="" id="jml_penyesuaian" value="0">
                   </div>
             </div>
-        </p>
+              </form>
+            
+
     </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" id="btn_penyesuaian" ><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Submit</button>
-        <a href="<?php echo site_url('rsa_tup');?>" class="btn btn-danger" id="btn_batal_1"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</a>
+        <a href="<?php echo site_url('rsa_ks');?>" class="btn btn-danger" id="btn_batal_1"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</a>
         <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn_batal_2"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
       </div>
     </div><!-- /.modal-content -->
@@ -800,7 +977,7 @@ function terbilang(bilangan) {
       <div class="modal-footer">
           <div class="alert alert-warning text-center">
               <button type="button" class="btn btn-success" id="btn_buat_lagi" ><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Buat Lagi</button>
-              <!--<a href="<?php echo site_url('rsa_tup');?>" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tidak</a>-->
+              <!--<a href="<?php echo site_url('rsa_tambah_ks');?>" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tidak</a>-->
               <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tidak</button>
           </div>
         <!--<button type="button" class="btn btn-default" data-dismiss="modal">Oke</button>-->
@@ -829,7 +1006,7 @@ function terbilang(bilangan) {
       <div class="modal-footer">
           <div class="alert alert-warning text-center">
               <button type="button" class="btn btn-success" id="btn_buat_lagi" ><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Buat Lagi</button>
-              <!--<a href="<?php echo site_url('rsa_tup');?>" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tidak</a>-->
+              <!--<a href="<?php echo site_url('rsa_tambah_ks');?>" class="btn btn-danger"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tidak</a>-->
               <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tidak</button>
           </div>
         <!--<button type="button" class="btn btn-default" data-dismiss="modal">Oke</button>-->

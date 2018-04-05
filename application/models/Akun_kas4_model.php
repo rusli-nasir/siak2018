@@ -28,18 +28,26 @@ class Akun_kas4_model extends CI_Model{
 		}
 	}
 	
-	function get_akun_kas4($where=""){
-		//var_dump($where);die;
-		if(is_array($where)){
-			$this->db->where($where);
-			//$this->db->where("kd_kas_3",$where["kd_kas_3"]);
-			//$this->db->where("kd_kas_2",$where["kd_kas_2"]);
-		
+	function get_akun_kas4($kode_akun3digit){
+
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun4digit,nama_akun4digit FROM akun_belanja WHERE kode_akun3digit = '{$kode_akun3digit}' ORDER BY kode_akun4digit";
+		$query = $rba->query($query);
+
+		if ($query->num_rows() > 0){
+			
+			return $query->result();
+		}else{
+			return array();
 		}
-		$query = $this->db->get("akun_kas4");
-		//var_dump($query);die;
-	
-		if ($query->num_rows() >0){
+	}
+
+	function get_akun_sebelum($kode_akun3digit){
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun3digit,nama_akun3digit FROM akun_belanja WHERE kode_akun3digit = '{$kode_akun3digit}'";
+		$query = $rba->query($query);
+
+		if($query->num_rows()>0){
 			return $query->result();
 		}else{
 			return array();

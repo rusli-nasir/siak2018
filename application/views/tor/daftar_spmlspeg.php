@@ -341,9 +341,9 @@
 					?>
 							<div class="input-group">
 								<span class="input-group-addon">
-									<input type="radio" name="akun_cair" id="akun_cair" value="<?php echo $value->kd_kas_6; ?>"/>
+									<input type="radio" name="akun_cair" id="akun_cair" value="<?php echo $value->kd_akun_kas; ?>"/>
 								</span>
-								<input type="text" class="form-control"  value="<?php echo $value->nm_kas_6; ?> (Rp. <?php echo number_format($value->saldo,0,',','.'); ?>,-)" readonly="readonly"/>
+								<input type="text" class="form-control"  value="<?php echo $value->nama_akun; ?> (Rp. <?php echo number_format($value->saldo,0,',','.'); ?>,-)" readonly="readonly"/>
 							</div>
 					<?php
 						}

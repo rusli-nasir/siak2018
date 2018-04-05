@@ -82,7 +82,7 @@ $(document).ready(function(){
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_gup/spp_gup" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_gup/get_last_spp" >
  <i class="fa fa-file fa-5x"></i>
                       <h4>SPP GUP</h4>
                       </a>

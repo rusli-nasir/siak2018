@@ -16,6 +16,7 @@ Class Kuitansi extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->model('kuitansi_model');
         $this->load->model('kuitansipengembalian_model');
+        $this->load->model('rsa_ks_model');
 		$this->load->model('menu_model');
 		$this->load->model('unit_model');
 		$this->load->model('subunit_model');
@@ -38,6 +39,8 @@ Class Kuitansi extends CI_Controller {
         
         function submit_kuitansi(){
             if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
+
+                // die;
 
                 $this->load->model('tor_model');
 
@@ -138,8 +141,9 @@ Class Kuitansi extends CI_Controller {
                     $data= array(
                         'kode_unit' => $this->check_session->get_unit(),
                         'kode_usulan_belanja' => $kode_usulan_belanja,
-                        'kode_akun5digit' => substr($kode_usulan_belanja,18,5),
-                        'kode_akun' => substr($kode_usulan_belanja,18,6),
+                        'kode_akun4digit' => substr($kode_usulan_belanja,18,4),
+                        // 'kode_akun5digit' => substr($kode_usulan_belanja,18,5),
+                        // 'kode_akun' => substr($kode_usulan_belanja,18,6),
                         'jenis' => $this->input->post('jenis'),
                         'no_bukti' => $no_bukti,
                         'uraian' => $this->input->post('uraian'),
@@ -205,7 +209,15 @@ Class Kuitansi extends CI_Controller {
 //                                foreach($pajak_id_input as $j => $p){
                             $v = $pajak_jenis_[$ii][$k];
                             if($v == 'ppn'){$v = 'PPN';}
-                            else if($v == 'pphps21'){$v = 'PPh_Ps_21';}
+                            else if($v == 'pphps21'){
+                                    if ($pajak_id_input == '51'){
+                                        $v = 'Tabungan Pajak';
+                                    }elseif ($pajak_id_input == '52'){
+                                        $v = 'Potongan Pajak';
+                                    }else{
+                                        $v = 'PPh_Ps_21';
+                                    }
+                                }
                             else if($v == 'pphps22'){$v = 'PPh_Ps_22';}
                             else if($v == 'pphps23'){$v = 'PPh_Ps_23';}
                             else if($v == 'pphps26'){$v = 'PPh_Ps_26';}
@@ -261,6 +273,10 @@ Class Kuitansi extends CI_Controller {
                 // die;
 
                 // echo $this->input->post('pajak_kode_usulan'); die;
+
+                // echo "<pre>";
+                // var_dump($this->input->post());
+                // die;
 
 
                 $pajak_kode_usulan_ = json_decode($this->input->post('pajak_kode_usulan'));
@@ -359,8 +375,7 @@ Class Kuitansi extends CI_Controller {
                     $data= array(
                         'kode_unit' => $this->check_session->get_unit(),
                         'kode_usulan_belanja' => $kode_usulan_belanja,
-                        'kode_akun5digit' => substr($kode_usulan_belanja,18,5),
-                        'kode_akun' => substr($kode_usulan_belanja,18,6),
+                        'kode_akun4digit' => substr($kode_usulan_belanja,18,4),
                         'jenis' => $this->input->post('jenis'),
                         'no_bukti' => $no_bukti,
                         'uraian' => $this->input->post('uraian'),
@@ -492,7 +507,7 @@ Class Kuitansi extends CI_Controller {
             }
         }
         
-        function daftar_kuitansi($jenis='',$tahun="",$kode_unit_subunit=""){
+        function daftar_kuitansi($jenis='',$tahun="",$kode_unit_subunit="",$enc_str_no_spm=""){
                     
                     if($kode_unit_subunit == ''){
                         $kode_unit_subunit = $this->check_session->get_unit();
@@ -507,6 +522,42 @@ Class Kuitansi extends CI_Controller {
                     
                     if($jenis==''){
                         redirect('dashboard','refresh');	// redirect ke halaman home
+                    }else{
+                        if($jenis=='KS'){
+
+                            if($enc_str_no_spm != ''){
+
+                                $enc_str_no_spm = urldecode($enc_str_no_spm);
+
+                                if( base64_encode(base64_decode($enc_str_no_spm, true)) === $enc_str_no_spm){
+                                    $enc_str_no_spm = base64_decode($enc_str_no_spm);
+                                }else{
+                                    redirect(site_url('/'));
+                                }
+
+                                $subdata['no_spm_ks'] = $enc_str_no_spm ;
+                                $this->load->model('kas_bendahara_model');
+                                $nilai_spm = $this->rsa_ks_model->get_kas_bendahara_by_spm($enc_str_no_spm);
+                                // echo $nilai_spm; die;
+                                $subdata['nilai_spm'] = $nilai_spm ;
+                                // echo $enc_str_no_spm ; die;
+
+                                // echo $enc_str_no_spm ; die ;
+
+                            }else{
+
+                                $subdata['no_spm_ks'] = '-' ;
+                                $subdata['nilai_spm'] = '0' ;
+
+                            }
+
+                        } else if($jenis=='TP'){
+                            $this->load->model('kas_bendahara_model');
+                            $subdata['no_spm_tup'] = $this->kas_bendahara_model->get_last_spm_tup_cair($kode_unit_subunit,$this->cur_tahun);
+                        } else if($jenis=='GP'){
+                            $this->load->model('kas_bendahara_model');
+                            $subdata['no_spm_gup'] = $this->kas_bendahara_model->get_last_spm_gup_cair($kode_unit_subunit,$this->cur_tahun);
+                        }
                     }
 
                     /* check session	*/
@@ -526,19 +577,28 @@ Class Kuitansi extends CI_Controller {
                                 $subdata['nm_unit']             = $this->unit_model->get_nama($kode_unit_subunit);
                             }
                             elseif(strlen($kode_unit_subunit)==4){
-                                if((substr($kode_unit_subunit,0,2) == '41')||(substr($kode_unit_subunit,0,2) == '42')||(substr($kode_unit_subunit,0,2) == '43')||(substr($kode_unit_subunit,0,2) == '44')){
+                                if((substr($kode_unit_subunit,0,2) == '14')||(substr($kode_unit_subunit,0,2) == '15')||(substr($kode_unit_subunit,0,2) == '16')||(substr($kode_unit_subunit,0,2) == '17')){
+
+
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2)) . ' - ' . $this->unit_model->get_real_nama($kode_unit_subunit);
+
                                 }else{
+
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2));
                                 }
 
                             }elseif(strlen($kode_unit_subunit)==6){
-                                if((substr($kode_unit_subunit,0,2) == '41')||(substr($kode_unit_subunit,0,2) == '42')||(substr($kode_unit_subunit,0,2) == '43')||(substr($kode_unit_subunit,0,2) == '44')){
+                                if((substr($kode_unit_subunit,0,2) == '14')||(substr($kode_unit_subunit,0,2) == '15')||(substr($kode_unit_subunit,0,2) == '16')||(substr($kode_unit_subunit,0,2) == '17')){
+
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2)) . ' - ' . $this->unit_model->get_real_nama(substr($kode_unit_subunit,0,4));
+
                                 }else{
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2));
                                 }
                             }
+                            // echo $kode_unit_subunit;
+                            // echo '<pre>';
+                            // var_dump($subdata);die;
 //                            $subdata['nm_unit']             = $this->unit_model->get_nama($kode_unit_subunit);
                             $subdata['alias']               = $this->unit_model->get_alias($kode_unit_subunit);
 //                            if($this->check_session->get_level() == '13'){
@@ -555,6 +615,8 @@ Class Kuitansi extends CI_Controller {
 
                             $subdata['daftar_kuitansi_pengembalian']          = $this->kuitansipengembalian_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'AKTIF');
 
+                            // vdebug( $subdata['daftar_kuitansi_pengembalian']);
+
                             $this->load->model('tor_model');
 
                             $subdata['pppk']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
@@ -563,6 +625,11 @@ Class Kuitansi extends CI_Controller {
 
                             $subdata['pic_kuitansi']        = $this->tor_model->get_pic_kuitansi($this->check_session->get_unit());
                             $subdata['tahun']               = $this->cur_tahun ;
+
+                            // $subdata['unit_kerja'] = $this->unit_model->get_nama($kode_unit_subunit);
+
+                            // echo '<pre>';
+                            // var_dump($subdata); die;
                             // $subdata['alias']               = $this->tor_model->get_alias_unit($this->check_session->get_unit());
 
                             $subdata['kode_unit'] = $kode_unit_subunit ;
@@ -598,17 +665,18 @@ Class Kuitansi extends CI_Controller {
                                 }
                             }
 
-
+                            // vdebug($subdata);
                             $data['main_content']           = $this->load->view("kuitansi/daftar_kuitansi",$subdata,TRUE);
                             /*	Load main template	*/
     //			echo '<pre>';var_dump($subdata['unit_usul_impor']);echo '</pre>';die;
+
                             $this->load->view('main_template',$data);
                     }else{
                             redirect('welcome','refresh');	// redirect ke halaman home
                     }
                 }
                 
-                function daftar_kuitansi_batal($jenis='',$tahun="",$kode_unit_subunit=""){
+                function daftar_kuitansi_batal($jenis='',$tahun="",$kode_unit_subunit="",$enc_str_no_spm=""){
                     
                     if($kode_unit_subunit == ''){
                         $kode_unit_subunit = $this->check_session->get_unit();
@@ -622,7 +690,43 @@ Class Kuitansi extends CI_Controller {
                     }
                     
                     if($jenis==''){
-                        redirect('dashboard','refresh');	// redirect ke halaman home
+                        redirect('dashboard','refresh');    // redirect ke halaman home
+                    }else{
+                        if($jenis=='KS'){
+
+                            if($enc_str_no_spm != ''){
+
+                                $enc_str_no_spm = urldecode($enc_str_no_spm);
+
+                                if( base64_encode(base64_decode($enc_str_no_spm, true)) === $enc_str_no_spm){
+                                    $enc_str_no_spm = base64_decode($enc_str_no_spm);
+                                }else{
+                                    redirect(site_url('/'));
+                                }
+
+                                $subdata['no_spm_ks'] = $enc_str_no_spm ;
+                                $this->load->model('kas_bendahara_model');
+                                $nilai_spm = $this->rsa_ks_model->get_kas_bendahara_by_spm($enc_str_no_spm);
+                                // echo $nilai_spm; die;
+                                $subdata['nilai_spm'] = $nilai_spm ;
+                                // echo $enc_str_no_spm ; die;
+
+                                // echo $enc_str_no_spm ; die ;
+
+                            }else{
+
+                                $subdata['no_spm_ks'] = '-' ;
+                                $subdata['nilai_spm'] = '0' ;
+
+                            }
+
+                        } else if($jenis=='TP'){
+                            $this->load->model('kas_bendahara_model');
+                            $subdata['no_spm_tup'] = $this->kas_bendahara_model->get_last_spm_tup_cair($kode_unit_subunit,$this->cur_tahun);
+                        } else if($jenis=='GP'){
+                            $this->load->model('kas_bendahara_model');
+                            $subdata['no_spm_gup'] = $this->kas_bendahara_model->get_last_spm_gup_cair($kode_unit_subunit,$this->cur_tahun);
+                        }
                     }
 
                     /* check session	*/
@@ -642,14 +746,14 @@ Class Kuitansi extends CI_Controller {
                                 $subdata['nm_unit']             = $this->unit_model->get_nama($kode_unit_subunit);
                             }
                             elseif(strlen($kode_unit_subunit)==4){
-                                if((substr($kode_unit_subunit,0,2) == '41')||(substr($kode_unit_subunit,0,2) == '42')||(substr($kode_unit_subunit,0,2) == '43')||(substr($kode_unit_subunit,0,2) == '44')){
+                                if((substr($kode_unit_subunit,0,2) == '14')||(substr($kode_unit_subunit,0,2) == '15')||(substr($kode_unit_subunit,0,2) == '16')||(substr($kode_unit_subunit,0,2) == '17')){
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2)) . ' - ' . $this->unit_model->get_real_nama($kode_unit_subunit);
                                 }else{
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2));
                                 }
 
                             }elseif(strlen($kode_unit_subunit)==6){
-                                if((substr($kode_unit_subunit,0,2) == '41')||(substr($kode_unit_subunit,0,2) == '42')||(substr($kode_unit_subunit,0,2) == '43')||(substr($kode_unit_subunit,0,2) == '44')){
+                                if((substr($kode_unit_subunit,0,2) == '14')||(substr($kode_unit_subunit,0,2) == '15')||(substr($kode_unit_subunit,0,2) == '16')||(substr($kode_unit_subunit,0,2) == '17')){
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2)) . ' - ' . $this->unit_model->get_real_nama(substr($kode_unit_subunit,0,4));
                                 }else{
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2));
@@ -687,6 +791,7 @@ Class Kuitansi extends CI_Controller {
 
                             $dg = $this->input->get();
 
+
                             if(!empty($dg)){
                                 if(!empty($dg['u'])){
                                     $subdata['dgu'] = $dg['u'] ;
@@ -724,7 +829,7 @@ Class Kuitansi extends CI_Controller {
                     }
                 }
                 
-                function daftar_kuitansi_cair($jenis='',$tahun="",$kode_unit_subunit=""){
+                function daftar_kuitansi_cair($jenis='',$tahun="",$kode_unit_subunit="",$enc_str_no_spm=""){
                     
                     if($kode_unit_subunit == ''){
                         $kode_unit_subunit = $this->check_session->get_unit();
@@ -740,7 +845,43 @@ Class Kuitansi extends CI_Controller {
                     }
                     
                     if($jenis==''){
-                        redirect('dashboard','refresh');	// redirect ke halaman home
+                        redirect('dashboard','refresh');    // redirect ke halaman home
+                    }else{
+                        if($jenis=='KS'){
+
+                            if($enc_str_no_spm != ''){
+
+                                $enc_str_no_spm = urldecode($enc_str_no_spm);
+
+                                if( base64_encode(base64_decode($enc_str_no_spm, true)) === $enc_str_no_spm){
+                                    $enc_str_no_spm = base64_decode($enc_str_no_spm);
+                                }else{
+                                    redirect(site_url('/'));
+                                }
+
+                                $subdata['no_spm_ks'] = $enc_str_no_spm ;
+                                $this->load->model('kas_bendahara_model');
+                                $nilai_spm = $this->rsa_ks_model->get_kas_bendahara_by_spm($enc_str_no_spm);
+                                // echo $nilai_spm; die;
+                                $subdata['nilai_spm'] = $nilai_spm ;
+                                // echo $enc_str_no_spm ; die;
+
+                                // echo $enc_str_no_spm ; die ;
+
+                            }else{
+
+                                $subdata['no_spm_ks'] = '-' ;
+                                $subdata['nilai_spm'] = '0' ;
+
+                            }
+
+                        } else if($jenis=='TP'){
+                            $this->load->model('kas_bendahara_model');
+                            $subdata['no_spm_tup'] = $this->kas_bendahara_model->get_last_spm_tup_cair($kode_unit_subunit,$this->cur_tahun);
+                        } else if($jenis=='GP'){
+                            $this->load->model('kas_bendahara_model');
+                            $subdata['no_spm_gup'] = $this->kas_bendahara_model->get_last_spm_gup_cair($kode_unit_subunit,$this->cur_tahun);
+                        }
                     }
 
                     /* check session	*/
@@ -761,14 +902,14 @@ Class Kuitansi extends CI_Controller {
                                 $subdata['nm_unit']             = $this->unit_model->get_nama($kode_unit_subunit);
                             }
                             elseif(strlen($kode_unit_subunit)==4){
-                                if((substr($kode_unit_subunit,0,2) == '41')||(substr($kode_unit_subunit,0,2) == '42')||(substr($kode_unit_subunit,0,2) == '43')||(substr($kode_unit_subunit,0,2) == '44')){
+                                if((substr($kode_unit_subunit,0,2) == '14')||(substr($kode_unit_subunit,0,2) == '15')||(substr($kode_unit_subunit,0,2) == '16')||(substr($kode_unit_subunit,0,2) == '17')){
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2)) . ' - ' . $this->unit_model->get_real_nama($kode_unit_subunit);
                                 }else{
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2));
                                 }
 
                             }elseif(strlen($kode_unit_subunit)==6){
-                                if((substr($kode_unit_subunit,0,2) == '41')||(substr($kode_unit_subunit,0,2) == '42')||(substr($kode_unit_subunit,0,2) == '43')||(substr($kode_unit_subunit,0,2) == '44')){
+                                if((substr($kode_unit_subunit,0,2) == '14')||(substr($kode_unit_subunit,0,2) == '15')||(substr($kode_unit_subunit,0,2) == '16')||(substr($kode_unit_subunit,0,2) == '17')){
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2)) . ' - ' . $this->unit_model->get_real_nama(substr($kode_unit_subunit,0,4));
                                 }else{
                                     $subdata['nm_unit']         = $this->unit_model->get_nama_unit(substr($kode_unit_subunit,0,2));
@@ -787,6 +928,9 @@ Class Kuitansi extends CI_Controller {
                             $subdata['tsite'] = "kuitansi/daftar_kuitansi_cair" ;
                             // echo  $kode_unit_subunit ; die;
                             $subdata['daftar_kuitansi']          = $this->kuitansi_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'CAIR');
+
+                            $subdata['daftar_kuitansi_pengembalian']          = $this->kuitansipengembalian_model->get_kuitansi($jenis,$kode_unit_subunit,$tahun,'CAIR');
+
                             $subdata['daftar_kuitansi_unit']          = $this->kuitansi_model->get_kuitansi_unit($jenis,$kode_unit_subunit,$tahun,'CAIR');
 
                             $this->load->model('tor_model');
@@ -949,11 +1093,11 @@ Class Kuitansi extends CI_Controller {
                 }
                 
                 function get_data_kuitansi(){
-                    $_POST['id'] = 14778;
                     if($this->input->post('id')){
                         $data_kuitansi = $this->kuitansi_model->get_data_kuitansi($this->input->post('id'),$this->cur_tahun);
                         $data_detail_kuintansi = $this->kuitansi_model->get_data_detail_kuitansi($this->input->post('id'),$this->cur_tahun);
                         $data_detail_pajak_kuintansi = $this->kuitansi_model->get_data_detail_pajak_kuitansi($this->input->post('id'),$this->cur_tahun);
+
                        // var_dump(array(
                        //     'kuitansi' => $data_kuitansi,
                        //     'kuitansi_detail' => $data_detail_kuintansi,
@@ -961,6 +1105,7 @@ Class Kuitansi extends CI_Controller {
                        //         )
                        //     );
                        // die;
+
                         echo json_encode(array(
                             'kuitansi' => $data_kuitansi,
                             'kuitansi_detail' => $data_detail_kuintansi,
@@ -971,7 +1116,6 @@ Class Kuitansi extends CI_Controller {
                 }
 
                 function get_data_kuitansi_pengembalian(){
-                    $_POST = $_GET;
                     if($this->input->post('id')){
                         $data_kuitansi = $this->kuitansipengembalian_model->get_data_kuitansi($this->input->post('id'),$this->cur_tahun);
                         $data_detail_kuintansi = $this->kuitansipengembalian_model->get_data_detail_kuitansi($this->input->post('id'),$this->cur_tahun);
@@ -1235,13 +1379,17 @@ Class Kuitansi extends CI_Controller {
         $kode_usulan_belanja = '000000';
 
         if($this->input->post('jenis') == 'GP'){
-            $kd_akun = '113111' ;
+            // $kd_akun = '113111' ;
             $uraian = 'Pengembalian GUP' ;
 
-
         }elseif($this->input->post('jenis') == 'TP'){
-            $kd_akun = '113112' ;
+            // $kd_akun = '113112' ;
             $uraian = 'Pengembalian TUP' ;
+
+        }elseif($this->input->post('jenis') == 'KS'){
+            // $kd_akun = '113112' ;
+            $uraian = 'Pengembalian KS' ;
+
         }
 
         if(strlen($this->check_session->get_unit()) == '2'){
@@ -1250,15 +1398,13 @@ Class Kuitansi extends CI_Controller {
             // $kode_usulan_belanja = $this->check_session->get_unit() . '11' ;
         }
 
+        $kode_usulan_belanja = '';//$kode_usulan_belanja . '000000000001' . $kd_akun ;
 
-
-        $kode_usulan_belanja = $kode_usulan_belanja . '000000000001' . $kd_akun ;
-
-        $nama_akun = $this->akun_model->get_nama_akun($kd_akun,'SELAIN-APBN');
+        // $nama_akun = $this->akun_model->get_nama_akun($kd_akun,'SELAIN-APBN');
 
         $data_ret = array(
                             'next_id'=>$next_id,
-                            'nama_akun'=>$nama_akun,
+                            'nama_akun'=>'',//$nama_akun,
                             'nm_subkegiatan' => $nm_subkegiatan,
                             'kode_usulan_belanja' => $kode_usulan_belanja,
                             'uraian' => $uraian,
@@ -1266,6 +1412,129 @@ Class Kuitansi extends CI_Controller {
 
         echo json_encode($data_ret);
     }
+
+    function edit_tgl_kuitansi(){
+
+        if($this->input->post()){
+            // echo $this->input->post('id') . ' - ' . $this->input->post('tgl_kuitansi') ; die;
+            if($this->kuitansi_model->edit_tgl_kuitansi($this->input->post('id'),$this->input->post('tgl_kuitansi'),$this->cur_tahun)){
+                echo "ok" ;
+            }else{
+                echo "gagal";
+            }
+            
+        }
+        
+    }
+
+    function edit_alias_no_bukti(){
+
+        if($this->input->post()){
+            // echo $this->input->post('id') . ' - ' . $this->input->post('tgl_kuitansi') ; die;
+            if($this->kuitansi_model->edit_alias_kuitansi($this->input->post('id'),$this->input->post('alias_no_bukti'),$this->cur_tahun)){
+                echo "ok" ;
+            }else{
+                echo "gagal";
+            }
+            
+        }
+
+    }
+
+    function get_data_penerima(){
+
+        $q = $this->input->get('query');
+        $kode_unit_subunit = $this->check_session->get_unit();
+        $data = $this->kuitansi_model->get_data_penerima($q,$kode_unit_subunit,$this->cur_tahun);
+        $json = [];
+        
+        if(!empty($data)){
+
+            foreach($data as $d){
+                // $json['nama_pihak_ketiga'] = $d->penerima ;
+                // $json['alamat_ketiga'] = $d->alamat ;
+
+                // $json[] = array(
+                //              'nama_pihak_ketiga' => $d->penerima,
+                //              'alamat_ketiga'=>$d->alamat
+                //             );
+                $json[] = $d->str_penerima ;
+
+            }
+        }
+
+        echo json_encode($json);
+
+    }
+
+    function get_data_penerima_only(){
+
+        $q = $this->input->get('query');
+        $kode_unit_subunit = $this->check_session->get_unit();
+        $data = $this->kuitansi_model->get_data_penerima_only($q,$kode_unit_subunit,$this->cur_tahun);
+        $json = [];
+        
+        if(!empty($data)){
+
+            foreach($data as $d){
+                // $json['nama_pihak_ketiga'] = $d->penerima ;
+                // $json['alamat_ketiga'] = $d->alamat ;
+
+                // $json[] = array(
+                //              'nama_pihak_ketiga' => $d->penerima,
+                //              'alamat_ketiga'=>$d->alamat
+                //             );
+                $json[] = $d->str_penerima ;
+
+            }
+        }
+
+        echo json_encode($json);
+
+    }
+
+    function get_data_uraian(){
+
+        $q = $this->input->get('query');
+        $kode_unit_subunit = $this->check_session->get_unit();
+        $data = $this->kuitansi_model->get_data_uraian($q,$kode_unit_subunit,$this->cur_tahun);
+        $json = [];
+        
+        if(!empty($data)){
+
+            foreach($data as $d){
+                // $json['nama_pihak_ketiga'] = $d->penerima ;
+                // $json['alamat_ketiga'] = $d->alamat ;
+
+                // $json[] = array(
+                //              'nama_pihak_ketiga' => $d->penerima,
+                //              'alamat_ketiga'=>$d->alamat
+                //             );
+                $json[] = $d->uraian ;
+
+            }
+        }
+
+        echo json_encode($json);
+
+    }
+
+
+                    function edit_kuitansi($id_kuitansi){
+                        if($this->input->post()){
+                            $post = array();
+                            foreach ( $_POST as $key => $value )
+                            {
+                                $post[$key] = $this->input->post($key);
+                            }
+                            if($this->kuitansi_model->edit_kuitansi($id_kuitansi,$post,$this->cur_tahun)){
+                                echo "done";
+                            }
+                            else{
+                                echo "err";
+                            }
+                        }
+                    }
 
 
 

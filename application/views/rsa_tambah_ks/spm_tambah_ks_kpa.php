@@ -36,7 +36,7 @@ $(document).ready(function(){
             var data = 'proses=' + 'SPP-FINAL';
             $.ajax({
                 type:"POST",
-                url :"<?=site_url('rsa_tambah_tup/proses_spp_tambah_tup')?>",
+                url :"<?=site_url('rsa_tambah_ks/proses_spp_tambah_ks')?>",
                 data:data,
                 success:function(data){
 //                        console.log(data)
@@ -53,17 +53,18 @@ $(document).ready(function(){
     
     $(document).on("click",'#proses_spm_ppk',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPM-DRAFT-KPA' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' ;
+            var data = 'proses=' + 'SPM-DRAFT-KPA' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&id_nomor_tambah_ks=' + '<?=$id_nomor_tambah_ks?>' ;
             $.ajax({
                 type:"POST",
-                url :"<?=site_url('rsa_tambah_tup/proses_spm_tambah_tup')?>",
+                url :"<?=site_url('rsa_tambah_ks/proses_spm_tambah_ks')?>",
                 data:data,
                 success:function(data){
 //                        console.log(data)
 //                        $('#no_bukti').html(data);
 //                        $('#myModalKuitansi').modal('show');
                         if(data=='sukses'){
-                            location.reload();
+                            // location.reload();
+                            window.location = '<?=site_url('rsa_tambah_ks/daftar_spm_kpa')?>';
                         }
 //                        
                 }
@@ -73,17 +74,18 @@ $(document).ready(function(){
     
     $(document).on("click",'#tolak_spm_ppk',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPM-DITOLAK-KPA' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val();
+            var data = 'proses=' + 'SPM-DITOLAK-KPA' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&ket=' + $('#ket').val() + '&id_nomor_tambah_ks=' + '<?=$id_nomor_tambah_ks?>' ;
             $.ajax({
                 type:"POST",
-                url :"<?=site_url('rsa_tambah_tup/proses_spm_tambah_tup')?>",
+                url :"<?=site_url('rsa_tambah_ks/proses_spm_tambah_ks')?>",
                 data:data,
                 success:function(data){
 //                        console.log(data)
 //                        $('#no_bukti').html(data);
 //                        $('#myModalKuitansi').modal('show');
                         if(data=='sukses'){
-                            location.reload();
+                            // location.reload();
+                            window.location = '<?=site_url('rsa_tambah_ks/daftar_spm_kpa')?>';
                         }
 //                        
                 }
@@ -97,8 +99,8 @@ $(document).ready(function(){
       })
     
     $(document).on("click","#down",function(){
-                    var uri = $("#table_spp_tup").excelexportjs({
-                                    containerid: "table_spp_tup"
+                    var uri = $("#table_spp_tambah_ks").excelexportjs({
+                                    containerid: "table_spp_tambah_ks"
                                     , datatype: "table"
                                     , returnUri: true
                                 });
@@ -110,8 +112,8 @@ $(document).ready(function(){
     });
     
     $(document).on("click","#down_2",function(){
-                    var uri = $("#table_spm_tup").excelexportjs({
-                                    containerid: "table_spm_tup"
+                    var uri = $("#table_spm_tambah_ks").excelexportjs({
+                                    containerid: "table_spm_tambah_ks"
                                     , datatype: "table"
                                     , returnUri: true
                                 });
@@ -171,32 +173,32 @@ function b64toBlob(b64Data, contentType, sliceSize) {
     $stts_kbuu = '';
     ?>
     
-    <?php if($doc_tup == ''){ $stts_bendahara = 'active'; ?>
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> belum diusulkan oleh bendahara.</div>
-    <?php }elseif($doc_tup == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
-    <?php }elseif($doc_tup == 'SPP-DITOLAK'){ $stts_bendahara = 'active'; ?>
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >PPK SUKPA</span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPP-FINAL'){ $stts_bendahara = 'done';  $stts_ppk = 'done'; ?>   
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPP TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah diterima oleh <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done';  $stts_kpa = 'active'; ?>   
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KPA </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
-        <div class="alert alert-info" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >VERIFIKATOR </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KPA </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
-        <div class="alert alert-success" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >VERIFIKATOR </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done' ?>   
-        <div class="alert alert-success" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah disetujui oleh <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KUASA BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc_tup == 'SPM-FINAL-BUU'){ $stts_bendahara = 'done'; ?> 
-        <div class="alert alert-success" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah difinalisasi oleh <b><span class="text-danger" >BUU </span></b> .</div>
-    <?php }elseif($doc_tup == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'active'; ?>   
-        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM TUP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php if($doc_tambah_ks == ''){ $stts_bendahara = 'active'; ?>
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> belum diusulkan oleh bendahara.</div>
+    <?php }elseif($doc_tambah_ks == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPP-DITOLAK'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; ?>
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >PPK SUKPA</span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPP-FINAL'){ $stts_bendahara = 'done';  $stts_ppk = 'done'; ?>   
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPP KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah diterima oleh <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done';  $stts_kpa = 'active'; ?>   
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KPA </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
+        <div class="alert alert-info" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >VERIFIKATOR </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KPA </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
+        <div class="alert alert-success" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KUASA BUU </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'active'; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >VERIFIKATOR </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done' ?>   
+        <div class="alert alert-success" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah disetujui oleh <b><span class="text-danger" >KUASA BUU </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'active'; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KUASA BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-FINAL-BUU'){ $stts_bendahara = 'done'; ?> 
+        <div class="alert alert-success" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah difinalisasi oleh <b><span class="text-danger" >BUU </span></b> .</div>
+    <?php }elseif($doc_tambah_ks == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'active'; ?>   
+        <div class="alert alert-warning" style="border:1px solid #a94442;">SPM KS Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php } ?>
         
 <div class="progress-round">
@@ -259,7 +261,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun_spp?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : TUP</b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : KS</b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
@@ -290,14 +292,15 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 				<tr>
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
-                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar_spp"><?php echo isset($detail_tup['nom'])?number_format($detail_tup['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo isset($detail_tup['terbilang'])?ucwords($detail_tup['terbilang']):''; ?></span></b>)</li>
-                                                <li>Untuk keperluan : <span id="untuk_bayar_spp"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
-                                                <li>Nama bendahara pengeluaran : <span id="penerima_spp"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
-                                                <li>Alamat : <span id="alamat_spp"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
-                                                <li>Nama Bank : <span id="nmbank_spp"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
-                                                <li>No. Rekening Bank : <span id="rekening_spp"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
-                                                <li>No. NPWP : <span id="npwp_spp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li>
+                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?=number_format($detail_tambah_ks['nom'], 0, ",", ".")?></span>,-<br>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_tambah_ks['terbilang'])?> <?php echo substr($detail_tambah_ks['terbilang'],strlen($detail_tambah_ks['terbilang'])-6,6) == 'Rupiah' ? '' : 'Rupiah' ; ?></span></b>)</li>
+                                                <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'-'?></span></li>
+                                                <li>Nama PIC : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:'-'?></span></li>
+                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:'-'?></span></li>
+                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:'-'?></span></li>
+                                                <li>Nama Rekening Bank : <span id="nmrekening"><?=isset($detail_pic->nama_rek_penerima)?$detail_pic->nama_rek_penerima:'-'?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:'-'?></span></li>
+                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:'-'?></span> <!--[ <a href="#" id="btn-edit-rincian">edit</a> ]--></li>
                                         </ol>
                                     </td>
                                 </tr>
@@ -343,13 +346,13 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                                         </tr>
 							<tr>
 								<td>
-									Kas di bendahara pengeluaran
+									Kas di PIC Kerja Sama
 								</td>
 								<td  style="text-align: center;">
-									12111
+									13111
 								</td>
                                                                 <td style="text-align: right;padding-right: 10px;">
-									Rp. <?php echo isset($detail_tup['nom'])?number_format($detail_tup['nom'], 0, ",", "."):''; ?>
+									Rp. <?php echo isset($detail_tambah_ks['nom'])?number_format($detail_tambah_ks['nom'], 0, ",", "."):''; ?>
 								</td>
                                                                 <td  style="text-align: center;">&nbsp;</td>
 								<td  style="text-align: right;">&nbsp;</td>
@@ -402,7 +405,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 								Jumlah Pengeluaran
 								</td>
 								<td style="text-align: right;padding-right: 10px;">
-									Rp. <?php echo isset($detail_tup['nom'])?number_format($detail_tup['nom'], 0, ",", "."):''; ?>
+									Rp. <?php echo isset($detail_tambah_ks['nom'])?number_format($detail_tambah_ks['nom'], 0, ",", "."):''; ?>
 								</td>
 								<td>
 									&nbsp;
@@ -430,7 +433,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 								<strong>Jumlah dana yang dikeluarkan</strong>
 								</td>
 								<td  style="text-align: right;padding-right: 10px;">
-									Rp. <?php echo isset($detail_tup['nom'])?number_format($detail_tup['nom'], 0, ",", "."):''; ?>
+									Rp. <?php echo isset($detail_tambah_ks['nom'])?number_format($detail_tambah_ks['nom'], 0, ",", "."):''; ?>
 								</td>
 								<td style="padding-left: 10px;">
 									<b>Jumlah Potongan</b>
@@ -474,12 +477,12 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                 </div>
 </div>
 <br />
-<form action="<?=site_url('rsa_tup/cetak_spp')?>" id="form_spp" method="post" style="display: none"  >
+<form action="<?=site_url('rsa_tambah_ks/cetak_spp')?>" id="form_spp" method="post" style="display: none"  >
     <input type="text" name="dtable" id="dtable" value="" />
 </form>
             <div class="alert alert-warning" style="text-align:center">
                 
-                <?php if($doc_tup == 'SPP-DRAFT'){ ?>
+                <?php if($doc_tambah_ks == 'SPP-DRAFT'){ ?>
                     <!--<a href="#" class="btn btn-warning" id="proses_spp"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Setujui SPP</a>-->
                     <!--<a href="#" class="btn btn-warning" id="tolak_spp" data-toggle="modal" data-target="#myModalTolakSPP"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tolak SPP</a>-->
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
@@ -501,6 +504,9 @@ function b64toBlob(b64Data, contentType, sliceSize) {
           
           <div style="background-color: #EEE; padding: 10px;">
             <div id="div-cetak-spm">
+
+            <?php if(($doc_tambah_ks != 'SPP-DITOLAK') && ($doc_tambah_ks != 'SPP-DRAFT')): ?>
+
 		<table id="table_spp" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 900px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
 			<tbody>
                             <tr >
@@ -519,7 +525,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun_spm?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : TUP</b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : KS</b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm==''?'':strftime("%d %B %Y", strtotime($tgl_spm)); ?></td>
@@ -549,14 +555,15 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 				<tr>
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
-                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?php echo isset($detail_tup_spm['nom'])?number_format($detail_tup_spm['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_tup_spm['terbilang'])?ucwords($detail_tup_spm['terbilang']):''; ?></span></b>)</li>
-                                                <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic_spm->untuk_bayar)?$detail_pic_spm->untuk_bayar:''?></span></li>
-                                                <li>Nama bendahara pengeluaran : <span id="penerima"><?=isset($detail_pic_spm->penerima)?$detail_pic_spm->penerima:''?></span></li>
-                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic_spm->alamat_penerima)?$detail_pic_spm->alamat_penerima:''?></span></li>
-                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic_spm->nama_bank_penerima)?$detail_pic_spm->nama_bank_penerima:''?></span></li>
-                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic_spm->no_rek_penerima)?$detail_pic_spm->no_rek_penerima:''?></span></li>
-                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic_spm->npwp_penerima)?$detail_pic_spm->npwp_penerima:''?></span></li>
+                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar"><?=number_format($detail_tambah_ks['nom'], 0, ",", ".")?></span>,-<br>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?=ucwords($detail_tambah_ks['terbilang'])?> <?php echo substr($detail_tambah_ks['terbilang'],strlen($detail_tambah_ks['terbilang'])-6,6) == 'Rupiah' ? '' : 'Rupiah' ; ?></span></b>)</li>
+                                                <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic_spm->untuk_bayar)?$detail_pic_spm->untuk_bayar:'-'?></span></li>
+                                                <li>Nama PIC : <span id="penerima"><?=isset($detail_pic_spm->penerima)?$detail_pic_spm->penerima:'-'?></span></li>
+                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic_spm->alamat_penerima)?$detail_pic_spm->alamat_penerima:'-'?></span></li>
+                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic_spm->nama_bank_penerima)?$detail_pic_spm->nama_bank_penerima:'-'?></span></li>
+                                                <li>Nama Rekening Bank : <span id="nmrekening"><?=isset($detail_pic_spm->nama_rek_penerima)?$detail_pic_spm->nama_rek_penerima:'-'?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic_spm->no_rek_penerima)?$detail_pic_spm->no_rek_penerima:'-'?></span></li>
+                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic_spm->npwp_penerima)?$detail_pic_spm->npwp_penerima:'-'?></span> <!--[ <a href="#" id="btn-edit-rincian">edit</a> ]--></li>
                                         </ol>
                                     </td>
                                 </tr>
@@ -602,13 +609,13 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                                         </tr>
 							<tr>
 								<td>
-									Kas di bendahara pengeluaran
+									Kas di PIC Kerja Sama
 								</td>
 								<td  style="text-align: center;">
-									12111
+									13111
 								</td>
                                                                 <td style="text-align: right;padding-right: 10px;">
-									Rp. <?php echo isset($detail_tup_spm['nom'])?number_format($detail_tup_spm['nom'], 0, ",", "."):''; ?>
+									Rp. <?php echo isset($detail_tambah_ks_spm['nom'])?number_format($detail_tambah_ks_spm['nom'], 0, ",", "."):''; ?>
 								</td>
                                                                 <td  style="text-align: center;">&nbsp;</td>
 								<td  style="text-align: right;">&nbsp;</td>
@@ -661,7 +668,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 								Jumlah Pengeluaran
 								</td>
 								<td style="text-align: right;padding-right: 10px;">
-									Rp. <?php echo isset($detail_tup_spm['nom'])?number_format($detail_tup_spm['nom'], 0, ",", "."):''; ?>
+									Rp. <?php echo isset($detail_tambah_ks_spm['nom'])?number_format($detail_tambah_ks_spm['nom'], 0, ",", "."):''; ?>
 								</td>
 								<td>
 									&nbsp;
@@ -689,7 +696,7 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 								<strong>Jumlah dana yang dikeluarkan</strong>
 								</td>
 								<td  style="text-align: right;padding-right: 10px;">
-									Rp. <?php echo isset($detail_tup_spm['nom'])?number_format($detail_tup_spm['nom'], 0, ",", "."):''; ?>
+									Rp. <?php echo isset($detail_tambah_ks_spm['nom'])?number_format($detail_tambah_ks_spm['nom'], 0, ",", "."):''; ?>
 								</td>
 								<td style="padding-left: 10px;">
 									<b>Jumlah Potongan</b>
@@ -752,8 +759,8 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                         NIP. <span id="nipverifikator"><?php echo isset($detail_verifikator->nomor_induk)? $detail_verifikator->nomor_induk : '' ;?></span><br>
                                     </td>
                                     <td colspan="2" style="vertical-align: top;line-height: 16px;padding-left: 10px;">
-                                        <?php if(isset($detail_tup_spm['nom'])){ ?>
-                                            <?php if($detail_tup_spm['nom'] >= 100000000){ ?>
+                                        <?php if(isset($detail_tambah_ks_spm['nom'])){ ?>
+                                            <?php if($detail_tambah_ks_spm['nom'] >= 100000000){ ?>
                                             Setuju dibayar : <br>
                                             Kuasa Bendahara Umum Undip harap membayar<br>
                                             kepada nama yang tersebut sesuai SPM dari KPA<br>
@@ -784,17 +791,26 @@ function b64toBlob(b64Data, contentType, sliceSize) {
                                 </tr>
 			</tbody>
 		</table>
+
+        <?php else: ?>
+
+        <div class="alert alert-danger" style="background-color: #FFF;">
+            Tidak ada SPM karena SPP belum diusulkan / ditolak.
+        </div>
+
+    <?php endif; ?>
+
             </div>
               
           
 </div>
 <br />
-<form action="<?=site_url('rsa_tup/cetak_spm')?>" id="form_spm" method="post" style="display: none"  >
+<form action="<?=site_url('rsa_tambah_ks/cetak_spm')?>" id="form_spm" method="post" style="display: none"  >
     <input type="text" name="dtable_2" id="dtable_2" value="" />
 </form>
             <div class="alert alert-warning" style="text-align:center">
                 
-                <?php if($doc_tup == 'SPM-DRAFT-PPK'){ ?>
+                <?php if($doc_tambah_ks == 'SPM-DRAFT-PPK'){ ?>
                     <a href="#" class="btn btn-warning" id="proses_spm_ppk"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Setujui SPM</a>
                     <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#myModalTolakSPMPPK"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Tolak SPM</a>
                     <button type="button" class="btn btn-info" id="cetak-spm" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>

@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Modul_gaji extends CI_Controller {
-	
+
 	private $cur_tahun = '' ;
 	private $nominal_ipp = 5000000;
 	private $rek_tunj_pns = 2;
@@ -25,17 +25,17 @@ class Modul_gaji extends CI_Controller {
 			$this->load->library('revisi_session');
 			$this->load->model('cantik_model');
 			$this->load->model('setting_model');
-			
+
 			// otomatis set status
 			if(!isset($_SESSION['ipp']['status'])){
-				$_SESSION['ipp']['status'] = array(1,3,6,12);
+				$_SESSION['ipp']['status'] = array(1,3,6,12,13,14);
 			}
-			
+
 			// otomatis set tahun
 			if(!isset($_SESSION['ipp']['tahun'])){
 				$_SESSION['ipp']['tahun'] = $this->cur_tahun;
 			}
-			
+
 			// otomatis set seluruh unit
 			if(!isset($_SESSION['ipp']['unit_id'])){
 				if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42'){
@@ -44,7 +44,7 @@ class Modul_gaji extends CI_Controller {
 					$_SESSION['ipp']['unit_id'] = $this->cantik_model->get_unit_rba($this->check_session->get_unit());
 				}
 			}
-			
+
 		}
   }
 
@@ -78,7 +78,7 @@ class Modul_gaji extends CI_Controller {
 		$data['message']	= validation_errors();
 		$this->load->view('main_template',$data);
 	}
-	
+
 	public function showDialogProsesIPP(){
 		if(!isset($_SESSION['ipp'])){
 			echo $this->cantik_model->msgGagal('Pilih kriteria proses IPP sebelum melakukan proses'); exit;
@@ -119,6 +119,7 @@ class Modul_gaji extends CI_Controller {
 	}
 
 	public function ipp_proses(){
+		$debug = 1;
 		if(isset($_POST)){
 			if($_POST['act']=='ipp_proses'){
         $_SESSION['ipp']['semester'] = $_POST['semester'];
@@ -146,9 +147,12 @@ class Modul_gaji extends CI_Controller {
             unset($_SESSION['ipp']['status']);
           }
         }
+				if($debug == 1){
+					$_SESSION['ipp']['tahun'] = $_POST['tahun'];
+				}
 				echo "1"; exit;
 			} // end if ipp_proses
-			
+
 			if($_POST['act']=='ipp_proses2'){
         if(in_array('4',$_SESSION['ipp']['status_kepeg'])){ // jika merupakan Tenaga KONTRAK
 		      echo $this->cantik_model->msgGagal("Maaf, kamu cantik! (*_-)"); exit;
@@ -170,6 +174,7 @@ class Modul_gaji extends CI_Controller {
 					$vSQL.= " AND `status` = ".$_SESSION['ipp']['status'][0];
 				}
         $sql = "SELECT a.`nip`, a.`unit_id`, a.`status_kepeg`, a.`jnspeg`, a.`golongan_id`, b.`kelompok`, a.`npwp` FROM `kepeg_tb_pegawai` a LEFT JOIN `kepeg_tb_golongan` b ON a.`golongan_id` = b.`id` WHERE a.`jnspeg` = ".intval($_SESSION['ipp']['jnspeg']).$vSQL;
+				// echo $sql; exit;
 				$row = $this->db->query($sql)->num_rows(); //echo $row; exit;
         if($row > 0){
 					$sql_e_ = array();
@@ -208,13 +213,13 @@ class Modul_gaji extends CI_Controller {
         } // end if row
 				exit;
 			} // end if ipp_proses2
-			
+
 			if($_POST['act']=='ipp_reset'){
 				unset($_SESSION['ipp']); // hapus session IPP
 				echo 1;
 				exit;
 			} // end if ipp_reset
-			
+
 			if($_POST['act']=='ipp_hapus_single'){
 				if(isset($_POST['id']) && $this->cantik_model->isExist(intval($_POST['id']),'kepeg_tr_ipp','id_trans')){
           $sql = "DELETE FROM `kepeg_tr_ipp` WHERE `id_trans` = ".$_POST['id'];
@@ -223,7 +228,7 @@ class Modul_gaji extends CI_Controller {
         }
         echo $this->cantik_model->msgGagal("Tidak ada yang dapat dihapus."); exit;
 			} // end if ipp_hapus_single
-			
+
 			if($_POST['act']=='ipp_lihat'){
         $_SESSION['ipp']['semester'] = $_POST['semester'];
         if(isset($_POST['unit_id'])){
@@ -250,15 +255,16 @@ class Modul_gaji extends CI_Controller {
             unset($_SESSION['ipp']['status']);
           }
         }
+				$_SESSION['ipp']['tahun'] = $_POST['tahun'];
 				echo "1"; exit;
 			} // end if ipp_proses
-			
+
 			if($_POST['act']=='ipp_reset'){
 				unset($_SESSION['ipp']); // hapus session IPP
 				echo 1;
 				exit;
 			} // end if ipp_reset
-			
+
 		} // if act == POST
 	} // end function ipp_proses
 
@@ -282,7 +288,7 @@ class Modul_gaji extends CI_Controller {
 		$data['message']	= validation_errors();
 		$this->load->view('main_template',$data);
 	}
-	
+
 	public function daftar_cetak()
 	{
 		$subdata['status_kepeg'] = array();

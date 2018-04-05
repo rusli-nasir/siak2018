@@ -99,7 +99,7 @@ $(document).ready(function(){
 
                   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_tup/spp_tambah_tup" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_tup" >
  <i class="fa fa-arrow-circle-down fa-5x"></i>
                       <h4>TUP</h4>
                       </a>
@@ -118,10 +118,22 @@ $(document).ready(function(){
 
 
                   </div>
-                    
+                    <!--
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tup/spp_tup" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tup/get_last_spp" >
+ <i class="fa fa-file fa-5x"></i>
+                      <h4>TUP NIHIL</h4>
+                      </a>
+                      </div>
+                    
+                     
+                  </div>
+                  -->
+
+                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tup/daftar_spp" >
  <i class="fa fa-file fa-5x"></i>
                       <h4>TUP NIHIL</h4>
                       </a>
@@ -130,19 +142,6 @@ $(document).ready(function(){
                      
                   </div>
 
-
-                  
-                    
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
-                      <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_gup/daftar_spp" >
- <i class="fa fa-bars fa-5x"></i>
-                      <h4>Daftar SPP</h4>
-                      </a>
-                      </div>
-                     
-                     
-                  </div>
                     
                     
                     
@@ -221,7 +220,7 @@ $(document).ready(function(){
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/dpa/realisasi_dpa/SELAIN-APBN/1" >
+                           <a href="<?php echo base_url(); ?>index.php/dpa/realisasi_dpa/SELAIN-APBN/3" >
  <i class="fa fa-pencil-square fa-5x"></i>
                       <h4>DPA</h4>
                       </a>
@@ -232,7 +231,7 @@ $(document).ready(function(){
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/kuitansi/daftar_kuitansi/GP" >
+                           <a href="<?php echo base_url(); ?>index.php/kuitansi/daftar_kuitansi/TP" >
  <i class="fa fa-file-archive-o fa-5x"></i>
                       <h4>Kuitansi</h4>
                       </a>

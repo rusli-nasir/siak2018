@@ -34,18 +34,26 @@ class Akun_kas3_model extends CI_Model{
 		return $this->db->insert("akun_kas3",$data);
 	}
 	
-	function get_akun_kas3($where=""){
+	function get_akun_kas3($kode_akun2digit){
 
-		if(is_array($where)){
-			$this->db->where($where);
-			//$this->db->where("kd_kas_2",$where["kd_kas_2"]);
-		
-		}
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun3digit,nama_akun3digit FROM akun_belanja WHERE kode_akun2digit = '{$kode_akun2digit}' ORDER BY kode_akun3digit";
+		$query = $rba->query($query);
 
-		$query = $this->db->get("akun_kas3");
-	//var_dump($where);die;
 		if ($query->num_rows() > 0){
 			
+			return $query->result();
+		}else{
+			return array();
+		}
+	}
+
+	function get_akun_sebelum($kode_akun2digit){
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun2digit,nama_akun2digit FROM akun_belanja WHERE kode_akun2digit = '{$kode_akun2digit}'";
+		$query = $rba->query($query);
+
+		if($query->num_rows()>0){
 			return $query->result();
 		}else{
 			return array();

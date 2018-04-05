@@ -6,21 +6,25 @@ Class Tor extends CI_Controller {
     parent::__construct();
     $this->cur_tahun = $this->setting_model->get_tahun();
     if ($this->check_session->user_session()){
-  		/*	Load library, helper, dan Model	*/
-  		$this->load->library(array('form_validation','option'));
-  		$this->load->helper('form');
-  		$this->load->model('tor_model');
-		$this->load->model('kuitansi_lsphk3_model');
-                $this->load->model('user_model');
-  		$this->load->model('menu_model');
-  		$this->load->model('unit_model');
-  		$this->load->model('subunit_model');
-  		$this->load->model('master_unit_model');
-			$this->load->model('cantik_model');
+      /*  Load library, helper, dan Model */
+      $this->load->library(array('form_validation','option'));
+      $this->load->helper('form');
+      $this->load->helper('vayes_helper');
+      $this->load->model('tor_model');
+      // $this->load->model('kuitansi_lsphk3_model'); //muted by Arief
+      $this->load->model('user_model');
+      $this->load->model('menu_model');
+      $this->load->model('unit_model');
+      $this->load->model('subunit_model');
+      $this->load->model('master_unit_model');
+      $this->load->model('cantik_model');
+      $this->load->model('cantik2_model');
+      $this->load->model('akun_model');
+      $this->load->model('kas_undip_model');
       if($this->cantik_model->manual_override()){
         // otomatis set status
         if(!isset($_SESSION['ovr']['status'])){
-          $_SESSION['ovr']['status'] = array(1,3,6,12);
+          $_SESSION['ovr']['status'] = array(1,3,6,12,13,14);
         }
 
         // otomatis set tahun
@@ -29,318 +33,448 @@ Class Tor extends CI_Controller {
         }
 
         // otomatis set seluruh unit
-        if(!isset($_SESSION['ovr']['unit_id'])){
-          if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42'){
+        // if(!isset($_SESSION['ovr']['unit_id'])){
+          if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='15' || substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='25'){
             $_SESSION['ovr']['unit_id'] = $this->cantik_model->getUnitChecked();
           }else{
-            $_SESSION['ovr']['unit_id'] = $this->cantik_model->get_unit_rba($this->check_session->get_unit());
+            if($this->check_session->get_unit() == '19'){
+              $_SESSION['ovr']['unit_id'] = '19';
+            }elseif($this->check_session->get_unit() == '20'){
+              $_SESSION['ovr']['unit_id'] = '20';
+            }else{
+              $_SESSION['ovr']['unit_id'] = $this->cantik_model->get_unit_rba($_SESSION['rsa_kode_unit_subunit']);
+            }
           }
-        }
+        // }
       }
     }else{
-      redirect('welcome','refresh');	// redirect ke halaman home
-	  }
+      redirect('welcome','refresh');  // redirect ke halaman home
+    }
   }
 
 /* -------------- Method ------------- */
-	function index()
-	{
-		/* check session	*/
-		if($this->check_session->user_session()){
-			redirect('tor/daftar_tor/','refresh');
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
-	}
-
-        function usulan_tor($kode,$sumber_dana){
-
-            $data['cur_tahun'] = $this->cur_tahun ;
-
-            /* check session	*/
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
-                        $unit = $this->check_session->get_unit() ;
-			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
-                        $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);//$this->tor_model->get_tor_usul(substr($kode,2,10));
-                        $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
-//                        echo '<pre>'; var_dump($subdata['tor_usul']);echo '</pre>';die;
-                        $subdata['detail_rsa']          = $this->tor_model->get_detail_rsa($unit,$kode,$sumber_dana,$this->cur_tahun);
-                        $this->load->model('dpa_model');
-                        $subdata['impor']               = $this->dpa_model->get_dpa_unit_impor($unit,$sumber_dana,$this->cur_tahun);
-                        $subdata['revisi']              = $this->dpa_model->get_dpa_unit_revisi($unit,$sumber_dana,$this->cur_tahun);
-//                        echo '<pre>'; var_dump($subdata['impor'] );echo '</pre>';die;
-//                        echo '<pre>'; var_dump($subdata['detail_rsa'] );echo '</pre>';die;
-						            $subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-                        $subdata['sumber_dana'] 	= $sumber_dana;
-                        $subdata['kode']                = $kode;
-
-			$data['main_content'] 		= $this->load->view("tor/usulan_tor",$subdata,TRUE);
-			/*	Load main template	*/
-//			echo '<pre>';var_dump($subdata);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
-
-        }
-
-
-        function usulan_tor_to_validate_kpa($kode,$sumber_dana,$tahun){
-
-            $data['cur_tahun'] = $this->cur_tahun ;
-
-            /* check session  */
-    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2))){
-        $unit = $this->check_session->get_unit() ;
-      $data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//      $subdata['rsa_usul']    = $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
-    $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);//$this->tor_model->get_tor_usul(substr($kode,2,10));
-
-    $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
-    $subdata['detail_rsa_to_validate']      = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
-//                var_dump($subdata['detail_rsa_to_validate']);die;
-    //$subdata['detail_rsa_to_validate']->kode_usulan_belanja;
-    $subdata['detail_rsa_kontrak'] = array();
-    foreach($subdata['detail_rsa_to_validate'] as $r){
-      if(substr($r->proses,1,1)=='4'){
-
-        $kodex=$r->kode_usulan_belanja;
-        $kode_akun_tambah=$r->kode_akun_tambah;
-        //var_dump($kode_akun_tambah);die;
-        $subdata['detail_rsa_kontrak'][$kodex.$kode_akun_tambah]= $this->tor_model->get_detail_rsa_kontrak($kodex,$tahun,$kode_akun_tambah,$unit);
-        //var_dump($subdata['detail_rsa_kontrak'][$kodex.$kode_akun_tambah]);die;
-      }
-
-    }
-    // var_dump($subdata['detail_rsa_kontrak']); exit;
-    //var_dump($subdata['detail_rsa_kontrak']);die;
-    $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
-    $subdata['sumber_dana']   = $sumber_dana;
-      $subdata['tahun']   = $tahun;
-      $subdata['kode']                = $kode;
-      $data['main_content']     = $this->load->view("tor/usulan_tor_to_validate_kpa",$subdata,TRUE);
-      /*  Load main template  */
-      //echo '<pre>';var_dump($subdata['detail_rsa_kontrak']);echo '</pre>';die;
-      $this->load->view('main_template',$data);
+  function index()
+  {
+    /* check session  */
+    if($this->check_session->user_session()){
+      redirect('tor/daftar_tor/','refresh');
     }else{
       redirect('welcome','refresh');  // redirect ke halaman home
     }
+  }
 
-        }
+  function usulan_tor($kode,$sumber_dana){
 
-        function usulan_tor_to_validate_ppk($kode,$sumber_dana,$tahun){
+    $data['cur_tahun'] = $this->cur_tahun ;
+    $proses = 0;
 
-            $data['cur_tahun'] = $this->cur_tahun ;
+    /* check session  */
+    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
+      $unit = $this->check_session->get_unit() ;
+      $data['main_menu']              = $this->load->view('main_menu','',TRUE);
+      $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);
+      // $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+      // $subdata['detail_rsa']          = $this->tor_model->get_detail_rsa($unit,$kode,$sumber_dana,$this->cur_tahun);
+      $this->load->model('dpa_model');
+      $subdata['impor']               = $this->dpa_model->get_dpa_unit_impor($unit,$this->cur_tahun);
+      $subdata['revisi']              = $this->dpa_model->get_dpa_unit_revisi($unit,$this->cur_tahun);
 
-            /* check session	*/
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==14))){
-        $unit = $this->check_session->get_unit() ;
-			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
-		$subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);//$this->tor_model->get_tor_usul(substr($kode,2,10));
+      $subdata['akun_belanja'] = $this->akun_model->search_akun_belanja_all();
 
-		$subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
-		$subdata['detail_rsa_to_validate']      = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
-//                var_dump($subdata['detail_rsa_to_validate']);die;
-		//$subdata['detail_rsa_to_validate']->kode_usulan_belanja;
-		$subdata['detail_rsa_kontrak'] = array();
-		foreach($subdata['detail_rsa_to_validate'] as $r){
-			if(substr($r->proses,1,1)=='4'){
-
-				$kodex=$r->kode_usulan_belanja;
-				$kode_akun_tambah=$r->kode_akun_tambah;
-				//var_dump($kode_akun_tambah);die;
-				$subdata['detail_rsa_kontrak'][$kodex.$kode_akun_tambah]= $this->tor_model->get_detail_rsa_kontrak($kodex,$tahun,$kode_akun_tambah,$unit);
-				//var_dump($subdata['detail_rsa_kontrak'][$kodex.$kode_akun_tambah]);die;
-			}
-
-		}
-    // var_dump($subdata['detail_rsa_kontrak']); exit;
-		//var_dump($subdata['detail_rsa_kontrak']);die;
-		$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-		$subdata['sumber_dana'] 	= $sumber_dana;
-      $subdata['tahun'] 	= $tahun;
+      $subdata['opt_sumber_dana']     = $this->option->sumber_dana();
+      $subdata['sumber_dana']         = $sumber_dana;
       $subdata['kode']                = $kode;
-			$data['main_content'] 		= $this->load->view("tor/usulan_tor_to_validate_ppk",$subdata,TRUE);
-			/*	Load main template	*/
-			//echo '<pre>';var_dump($subdata['detail_rsa_kontrak']);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
+      $subdata['akun_subakun']        = $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+      // vdebug($subdata['akun_subakun']);
 
-        }
+      $data['main_content']     = $this->load->view("tor/usulan_tor",$subdata,TRUE);
 
+      $this->load->view('main_template',$data);
+    }else{
+      redirect('welcome','refresh');
+    }
 
-        function usulan_tor_to_validate($kode,$sumber_dana,$tahun,$unit=''){
+  }
 
-            $data['cur_tahun'] = $this->cur_tahun ;
+  function usulan_tor_ajax_reload($kode,$sumber_dana){
 
-            /* check session	*/
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==3))){
+    $data['cur_tahun'] = $this->cur_tahun ;
+
+    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
+      $unit = $this->check_session->get_unit() ;
+      $data['main_menu']              = $this->load->view('main_menu','',TRUE);
+
+      $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);
+
+      $this->load->model('dpa_model');
+      $subdata['impor']               = $this->dpa_model->get_dpa_unit_impor($unit,$this->cur_tahun);
+      $subdata['revisi']              = $this->dpa_model->get_dpa_unit_revisi($unit,$this->cur_tahun);
+
+      $subdata['opt_sumber_dana']     = $this->option->sumber_dana();
+      $subdata['sumber_dana']         = $sumber_dana;
+      $subdata['kode']                = $kode;
+      $subdata['akun_subakun']        = $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+
+      $this->load->view("tor/usulan_tor_ajax_reload",$subdata);
+    }else{
+      redirect('welcome','refresh');
+    }
+
+  }
+
+  function usulan_tor_to_validate_ajax_reload($kode,$sumber_dana,$unit=''){
+
+    $data['cur_tahun'] = $this->cur_tahun ;
+
+    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==3))){
       if($unit==''){
         $unit = $this->check_session->get_unit() ;
       }
-			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
-      $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);//$this->tor_model->get_tor_usul(substr($kode,2,10));
-      $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
-      $subdata['detail_rsa_to_validate']          = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
-			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-      $subdata['sumber_dana'] 	= $sumber_dana;
-      $subdata['tahun'] 	= $tahun;
-      $subdata['unit'] 	= $unit;
-      $subdata['nama_unit']  = $this->unit_model->get_single_unit($unit,'nama');
+      $proses[0] = array(
+          'proses' => 2
+      );
+      $proses[1] = array(
+          'proses' => 3
+      );
+
+      $data['main_menu']              = $this->load->view('main_menu','',TRUE);
+
+      $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);
+
+      $this->load->model('dpa_model');
+      $subdata['impor']               = $this->dpa_model->get_dpa_unit_impor($unit,$this->cur_tahun);
+      $subdata['revisi']              = $this->dpa_model->get_dpa_unit_revisi($unit,$this->cur_tahun);
+
+      $subdata['opt_sumber_dana']     = $this->option->sumber_dana();
+      $subdata['sumber_dana']         = $sumber_dana;
       $subdata['kode']                = $kode;
-			$data['main_content'] 		= $this->load->view("tor/usulan_tor_to_validate",$subdata,TRUE);
-			/*	Load main template	*/
-//			echo '<pre>';var_dump($subdata);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
+      $subdata['akun_subakun']        = $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun,$proses);
+
+      $this->load->view("tor/usulan_tor_to_validate_ajax_reload",$subdata);
+    }else{
+      redirect('welcome','refresh');
+    }
+
+  }
+
+  function refresh_usulan_tor_detail($kode_usulan_belanja,$sumber_dana){
+    $kode = substr($kode_usulan_belanja, 18,6);
+    $data['cur_tahun'] = $this->cur_tahun ;
+
+    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
+      $unit = $this->check_session->get_unit() ;
+      $data['main_menu']              = $this->load->view('main_menu','',TRUE);
+
+      $this->load->model('dpa_model');
+      $subdata['impor']               = $this->dpa_model->get_dpa_unit_impor($unit,$this->cur_tahun);
+      $subdata['revisi']              = $this->dpa_model->get_dpa_unit_revisi($unit,$this->cur_tahun);
+
+      $subdata['opt_sumber_dana']     = $this->option->sumber_dana();
+      $subdata['sumber_dana']         = $sumber_dana;
+      $subdata['kode']                = $kode;
+
+      $subdata['akun_subakun']        = $this->tor_model->refresh_usulan_tor_row($kode_usulan_belanja,$sumber_dana,$this->cur_tahun);
+      // vdebug($subdata['akun_subakun']);
+
+      $this->load->view("tor/usulan_tor_row_new",$subdata);
+
+    }else{
+           redirect('welcome','refresh');
+        }
+    }
+
+    function usulan_tor_to_validate_kpa($kode,$sumber_dana,$tahun){
+
+    $data['cur_tahun'] = $tahun ;
+
+    /* check session  */
+    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
+        $unit = $this->check_session->get_unit() ;
+        $data['main_menu']              = $this->load->view('main_menu','',TRUE);
+
+        $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);
+        $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+
+        $subdata['detail_rsa']          = $this->tor_model->get_detail_rsa($unit,$kode,$sumber_dana,$this->cur_tahun);
+        $this->load->model('dpa_model');
+        $subdata['impor']               = $this->dpa_model->get_dpa_unit_impor($unit,$this->cur_tahun);
+        $subdata['revisi']              = $this->dpa_model->get_dpa_unit_revisi($unit,$this->cur_tahun);
+
+        $subdata['opt_sumber_dana']     = $this->option->sumber_dana();
+        $subdata['sumber_dana']         = $sumber_dana;
+        $subdata['kode']                = $kode;
+        $subdata['akun_subakun']        = $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+                // vdebug($subdata['akun_subakun']);
+
+        $data['main_content']     = $this->load->view("tor/usulan_tor_to_validate_kpa",$subdata,TRUE);
+                // vdebug($subdata);
+
+        /*  Load main template  */
+        $this->load->view('main_template',$data);
+    }else{
+        redirect('welcome','refresh');  // redirect ke halaman home
+    }
+
+
+    // $data['cur_tahun'] = $this->cur_tahun ;
+
+    // if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2))){
+    //     $unit = $this->check_session->get_unit() ;
+    //     $data['main_menu']                  = $this->load->view('main_menu','',TRUE);
+    //     $subdata['tor_usul']                = $this->tor_model->get_tor_usul($kode);
+    //     $subdata['detail_akun_rba']         = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
+    //     $subdata['detail_rsa_to_validate']  = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
+
+    //     $subdata['detail_rsa_kontrak'] = array();
+    //     foreach($subdata['detail_rsa_to_validate'] as $r){
+    //         if(substr($r->proses,1,1)=='4'){
+
+    //             $kodex=$r->kode_usulan_belanja;
+    //             $kode_akun_tambah=$r->kode_akun_tambah;
+
+    //             $subdata['detail_rsa_kontrak'][$kodex.$kode_akun_tambah]= $this->tor_model->get_detail_rsa_kontrak($kodex,$tahun,$kode_akun_tambah,$unit);
+
+    //         }
+
+    //     }
+    //     $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
+    //     $subdata['sumber_dana']   = $sumber_dana;
+    //     $subdata['tahun']   = $tahun;
+    //     $subdata['kode']                = $kode;
+    //     $data['main_content']     = $this->load->view("tor/usulan_tor_to_validate_kpa",$subdata,TRUE);
+
+    //     $this->load->view('main_template',$data);
+    // }else{
+    //     redirect('welcome','refresh');
+    // }
+
+    }
+
+    function usulan_tor_to_validate_ppk($kode,$sumber_dana,$tahun){
+        $data['cur_tahun'] = $this->cur_tahun ;
+        $proses = 1;
+
+        if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==14))){
+            $unit = $this->check_session->get_unit() ;
+            $data['main_menu']              = $this->load->view('main_menu','',TRUE);
+            $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);
+            // $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
+            $subdata['detail_rsa_to_validate'] = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
+            $subdata['detail_rsa_kontrak']  = array();
+            // vdebug($subdata['detail_rsa_kontrak']);
+
+            foreach($subdata['detail_rsa_to_validate'] as $r){
+                if(substr($r->proses,1,1)=='4'){
+                    $kodex=$r->kode_usulan_belanja;
+                    $kode_akun_tambah=$r->kode_akun_tambah;
+                }
+            }
+
+            $subdata['opt_sumber_dana']     = $this->option->sumber_dana();
+            $subdata['sumber_dana']         = $sumber_dana;
+            $subdata['tahun']               = $tahun;
+            $subdata['kode']                = $kode;
+
+            $subdata['akun_subakun']        = $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun,$proses);
+            $data['main_content']           = $this->load->view("tor/usulan_tor_to_validate_ppk",$subdata,TRUE);
+
+            $this->load->view('main_template',$data);
+        }else{
+            redirect('welcome','refresh');
+        }
+
+    }
+
+        function check_nilai_kontrak($kode_usulan_belanja,$kode_akun_tambah){
+
+          // echo $kode_usulan_belanja . ' - ' . $kode_akun_tambah;die;
+
+          $this->load->model('rsa_lsk_model');
+
+          // $res_cari = $this->rsa_lsk_model->get_data_kontrak('721111010101010101523157','007');
+
+          $res_cari = $this->rsa_lsk_model->get_data_kontrak($kode_usulan_belanja, $kode_akun_tambah);
+
+          echo json_encode($res_cari);
+
+          // var_dump($res_cari);
 
         }
+
+    function usulan_tor_to_validate($kode,$sumber_dana,$tahun,$unit=''){
+    	$data['cur_tahun'] = $this->cur_tahun ;
+    	if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==3))){
+    		if($unit==''){
+    			$unit = $this->check_session->get_unit() ;
+    		}
+        $proses[0] = array(
+            'proses' => 2
+        );
+        $proses[1] = array(
+            'proses' => 3
+        );
+
+    		$data['main_menu']              		= $this->load->view('main_menu','',TRUE);
+    		$subdata['tor_usul']            		= $this->tor_model->get_tor_usul($kode);
+    		// $subdata['detail_akun_rba']     		= $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
+    		// $subdata['detail_rsa_to_validate'] 	= $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
+    		$subdata['opt_sumber_dana']   			= $this->option->sumber_dana();
+    		$subdata['sumber_dana']   				  = $sumber_dana;
+    		$subdata['tahun']   					      = $tahun;
+    		$subdata['unit']  						      = $unit;
+    		$subdata['nama_unit']  					    = $this->unit_model->get_single_unit($unit,'nama');
+    		$subdata['kode']                		= $kode;
+
+    		$subdata['akun_subakun']        		= $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun,$proses);
+
+    		$data['main_content']        				= $this->load->view("tor/usulan_tor_to_validate",$subdata,TRUE);
+
+    		$this->load->view('main_template',$data);
+    	}else{
+    		redirect('welcome','refresh');
+    	}
+    }
 
         function usulan_tor_to_validate_kbuu($kode,$sumber_dana,$tahun,$unit=''){
 
-            $data['cur_tahun'] = $this->cur_tahun ;
+            $data['cur_tahun'] = $tahun ;
 
-            /* check session  */
-    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11))){
-      if($unit==''){
-        $unit = $this->check_session->get_unit() ;
-      }
-      $data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//      $subdata['rsa_usul']    = $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
-      $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);//$this->tor_model->get_tor_usul(substr($kode,2,10));
-      $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
-      $subdata['detail_rsa_to_validate']          = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
-      $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
-      $subdata['sumber_dana']   = $sumber_dana;
-      $subdata['tahun']   = $tahun;
-      $subdata['unit']  = $unit;
-      $subdata['nama_unit']  = $this->unit_model->get_single_unit($unit,'nama');
-      $subdata['kode']                = $kode;
-      // $data['main_content']     = $this->load->view("tor/usulan_tor_to_validate",$subdata,TRUE);
-      $data['main_content']     = $this->load->view("tor/usulan_tor_to_validate_kbuu",$subdata,TRUE);
-      /*  Load main template  */
-//      echo '<pre>';var_dump($subdata);echo '</pre>';die;
-      $this->load->view('main_template',$data);
-    }else{
-      redirect('welcome','refresh');  // redirect ke halaman home
-    }
+            if($this->check_session->user_session() && (($this->check_session->get_level()==11)||($this->check_session->get_level()==22))){
+                $data['main_menu']              = $this->load->view('main_menu','',TRUE);
 
+                $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);
+                $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+
+                $subdata['detail_rsa']          = $this->tor_model->get_detail_rsa($unit,$kode,$sumber_dana,$this->cur_tahun);
+                $this->load->model('dpa_model');
+                $subdata['impor']               = $this->dpa_model->get_dpa_unit_impor($unit,$this->cur_tahun);
+                $subdata['revisi']              = $this->dpa_model->get_dpa_unit_revisi($unit,$this->cur_tahun);
+
+                $subdata['opt_sumber_dana']     = $this->option->sumber_dana();
+                $subdata['sumber_dana']         = $sumber_dana;
+                $subdata['kode']                = $kode;
+                $subdata['akun_subakun']        = $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+
+                $data['main_content']     = $this->load->view("tor/usulan_tor_to_validate_kbuu",$subdata,TRUE);
+
+                $this->load->view('main_template',$data);
+            }else{
+                redirect('welcome','refresh');
+            }
         }
+
+
 
         function realisasi_tor($kode,$sumber_dana,$jenis){
-
-//           echo $this->cur_tahun ; die;
-
             $data['cur_tahun'] = $this->cur_tahun ;
 
+            if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
+                $unit = $this->check_session->get_unit();
+                $data['main_menu']              = $this->load->view('main_menu','',TRUE);
+                $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);
+                $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+                $subdata['detail_rsa_dpa']      = $this->tor_model->get_detail_rsa_dpa($unit,$kode,$sumber_dana,$this->cur_tahun);
+                $subdata['akun_subakun']       = $this->tor_model->get_detail_akun_subakun_rba($unit,$kode,$sumber_dana,$this->cur_tahun,'3',$jenis);
+                // vdebug( $subdata['akun_subakun']);
 
-            /* check session	*/
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
-		$unit = $this->check_session->get_unit();
-			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
-      $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);//$this->tor_model->get_tor_usul(substr($kode,2,10));
-      $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
-      $subdata['detail_rsa_dpa']      = $this->tor_model->get_detail_rsa_dpa($unit,$kode,$sumber_dana,$this->cur_tahun);
 
-      // echo '<pre>';var_dump( $subdata['detail_rsa_dpa'] );echo '</pre>';die;
+                // vdebug($subdata);die;
 
-    if(intval($jenis) == 4){
-  	  foreach($subdata['detail_rsa_dpa'] as $r){
-  		  if(substr($r->proses,1,1)=='4'){
-    			$kode=$r->kode_usulan_belanja;
-    			$vol=$r->volume;
-    			$harga=$r->harga_satuan;
-    			$nominal=$vol*$harga;
-    			$tahun=$this->cur_tahun;
-    			$subdata['kontrak'][$r->kode_usulan_belanja.$r->kode_akun_tambah]=$this->tor_model->get_detail_rsa_kontrak2($kode,$tahun,$nominal,$unit);
-    			#var_dump($subdata['kontrak']);die;
-  		  }
-  	  }
-    }
+                // if(intval($jenis) == 4){
+                // 	foreach ($subdata['akun_subakun'] as $key_subunit => $value_subunit){
+                // 		foreach ($value_subunit['data'] as $key_sub_subunit => $value_sub_subunit){
+                // 			foreach ($value_sub_subunit['data'] as $key4digit => $value4digit){
+                // 				foreach ($value4digit['data'] as $key5digit => $value5digit){
+                // 					foreach ($value5digit['data'] as $key6digit => $value6digit){
+                // 						foreach ($value6digit['data'] as $keydetail => $valdetail){
+	               //  						if(substr($valdetail['proses'],1,1)=='4'){
+	               //  							$kode=$valdetail['kode_usulan_belanja'];
+	               //  							// $vol=$r->volume;
+	               //  							// $harga=$r->harga_satuan;
+	               //  							$nominal=$valdetail['jumlah_harga'];
+	               //  							$tahun=$this->cur_tahun;
+	               //  							$subdata['kontrak'][$value6digit['kode_usulan_belanja'].$keydetail]=$this->tor_model->get_detail_rsa_kontrak2($kode,$tahun,$nominal,$unit);
+	               //  						}
+                // 						}
+                // 					}
+                // 				}
+                // 			}
+                // 		}
+                // 	}
+                // }
 
-	  // var_dump($subdata['kontrak']); exit;
-	  // $subdata['kontrak']            = $this->tor_model->get_kontrak($kode);
-//      echo '<pre>';
-     //  var_dump( $subdata['detail_rsa_dpa']);
-//      echo '</pre>';die;
-      $subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-      $subdata['sumber_dana'] 	= $sumber_dana;
-      $subdata['kode']                = $kode;
-      $subdata['tahun']               = $this->cur_tahun ;
+                $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
+                $subdata['sumber_dana']       = $sumber_dana;
+                $subdata['kode']                = $kode;
+                $subdata['tahun']               = $this->cur_tahun ;
 
-      if(strlen($this->check_session->get_unit())==2){
-        $subdata['kode_unit']           = $this->check_session->get_unit();
-        $subdata['nm_unit']             = $this->check_session->get_nama_unit();
-      }
-      elseif(strlen($this->check_session->get_unit())==4){
-            if((substr($this->check_session->get_unit(),0,2) == '41')||(substr($this->check_session->get_unit(),0,2) == '42')||(substr($this->check_session->get_unit(),0,2) == '43')||(substr($this->check_session->get_unit(),0,2) == '44')){
-                $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
-                $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2)) . ' - ' . $this->check_session->get_nama_unit();
+                if(strlen($this->check_session->get_unit())==2){
+                    $subdata['kode_unit']           = $this->check_session->get_unit();
+                    $subdata['nm_unit']             = $this->check_session->get_nama_unit();
+
+                }elseif(strlen($this->check_session->get_unit())==4){
+
+                    if((substr($this->check_session->get_unit(),0,2) == '14')||(substr($this->check_session->get_unit(),0,2) == '15')||(substr($this->check_session->get_unit(),0,2) == '16')||(substr($this->check_session->get_unit(),0,2) == '17')){
+                        $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
+                        $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2)) . ' - ' . $this->check_session->get_nama_unit();
+                    }else{
+                        $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
+                        $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2));
+                    }
+
+                }elseif(strlen($this->check_session->get_unit())==6){
+                    if((substr($this->check_session->get_unit(),0,2) == '14')||(substr($this->check_session->get_unit(),0,2) == '15')||(substr($this->check_session->get_unit(),0,2) == '16')||(substr($this->check_session->get_unit(),0,2) == '17')){
+                        $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
+                        $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2)) . ' - ' . $this->unit_model->get_nama_subunit(substr($this->check_session->get_unit(),0,4));
+                  }else{
+                        $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
+                        $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2));
+                    }
+                }
+
+                $subdata['alias']               = $this->tor_model->get_alias_unit($this->check_session->get_unit());
+                $subdata['jenis']               = $jenis;
+                $subdata['pic_kuitansi']        = $this->tor_model->get_pic_kuitansi($this->check_session->get_unit());
+                $subdata['pppk']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
+                $subdata['ppk']                 = $this->tor_model->get_ppk(substr($this->check_session->get_unit(),0,2));
+
+                $subdata['cur_tahun'] = $this->cur_tahun ;
+
+                if($this->check_session->get_level() == '4'){
+                    $subdata['pumk'] = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
+                }
+
+                if(intval($jenis)==2){
+                    if($this->cantik_model->manual_override()){
+                        $subdata['status_kepeg'] = array();
+                        if(isset($_SESSION['ovr']['status_kepeg'])){
+                            $subdata['status_kepeg'] = $_SESSION['ovr']['status_kepeg'];
+                        }
+                        $subdata['unitList'] = $this->cantik_model->getUnitList($_SESSION['ovr']['unit_id']);
+                        $subdata['statusKepegOption'] = $this->cantik_model->getStatusKepegFullCheckbox($subdata['status_kepeg']);
+                        $_bulan = date('m');
+                        if(isset($_SESSION['ovr']['bulan'])){
+                            $_bulan = $_SESSION['ovr']['bulan'];
+                        }
+                        $subdata['bulanOption'] = $this->cantik_model->getBulanOption($_bulan);
+                        $subdata['jenisOption'] = $this->cantik_model->get_opsi_jenis_sppls();
+                        $subdata['semesterOption'] = $this->cantik_model->get_opsi_semester();
+                    }
+                }
+
+
+                $data['main_content']       = $this->load->view("tor/realisasi_tor_new",$subdata,TRUE);
+                // vdebug($subdata);die;
+                $this->load->view('main_template',$data);
+
             }else{
-                $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
-                $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2));
+                redirect('welcome','refresh');
             }
-
-      }elseif(strlen($this->check_session->get_unit())==6){
-            if((substr($this->check_session->get_unit(),0,2) == '41')||(substr($this->check_session->get_unit(),0,2) == '42')||(substr($this->check_session->get_unit(),0,2) == '43')||(substr($this->check_session->get_unit(),0,2) == '44')){
-                $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
-                $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2)) . ' - ' . $this->unit_model->get_nama_subunit(substr($this->check_session->get_unit(),0,4));
-            }else{
-                $subdata['kode_unit']           = substr($this->check_session->get_unit(),0,2);
-                $subdata['nm_unit']             = $this->unit_model->get_nama_unit(substr($this->check_session->get_unit(),0,2));
-            }
-      }
-
-      $subdata['alias']               = $this->tor_model->get_alias_unit($this->check_session->get_unit());
-      $subdata['jenis']               = $jenis;
-      $subdata['pic_kuitansi']        = $this->tor_model->get_pic_kuitansi($this->check_session->get_unit());
-      $subdata['pppk']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
-
-      $subdata['cur_tahun'] = $this->cur_tahun ;
-
-     // var_dump($subdata['pic_kuitansi'] );die;
-
-      if($this->check_session->get_level() == '4'){
-          $subdata['pumk'] = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
-      }
-
-      // tambahan dari dhanu
-      if(intval($jenis)==2){
-        if($this->cantik_model->manual_override()){
-          $subdata['status_kepeg'] = array();
-          if(isset($_SESSION['ovr']['status_kepeg'])){
-            $subdata['status_kepeg'] = $_SESSION['ovr']['status_kepeg'];
-          }
-          $subdata['unitList'] = $this->cantik_model->getUnitList($_SESSION['ovr']['unit_id']);
-          $subdata['statusKepegOption'] = $this->cantik_model->getStatusKepegFullCheckbox($subdata['status_kepeg']);
-          $_bulan = date('m');
-          if(isset($_SESSION['ovr']['bulan'])){
-            $_bulan = $_SESSION['ovr']['bulan'];
-          }
-          $subdata['bulanOption'] = $this->cantik_model->getBulanOption($_bulan);
-          $subdata['jenisOption'] = $this->cantik_model->get_opsi_jenis_sppls();
-          $subdata['semesterOption'] = $this->cantik_model->get_opsi_semester();
         }
-      }
-      // end here
 
-			$data['main_content'] 		= $this->load->view("tor/realisasi_tor",$subdata,TRUE);
-			/*	Load main template	*/
-//			echo '<pre>';var_dump($subdata);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
 
-        }
+
+
 
         function get_next_kode_akun_tambah($kode,$sumber_dana){
             if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
@@ -364,7 +498,7 @@ Class Tor extends CI_Controller {
 
         function add_rsa_detail_belanja(){
 
-            $this->form_validation->set_rules('kode_akun_tambah','Kode Akun Tambah','xss_clean|required');
+            // $this->form_validation->set_rules('kode_akun_tambah','Kode Akun Tambah','xss_clean|required');
             $this->form_validation->set_rules('deskripsi','Deskripsi','xss_clean|required');
             $this->form_validation->set_rules('volume','Volume','xss_clean|required|numeric');
             $this->form_validation->set_rules('satuan','Satuan','xss_clean|required');
@@ -478,6 +612,14 @@ Class Tor extends CI_Controller {
             }
         }
 
+        function get_single_detail(){
+          if($this->input->post()){
+            $dpa = $this->tor_model->get_single_detail($this->input->post('id_rsa_detail'));
+
+            echo $dpa->kode_usulan_belanja . '-' . $dpa->kode_akun_tambah ;
+          }
+        }
+
         function proses_tor_rsa_to_validate(){
             if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==3)||($this->check_session->get_level()==14))){
                 $id_rsa_detail = $this->input->post('id_rsa_detail');
@@ -489,6 +631,34 @@ Class Tor extends CI_Controller {
                     $this->db->query($sql);
                 }
                 // end tambahan dari dhanu
+
+
+                // tambahan dari idris nambah keterangan apabila dpa ditolak
+
+                if(intval($proses) == 0){
+
+                    $dpa = $this->tor_model->get_single_detail($this->input->post('id_rsa_detail'));
+                    $data = array(
+                      'id_rsa_detail' => $dpa->id_rsa_detail,
+                      'kode_usulan_belanja'=> $dpa->kode_usulan_belanja,
+                      'deskripsi' => $dpa->deskripsi,
+                      'sumber_dana' => $dpa->sumber_dana,
+                      'volume' => $dpa->volume,
+                      'satuan' => $dpa->satuan,
+                      'harga_satuan' => $dpa->harga_satuan,
+                      'tahun' => $dpa->tahun,
+                      'username' => $dpa->username,
+                      'tanggal_transaksi' => $dpa->tanggal_transaksi,
+                      'flag_cetak' => $dpa->flag_cetak,
+                      'revisi' => $dpa->revisi,
+                      'kode_akun_tambah' => $dpa->kode_akun_tambah,
+                      'impor' => $dpa->impor,
+                      'tanggal_impor' => $dpa->tanggal_impor,
+                      'proses' => $dpa->proses,
+                      'ket' => $this->input->post('ket'),
+                    );
+                    $this->tor_model->add_rsa_tolak_dpa($data);
+                }
 
                 if($this->tor_model->post_proses_tor_to_validate($id_rsa_detail,$proses)){
                     //$this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> Usulan berhasil divalidasi.</div>');
@@ -511,187 +681,197 @@ Class Tor extends CI_Controller {
         }
 
         function form_edit_detail($id_rsa_detail){
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4)))
-		{
-			$data['value']	= $this->tor_model->get_single_detail($id_rsa_detail);
+            if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4)))
+            {
+                $data['value']  = $this->tor_model->get_single_detail($id_rsa_detail);
 
-			$this->load->view('tor/row_edit_tor',$data);
-		}else{
-			show_404();
-		}
-	}
-
-        function refresh_row_detail_to_validate_ppk($kode,$sumber_dana,$tahun){
-            if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14))){
-//                $data['detail_rsa']          = $this->tor_model->get_detail_rsa($kode,$sumber_dana,$this->cur_tahun);
-                $unit = $this->check_session->get_unit() ;
-                $data['detail_rsa_to_validate']          = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
-//				$data['detail_rsa_to_validate']      = $this->tor_model->get_detail_rsa_to_validate($kode,$sumber_dana,$tahun);
-		//$subdata['detail_rsa_to_validate']->kode_usulan_belanja;
-				foreach($data['detail_rsa_to_validate'] as $r){
-					if(substr($r->proses,1,1)=='4'){
-						$kodex=$r->kode_usulan_belanja;
-				$kode_akun_tambah=$r->kode_akun_tambah;
-				//var_dump($kode_akun_tambah);die;
-				$data['detail_rsa_kontrak'][$kodex.$kode_akun_tambah]= $this->tor_model->get_detail_rsa_kontrak($kodex,$tahun,$kode_akun_tambah,$unit);
-					}
-
-				}
-                $data['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
-                $this->load->view('tor/usulan_tor_row_to_validate_ppk',$data);
+                $this->load->view('tor/row_edit_tor',$data);
+            }else{
+                show_404();
             }
         }
 
-        function refresh_row_detail_to_validate($kode,$sumber_dana,$tahun,$unit=''){
-            if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14)||($this->check_session->get_level()==3))){
-//                $data['detail_rsa']          = $this->tor_model->get_detail_rsa($kode,$sumber_dana,$this->cur_tahun);
-                if($unit==''){
-                    $unit = $this->check_session->get_unit() ;
+    function refresh_row_detail_to_validate_ppk($kode_usulan_belanja,$sumber_dana){
+        $kode = substr($kode_usulan_belanja, 18,6);
+        $proses = 1;
+        $data['cur_tahun'] = $this->cur_tahun ;
+
+        if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14))){
+
+            $unit = $this->check_session->get_unit() ;
+            $data['detail_rsa_to_validate']          = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$this->cur_tahun);
+
+
+            foreach($data['detail_rsa_to_validate'] as $r){
+                if(substr($r->proses,1,1)=='4'){
+                    $kodex=$r->kode_usulan_belanja;
+                    $kode_akun_tambah=$r->kode_akun_tambah;
+                    $this->load->model('rsa_lsk_model');
+                    $res_cari = $this->rsa_lsk_model->get_data_kontrak($kodex,$kode_akun_tambah);
+                    $data['detail_rsa_kontrak'][$kodex.$kode_akun_tambah] = $res_cari;
                 }
-                $data['detail_rsa_to_validate']          = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$tahun);
-                $data['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$tahun);
-                $this->load->view('tor/usulan_tor_row_to_validate',$data);
             }
+            $data['kode']                = $kode;
+            $data['akun_subakun']        = $this->tor_model->refresh_usulan_tor_row($kode_usulan_belanja,$sumber_dana,$this->cur_tahun,$proses);
+            // $data['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+            $this->load->view('tor/usulan_tor_row_to_validate_ppk_new',$data);
         }
+    }
+
+    function refresh_row_detail_to_validate($kode_usulan_belanja,$sumber_dana){
+    	$kode = substr($kode_usulan_belanja, 18,6);
+    	$data['cur_tahun'] = $this->cur_tahun ;
+
+    	if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14)||($this->check_session->get_level()==3))){
+    		$unit = $this->check_session->get_unit() ;
+
+        $proses = 2;
+    		$data['kode']                = $kode;
+    		$data['akun_subakun']        = $this->tor_model->refresh_usulan_tor_row($kode_usulan_belanja,$sumber_dana,$this->cur_tahun,$proses);
+    		// $data['detail_rsa_to_validate']          = $this->tor_model->get_detail_rsa_to_validate($unit,$kode,$sumber_dana,$this->cur_tahun);
+    		// $data['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
+    		$this->load->view('tor/usulan_tor_row_to_validate_new',$data);
+    	}
+    }
 
         function form_edit_detail_to_validate_ppk($id_rsa_detail){
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14)))
-		{
-			$data['value']	= $this->tor_model->get_single_detail($id_rsa_detail);
+    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14)))
+    {
+      $data['value']  = $this->tor_model->get_single_detail($id_rsa_detail);
 
-			$this->load->view('tor/row_edit_tor_to_validate_ppk',$data);
-		}else{
-			show_404();
-		}
-	}
+      $this->load->view('tor/row_edit_tor_to_validate_ppk',$data);
+    }else{
+      show_404();
+    }
+  }
 
         function form_edit_detail_to_validate($id_rsa_detail){
-		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14)||($this->check_session->get_level()==3)))
-		{
-			$data['value']	= $this->tor_model->get_single_detail($id_rsa_detail);
+    if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11)||($this->check_session->get_level()==14)||($this->check_session->get_level()==3)))
+    {
+      $data['value']  = $this->tor_model->get_single_detail($id_rsa_detail);
 
-			$this->load->view('tor/row_edit_tor_to_validate',$data);
-		}else{
-			show_404();
-		}
-	}
+      $this->load->view('tor/row_edit_tor_to_validate',$data);
+    }else{
+      show_404();
+    }
+  }
 
-	function daftar_tor_()
-	{
-		/* check session	*/
-		if($this->check_session->user_session() && $this->check_session->get_level()==1){
-			/*	Set data untuk main template */
-			$data['user_menu']	= $this->load->view('user_menu','',TRUE);
-			//$data['main_content']	= $this->load->view('main_content','',TRUE);
-			$data['main_menu']	= $this->load->view('main_menu','',TRUE);
+  function daftar_tor_()
+  {
+    /* check session  */
+    if($this->check_session->user_session() && $this->check_session->get_level()==1){
+      /*  Set data untuk main template */
+      $data['user_menu']  = $this->load->view('user_menu','',TRUE);
+      //$data['main_content'] = $this->load->view('main_content','',TRUE);
+      $data['main_menu']  = $this->load->view('main_menu','',TRUE);
 
-			//$subdata_tor['result'] 		= $this->tor_model->get_tor();
-			//$subdata['row_tor'] 				= $this->load->view("row_tor",$subdata_tor,TRUE);
-			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-			$data['main_content'] 				= $this->load->view("daftar_tor",$subdata,TRUE);
-			/*	Load main template	*/
-//			echo '<pre>';var_dump($data);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
-	}
+      //$subdata_tor['result']    = $this->tor_model->get_tor();
+      //$subdata['row_tor']         = $this->load->view("row_tor",$subdata_tor,TRUE);
+      $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
+      $data['main_content']         = $this->load->view("daftar_tor",$subdata,TRUE);
+      /*  Load main template  */
+//      echo '<pre>';var_dump($data);echo '</pre>';die;
+      $this->load->view('main_template',$data);
+    }else{
+      redirect('welcome','refresh');  // redirect ke halaman home
+    }
+  }
 
-	function daftar_tor()
-	{
+  function daftar_tor()
+  {
 
-		/* check session	*/
-		if($this->check_session->user_session() && $this->check_session->get_level()==1){
-			/*	Set data untuk main template */
-
-
-			// $data['user_menu']	= $this->load->view('user_menu','',TRUE);
-			//$data['main_content']	= $this->load->view('main_content','',TRUE);
-			$data['main_menu']	= $this->load->view('main_menu','',TRUE);
-
-			$subdata_tor['result'] 		= $this->tor_model->get_tor();
-			// $subdata['row_tor'] 				= $this->load->view("row_tor",$subdata_tor,TRUE);
-			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-			$data['main_content'] 		= $this->load->view("tor/daftar_tor",$subdata,TRUE);
-			/*	Load main template	*/
-//			echo '<pre>';var_dump($data);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
-	}
-	function get_sub_subunit(){
-		if($this->input->post()){
-			$this->load->model('master_sub_subunit_model');
-			$result = $this->master_sub_subunit_model->get_child_sub_subunit($this->input->post('kode_sub_subunit'));
-			$return = '<option value="">-pilih-</option>';
-			foreach($result as $r){
-				$return .= '<option value="'.$r->kode_sub_subunit.'">'.$r->kode_sub_subunit.' - '.$r->nama_sub_subunit.' [sub_subunit]</option>';
-			}
-			echo $return ;
-		}
-	}
-
-	function get_subunit(){
-		if($this->input->post()){
-			$this->load->model('subunit_model');
-			$result = $this->subunit_model->get_child_subunit($this->input->post('kode_subunit'));
-			$return = '<option value="">-pilih-</option>';
-			foreach($result as $r){
-				$return .= '<option value="'.$r->kode_subunit.'">'.$r->kode_subunit.' - '.$r->nama_subunit.' [subunit]</option>';
-			}
-			echo $return ;
-		}
-	}
-	function get_unit(){
-		if($this->input->post()){
-			$this->load->model('master_unit_model');
-			$result = $this->master_unit_model->get_child_unit($this->input->post('kode_unit'));
-			$return = '<option value="">-pilih-</option>';
-			foreach($result as $r){
-				$return .= '<option value="'.$r->kode_unit.'">'.$r->kode_unit.' - '.$r->nama_unit.' [unit]</option>';
-			}
-			echo $return ;
-		}
-	}
-	function get_row($sumber_dana=''){
-		if($this->check_session->user_session() && ($this->check_session->get_level()==1)){
-			$data['result'] = $this->tor_model->search_tor($sumber_dana);
-			//print_r($data);die;
-			$this->load->view("row_tor",$data);
-		}else{
-			show_404('page');
-		}
-	}
-	function filter(){
-		if($this->check_session->user_session() && ($this->check_session->get_level()==1)){
-			$keyword 		= form_prep($this->input->post("keyword"));
-			$sumber_dana 	= form_prep($this->input->post("sumber_dana"));
-			$data['result'] = $this->tor_model->search_tor($sumber_dana,$keyword);
-			//print_r($data);die;
-			$this->load->view("row_tor",$data);
-		}else{
-			show_404('page');
-		}
-	}
-	function input_tor()
-	{
-		/* check session	*/
-		if($this->check_session->user_session() && $this->check_session->get_level()==1){
-			/*	Set data untuk main template */
-			$data['user_menu']	= $this->load->view('user_menu','',TRUE);
-			//$data['main_content']	= $this->load->view('main_content','',TRUE);
-			$data['main_menu']	= $this->load->view('main_menu','',TRUE);
+    /* check session  */
+    if($this->check_session->user_session() && $this->check_session->get_level()==1){
+      /*  Set data untuk main template */
 
 
-			$data['main_content'] 				= $this->load->view("input_tor","",TRUE);
-			/*	Load main template	*/
-//			echo '<pre>';var_dump($data);echo '</pre>';die;
-			$this->load->view('main_template',$data);
-		}else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
-	}
+      // $data['user_menu'] = $this->load->view('user_menu','',TRUE);
+      //$data['main_content'] = $this->load->view('main_content','',TRUE);
+      $data['main_menu']  = $this->load->view('main_menu','',TRUE);
+
+      $subdata_tor['result']    = $this->tor_model->get_tor();
+      // $subdata['row_tor']        = $this->load->view("row_tor",$subdata_tor,TRUE);
+      $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
+      $data['main_content']     = $this->load->view("tor/daftar_tor",$subdata,TRUE);
+      /*  Load main template  */
+//      echo '<pre>';var_dump($data);echo '</pre>';die;
+      $this->load->view('main_template',$data);
+    }else{
+      redirect('welcome','refresh');  // redirect ke halaman home
+    }
+  }
+  function get_sub_subunit(){
+    if($this->input->post()){
+      $this->load->model('master_sub_subunit_model');
+      $result = $this->master_sub_subunit_model->get_child_sub_subunit($this->input->post('kode_sub_subunit'));
+      $return = '<option value="">-pilih-</option>';
+      foreach($result as $r){
+        $return .= '<option value="'.$r->kode_sub_subunit.'">'.$r->kode_sub_subunit.' - '.$r->nama_sub_subunit.' [sub_subunit]</option>';
+      }
+      echo $return ;
+    }
+  }
+
+  function get_subunit(){
+    if($this->input->post()){
+      $this->load->model('subunit_model');
+      $result = $this->subunit_model->get_child_subunit($this->input->post('kode_subunit'));
+      $return = '<option value="">-pilih-</option>';
+      foreach($result as $r){
+        $return .= '<option value="'.$r->kode_subunit.'">'.$r->kode_subunit.' - '.$r->nama_subunit.' [subunit]</option>';
+      }
+      echo $return ;
+    }
+  }
+  function get_unit(){
+    if($this->input->post()){
+      $this->load->model('master_unit_model');
+      $result = $this->master_unit_model->get_child_unit($this->input->post('kode_unit'));
+      $return = '<option value="">-pilih-</option>';
+      foreach($result as $r){
+        $return .= '<option value="'.$r->kode_unit.'">'.$r->kode_unit.' - '.$r->nama_unit.' [unit]</option>';
+      }
+      echo $return ;
+    }
+  }
+  function get_row($sumber_dana=''){
+    if($this->check_session->user_session() && ($this->check_session->get_level()==1)){
+      $data['result'] = $this->tor_model->search_tor($sumber_dana);
+      //print_r($data);die;
+      $this->load->view("row_tor",$data);
+    }else{
+      show_404('page');
+    }
+  }
+  function filter(){
+    if($this->check_session->user_session() && ($this->check_session->get_level()==1)){
+      $keyword    = form_prep($this->input->post("keyword"));
+      $sumber_dana  = form_prep($this->input->post("sumber_dana"));
+      $data['result'] = $this->tor_model->search_tor($sumber_dana,$keyword);
+      //print_r($data);die;
+      $this->load->view("row_tor",$data);
+    }else{
+      show_404('page');
+    }
+  }
+  function input_tor()
+  {
+    /* check session  */
+    if($this->check_session->user_session() && $this->check_session->get_level()==1){
+      /*  Set data untuk main template */
+      $data['user_menu']  = $this->load->view('user_menu','',TRUE);
+      //$data['main_content'] = $this->load->view('main_content','',TRUE);
+      $data['main_menu']  = $this->load->view('main_menu','',TRUE);
+
+
+      $data['main_content']         = $this->load->view("input_tor","",TRUE);
+      /*  Load main template  */
+//      echo '<pre>';var_dump($data);echo '</pre>';die;
+      $this->load->view('main_template',$data);
+    }else{
+      redirect('welcome','refresh');  // redirect ke halaman home
+    }
+  }
         function show_komponen_input(){
             if($this->check_session->user_session() && $this->check_session->get_level()==1){
                 if($this->input->post()){
@@ -1070,6 +1250,7 @@ Class Tor extends CI_Controller {
             $ver = $this->db->query($verSQL)->row();
             // echo $verSQL;
             // $id_spmls2 = substr($r[0]->nomor,0,5);
+            // ndapetin nomor
             $id_spmls2 = $this->cantik_model->get_id_last_spm();
             // echo $id_spmls2; exit;
             $alias = $this->check_session->get_alias();
@@ -1078,7 +1259,7 @@ Class Tor extends CI_Controller {
             $nomor = $id_spmls2."/".$alias."/SPM-LS PGW/".strtoupper($cur_bulan)."/".$cur_tahun;
             // echo $nomor; exit;
             $sql = "INSERT INTO kepeg_tr_spmls(
-                        id_tr_sppls, namabp, nipbp, jumlah_bayar, nomor, tanggal, tahun, detail_belanja, potongan, pajak, total_sumberdana, namappk, nipppk, namakpa, nipkpa, namaver, nipver, namabuu, nipbuu, namakbuu, nipkbuu, unitsukpa, namaunitsukpa, waktu_proses, status
+                        id_tr_sppls, namabp, nipbp, jumlah_bayar, nomor, tanggal, tahun, detail_belanja, potongan, pajak, potongan_pajak, total_sumberdana, namappk, nipppk, namakpa, nipkpa, namaver, nipver, namabuu, nipbuu, namakbuu, nipkbuu, unitsukpa, namaunitsukpa, waktu_proses, status
                     ) VALUES (
                         '".$id."',
                         '".$bpp->nm_lengkap."',
@@ -1090,6 +1271,7 @@ Class Tor extends CI_Controller {
                         '".$r[0]->detail_belanja."',
                         '".$r[0]->potongan."',
                         '".$r[0]->pajak."',
+                        '".$r[0]->potongan_pajak."',
                         '".$r[0]->total_sumberdana."',
                         '".encodeText($ppk->nm_lengkap)."',
                         '".encodeText($ppk->nomor_induk)."',
@@ -1178,10 +1360,11 @@ Class Tor extends CI_Controller {
         $sql = "SELECT nomor FROM kepeg_tr_sppls ORDER BY nomor DESC LIMIT 0,1";
         // echo $sql; exit;
         $w = $this->db->query($sql)->row();
+        // ngasih nomor ke lspeg
         if(count($w)>0){
-          $data['nomor'] = lspeg_autonumber(substr($w->nomor,0,5),5);
+          $data['nomor'] = lspeg_autonumber(substr($w->nomor,0,4),4);
         }else{
-          $data['nomor'] = '00001';
+          $data['nomor'] = '0001';
         }
         // print_r($data); exit;
         $q = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
@@ -1228,7 +1411,8 @@ Class Tor extends CI_Controller {
         $subdata['akun_detail'] = $akun;
         $jm = strlen($sub[0]->id_sppls);
         $subdata['id_sppls'] = "";
-        for($i=0;$i<(5-$jm);$i++){
+        // masang nomor 5 jadi 4 SPP
+        for($i=0;$i<(4-$jm);$i++){
             $subdata['id_sppls'] .= "0";
         }
         $subdata['id_sppls'] .= $sub[0]->id_sppls;
@@ -1423,8 +1607,10 @@ Class Tor extends CI_Controller {
         $subdata['cur_tahun'] = $this->cur_tahun;
         $sql = "SELECT tahun FROM kepeg_tr_spmls GROUP BY tahun ORDER BY tahun ASC";
         $subdata['tahun'] = $this->db->query($sql)->result();
-        $sql = "SELECT * FROM akun_kas6 a LEFT JOIN kas_undip b ON a.kd_kas_6 = b.kd_akun_kas WHERE b.aktif = 1";
-        $subdata['akun_cair'] = $this->db->query($sql)->result();
+        // $sql = "SELECT * FROM akun_kas6 a LEFT JOIN kas_undip b ON a.kd_kas_6 = b.kd_akun_kas WHERE b.aktif = 1";
+        // $subdata['akun_cair'] = $this->db->query($sql)->result();
+        $subdata['akun_cair'] = $this->kas_undip_model->get_saldo_kas_all_akun();
+        // print_r($subdata['akun_cair']); exit;
         // $d = $this->uri->uri_to_assoc(3);
         // if(isset($d['tahun'])){
             $sql = "SELECT a.*,DATE_FORMAT(a.tanggal, '%d %M %Y') as tanggal2,COUNT(b.id) AS jml_tolak, c.untuk_bayar FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_spmls_detail b ON a.id_spmls = b.id_tr_spmls LEFT JOIN kepeg_tr_sppls c ON a.id_tr_sppls = c.id_sppls WHERE a.tahun LIKE '".intval($subdata['cur_tahun'])."'".$vSQL." GROUP BY a.id_spmls ORDER BY a.nomor DESC";
@@ -1473,6 +1659,8 @@ Class Tor extends CI_Controller {
           $status = "disetujui ".$pelaku->nama.", menunggu proses selanjutnya.";
         }
         if($_POST['proses']==5){
+          $dt = $this->get_detail_belanja_spm($_POST['id_spmls']);
+          $akun = explode(",",$dt->detail_belanja);
           $status = "dicairkan oleh KBUU melalui akun ".$_POST['akun_cair'];
           $this->ambil_dana_kas($_POST['id_spmls'], $_POST['akun_cair']);
           $this->urut_spm_cair($_POST['id_spmls']);
@@ -1483,12 +1671,12 @@ Class Tor extends CI_Controller {
         }
         $sql = "UPDATE `kepeg_tr_spmls` SET `proses` = ".intval($_POST['proses']).", `status` = '".$status."'".$_akun_cair." WHERE `id_spmls` = ".intval($_POST['id_spmls']);
         if($_POST['proses']==5){
-        	// echo $sql; exit;
+          // echo $sql; exit;
         }
         if($this->db->query($sql)){
-        		if($_POST['proses']==5){
-		        	// echo 'SELECT b.jenissppls FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON a.id_tr_sppls = b.id_sppls WHERE a.id_spmls = '.$_POST['id_spmls']; exit;
-		        }
+            if($_POST['proses']==5){
+              // echo 'SELECT b.jenissppls FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON a.id_tr_sppls = b.id_sppls WHERE a.id_spmls = '.$_POST['id_spmls']; exit;
+            }
             $dt = $this->db->query('SELECT b.jenissppls FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON a.id_tr_sppls = b.id_sppls WHERE a.id_spmls = '.$_POST['id_spmls'])->row();
             $this->addLog($_POST['id_spmls'], 'kepeg_tr_spmls', $dt->jenissppls, $status);
             echo "1"; exit;
@@ -1522,7 +1710,12 @@ Class Tor extends CI_Controller {
         }
     }
     function spmls(){
+        // print_r();
         $d = $this->uri->uri_to_assoc(3);
+        if(!isset($d['id']) || $d['id']==0){
+          // $d['id'] = $_GET['id'];
+          $d['id'] = $this->uri->segment(3);
+        }
         $sql = "SELECT a.*, b.untuk_bayar, b.penerima, b.alamat, b.nama_bank, b.rekening, b.npwp FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON b.id_sppls = a.id_tr_sppls WHERE id_spmls =".intval($d['id']);
         // echo $sql; exit;
         $sub = $this->db->query($sql)->result();
@@ -1553,7 +1746,7 @@ Class Tor extends CI_Controller {
         // $subdata['bpp'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '13');
         // $subdata['ppk'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '14');
 
-        
+
         $subdata['kd_unit'] = $sub[0]->unitsukpa;
         $subdata['kpa'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '2');
         $subdata['buu'] = $this->user_model->get_detail_rsa_user('99', '5');
@@ -1606,13 +1799,14 @@ Class Tor extends CI_Controller {
     }
     // untuk daftar pencairan Spm
     function urut_spm_cair($id){
-    	// echo "SELECT * FROM `kepeg_tr_spmls` WHERE `id_spmls` = ".$id; exit;
-      $dt = $this->db->query("SELECT * FROM `kepeg_tr_spmls` WHERE `id_spmls` = ".$id)->row();
+      // echo "SELECT * FROM `kepeg_tr_spmls` WHERE `id_spmls` = ".$id; exit;
+      // $dt = $this->db->query("SELECT * FROM `kepeg_tr_spmls` WHERE `id_spmls` = ".$id)->row();
+      $dt = $this->db->query("SELECT b.`nomor` AS `nomor_spp`, a.*  FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON a.id_tr_sppls = b.id_sppls WHERE `id_spmls` = ".$id)->row();
       // if(count($dt)>0){
-      $no_urut = $this->db->query("SELECT `no_urut` FROM `trx_urut_spm_cair` ORDER BY no_urut DESC LIMIT 0,1")->row();
+      $no_urut = $this->db->query("SELECT `no_urut` FROM `trx_urut_spm_cair` ORDER BY `no_urut` DESC LIMIT 0,1")->row();
       // $no_urut = intval($no_urut->no_urut)+1;
       $no_urut = $this->cantik_model->lspgw_autonumber($no_urut->no_urut,6);
-      $sql = "INSERT INTO trx_urut_spm_cair(no_urut, str_nomor_trx_spm, kode_unit_subunit, jenis_trx, tgl_proses, bulan, tahun) VALUES('".$no_urut."', '".$dt->nomor."', '".$dt->unitsukpa."', 'LSP', NOW(), '".$this->wordMonthShort($this->getMonth($dt->tanggal))."', '".$dt->tahun."')";
+      $sql = "INSERT INTO `trx_urut_spm_cair`(`no_urut`, `str_nomor_trx_spm`, `kode_unit_subunit`, `jenis_trx`, `tgl_proses`, `bulan`, `tahun`, `str_nomor_trx_spp`, `nominal`) VALUES('".$no_urut."', '".$dt->nomor."', '".$dt->unitsukpa."', 'LSP', NOW(), '".$this->wordMonthShort($this->getMonth($dt->tanggal))."', '".$dt->tahun."', '".$dt->nomor_spp."', '".$dt->total_sumberdana."')";
       // echo $sql; exit;
       $this->db->query($sql);
       // }
@@ -1725,13 +1919,13 @@ Class Tor extends CI_Controller {
         if(!isset($_POST['potongan']) || intval($_POST['potongan'])<0){
           echo $this->msgGagal('Masukkan pajak, karena pajak tidak mungkin bernilai kurang dari 0.'); exit;
         }
-				if($_SESSION['rsa_kode_unit_subunit'] != '81'){
-        	if(!isset($_POST['unit_id']) || !is_array($_POST['unit_id']) || count($_POST['unit_id'])<=0 ){
-          	echo $this->msgGagal('Pilih unit yang akan di-proses.'); exit;
-        	}
-				}else{
-					$_POST['unit_id'] = array('81');
-				}
+        if(!in_array($_SESSION['rsa_kode_unit_subunit'],array('21','25','19','20'))){
+          if(!isset($_POST['unit_id']) || !is_array($_POST['unit_id']) || count($_POST['unit_id'])<=0 ){
+            echo $this->msgGagal('Pilih unit yang akan di-proses.'); exit;
+          }
+        }else{
+          $_POST['unit_id'] = array('25');
+        }
         if(!isset($_POST['status']) || !is_array($_POST['status']) || count($_POST['status'])<=0 ){
           echo $this->msgGagal('Pilih status pegawai yang akan di-proses.'); exit;
         }
@@ -1757,26 +1951,26 @@ Class Tor extends CI_Controller {
         if(!isset($_POST['akun']) || !is_array($_POST['akun']) || count($_POST['akun'])<=0 ){
           echo $this->msgGagal('Pilih akun dpa yang akan di-proses menjadi SPP.'); exit;
         }
-				// exit;
+        // exit;
         echo $this->cantik_model->insert_do_sppls($_POST);
         // echo "<pre>"; print_r($_POST); echo "</pre>";
       }
       exit;
     }
     // END HERE
-	//LS PIHAK 3
-	function tampil_data_gedang(){
-		$html = "";
-		$sql = "SELECT a.*,b.deskripsi FROM `rsa_spm_kontrakpihak3` a LEFT JOIN `rsa_detail_belanja_` b ON a.kode_usulan_belanja = b.kode_usulan_belanja WHERE a.kode_usulan_belanja LIKE '".$_POST['akun']."' GROUP BY a.id";
-		$q=$this->db->query($sql);
-		if($q->num_rows()>0){
-			$d = $q->result();
-			foreach($d as $k => $v){
-				$html.="<option value=\"".$v->id."\">".$v->deskripsi." - (Terbayar : ".number_format($v->kontrak_terbayar,2,',','.').") - Termin (".$v->termin.")</option>";
-			}
-		}
-		echo $html;exit;
-	}
+  //LS PIHAK 3
+  function tampil_data_gedang(){
+    $html = "";
+    $sql = "SELECT a.*,b.deskripsi FROM `rsa_spm_kontrakpihak3` a LEFT JOIN `rsa_detail_belanja_` b ON a.kode_usulan_belanja = b.kode_usulan_belanja WHERE a.kode_usulan_belanja LIKE '".$_POST['akun']."' GROUP BY a.id";
+    $q=$this->db->query($sql);
+    if($q->num_rows()>0){
+      $d = $q->result();
+      foreach($d as $k => $v){
+        $html.="<option value=\"".$v->id."\">".$v->deskripsi." - (Terbayar : ".number_format($v->kontrak_terbayar,2,',','.').") - Termin (".$v->termin.")</option>";
+      }
+    }
+    echo $html;exit;
+  }
   // untuk melakukan pengecekan terhadap jumlah dana dengan yang ada.
   function cocoklogi_dpa_kontrak(){
     echo "<pre>";
@@ -1804,7 +1998,7 @@ Class Tor extends CI_Controller {
 //      $subdata['rsa_usul']    = $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
       $subdata['tor_usul']            = $this->tor_model->get_tor_usul($kode);//$this->tor_model->get_tor_usul(substr($kode,2,10));
       $subdata['detail_akun_rba']     = $this->tor_model->get_detail_akun_rba($unit,$kode,$sumber_dana,$this->cur_tahun);
-      $subdata['detail_rsa_dpa']      = $this->kuitansi_lsphk3_model->get_detail_rsa_dpa_lsphk3($unit,$kode,$sumber_dana,$this->cur_tahun);
+      // $subdata['detail_rsa_dpa']      = $this->kuitansi_lsphk3_model->get_detail_rsa_dpa_lsphk3($unit,$kode,$sumber_dana,$this->cur_tahun); //muted by Arief
     foreach($subdata['detail_rsa_dpa'] as $r){
       if(substr($r->proses,1,1)=='4'){
         $kode=$r->kode_usulan_belanja;
@@ -1852,10 +2046,10 @@ Class Tor extends CI_Controller {
       $subdata['jenis']               = $jenis;
       $subdata['pic_kuitansi']        = $this->tor_model->get_pic_kuitansi($this->check_session->get_unit());
       $subdata['pppk']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
-	  $subdata['ppk']                = $this->tor_model->get_ppk(substr($this->check_session->get_unit(),0,2));
-	  $subdata['allpppk']                = $this->tor_model->get_allpppk();
-	  $subdata['allppk']                = $this->tor_model->get_allppk();
-	   $subdata['ppksukpa']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
+    $subdata['ppk']                = $this->tor_model->get_ppk(substr($this->check_session->get_unit(),0,2));
+    $subdata['allpppk']                = $this->tor_model->get_allpppk();
+    $subdata['allppk']                = $this->tor_model->get_allppk();
+     $subdata['ppksukpa']                = $this->tor_model->get_pppk(substr($this->check_session->get_unit(),0,2));
 
 //      var_dump($subdata['pic_kuitansi'] );die;
 
@@ -1905,10 +2099,10 @@ Class Tor extends CI_Controller {
 
               // echo $jenis ; die;
 
-              if((substr($jenis,1,1) == '1') || (substr($jenis,1,1) == '3') || (substr($jenis,1,1) == '5')){ // GUP , TUP dan KS
+              if((substr($jenis,1,1) == '1') || (substr($jenis,1,1) == '3') || (substr($jenis,1,1) == '4') || (substr($jenis,1,1) == '5') || (substr($jenis,1,1) == '6') || (substr($jenis,1,1) == '7')){ // GUP , TUP , KS , LN dan LK
 
                   $r = $this->tor_model->get_status_dpa($rka,$sumber_dana,$tahun);
-              
+
                   // var_dump($r);
 
                   $nr = count($r);

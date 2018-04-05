@@ -20,6 +20,43 @@ $(function(){
 ?>
 <script type="text/javascript">
 
+
+// TAMBAH PANEL TAMBAH //
+
+var scrollEventHandler = function() {
+    if($('#panel-jml-show').visible()) {
+            // $('#panel-jml').animate({'right': '-=30px'},'slow');
+            $('#panel-jml').hide();
+            // unbindScrollEventHandler();
+
+        } else {
+
+            if($('#tb-data').visible()){
+                    $('#panel-jml').show();
+                    // on = '1' ;
+                    // console.log('0') ;
+
+            }
+        }
+
+};
+
+function unbindScrollEventHandler() {
+    $(document).unbind('scroll', scrollEventHandler);
+}
+
+$(document).scroll(scrollEventHandler);
+
+function isScrolledIntoView(el) {
+    var elemTop = el.getBoundingClientRect().top;
+    var elemBottom = el.getBoundingClientRect().bottom;
+
+    var isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight);
+    return isVisible;
+}
+
+// END PANEL //
+
 var in_kode = 0;
 //var in_all = 0;
 var pj_p_kode_usulan_all = [];
@@ -37,16 +74,18 @@ $(document).ready(function(){
 
     if((un=='1') || (un=='3')){
 
+        /*
         bootbox.alert({
             title: "PESAN",
             message: "SEKARANG SILAHKAN BUAT KUITANSI SEBANYAK-BANYAKNYA.<br>THX.",
         });
+        */
 
     }
 
     autosize($('textarea'));
 
-
+    need_to_expand_the_collapse();
     $('.btn-ajx').each(function(){
 
         var rka = $(this).attr('rel');
@@ -65,7 +104,7 @@ $(document).ready(function(){
                         var u = '<?php echo $this->uri->segment(5); ?>';
 
                         if(s.substr(0, 1) == '3'){
-                            if((u=='1') || (u=='3') || (u=='5')){ // GUP , TP dan KS
+                            if((u=='1') || (u=='3') || (u=='4') || (u=='5') || (u=='6')  || (u=='7')){ // GUP , TP , KS , LN , dan LK
                                 if(d.aktif=='1'){
                                     el.addClass('btn-primary');
                                     el.html('<i class="glyphicon glyphicon-file"></i>');
@@ -398,170 +437,170 @@ $(document).ready(function(){
   // == END HERE
 
 
-    $(document).on("click",'#btn-kuitansi2',function(){
-            // PREPARE GLOBAL VAR
-//            in_all = 0;
+//     $(document).on("click",'#btn-kuitansi2',function(){
+//             // PREPARE GLOBAL VAR
+// //            in_all = 0;
 
-            pj_p_kode_usulan_all = [];
-            pj_p_id_all = [];
-            pj_p_jenis_all = [];
-            pj_p_dpp_all = [];
-            pj_p_persen_all = [];
-            pj_p_nilai_all = [];
+//             pj_p_kode_usulan_all = [];
+//             pj_p_id_all = [];
+//             pj_p_jenis_all = [];
+//             pj_p_dpp_all = [];
+//             pj_p_persen_all = [];
+//             pj_p_nilai_all = [];
 
-            /// PREPARE TABLE ELEMENT
-            $('#myModalKuitansi2 #tr_new_').replaceWith('<tr id="tr_isi"><td colspan="8">tr_isi</td></tr>');
+//             /// PREPARE TABLE ELEMENT
+//             $('#myModalKuitansi2 #tr_new_').replaceWith('<tr id="tr_isi"><td colspan="8">tr_isi</td></tr>');
 
-            $('#myModalKuitansi2 #uraian').html("- edit here -");
-            $('#myModalKuitansi2 #penerima_uang').html("- edit here -");
-            $('#myModalKuitansi2 #penerima_barang').html("- edit here -");
-            $('#myModalKuitansi2 #penerima_barang_nip').html("- edit here -");
+//             $('#myModalKuitansi2 #uraian').html("- edit here -");
+//             $('#myModalKuitansi2 #penerima_uang').html("- edit here -");
+//             $('#myModalKuitansi2 #penerima_barang').html("- edit here -");
+//             $('#myModalKuitansi2 #penerima_barang_nip').html("- edit here -");
 
-            $("#myModalKuitansi2 .tr_new").remove();
-            var str = $(this).attr('rel') ;
-            var kd_usulan = str.substr(0,24);
-            var nm_akun = $('#nm_akun_' + kd_usulan).html();
-            var str_isi = '<tr id="tr_new_" style="display:none"><td>&nbsp;</td></tr>';
-            var i = 0 ;
-            $('[class^="ck_"]').each(function(){
-                var el = $(this).attr('rel');
-                if(($(this).is(':checked'))&&($(this).is(':enabled'))){
-                    str_isi = str_isi + '<tr class="tr_new">' ;
-                    var l_td = $('#tr_' + el + ' > td').length ;
-                    $('#tr_' + el + ' > td').each(function(ii){
-                        if(ii == 1){
-                            str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + $(this).html() + '</td>' ;
-                        }
-                        else if(ii == 2){
-                            str_isi = str_isi + '<td style="text-align:center">' + $(this).html() + '</td>' ;
-                        }
-                        else if(ii == 3){
-                            str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + $(this).html() + '</td>' ;
-                        }
-                        else if(ii == 4){
-                            str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + $(this).html() + '</td>' ;
-                        }
-                        else if(ii == 5){
-                            str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_'+ el +'">' + $(this).html() + '</td>\n\
-                                        <td class="row_pajak_'+ el +'" style="padding: 0 5px 0 5px;">[<a data-toggle="modal" rel="'+ i + '_' + el +'" id="pilih_pajak_'+ el +'" href="#myModalPajak">Edit</a>]</td>\n\
-                                        <td style="text-align:right;" class="row_pajak_nom_'+ el +'">0</td>\n\
-                                        <td ><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>\n\
-                                        <td style="text-align:right" rel="'+ el +'" class="sub_tot_netto_'+ el +'">0</td>';
-                        }else{
+//             $("#myModalKuitansi2 .tr_new").remove();
+//             var str = $(this).attr('rel') ;
+//             var kd_usulan = str.substr(0,24);
+//             var nm_akun = $('#nm_akun_' + kd_usulan).html();
+//             var str_isi = '<tr id="tr_new_" style="display:none"><td>&nbsp;</td></tr>';
+//             var i = 0 ;
+//             $('[class^="ck_"]').each(function(){
+//                 var el = $(this).attr('rel');
+//                 if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+//                     str_isi = str_isi + '<tr class="tr_new">' ;
+//                     var l_td = $('#tr_' + el + ' > td').length ;
+//                     $('#tr_' + el + ' > td').each(function(ii){
+//                         if(ii == 1){
+//                             str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + $(this).html() + '</td>' ;
+//                         }
+//                         else if(ii == 2){
+//                             str_isi = str_isi + '<td style="text-align:center">' + $(this).html() + '</td>' ;
+//                         }
+//                         else if(ii == 3){
+//                             str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + $(this).html() + '</td>' ;
+//                         }
+//                         else if(ii == 4){
+//                             str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + $(this).html() + '</td>' ;
+//                         }
+//                         else if(ii == 5){
+//                             str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_'+ el +'">' + $(this).html() + '</td>\n\
+//                                         <td class="row_pajak_'+ el +'" style="padding: 0 5px 0 5px;">[<a data-toggle="modal" rel="'+ i + '_' + el +'" id="pilih_pajak_'+ el +'" href="#myModalPajak">Edit</a>]</td>\n\
+//                                         <td style="text-align:right;" class="row_pajak_nom_'+ el +'">0</td>\n\
+//                                         <td ><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>\n\
+//                                         <td style="text-align:right" rel="'+ el +'" class="sub_tot_netto_'+ el +'">0</td>';
+//                         }else{
 
-                        }
+//                         }
 
-                        pj_p_kode_usulan_all[i] =  el;
-                        pj_p_id_all[i] = [];
-                        pj_p_jenis_all[i] = [];
-                        pj_p_persen_all[i] = [];
-                        pj_p_dpp_all[i] = [];
-                        pj_p_nilai_all[i] = [];
-                    });
+//                         pj_p_kode_usulan_all[i] =  el;
+//                         pj_p_id_all[i] = [];
+//                         pj_p_jenis_all[i] = [];
+//                         pj_p_persen_all[i] = [];
+//                         pj_p_dpp_all[i] = [];
+//                         pj_p_nilai_all[i] = [];
+//                     });
 
-                    str_isi = str_isi + '</tr>' ;
-                    i++ ;
-                }
+//                     str_isi = str_isi + '</tr>' ;
+//                     i++ ;
+//                 }
 
-            });
-            $('#myModalKuitansi2 #tr_isi').replaceWith(str_isi);
+//             });
+//             $('#myModalKuitansi2 #tr_isi').replaceWith(str_isi);
 
-            var sum_tot_bruto = 0 ;
-            $('#myModalKuitansi2 [class^="sub_tot_bruto_"').each(function(){
-                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
-            });
-            $('#myModalKuitansi2 .sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
+//             var sum_tot_bruto = 0 ;
+//             $('#myModalKuitansi2 [class^="sub_tot_bruto_"').each(function(){
+//                 sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
+//             });
+//             $('#myModalKuitansi2 .sum_tot_bruto').html(angka_to_string(sum_tot_bruto));
 
-            var sum_tot_netto = 0 ;
-            $('#myModalKuitansi2 [class^="sub_tot_netto_"').each(function(){
-                var nrel = $(this).attr('rel');
-                var sub_tot_bruto = parseInt(string_to_angka($('#myModalKuitansi2 .sub_tot_bruto_' + nrel).text()));
-                var pajak = parseInt(string_to_angka($('#myModalKuitansi2 .row_pajak_nom_' + nrel).text()));
-                var sub_tot_netto = sub_tot_bruto - pajak;
-                $(this).text(angka_to_string(sub_tot_netto));
-                sum_tot_netto = sum_tot_netto + sub_tot_netto ;
-            });
-            $('#myModalKuitansi2 .sum_tot_netto').html(angka_to_string(sum_tot_netto));
+//             var sum_tot_netto = 0 ;
+//             $('#myModalKuitansi2 [class^="sub_tot_netto_"').each(function(){
+//                 var nrel = $(this).attr('rel');
+//                 var sub_tot_bruto = parseInt(string_to_angka($('#myModalKuitansi2 .sub_tot_bruto_' + nrel).text()));
+//                 var pajak = parseInt(string_to_angka($('#myModalKuitansi2 .row_pajak_nom_' + nrel).text()));
+//                 var sub_tot_netto = sub_tot_bruto - pajak;
+//                 $(this).text(angka_to_string(sub_tot_netto));
+//                 sum_tot_netto = sum_tot_netto + sub_tot_netto ;
+//             });
+//             $('#myModalKuitansi2 .sum_tot_netto').html(angka_to_string(sum_tot_netto));
 
-            $('#myModalKuitansi2 .text_tot').html(terbilang(sum_tot_bruto));
+//             $('#myModalKuitansi2 .text_tot').html(terbilang(sum_tot_bruto));
 
-            $('#myModalKuitansi2 #txt_akun').html(nm_akun);
-            $('#myModalKuitansi2 #nm_subkomponen_kuitansi').html($('#nm_subkomponen').html());
-            var data = "alias=<?=$alias?>" ;
-            $.ajax({
-                type:"POST",
-                url :"<?=site_url("kuitansi/get_next_id")?>",
-                data:data,
-                success:function(data){
-                        $('#myModalKuitansi2 #no_bukti').html(data);
-                        $('#myModalKuitansi2').modal('show');
-                }
-            });
-        });
+//             $('#myModalKuitansi2 #txt_akun').html(nm_akun);
+//             $('#myModalKuitansi2 #nm_subkomponen_kuitansi').html($('#nm_subkomponen').html());
+//             var data = "alias=<?=$alias?>" ;
+//             $.ajax({
+//                 type:"POST",
+//                 url :"<?=site_url("kuitansi/get_next_id")?>",
+//                 data:data,
+//                 success:function(data){
+//                         $('#myModalKuitansi2 #no_bukti').html(data);
+//                         $('#myModalKuitansi2').modal('show');
+//                 }
+//             });
+//         });
 
-        $(document).on("click",'#btn-submit-kuitansi2',function(){
-                    var str = $(this).attr('rel') ;
-                    var kd_usulan = str.substr(0,24);
-                    var no_bukti = $('#myModalKuitansi2 #no_bukti').text();
-                    var uraian = $('#myModalKuitansi2 #uraian').text();
-                    var penerima_uang = $('#myModalKuitansi2 #penerima_uang').text();
-                    var penerima_barang = $('#myModalKuitansi2 #penerima_barang').text();
-                    var penerima_barang_nip = $('#myModalKuitansi2 #penerima_barang_nip').text();
-                    var kode_usulan_belanja = kd_usulan;
-                    var ok = 'true';
-                    $('#myModalKuitansi2 .edit_here').each(function(){
-                        var el = $(this).text();
-                        if( el.trim() == '- edit here -' ){
-                            ok = 'false';
-                        }
-                    });
-                    console.log($('#myModalKuitansi2 .sum_tot_netto').text());
-                    if(ok == 'true'){
-                       if($('#myModalKuitansi2 .sum_tot_netto').text() == '0'){
-                            ok = 'false';
-                        }
-                    }
-                    if( ok == 'true'){
-                    if(confirm('Yakin akan memproses ?')){
-                        // var kode_akun_tambah_ = str.substr(24,3);
-						// var id_kontrak_ = $('.id_kontrak_' + ).val();
-						// var checked = $('[class^="ck_'+ kode_usulan_belanja +'"]').
-						var id_kontrak = '';
-                        var i = 0 ;
+      //   $(document).on("click",'#btn-submit-kuitansi2',function(){
+      //               var str = $(this).attr('rel') ;
+      //               var kd_usulan = str.substr(0,24);
+      //               var no_bukti = $('#myModalKuitansi2 #no_bukti').text();
+      //               var uraian = $('#myModalKuitansi2 #uraian').text();
+      //               var penerima_uang = $('#myModalKuitansi2 #penerima_uang').text();
+      //               var penerima_barang = $('#myModalKuitansi2 #penerima_barang').text();
+      //               var penerima_barang_nip = $('#myModalKuitansi2 #penerima_barang_nip').text();
+      //               var kode_usulan_belanja = kd_usulan;
+      //               var ok = 'true';
+      //               $('#myModalKuitansi2 .edit_here').each(function(){
+      //                   var el = $(this).text();
+      //                   if( el.trim() == '- edit here -' ){
+      //                       ok = 'false';
+      //                   }
+      //               });
+      //               console.log($('#myModalKuitansi2 .sum_tot_netto').text());
+      //               if(ok == 'true'){
+      //                  if($('#myModalKuitansi2 .sum_tot_netto').text() == '0'){
+      //                       ok = 'false';
+      //                   }
+      //               }
+      //               if( ok == 'true'){
+      //               if(confirm('Yakin akan memproses ?')){
+      //                   // var kode_akun_tambah_ = str.substr(24,3);
+						// // var id_kontrak_ = $('.id_kontrak_' + ).val();
+						// // var checked = $('[class^="ck_'+ kode_usulan_belanja +'"]').
+						// var id_kontrak = '';
+      //                   var i = 0 ;
 
-                        $('[class^="ck_'+ kode_usulan_belanja +'"]').each(function(){
-                            //$('#btn-kuitansi').attr('disabled','disabled');
-                            var el = $(this).attr('rel');
-                            var kode_akun_tambah = el.substr(24,3);
-							var id_kontrak_ = $('.id_kontrak_' + el ).val();
-                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
-								// id_kontrak[i] = $('[class^="id_kontrak_'+ kode_usulan_belanja +'"]')[i].val();
-								// id_kontrak[i] = id_kontrak_[i].value;
-								//id_kontrak[i] = $('.id_kontrak_'+str).val();
-                                kode_akun_tambah_ = kode_akun_tambah;
-								id_kontrak = id_kontrak_;
-                            }
-							i++;
-                        });
-                        var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + uraian + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + kode_akun_tambah_ + '&penerima_uang=' + penerima_uang + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi2 #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi2 #nippppk').text() + '&nmbendahara=' + $('#myModalKuitansi2 #nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi2 #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi2 #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi2 #nippumk').text() + '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all)+'&id_kontrak='+id_kontrak;
-                        //$('#myModalMsg .body-msg-text').html(data);
-                        //$('#myModalMsg').modal('show');
-						//return false;
-						$.ajax({
-							type:"POST",
-							url :"<?=site_url("kuitansi/submit_kuitansi2")?>",
-							data:data,
-							success:function(data){
-								//$('#myModalMsg .body-msg-text').html(data);
-								//$('#myModalMsg').modal('show');
-								location.reload();
-							}
-						});
-                    }
-                  }else{
-                      alert('Silahkan diperiksa isiannya dahulu !');
-                  }
-                });
+      //                   $('[class^="ck_'+ kode_usulan_belanja +'"]').each(function(){
+      //                       //$('#btn-kuitansi').attr('disabled','disabled');
+      //                       var el = $(this).attr('rel');
+      //                       var kode_akun_tambah = el.substr(24,3);
+						// 	var id_kontrak_ = $('.id_kontrak_' + el ).val();
+      //                       if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+						// 		// id_kontrak[i] = $('[class^="id_kontrak_'+ kode_usulan_belanja +'"]')[i].val();
+						// 		// id_kontrak[i] = id_kontrak_[i].value;
+						// 		//id_kontrak[i] = $('.id_kontrak_'+str).val();
+      //                           kode_akun_tambah_ = kode_akun_tambah;
+						// 		id_kontrak = id_kontrak_;
+      //                       }
+						// 	i++;
+      //                   });
+      //                   var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + uraian + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + kode_akun_tambah_ + '&penerima_uang=' + penerima_uang + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi2 #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi2 #nippppk').text() + '&nmbendahara=' + $('#myModalKuitansi2 #nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi2 #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi2 #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi2 #nippumk').text() + '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all)+'&id_kontrak='+id_kontrak;
+      //                   //$('#myModalMsg .body-msg-text').html(data);
+      //                   //$('#myModalMsg').modal('show');
+						// //return false;
+						// $.ajax({
+						// 	type:"POST",
+						// 	url :"<?=site_url("kuitansi/submit_kuitansi2")?>",
+						// 	data:data,
+						// 	success:function(data){
+						// 		//$('#myModalMsg .body-msg-text').html(data);
+						// 		//$('#myModalMsg').modal('show');
+						// 		location.reload();
+						// 	}
+						// });
+      //               }
+      //             }else{
+      //                 alert('Silahkan diperiksa isiannya dahulu !');
+      //             }
+      //           });
 
   // == END HERE
 
@@ -635,7 +674,7 @@ $(document).ready(function(){
                 //$('[id^="tr_empty_'+ kd_usul +'"]').hide();
                 //$('[id^="tr_unit_'+ kd_usul +'"]').hide();
                 //$('[id^="tr_akun_'+ kd_usul +'"]').hide();
-                
+
 
                 $('[class^="tr_dpa_'+ kd_usul +'"]').hide();
             }else{
@@ -698,7 +737,7 @@ $(document).ready(function(){
 
             if (!(badge_ === undefined || badge_ === null)) {
                  // do something
-                 badge = badge_.trim(); 
+                 badge = badge_.trim();
             }
 
             // console.log(badge);
@@ -754,7 +793,7 @@ $(document).ready(function(){
                 }
             });
             if(aktv == '1'){
-				        $('#btn-kuitansi2').attr('rel',str);
+			    $('#btn-kuitansi2').attr('rel',str);
                 $('#btn-kuitansi').attr('rel',str);
                 $('#btn-submit-kuitansi').attr('rel',str);
 				        $('#btn-submit-kuitansi2').attr('rel',str);
@@ -788,6 +827,30 @@ $(document).ready(function(){
                 // end here
             }
 
+                        // UNTUK MENGHITUNG JUMLAH DPA //
+
+                        var jml_dpa = 0 ;
+
+                        $('[class^="ck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_" + arel).text()));
+                                jml_dpa = jml_dpa + jml_k ;
+
+
+                            }
+
+                        });
+
+                        $('.jml_kuitansi').text(angka_to_string(jml_dpa));
+
+                        // END //
+
+
+
         });
 
         $(document).on('change', '[class^="ck_"]', function(){
@@ -795,7 +858,12 @@ $(document).ready(function(){
             var str = $(this).attr('rel');
             var kd_usulan = str.substr(0,24);
             var badge_ = $('#badge_id_' + str).html();
-            var badge = badge_.trim();
+            var badge = '' ;
+
+            if (!(badge_ === undefined || badge_ === null)) {
+                 // do something
+                 badge = badge_.trim();
+            }
 
 //            console.log( ' 1.' + kd_usulan_tmp + ' 2.' + kd_usulan + ' ' + badge_tmp);
 
@@ -836,7 +904,7 @@ $(document).ready(function(){
                 $('#btn-kuitansi').attr('rel',kd_usulan);
                 $('#btn-submit-kuitansi').attr('rel',kd_usulan);
                 $('#btn-kuitansi').removeAttr('disabled');
-				        $('#btn-kuitansi2').attr('rel',kd_usulan);
+				$('#btn-kuitansi2').attr('rel',kd_usulan);
                 $('#btn-submit-kuitansi2').attr('rel',kd_usulan);
                 $('#btn-kuitansi2').removeAttr('disabled');
                 // untuk spp ls created by dhanu
@@ -867,7 +935,62 @@ $(document).ready(function(){
                 $('#btn-termin').attr('disabled','disabled');
                 // end here
             }
+
+
+            // UNTUK MENGHITUNG JUMLAH DPA //
+
+            var jml_dpa = 0 ;
+
+            $('[class^="ck_"]').each(function(){
+                //$('#btn-kuitansi').attr('disabled','disabled');
+                if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                    // $('#btn-kuitansi').removeAttr('disabled');
+                    var arel = $(this).attr('rel');
+
+                    var jml_k = parseInt(string_to_angka($("#td_sub_tot_" + arel).text()));
+                    jml_dpa = jml_dpa + jml_k ;
+
+
+                }
+
+            });
+
+            $('.jml_kuitansi').text(angka_to_string(jml_dpa));
+
+            // END //
+
+
         });
+
+        <?php if($jenis == '4'): ?>
+
+        /// TONI ///
+
+        $(document).on('change', '[class^="ck_"]', function(){
+            var this_el = $(this).attr('rel');
+
+            if ($(this).prop('checked')) {
+
+                $('[class^="ck_"]').each(function(){
+                    if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                        $(this).prop('checked','');
+                    }
+                });
+
+                $('.ck_' + this_el).prop('checked','checked');
+
+            }
+
+
+        });
+
+        $('[class^="all_ck_"]').each(function(){
+
+                $(this).attr('disabled','disabled');
+
+        });
+
+        <?php endif; ?>
 
         $(document).on("click",'#btn-kuitansi',function(){
             // PREPARE GLOBAL VAR
@@ -928,7 +1051,7 @@ $(document).ready(function(){
                         }
                         else if(ii == 5){
                             str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_'+ el +'">' + $(this).html() + '</td>\n\
-                                        <td class="row_pajak_'+ el +'" style="padding: 0 5px 0 5px;">[<a data-toggle="modal" rel="'+ i + '_' + el +'" id="pilih_pajak_'+ el +'" href="#myModalPajak">Edit</a>]</td>\n\
+                                        <td class="row_pajak_'+ el +'" style="padding: 0 5px 0 5px;">[ <a data-toggle="modal" rel="'+ i + '_' + el +'" id="pilih_pajak_'+ el +'" href="#myModalPajak">edit</a> ]</td>\n\
                                         <td style="text-align:right;" class="row_pajak_nom_'+ el +'">0</td>\n\
                                         <td ><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>\n\
                                         <td style="text-align:right" rel="'+ el +'" class="sub_tot_netto_'+ el +'">0</td>';
@@ -1025,12 +1148,12 @@ $(document).ready(function(){
                 $(this).prop('checked', false);
             });
 
-            
+
 
 
 //            console.log(saldo_kas + ' | ' + tot_select);
 
-            
+
             /* KONDISI TIDAK DIPAKAI BIAR BISA BUAT KUITANSI SEBANYAK BANYAKNYA DULU , DAN DIPINDAH PAS BUAT SPP */
 
             // var tot_select = 0 ;
@@ -1405,10 +1528,10 @@ $(document).ready(function(){
             });
 
             if(str_h == ''){
-                $('.row_pajak_' + rel).html('<a data-toggle="modal" rel="'+ in_all + '_' + rel +'" id="edit_p_' + rel + '" href="#myModalPajakEdit" style="margin: 0 5px 0 5px;">[Edit]</a>');
+                $('.row_pajak_' + rel).html('[ <a data-toggle="modal" rel="'+ in_all + '_' + rel +'" id="edit_p_' + rel + '" href="#myModalPajakEdit" style="margin: 0 5px 0 5px;">edit</a> ]');
                 $('.row_pajak_nom_' + rel).html(str_i);
             }else{
-                $('.row_pajak_' + rel).html(str_h + '[<a data-toggle="modal" href="#myModalPajakEdit" rel="'+ in_all + '_' + rel +'" id="edit_p_' + rel + ' " >Edit</a>]');
+                $('.row_pajak_' + rel).html(str_h + '[ <a data-toggle="modal" href="#myModalPajakEdit" rel="'+ in_all + '_' + rel +'" id="edit_p_' + rel + ' " >edit</a> ]');
                 if(str_i==''){
                     str_i = '0';
                 }
@@ -1769,7 +1892,7 @@ $(document).ready(function(){
 
 
             });
-            $('.row_pajak_' + rel).html(str_h + '[<a data-toggle="modal" href="#myModalPajakEdit" rel="'+ id_in_all + '_' + rel +'" id="edit_p_' + rel + '">Edit</a>]');
+            $('.row_pajak_' + rel).html(str_h + '[ <a data-toggle="modal" href="#myModalPajakEdit" rel="'+ id_in_all + '_' + rel +'" id="edit_p_' + rel + '">edit</a> ]');
             if(str_i==''){
                     str_i = '0';
                 }
@@ -1914,13 +2037,18 @@ $(document).ready(function(){
 //            console.log(JSON.stringify(pj_p_persen_all));
 //            console.log(JSON.stringify(pj_p_nilai_all));
 
-                var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + encodeURIComponent(uraian) + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + kode_akun_tambah_ + '&penerima_uang=' + encodeURIComponent(penerima_uang) + '&penerima_uang_nip=' + penerima_uang_nip + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi #nippppk').text() + '&nmbendahara=' + $('#nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi #nippumk').text() + '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all) ; // '&penerima_uang_nip=' + penerima_uang_nip +
+                var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + encodeURIComponent(uraian) + '&jenis=' + badge_tmp + '&sumber_dana=<?=$sumber_dana?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + JSON.stringify(kode_akun_tambah_) + '&penerima_uang=' + encodeURIComponent(penerima_uang) + '&penerima_uang_nip=' + penerima_uang_nip + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansi #nmpppk').text() + '&nippppk=' + $('#myModalKuitansi #nippppk').text() + '&nmbendahara=' + $('#myModalKuitansi #nmbendahara').text() + '&nipbendahara=' + $('#myModalKuitansi #nipbendahara').text() + '&nmpumk=' + $('#myModalKuitansi #nmpumk').text() + '&nippumk=' + $('#myModalKuitansi #nippumk').text() + '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all) ; // '&penerima_uang_nip=' + penerima_uang_nip +
                 $.ajax({
                     type:"POST",
                     url :"<?=site_url("kuitansi/submit_kuitansi")?>",
                     data:data,
                     success:function(data){
 //                        console.log(data)
+                            localStorage.setItem("row_expand_sub_subunit", ".data_akun4d_"+kode_usulan_belanja.substr(0, 6));
+                            localStorage.setItem("row_expand_akun4d", ".data_akun5d_"+kode_usulan_belanja.substr(0, 22));
+                            localStorage.setItem("row_expand_akun5d", ".data_akun6d_"+kode_usulan_belanja.substr(0, 23));
+                            localStorage.setItem("row_expand_akun6d", ".data_rsa_detail_"+kode_usulan_belanja);
+                            localStorage.setItem("row_focus", "#deskripsi_"+kode_usulan_belanja);
                             location.reload();
 
                             // bootbox.alert({
@@ -1962,26 +2090,26 @@ $(document).ready(function(){
 				val = elval ;
 			}
 
-            var dialog = bootbox.prompt({ 
+            var dialog = bootbox.prompt({
 			  size: "large",
-			  title: id_name, 
+			  title: id_name,
 			  value: val,
 			  inputType: 'textarea',
 			  onEscape: false,
 			  closeButton:false,
               animate:false,
-			  callback: function(res){ 
+			  callback: function(res){
 			  	if(res){
 			  		res = res.trim() ;
 			  		if(res != ''){
-			  			el.text(res);	
+			  			el.text(res);
 
 			  		}else{
 			  			el.text('- edit here -');
 			  		}
 			  	}else{
 			  		if(elval == '- edit here -'){
-			  			el.text('- edit here -');	
+			  			el.text('- edit here -');
 
 			  		}else{
 			  			el.text(elval);
@@ -1993,7 +2121,7 @@ $(document).ready(function(){
 
             dialog.init(function(){
                 dialog.find('.bootbox-body').prepend( '<div class="alert alert-warning">Apabila isian kosong harap diberi tanpa strip "-" ( tanpa tanda kutip ) untuk keseragaman</div>');
-                
+
             });
 
 
@@ -2132,147 +2260,137 @@ function get_total_pajak_edit(){
     $('#edit_total_pajak').text(angka_to_string(total));
 }
 
+function need_to_expand_the_collapse(){
+    var row_sub_subunit = localStorage.getItem("row_expand_sub_subunit");
+    var row_akun4d = localStorage.getItem("row_expand_akun4d");
+    var row_akun5d = localStorage.getItem("row_expand_akun5d");
+    var row_akun6d = localStorage.getItem("row_expand_akun6d");
+    var row_focus = localStorage.getItem("row_focus");
 
+    $(row_sub_subunit).addClass("in");
+    $(row_akun4d).addClass("in");
+    $(row_akun5d).addClass("in");
+    $(row_akun6d).addClass("in");
+    $(row_focus).focus();
+
+}
 </script>
-<?php
-//$tgl=getdate();
-//$cur_tahun=$tgl['year']+1;
-  // tambahan style dari dhanu
-?>
+
 <div id="page-wrapper" >
-            <div id="page-inner">
+    <div id="page-inner">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>DETAIL SUB KEGIATAN</h2>
+           </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-lg-12">
+    		</div>
+            <div class="col-lg-12">
                 <div class="row">
-                    <div class="col-lg-12">
-                     <h2>DETAIL SUB KEGIATAN</h2>
-                   </div>
-                </div>
-                <hr />
-                <div class="row">
-                    <div class="col-lg-12">
-						<?php //print_r($kontrak); ?>
-					</div>
-					<div class="col-lg-12">
-                                            <div class="row">
                     <div class="col-lg-8">
-<table class="table table-striped table-bordered">
-<!--
-<tr>
-	<td class="col-md-2">Tujuan</td>
-	<td><span id="kode_kegiatan"><?=$tor_usul->kode_kegiatan?></span> - <?=$tor_usul->nama_kegiatan?></td>
-</tr>
-<tr>
-	<td class="col-md-2">Sasaran</td>
-	<td><span id="kode_sasaran"><?=$tor_usul->kode_output?></span> - <?=$tor_usul->nama_output?></td>
-</tr>
--->
-<tr>
-	<td class="col-md-2">Program</td>
-	<td><span id="kode_program"><?=$tor_usul->kode_program?></span> - <?=$tor_usul->nama_program?></td>
-</tr>
-<tr>
-	<td class="col-md-2">Kegiatan</td>
-	<td><span id="kode_komponen"><?=$tor_usul->kode_komponen?></span> - <?=$tor_usul->nama_komponen?></td>
-</tr>
-<tr>
-	<td class="col-md-2">Sub Kegiatan</td>
-        <td><span id="kode_subkomponen"><?=$tor_usul->kode_subkomponen?></span> - <span id="nm_subkomponen"><?=$tor_usul->nama_subkomponen?></span></td>
-</tr>
-</table>
+                        <table class="table table-striped table-bordered">
+                            <tr>
+                            	<td class="col-md-2">Program</td>
+                            	<td><span id="kode_program"><?=$tor_usul->kode_program?></span> - <?=$tor_usul->nama_program?></td>
+                            </tr>
+                            <tr>
+                            	<td class="col-md-2">Kegiatan</td>
+                            	<td><span id="kode_komponen"><?=$tor_usul->kode_komponen?></span> - <?=$tor_usul->nama_komponen?></td>
+                            </tr>
+                            <tr>
+                            	<td class="col-md-2">Sub Kegiatan</td>
+                                <td><span id="kode_subkomponen"><?=$tor_usul->kode_subkomponen?></span> - <span id="nm_subkomponen"><?=$tor_usul->nama_subkomponen?></span></td>
+                            </tr>
+                        </table>
                     </div>
-                                                <div class="col-lg-4">
+                    <div class="col-lg-4">
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered" >
+                    <tr class="alert alert-danger"style="font-weight: bold">
+                        <td class="col-md-2">Sumber Dana</td>
+                        <td><span id="kode_sumber_dana"><?=$sumber_dana?></span></td>
+                    </tr>
+                    <tr class="">
+                        <td class="col-md-2">Ket</td>
+                        <td>
+                            <span class="label badge-gup">&nbsp;</span> : GUP &nbsp;&nbsp;<span class="label badge-tup">&nbsp;</span> : TUP &nbsp;&nbsp;<span class="label badge-lp">&nbsp;</span> : LS-PEGAWAI &nbsp;&nbsp;<span class="label badge-l3">&nbsp;</span> : LS-KONTRAK &nbsp;&nbsp;<span class="label badge-ln">&nbsp;</span> : LS-NON-KONTRAK &nbsp;&nbsp;<span class="label badge-ks">&nbsp;</span> : KERJA-SAMA &nbsp;&nbsp;<span class="label badge-em">&nbsp;</span> : EMONEY
+                        </td>
+                    </tr>
+                </table>
+                <div class="alert alert-warning col-sm-8">
+                    <?php
+                    if($jenis!=2){
+                    ?>
+                        <button type="button" class="btn btn-warning" id="btn-kuitansi" rel="" disabled="disabled" >
+                            <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
+                            Buat Kuitansi
+                        </button>
+                        <a href="<?=site_url('kuitansi/daftar_kuitansi/')?><?php if($jenis=='1'){echo 'GP';}elseif($jenis=='2'){echo 'LP';}elseif($jenis=='4'){echo 'LK';}elseif($jenis=='3'){echo 'TP';}elseif($jenis=='5'){echo 'KS';}elseif($jenis=='6'){echo 'LN';}elseif($jenis=='7'){echo 'EM';}else{} ?>" class="btn btn-info">
+                            <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> 
+                            Daftar Kuitansi
+                        </a>
+                    <?php
+                    }else{
+                    ?>
+                        <button type="button" class="btn btn-primary" id="btn-buat-ls" rel="" disabled="disabled">
+                            <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> 
+                            Buat SPP LSP
+                        </button>
+                    <?php
+                    } 
+                    ?>
+                </div>
 
-                        <?php if($jenis == '1'): ?>
-                        <!-- <div class="panel panel-danger" style="margin-bottom: 0;">
-                            <div class="panel-heading">
-                              <h3 class="panel-title">UP TERSEDIA</h3>
-                            </div>
-                            <div class="panel-body">
-                                <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?=number_format(get_saldo_up($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?></span>,-</span></h3>
-                            </div>
-                        </div> -->
-                        <?php elseif($jenis == '3'): ?>
-                        <!-- <div class="panel panel-danger" style="margin-bottom: 0;">
-                            <div class="panel-heading">
-                              <h3 class="panel-title">TUP TERSEDIA</h3>
-                            </div>
-                            <div class="panel-body">
-                                <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?=number_format(get_saldo_tup($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?></span>,-</span></h3>
-                            </div>
-                        </div> -->
-                        <?php else: ?>
-                                                    &nbsp;
-                        <?php endif; ?>
-                                                    </div>
-                                            </div>
+                <div class="alert alert-info col-md-12" style="border-color:#3793a7;" id="panel-jml-show">
+                    <span class="text-danger">Jumlah aktif dpa dipilih : <b class="jml_kuitansi">0</b></span>
+                </div>
 
-<table class="table table-striped table-bordered" >
-<tr class="alert alert-danger"style="font-weight: bold">
-	<td class="col-md-2">Sumber Dana</td>
-        <td><span id="kode_sumber_dana"><?=$sumber_dana?></span></td>
-</tr>
-<tr class="">
-	<td class="col-md-2">Ket</td>
-	<td>
-            <span class="label badge-gup">&nbsp;</span> : GUP &nbsp;&nbsp;<span class="label badge-tup">&nbsp;</span> : TUP &nbsp;&nbsp;<span class="label badge-lp">&nbsp;</span> : LS-PEGAWAI &nbsp;&nbsp;<span class="label badge-l3">&nbsp;</span> : LS-PIHAK-3 &nbsp;&nbsp;<span class="label badge-ks">&nbsp;</span> : KERJA-SAMA        </td>
+                <div style="position: fixed;top: 79px;z-index:999;right:0px;width:300px;display:none;" id="panel-jml" >
+                    <div class="alert alert-info" style="border-radius:0px;border-color:#3793a7;margin-bottom: 0px;">
+                        <span class="text-danger">Jumlah aktif dpa dipilih : <b class="jml_kuitansi">0</b></span>
+                    </div>
+                </div>
 
-</tr>
-</table>
-                        <div class="alert alert-warning col-sm-8">
-                          <?php
-                            if($jenis!=2){
-								if($jenis==4){
-						?>
-							<button type="button" class="btn btn-success" id="btn-kuitansi2" rel="" disabled="disabled" ><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Buat Kuitansi++ LSP3</button>
-							  <a href="<?=site_url('kuitansi_lsphk3/daftar_kuitansi2/')?><?php if($jenis=='1'){echo 'GP';}elseif($jenis=='2'){echo 'LP';}elseif($jenis=='4'){echo 'L3';}elseif($jenis=='3'){echo 'TP';}elseif($jenis=='5'){echo 'KS';}else{} ?>" class="btn btn-info"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> Daftar Kuitansi</a>
-						<?php
-								}else{
-                          ?>
-                            <button type="button" class="btn btn-warning" id="btn-kuitansi" rel="" disabled="disabled" ><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Buat Kuitansi</button>
-                            <a href="<?=site_url('kuitansi/daftar_kuitansi/')?><?php if($jenis=='1'){echo 'GP';}elseif($jenis=='2'){echo 'LP';}elseif($jenis=='4'){echo 'L3';}elseif($jenis=='3'){echo 'TP';}elseif($jenis=='5'){echo 'KS';}else{} ?>" class="btn btn-info"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> Daftar Kuitansi</a>
-                        <?php
-								}
-							}else{
-						?>
-                            <button type="button" class="btn btn-primary" id="btn-buat-ls" rel="" disabled="disabled"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Buat SPP LSP</button>
-                          <?php } ?>
-                        </div>
+                <div id="temp" style="display:none"></div>
+                <div id="o-table">
+                    <table class="table" id="tb-data">
+                        <thead>
+                            <tr >
+                                <th class="col-md-1" >Akun</th>
+                                <th class="col-md-3" >Rincian</th>
+                                <th class="col-md-1" >Volume</th>
+                                <th class="col-md-1" >Satuan</th>
+                                <th class="col-md-2" >Harga</th>
+                                <th class="col-md-2" >Jumlah</th>
+                                <th class="col-md-1" style="text-align:center">&nbsp;</th>
+                                <th class="col-md-1" style="text-align:center">Pilih</th>
+                            </tr>
+                        </thead>
+                        <tbody id="row_space">
+                            <?php $total_ = 0 ;?>
+                            <?php $temp_text_unit = '' ;?>
+                            <?php $temp_text_akun = '' ;?>
+                            <?php $i_row = 0 ; ?>
+                            <?php $total_per_akun = 0 ;?>
+                            <?php $impor = 0 ; ?>
+                            <?php if(!empty($detail_akun_rba)): ?>
+                            <?php foreach($detail_akun_rba as $u){ ?>
 
-			<div id="temp" style="display:none"></div>
-                        <div id="o-table">
-                        <table class="table">
-                            <thead>
-                                <tr >
-                                    <th class="col-md-1" >Akun</th>
-                                    <th class="col-md-3" >Rincian</th>
-                                    <th class="col-md-1" >Volume</th>
-                                    <th class="col-md-1" >Satuan</th>
-                                    <th class="col-md-2" >Harga</th>
-                                    <th class="col-md-2" >Jumlah</th>
-                                    <th class="col-md-1" style="text-align:center">&nbsp;</th>
-                                    <th class="col-md-1" style="text-align:center">Pilih</th>
-                                </tr>
-                            </thead>
-                            <tbody id="row_space">
-                                <?php $total_ = 0 ;?>
-                                <?php $temp_text_unit = '' ;?>
-                                <?php $temp_text_akun = '' ;?>
-                                <?php $i_row = 0 ; ?>
-                                <?php $total_per_akun = 0 ;?>
-                                <?php $impor = 0 ; ?>
-                                <?php if(!empty($detail_akun_rba)): ?>
-                                <?php foreach($detail_akun_rba as $u){ ?>
-
-                                    <?php if($temp_text_unit != $u->nama_subunit.$u->nama_sub_subunit): ?>
+                                <?php if($temp_text_unit != $u->nama_subunit.$u->nama_sub_subunit): ?>
                                     <tr id="tr_empty_<?=$u->kode_usulan_belanja?>">
                                         <td colspan="8">&nbsp;</td>
                                     </tr>
                                     <tr id="tr_unit_<?=$u->kode_usulan_belanja?>" class="alert alert-info" height="25px">
                                         <td colspan="8"><b><?='<span class="text-warning">'.$u->nama_subunit.'</span> : <span class="text-success">'.$u->nama_sub_subunit.'</span>'?></b></td>
                                     </tr>
-                                        <?php $temp_text_unit = $u->nama_subunit.$u->nama_sub_subunit; ?>
-                                        <?php $temp_text_akun = '' ;?>
-                                    <?php endif; ?>
-                                    <?php if($temp_text_akun != $u->kode_akun): ?>
+                                    <?php $temp_text_unit = $u->nama_subunit.$u->nama_sub_subunit; ?>
+                                    <?php $temp_text_akun = '' ;?>
+                                <?php endif; ?>
+
+                                <?php if($temp_text_akun != $u->kode_akun): ?>
                                     <tr id="tr_akun_<?=$u->kode_usulan_belanja?>" height="25px" class="text-danger">
                                         <td colspan="7"><b><?=$u->kode_akun.' : <span id="nm_akun_'.$u->kode_usulan_belanja.'">'.$u->nama_akun.'</span>'?></b></td>
                                         <td >
@@ -2285,76 +2403,80 @@ function get_total_pajak_edit(){
                                     </tr>
                                         <?php $temp_text_akun = $u->kode_akun; ?>
                                         <?php $total_per_akun = 0 ;?>
-                                    <?php else: ?>
-                                        <!--<td colspan="8">&nbsp;</td>-->
-                                    <?php endif; ?>
-                                    <?php // echo '<pre>';var_dump($detail_rsa_dpa);echo '</pre>';?>
+                                <?php else: ?>
 
-                                    <?php // if(empty($detail_rsa_dpa)):?>
+                                <?php endif; ?>
 
-                                    <tr id="" height="25px" style="" class="tr_dpa_<?=$u->kode_usulan_belanja?>" >
-                                        <td colspan="8" style="text-align:center">- kosong -</td>
-                                    </tr>
-                                    <tr id="" height="25px" style="" class="tr_dpa_<?=$u->kode_usulan_belanja?>" >
-                                        <td colspan="8" style="text-align:center"></td>
-                                    </tr>
+                                <tr id="" height="25px" style="" class="tr_dpa_<?=$u->kode_usulan_belanja?>" >
+                                    <td colspan="8" style="text-align:center">- kosong -</td>
+                                </tr>
+                                <tr id="" height="25px" style="" class="tr_dpa_<?=$u->kode_usulan_belanja?>" >
+                                    <td colspan="8" style="text-align:center"></td>
+                                </tr>
 
-                                    <?php // endif; ?>
-                                    <?php $i=0; foreach($detail_rsa_dpa as $ul){ ?>
-                                        <?php $impor = $ul->impor; ?>
-                                        <?php if(( $ul->kode_usulan_belanja == $u->kode_usulan_belanja) && (substr($ul->proses,1,1) == $jenis) ): ?>
-                                            <tr id="tr_<?=$ul->kode_usulan_belanja?><?php echo $ul->kode_akun_tambah ;?>" height="25px">
-                                                <td style="text-align: right">
-												<?php
-													if(substr($ul->proses,1,1)==4){
-												?>
-														<input type="hidden" class="id_kontrak_<?php echo $ul->kode_usulan_belanja.$ul->kode_akun_tambah; ?>" value="<?php echo $kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->id; ?>"/>
-												<?php
-													}
-												?>
+                                <?php $i=0; foreach($detail_rsa_dpa as $ul){ ?>
+                                    <?php $impor = $ul->impor; ?>
+                                    <?php if(( $ul->kode_usulan_belanja == $u->kode_usulan_belanja) && (substr($ul->proses,1,1) == $jenis) ): ?>
+                                    <tr id="tr_<?=$ul->kode_usulan_belanja?><?php echo $ul->kode_akun_tambah ;?>" height="25px">
+                                        <td style="text-align: right">
+    										<?php if(substr($ul->proses,1,1)==4){ ?>
+    											<input type="hidden" class="id_kontrak_<?php echo $ul->kode_usulan_belanja.$ul->kode_akun_tambah; ?>" value="<?php echo $kontrak[$ul->kode_usulan_belanja.$ul->kode_akun_tambah][0]->id; ?>"/>
+    										<?php } ?>
 
-                                                    <?php if(substr($ul->proses,1,1)=='1'){echo '<span class="badge badge-gup" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">GP</span>';}elseif(substr($ul->proses,1,1)=='2'){echo '<span class="badge badge-lp" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">LP</span>';}elseif(substr($ul->proses,1,1)=='4'){echo '<span class="badge badge-l3" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">L3</span>';}elseif(substr($ul->proses,1,1)=='3'){echo '<span class="badge badge-tup" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">TP</span>';}elseif(substr($ul->proses,1,1)=='5'){echo '<span class="badge badge-ks" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">KS</span>';}else{} ?> <?=$ul->kode_akun_tambah?>
-                                                </td>
-                                                <td ><?=$ul->deskripsi?></td>
-                                                <td ><?=$ul->volume + 0?></td>
-                                                <td ><?=$ul->satuan?></td>
-                                                <td style="text-align: right"><?=number_format($ul->harga_satuan, 0, ",", ".")?></td>
-                                                <td style="text-align: right" id="td_sub_tot_<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>">
-                                                    <?php $total_ = $total_ + ($ul->volume*$ul->harga_satuan); ?>
-                                                    <?php $total_per_akun = $total_per_akun + ($ul->volume*$ul->harga_satuan); ?>
-                                                    <?=number_format($ul->volume*$ul->harga_satuan, 0, ",", ".")?>
-                                                </td>
-
-
-                                                <?php if(substr($ul->proses,0,1) == 0) : ?>
-
-                                                <!-- KONDISI INI GA JALAN DI DPA CAIR -->
-
+                                            <?php
+                                            if(substr($ul->proses,1,1)=='1'){
+                                                echo '<span class="badge badge-gup" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">GP</span>';
+                                            }
+                                            elseif(substr($ul->proses,1,1)=='2'){
+                                                echo '<span class="badge badge-lp" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">LP</span>';
+                                            }
+                                            elseif(substr($ul->proses,1,1)=='4'){
+                                                echo '<span class="badge badge-l3" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">LK</span>';
+                                            }
+                                            elseif(substr($ul->proses,1,1)=='3'){
+                                                echo '<span class="badge badge-tup" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">TP</span>';
+                                            }
+                                            elseif(substr($ul->proses,1,1)=='5'){
+                                                echo '<span class="badge badge-ks" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">KS</span>';
+                                            }
+                                            elseif(substr($ul->proses,1,1)=='6'){
+                                                echo '<span class="badge badge-ln" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">LN</span>';
+                                            }
+                                            elseif(substr($ul->proses,1,1)=='7'){
+                                                echo '<span class="badge badge-em" id="badge_id_'.$ul->kode_usulan_belanja.$ul->kode_akun_tambah.'">EM</span>';
+                                            }
+                                            else{} ?>
+                                            <?=$ul->kode_akun_tambah?>
+                                        </td>
+                                        <td ><?=$ul->deskripsi?></td>
+                                        <td ><?=$ul->volume + 0?></td>
+                                        <td ><?=$ul->satuan?></td>
+                                        <td style="text-align: right"><?=number_format($ul->harga_satuan, 0, ",", ".")?></td>
+                                        <td style="text-align: right" id="td_sub_tot_<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>">
+                                            <?php $total_ = $total_ + ($ul->volume*$ul->harga_satuan); ?>
+                                            <?php $total_per_akun = $total_per_akun + ($ul->volume*$ul->harga_satuan); ?>
+                                            <?=number_format($ul->volume*$ul->harga_satuan, 0, ",", ".")?>
+                                        </td>
+                                            <?php if(substr($ul->proses,0,1) == 0) : ?>
                                                 <td align="center">
-                                                    <buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$ul->kode_usulan_belanja?>" ><span class="glyphicon glyphicon-share" aria-hidden="true"></span></buttton>
-
+                                                    <buttton type="button" class="btn btn-warning tb-buat-tor" rel="<?=$ul->kode_usulan_belanja?>" >
+                                                        <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
+                                                    </buttton>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-success btn-sm" rel="<?php echo $ul->id_rsa_detail ;?>" id="proses_<?php echo $ul->id_rsa_detail ;?>" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Proses</button>
+                                                    <button type="button" class="btn btn-success btn-sm" rel="<?php echo $ul->id_rsa_detail ;?>" id="proses_<?php echo $ul->id_rsa_detail ;?>" aria-label="Center Align">
+                                                        <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+                                                    Proses</button>
                                                 </td>
-
-
                                                 <?php elseif(substr($ul->proses,0,1) == 3): ?>
                                                 <td align="center">
-													<!--<div class="input-group-btn">-->
-
-
-                                                <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait.."><i class="glyphicon glyphicon-repeat"></i></button>
-
-												  <?php if( $jenis==4 ): ?>
-														<!--<button type="button" class="btn btn-default btn-sm" rel="<?php echo $ul->kode_usulan_belanja ;?><?=$ul->kode_akun_tambah?>" title="Daftar Kuitansi LSP3"><i class="glyphicon glyphicon-list"></i></button>--!>
-												  <?php endif; ?>
-
-
-													<!--</div>-->
+                                                    <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait..">
+                                                            <i class="glyphicon glyphicon-repeat"></i>
+                                                    </button>
+        											<?php if( $jenis==4 ): ?>
+        											<?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <!--<button type="button" class="btn btn-success btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Buat SPP</button>-->
                                                     <div class="input-group">
                                                         <span class="input-group-addon">
                                                             <?php if(is_null($ul->id_kuitansi)): ?>
@@ -2366,15 +2488,12 @@ function get_total_pajak_edit(){
                                                                 <input type="checkbox" aria-label="" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" class="ck_<?php echo $ul->kode_usulan_belanja ;?><?=$ul->kode_akun_tambah?>">
                                                                 <?php endif; ?>
                                                             <?php endif;?>
-
                                                         </span>
                                                     </div>
                                                 </td>
                                                 <?php elseif(substr($ul->proses,0,1) == 4): ?>
                                                 <td align="center">
-
                                                     <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait.."><i class="glyphicon glyphicon-repeat"></i></button>
-
                                                 </td>
                                                 <td>
                                                     <div class="input-group">
@@ -2385,9 +2504,7 @@ function get_total_pajak_edit(){
                                                 </td>
                                                 <?php elseif(substr($ul->proses,0,1) == 5): ?>
                                                 <td align="center">
-
-                                                <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait.."><i class="glyphicon glyphicon-repeat"></i></button>
-
+                                                    <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait.."><i class="glyphicon glyphicon-repeat"></i></button>
                                                 </td>
                                                 <td>
                                                     <div class="input-group">
@@ -2398,9 +2515,7 @@ function get_total_pajak_edit(){
                                                 </td>
                                                 <?php elseif(substr($ul->proses,0,1) == 6): ?>
                                                 <td align="center">
-
-                                                <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait.."><i class="glyphicon glyphicon-repeat"></i></button>
-
+                                                    <button type="button" class="btn btn-sm btn-default btn-ajx" rel="<?=$ul->kode_usulan_belanja?><?=$ul->kode_akun_tambah?>" onclick="bootbox.alert('sedang memuat status..')" title="wait.."><i class="glyphicon glyphicon-repeat"></i></button>
                                                 </td>
                                                 <td>
                                                     <div class="input-group">
@@ -2409,42 +2524,19 @@ function get_total_pajak_edit(){
                                                         </span>
                                                     </div>
                                                 </td>
-                                                <?php else: ?>
-                                                <td align="center">&nbsp;
-
-                                                </td>
+                                            <?php else: ?>
+                                                <td align="center">&nbsp;</td>
                                                 <td>
-                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Proses</button>
+                                                    <button type="button" disabled="disabled" class="btn btn-danger btn-sm" rel="" id="proses_" aria-label="Center Align">
+                                                        <span class="glyphicon glyphicon-export" aria-hidden="true"></span> 
+                                                        Proses
+                                                    </button>
                                                 </td>
-                                                <?php endif; ?>
-                                            </tr>
-                                        <?php endif; ?>
-                                    <?php $i++; } ?>
-                                    <!--
-                                    <tr id="form_add_detail_<?=$u->kode_usulan_belanja?>" class="alert alert-success">
-                                            <td >
-                                                <input name="revisi" id="revisi_<?=$u->kode_usulan_belanja?>" type="hidden" value="<?=$u->revisi?>" />
-                                                <input name="impor" id="impor_<?=$u->kode_usulan_belanja?>" type="hidden" value="<?=$impor?>" />
-                                                <input name="kode_akun_tambah" class="form-control" rel="<?=$u->kode_usulan_belanja?>" id="kode_akun_tambah_<?=$u->kode_usulan_belanja?>" type="text" value="" readonly="readonly" />
-                                            </td>
-                                            <td >
-                                                <textarea name="deskripsi" class="validate[required] form-control" rel="<?=$u->kode_usulan_belanja?>" id="deskripsi_<?=$u->kode_usulan_belanja?>" rows="1"></textarea>
-                                            </td>
-                                            <td ><input name="volume" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" rel="<?=$u->kode_usulan_belanja?>" id="volume_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
-                                            <td ><input name="satuan" class="validate[required,maxSize[30]] form-control" rel="<?=$u->kode_usulan_belanja?>" id="satuan_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
-                                            <td ><input name="tarif" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" rel="<?=$u->kode_usulan_belanja?>" id="tarif_<?=$u->kode_usulan_belanja?>" type="text" value="" /></td>
-                                            <td ><input name="jumlah" rel="<?=$u->kode_usulan_belanja?>" id="jumlah_<?=$u->kode_usulan_belanja?>" type="text" class="form-control" readonly="readonly" value="" /></td>
-                                            <td align="center" >
-                                                    <div class="btn-group">
-                                                                    <button type="button" class="btn btn-default btn-sm" rel="<?=$u->kode_usulan_belanja?>" id="tambah_<?=$u->kode_usulan_belanja?>" aria-label="Left Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
-                                                                    <button type="button" class="btn btn-default btn-sm" rel="<?=$u->kode_usulan_belanja?>" id="reset_<?=$u->kode_usulan_belanja?>" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-
-
-                                                            </div>
-                                            </td>
-                                            <td>&nbsp;</td>
+                                            <?php endif; ?>
                                     </tr>
-                                    -->
+                                    <?php endif; ?>
+
+                                    <?php $i++; } ?>
                                     <tr class="alert alert-danger" id="tr_usulan_<?=$u->kode_usulan_belanja?>">
                                         <td colspan="4" style="text-align: right;">Anggaran</td>
                                         <td style="text-align: right;">:</td>
@@ -2453,76 +2545,58 @@ function get_total_pajak_edit(){
                                         <td >&nbsp;</td>
                                     </tr>
                                     <tr class="alert alert-info" id="tr_total_<?=$u->kode_usulan_belanja?>">
-                                            <td colspan="4" style="text-align: right;">Usulan</td>
-                                            <td style="text-align: right;">:</td>
-                                            <td style="text-align: right;" rel="<?=$u->kode_usulan_belanja?>" id="td_kumulatif_<?=$u->kode_usulan_belanja?>"><?=number_format($total_per_akun, 0, ",", ".")?></td>
-                                            <td >&nbsp;</td>
-                                            <td >&nbsp;</td>
+                                        <td colspan="4" style="text-align: right;">Usulan</td>
+                                        <td style="text-align: right;">:</td>
+                                        <td style="text-align: right;" rel="<?=$u->kode_usulan_belanja?>" id="td_kumulatif_<?=$u->kode_usulan_belanja?>"><?=number_format($total_per_akun, 0, ",", ".")?></td>
+                                        <td >&nbsp;</td>
+                                        <td >&nbsp;</td>
                                     </tr>
                                     <tr  class="alert alert-warning" id="tr_sisa_<?=$u->kode_usulan_belanja?>">
-                                            <td colspan="4" style="text-align: right;">Sisa</td>
-                                            <td style="text-align: right;">:</td>
-                                            <td style="text-align: right;" id="td_kumulatif_sisa_<?=$u->kode_usulan_belanja?>"><?=number_format(($u->total_harga - $total_per_akun), 0, ",", ".")?></td>
-                                            <td >&nbsp;</td>
-                                            <td >&nbsp;</td>
+                                        <td colspan="4" style="text-align: right;">Sisa</td>
+                                        <td style="text-align: right;">:</td>
+                                        <td style="text-align: right;" id="td_kumulatif_sisa_<?=$u->kode_usulan_belanja?>"><?=number_format(($u->total_harga - $total_per_akun), 0, ",", ".")?></td>
+                                        <td >&nbsp;</td>
+                                        <td >&nbsp;</td>
                                     </tr>
                                     <?php $i_row++; ?>
 
-
-
                                 <?php } ?>
+
                                 <?php else: ?>
-                                    
 
                                 <?php endif; ?>
                                     <tr id="tr_kosong" height="25px" style="display: none" class="alert alert-warning" >
                                         <td colspan="8">- kosong / belum disetujui -</td>
                                     </tr>
-
-                                    <!--
-                                    <tr id="" height="25px" class="alert alert-info" style="font-weight: bold">
-                                        <td colspan="4" style="text-align: center">Total </td>
-                                        <td style="text-align: right">:</td>
-                                        <td style="text-align: right"><?=number_format($total_, 0, ",", ".")?></td>
-                                        <td >&nbsp;</td>
-                                        <td >&nbsp;</td>
-                                    </tr>
-                                    -->
-                            </tbody>
-                            <tfoot>
-                                <tr id="" height="25px">
-                                        <td colspan="8">&nbsp;</td>
-                                    </tr>
-                            </tfoot>
-                        </table>
-                        <!--
-                        <div class="alert alert-warning" style="text-align:center">
-
-                                <button type="button" class="btn btn-warning" name="backi" id="backi" ><span class="glyphicon glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Kembali</button>
-                                <button type="button" class="btn btn-success" name="proses" id="proses" ><span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Usulkan</button>
-
-                        </div>
-                        -->
-
-
-                        </div>
-
+                        </tbody>
+                        <tfoot>
+                            <tr id="" height="25px">
+                                <td colspan="8">&nbsp;</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+	       </div>
 	    </div>
-	  </div>
+    </div>
 </div>
-</div>
+
+
 <!-- POP UP PILIH PENCAIRAN -->
 <div class="modal " id="myModalKuitansi" role="dialog" aria-labelledby="myModalKuitansiLabel">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-              <h4 class="modal-title" id="myModalLabel">Kuitansi : <span id="kode_badge">-</span></h4>
-          </div>
-          <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
-              <div id="div-cetak">
-              <table class="table_print" id="kuitansi" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
-                <tr>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">Kuitansi : <span id="kode_badge">-</span></h4>
+            </div>
+            <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
+                <?php if($jenis == '4'): ?>
+                    <!--- TIDAK JADI DIPAKAI -->
+                <?php endif; ?>
+                <div id="div-cetak">
+                    <table class="table_print" id="kuitansi" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+                        <tr>
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
@@ -2534,86 +2608,80 @@ function get_total_pajak_edit(){
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
-                </tr>
-                  <tr>
-                                <td rowspan="3" style="text-align: center" colspan="2">
-					<img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
-				</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-
-
-                                <td colspan="2">Tahun Anggaran</td>
-                                <td style="text-align: center">:</td>
-                                <td colspan="2"><?=$tahun?></td>
                         </tr>
                         <tr>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
+                            <td rowspan="3" style="text-align: center" colspan="2">
+                               <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                           </td>
+                           <td >&nbsp;</td>
+                           <td >&nbsp;</td>
+                           <td >&nbsp;</td>
+                           <td >&nbsp;</td>
 
-                                <td colspan="2">Nomor Bukti</td>
-                                <td style="text-align: center">:</td>
-                                <td colspan="2" id="no_bukti">-</td>
+
+                           <td colspan="2">Tahun Anggaran</td>
+                           <td style="text-align: center">:</td>
+                           <td colspan="2"><?=$tahun?></td>
+                        </tr>
+                        <tr>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+
+                            <td colspan="2">Nomor Bukti</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2" id="no_bukti">-</td>
                         </tr>
                         <tr class="tr_up">
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-
-                                <td colspan="2">Anggaran</td>
-                                <td style="text-align: center">:</td>
-                                <td colspan="2" id="txt_akun">-</td>
-
-			</tr>
-			<tr>
-                                <td colspan="11">&nbsp;
-
-				</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td colspan="2">Anggaran</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2" id="txt_akun">-</td>
                         </tr>
-			<tr>
-				<td colspan="11">
-                                    <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
-				</td>
-			</tr>
                         <tr>
-                                <td colspan="11">&nbsp;
-
-				</td>
+                            <td colspan="11">&nbsp;</td>
                         </tr>
-			<tr class="tr_up">
-				<td colspan="3">Sudah Diterima dari</td>
-				<td>: </td>
-                                <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Jumlah Uang</td>
-				<td>: </td>
-                                <td colspan="7"><b>Rp. <span class="sum_tot_bruto">0</span>,-</b></td>
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Terbilang</td>
-				<td>: </td>
-                                <td colspan="7"><b><span class="text_tot">-</span></b></td>
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Untuk Pembayaran</td>
-				<td>: </td>
-                                <td colspan="7"><span id="uraian" class="input_boot" style="cursor:pointer">- edit here -</span></td> <!--contenteditable="true" class="edit_here"-->
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Sub Kegiatan</td>
-				<td>: </td>
-                                <td colspan="7"><span id="nm_subkomponen_kuitansi">-</span></td>
-			</tr>
                         <tr>
-                                <td colspan="11">&nbsp;
+                            <td colspan="11">
+                                <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="11">&nbsp;</td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Sudah Diterima dari</td>
+                            <td>: </td>
+                            <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Jumlah Uang</td>
+                            <td>: </td>
+                            <td colspan="7"><b>Rp. <span class="sum_tot_bruto">0</span>,-</b></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Terbilang</td>
+                            <td>: </td>
+                            <td colspan="7"><b><span class="text_tot">-</span></b></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Untuk Pembayaran</td>
+                            <td>: </td>
+                            <td colspan="7"><span id="uraian" class="input_boot" style="cursor:pointer" title="iiii">- edit here -</span></td> <!--contenteditable="true" class="edit_here"-->
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Sub Kegiatan</td>
+                            <td>: </td>
+                            <td colspan="7"><span id="nm_subkomponen_kuitansi">-</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="11">&nbsp;
 
-				</td>
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="3"><b>Deskripsi</b></td>
@@ -2624,23 +2692,10 @@ function get_total_pajak_edit(){
                             <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
                             <td >&nbsp;</td>
                             <td ><b>Netto</b></td>
-			</tr>
+                        </tr>
                         <tr id="tr_isi">
                             <td colspan="11">tr_si</td>
-			</tr>
-<!--                        <tr>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td colspan="2"><b>Pajak ( Lump Sum ) </b></td>
-                            <td >&nbsp;</td>
-                            <td style="text-align: right"><b><span class="">&nbsp;</span></b></td>
-                            <td class="row_pajak_lumpsum" style="padding: 0 5px 0 5px;">[<a data-toggle="modal" rel="" id="pilih_pajak_lumpsum" href="#myModalPajak">Edit</a>]</td>
-                            <td style="text-align: right"><b><span class="sum_tot_pajak_lumpsum">0</span></b></td>
-                            <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">&nbsp;</span></b></td>
-                            <td style="text-align: right"><b><span class="sum_tot_netto_lumpsum">&nbsp;</span></b></td>
-			</tr>-->
+                        </tr>
                         <tr>
                             <td >&nbsp;</td>
                             <td >&nbsp;</td>
@@ -2653,103 +2708,105 @@ function get_total_pajak_edit(){
                             <td style="text-align: right"><b><span class="sum_tot_pajak">0</span></b></td>
                             <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
                             <td style="text-align: right"><b><span class="sum_tot_netto">0</span></b></td>
-			</tr>
-                        <tr>
-                                <td colspan="11">&nbsp;
-
-				</td>
                         </tr>
-			<tr>
+                        <tr>
+                            <td colspan="11">&nbsp;
+
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
-                                Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                                <?php if($jenis== '4'): ?>
+                                    Pejabat Pembuat Komitmen (PPK)
+                                <?php else: ?>
+                                    Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                                <?php endif; ?>
                             </td>
                             <td colspan="4" style="vertical-align: top;">
                                 Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y"); ?><br />
                                 Penerima Uang
                             </td>
-			</tr>
+                        </tr>
                         <tr>
-                                <td colspan="11">
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <br>
-				</td>
+                            <td colspan="11">
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                            </td>
                         </tr>
                         <tr >
                             <td colspan="7" style="border-bottom: 1px solid #000;vertical-align: bottom;">
                                 <span class="edit_here" id="nmpppk" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nm_lengkap']; ?>- edit here -</span><br>
-                                    NIP. <span class="edit_here" id="nippppk" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nip'] ; ?>- edit here -</span>
-                                    </td>
+                                NIP. <span class="edit_here" id="nippppk" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nip'] ; ?>- edit here -</span>
+                            </td>
                             <td colspan="4" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span class="input_boot" style="cursor:pointer;white-space: pre-line;" id="penerima_uang">- edit here -</span><br />
                                 NIP. <span class="input_boot" style="cursor:pointer" id="penerima_uang_nip">- edit here -</span>
-                                </td>
-			</tr>
+                            </td>
+                        </tr>
                         <tr >
                             <?php if($_SESSION['rsa_level'] == 13) : ?>
-                            <td colspan="11">Setuju dibayar tgl : <br>
-                                Bendahara Pengeluaran
-                            </td>
+                                <td colspan="11">Setuju dibayar tgl : <br>
+                                    Bendahara Pengeluaran
+                                </td>
                             <?php else: ?>
-                            <td colspan="7">Setuju dibayar tgl : <br>
-                                Bendahara Pengeluaran
-                            </td>
-                            <td colspan="4">Lunas dibayar tgl :<br>
-                                Pemegang Uang Muka Kerja
-                            </td>
+                                <td colspan="7">Setuju dibayar tgl : <br>
+                                    Bendahara Pengeluaran
+                                </td>
+                                <td colspan="4">Lunas dibayar tgl :<br>
+                                    Pemegang Uang Muka Kerja
+                                </td>
                             <?php endif; ?>
                         </tr>
                         <tr>
-                                <td colspan="11">
-                                    <br>
-                                    <br>
-                                    <br>
-				</td>
+                            <td colspan="11">
+                                <br>
+                                <br>
+                                <br>
+                            </td>
                         </tr>
-                         <tr>
+                        <tr>
                             <?php if($_SESSION['rsa_level'] == 13) : ?>
-                             <td colspan="11"><span id="nmbendahara"><?=$pic_kuitansi['bendahara_nm_lengkap']?></span><br>
-                                 NIP. <span id="nipbendahara"><?=$pic_kuitansi['bendahara_nip']?></span>
-                            </td>
-                            <?php else: ?>
-                            <td colspan="7"><span id="nmbendahara"><?=$pic_kuitansi['bendahara_nm_lengkap']?></span><br>
-                                 NIP. <span id="nipbendahara"><?=$pic_kuitansi['bendahara_nip']?></span>
-                            </td>
-                            <td colspan="4"><span id="nmpumk"><?php echo isset($pumk->nm_lengkap)?$pumk->nm_lengkap:''; ?></span><br>
+                               <td colspan="11"><span id="nmbendahara"><?=$pic_kuitansi['bendahara_nm_lengkap']?></span><br>
+                                   NIP. <span id="nipbendahara"><?=$pic_kuitansi['bendahara_nip']?></span>
+                               </td>
+                           <?php else: ?>
+                                <td colspan="7"><span id="nmbendahara"><?=$pic_kuitansi['bendahara_nm_lengkap']?></span><br>
+                                    NIP. <span id="nipbendahara"><?=$pic_kuitansi['bendahara_nip']?></span>
+                                </td>
+                                <td colspan="4"><span id="nmpumk"><?php echo isset($pumk->nm_lengkap)?$pumk->nm_lengkap:''; ?></span><br>
                                     NIP. <span id="nippumk"><?php echo isset($pumk->nomor_induk)?$pumk->nomor_induk:''; ?></span>
-                            </td>
+                                </td>
                             <?php endif; ?>
-
                         </tr>
-			<tr >
-				<td colspan="11" style="border-top:1px solid #000">
-				Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
-				Penerima Barang/jasa
-				</td>
+                        <tr >
+                            <td colspan="11" style="border-top:1px solid #000">
+                                Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+                                Penerima Barang/jasa
+                            </td>
                         </tr>
                         <tr>
-                                <td colspan="11">
-                                    <br>
-                                    <br>
-                                    <br>
-				</td>
+                            <td colspan="11">
+                                <br>
+                                <br>
+                                <br>
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="11" ><span class="input_boot" id="penerima_barang" style="cursor:pointer">- edit here -</span><br />
-                                    NIP. <span class="input_boot" id="penerima_barang_nip" style="cursor:pointer">- edit here -</span>
-				</td>
-			</tr>
+                                NIP. <span class="input_boot" id="penerima_barang_nip" style="cursor:pointer">- edit here -</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
 
-		</table>
-              </div>
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" id="btn-submit-kuitansi" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
-            <button type="button" class="btn btn-info" id="cetak" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
-          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btn-submit-kuitansi" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
+                <button type="button" class="btn btn-info" id="cetak" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+            </div>
         </div>
     </div>
 </div>
@@ -3265,8 +3322,7 @@ function get_total_pajak_edit(){
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                	<h4 class="modal-title">Pemotongan Pajak</h4>
-
+                <h4 class="modal-title">Pemotongan Pajak</h4>
             </div>
             <div class="container"></div>
             <div class="modal-body">
@@ -3278,24 +3334,24 @@ function get_total_pajak_edit(){
                         <tr>
                             <td colspan="3" class=""></td>
                         </tr>
-                                                <tr>
+                        <tr>
                             <td colspan="3" class="alert-info"><b>PPN</b></td>
                         </tr>
                         <tr>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input name="pajak[0][0]" type="checkbox" rel="1_ppn" id="edit_pj_p_1" class="edit_pj_p_ppn" value="10" />
-                                      10%
+                                        <input name="pajak[0][0]" type="checkbox" rel="1_ppn" id="edit_pj_p_1" class="edit_pj_p_ppn" value="10" />
+                                        10%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input disabled="disabled" name="pajak[0][1]" rel="1" id="edit_pj_dpp_1" class="edit_pj_dpp_ppn" type="checkbox" value="1" />
+                                        <input disabled="disabled" name="pajak[0][1]" rel="1" id="edit_pj_dpp_1" class="edit_pj_dpp_ppn" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input class="form-control input-sm edit_pj_nilai_ppn" disabled="disabled" name="pajak[0][2]" id="edit_pj_nilai_1" type="text" />
@@ -3305,17 +3361,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="81_ppn" id="edit_pj_p_81" name="pajak[80][0]" type="checkbox" class="edit_pj_p_ppn" value="89" />
-                                      Custom
+                                        <input rel="81_ppn" id="edit_pj_p_81" name="pajak[80][0]" type="checkbox" class="edit_pj_p_ppn" value="89" />
+                                        Custom
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox" style="display: none">
                                     <label>
-                                      <input rel="81" id="edit_pj_dpp_81" disabled="disabled" class="edit_pj_dpp_ppn" name="pajak[80][1]" type="checkbox" value="1" />
+                                        <input rel="81" id="edit_pj_dpp_81" disabled="disabled" class="edit_pj_dpp_ppn" name="pajak[80][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_81" class="form-control input-sm edit_pj_nilai_ppn xnumber validate[required]" disabled="disabled" name="pajak[80][2]" type="text" />
@@ -3328,17 +3384,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="2_pphps21" id="edit_pj_p_2" class="edit_pj_p_pphps21" value="5" name="pajak[1][0]" type="checkbox"  />
-                                      5%
+                                        <input rel="2_pphps21" id="edit_pj_p_2" class="edit_pj_p_pphps21" value="5" name="pajak[1][0]" type="checkbox"  />
+                                        5%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="2" id="edit_pj_dpp_2" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[1][1]" type="checkbox" value="1" />
+                                        <input rel="2" id="edit_pj_dpp_2" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[1][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input class="form-control input-sm edit_pj_nilai_pphps21" id="edit_pj_nilai_2" disabled="disabled" name="pajak[1][2]" type="text" />
@@ -3348,17 +3404,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="3_pphps21" id="edit_pj_p_3" name="pajak[2][0]" type="checkbox" class="edit_pj_p_pphps21" value="15" />
-                                      15%
+                                        <input rel="3_pphps21" id="edit_pj_p_3" name="pajak[2][0]" type="checkbox" class="edit_pj_p_pphps21" value="15" />
+                                        15%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="3" id="edit_pj_dpp_3" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[2][1]" type="checkbox" value="1" />
+                                        <input rel="3" id="edit_pj_dpp_3" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[2][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input class="form-control input-sm edit_pj_nilai_pphps21" id="edit_pj_nilai_3" disabled="disabled" name="pajak[2][2]" type="text" />
@@ -3368,17 +3424,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="4_pphps21" id="edit_pj_p_4" name="pajak[3][0]" type="checkbox" class="edit_pj_p_pphps21" value="6" />
-                                      6%
+                                        <input rel="4_pphps21" id="edit_pj_p_4" name="pajak[3][0]" type="checkbox" class="edit_pj_p_pphps21" value="6" />
+                                        6%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="4" id="edit_pj_dpp_4" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[3][1]" type="checkbox" value="1" />
+                                        <input rel="4" id="edit_pj_dpp_4" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[3][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input class="form-control input-sm edit_pj_nilai_pphps21" id="edit_pj_nilai_4" disabled="disabled" name="pajak[3][2]" type="text" />
@@ -3388,17 +3444,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="5_pphps21" id="edit_pj_p_5" name="pajak[4][0]" type="checkbox" class="edit_pj_p_pphps21" value="0" />
-                                      0%
+                                        <input rel="5_pphps21" id="edit_pj_p_5" name="pajak[4][0]" type="checkbox" class="edit_pj_p_pphps21" value="0" />
+                                        0%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="5" id="edit_pj_dpp_5" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[4][1]" type="checkbox" value="1" />
+                                        <input rel="5" id="edit_pj_dpp_5" class="edit_pj_dpp_pphps21" disabled="disabled" name="pajak[4][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_5" class="form-control input-sm edit_pj_nilai_pphps21" disabled="disabled" name="pajak[4][2]" type="text" />
@@ -3408,17 +3464,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="51_pphps21" id="edit_pj_p_51" name="pajak[41][0]" type="checkbox" class="edit_pj_p_pphps21" value="98" />
-                                      Custom
+                                        <input rel="51_pphps21" id="edit_pj_p_51" name="pajak[41][0]" type="checkbox" class="edit_pj_p_pphps21" value="98" />
+                                        Custom
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox" style="display: none">
                                     <label>
-                                      <input rel="51" id="edit_pj_dpp_51" disabled="disabled" class="edit_pj_dpp_pphps21" name="pajak[41][1]" type="checkbox" value="1" />
+                                        <input rel="51" id="edit_pj_dpp_51" disabled="disabled" class="edit_pj_dpp_pphps21" name="pajak[41][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_51" class="form-control input-sm edit_pj_nilai_pphps21 xnumber validate[required]" disabled="disabled" name="pajak[41][2]" type="text" />
@@ -3431,17 +3487,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="6_pphps22" id="edit_pj_p_6" class="edit_pj_p_pphps22" value="1.5" name="pajak[5][0]" type="checkbox" value="1.5" />
-                                      1.5%
+                                        <input rel="6_pphps22" id="edit_pj_p_6" class="edit_pj_p_pphps22" value="1.5" name="pajak[5][0]" type="checkbox" value="1.5" />
+                                        1.5%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="6" id="edit_pj_dpp_6" class="edit_pj_dpp_pphps22" disabled="disabled" name="pajak[5][1]" type="checkbox" value="1" />
+                                        <input rel="6" id="edit_pj_dpp_6" class="edit_pj_dpp_pphps22" disabled="disabled" name="pajak[5][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_6" class="form-control input-sm edit_pj_nilai_pphps22" disabled="disabled" name="pajak[5][2]" type="text" />
@@ -3451,17 +3507,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="7_pphps22" id="edit_pj_p_7" class="edit_pj_p_pphps22" value="3" name="pajak[6][0]" type="checkbox" />
-                                      3%
+                                        <input rel="7_pphps22" id="edit_pj_p_7" class="edit_pj_p_pphps22" value="3" name="pajak[6][0]" type="checkbox" />
+                                        3%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="7" id="edit_pj_dpp_7" disabled="disabled" class="edit_pj_dpp_pphps22" name="pajak[6][1]" type="checkbox" value="1" />
+                                        <input rel="7" id="edit_pj_dpp_7" disabled="disabled" class="edit_pj_dpp_pphps22" name="pajak[6][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_7" class="form-control input-sm edit_pj_nilai_pphps22" disabled="disabled" name="pajak[6][2]" type="text" />
@@ -3471,17 +3527,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="71_pphps22" id="edit_pj_p_71" name="pajak[61][0]" type="checkbox" class="edit_pj_p_pphps22" value="97" />
-                                      Custom
+                                        <input rel="71_pphps22" id="edit_pj_p_71" name="pajak[61][0]" type="checkbox" class="edit_pj_p_pphps22" value="97" />
+                                        Custom
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox" style="display: none">
                                     <label>
-                                      <input rel="71" id="edit_pj_dpp_71" disabled="disabled" class="edit_pj_dpp_pphps22" name="pajak[61][1]" type="checkbox" value="1" />
+                                        <input rel="71" id="edit_pj_dpp_71" disabled="disabled" class="edit_pj_dpp_pphps22" name="pajak[61][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_71" class="form-control input-sm edit_pj_nilai_pphps22 xnumber validate[required]" disabled="disabled" name="pajak[61][2]" type="text" />
@@ -3494,17 +3550,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="8_pphps23" id="edit_pj_p_8" class="edit_pj_p_pphps23" value="2" name="pajak[7][0]" type="checkbox" />
-                                      2%
+                                        <input rel="8_pphps23" id="edit_pj_p_8" class="edit_pj_p_pphps23" value="2" name="pajak[7][0]" type="checkbox" />
+                                        2%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="8" id="edit_pj_dpp_8" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[7][1]" type="checkbox" value="1" />
+                                        <input rel="8" id="edit_pj_dpp_8" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[7][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_8" class="form-control input-sm edit_pj_nilai_pphps23" disabled="disabled" name="pajak[7][2]" type="text" />
@@ -3514,17 +3570,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="9_pphps23" id="edit_pj_p_9" class="edit_pj_p_pphps23" value="4" name="pajak[8][0]" type="checkbox" />
-                                      4%
+                                        <input rel="9_pphps23" id="edit_pj_p_9" class="edit_pj_p_pphps23" value="4" name="pajak[8][0]" type="checkbox" />
+                                        4%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="9" id="edit_pj_dpp_9" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[8][1]" type="checkbox" value="1" />
+                                        <input rel="9" id="edit_pj_dpp_9" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[8][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_9" class="form-control input-sm pj_nilai_pphps23" disabled="disabled" name="pajak[8][2]" type="text" />
@@ -3534,17 +3590,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="10_pphps23" id="edit_pj_p_10" value="15" class="edit_pj_p_pphps23" name="pajak[9][0]" type="checkbox" />
-                                      15%
+                                        <input rel="10_pphps23" id="edit_pj_p_10" value="15" class="edit_pj_p_pphps23" name="pajak[9][0]" type="checkbox" />
+                                        15%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="10" id="edit_pj_dpp_10" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[9][1]" type="checkbox" value="1" />
+                                        <input rel="10" id="edit_pj_dpp_10" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[9][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_10" class="form-control input-sm edit_pj_nilai_pphps23" disabled="disabled" name="pajak[9][2]" type="text" />
@@ -3554,17 +3610,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="101_pphps23" id="edit_pj_p_101" name="pajak[91][0]" type="checkbox" class="edit_pj_p_pphps23" value="96" />
-                                      Custom
+                                        <input rel="101_pphps23" id="edit_pj_p_101" name="pajak[91][0]" type="checkbox" class="edit_pj_p_pphps23" value="96" />
+                                        Custom
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox" style="display: none">
                                     <label>
-                                      <input rel="101" id="edit_pj_dpp_101" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[91][1]" type="checkbox" value="1" />
+                                        <input rel="101" id="edit_pj_dpp_101" disabled="disabled" class="edit_pj_dpp_pphps23" name="pajak[91][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_101" class="form-control input-sm edit_pj_nilai_pphps23 xnumber validate[required]" disabled="disabled" name="pajak[91][2]" type="text" />
@@ -3577,17 +3633,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="11_pphps26" id="edit_pj_p_11" value="20" class="edit_pj_p_pphps26" name="pajak[10][0]" type="checkbox" />
-                                      20%
+                                        <input rel="11_pphps26" id="edit_pj_p_11" value="20" class="edit_pj_p_pphps26" name="pajak[10][0]" type="checkbox" />
+                                        20%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="11" id="edit_pj_dpp_11" disabled="disabled" class="edit_pj_dpp_pphps26" name="pajak[10][1]" type="checkbox" value="1" />
+                                        <input rel="11" id="edit_pj_dpp_11" disabled="disabled" class="edit_pj_dpp_pphps26" name="pajak[10][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_11" class="form-control input-sm edit_pj_nilai_pphps26" disabled="disabled" name="pajak[10][2]" type="text" />
@@ -3597,17 +3653,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="111_pphps26" id="edit_pj_p_111" name="pajak[101][0]" type="checkbox" class="edit_pj_p_pphps26" value="95" />
-                                      Custom
+                                        <input rel="111_pphps26" id="edit_pj_p_111" name="pajak[101][0]" type="checkbox" class="edit_pj_p_pphps26" value="95" />
+                                        Custom
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox" style="display: none">
                                     <label>
-                                      <input rel="111" id="edit_pj_dpp_111" disabled="disabled" class="edit_pj_dpp_pphps26" name="pajak[101][1]" type="checkbox" value="1" />
+                                        <input rel="111" id="edit_pj_dpp_111" disabled="disabled" class="edit_pj_dpp_pphps26" name="pajak[101][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_111" class="form-control input-sm edit_pj_nilai_pphps26 xnumber validate[required]" disabled="disabled" name="pajak[101][2]" type="text" />
@@ -3620,17 +3676,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="12_pphps42" id="edit_pj_p_12" value="2" class="edit_pj_p_pphps42" name="pajak[11][0]" type="checkbox" />
-                                      2%
+                                        <input rel="12_pphps42" id="edit_pj_p_12" value="2" class="edit_pj_p_pphps42" name="pajak[11][0]" type="checkbox" />
+                                        2%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="12" id="edit_pj_dpp_12" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[11][1]" type="checkbox" value="1" />
+                                        <input rel="12" id="edit_pj_dpp_12" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[11][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_12" class="form-control input-sm edit_pj_nilai_pphps42" disabled="disabled" name="pajak[11][2]" type="text" />
@@ -3640,17 +3696,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="13_pphps42" id="edit_pj_p_13" value="3" class="edit_pj_p_pphps42" name="pajak[12][0]" type="checkbox" />
-                                      3%
+                                        <input rel="13_pphps42" id="edit_pj_p_13" value="3" class="edit_pj_p_pphps42" name="pajak[12][0]" type="checkbox" />
+                                        3%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="13" id="edit_pj_dpp_13" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[12][1]" type="checkbox" value="1" />
+                                        <input rel="13" id="edit_pj_dpp_13" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[12][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_13" class="form-control input-sm edit_pj_nilai_pphps42" disabled="disabled" name="pajak[12][2]" type="text" />
@@ -3660,17 +3716,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="14_pphps42" id="edit_pj_p_14" value="4" class="edit_pj_p_pphps42" name="pajak[13][0]" type="checkbox" />
-                                      4%
+                                        <input rel="14_pphps42" id="edit_pj_p_14" value="4" class="edit_pj_p_pphps42" name="pajak[13][0]" type="checkbox" />
+                                        4%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="14" id="edit_pj_dpp_14" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[13][1]" type="checkbox" value="1" />
+                                        <input rel="14" id="edit_pj_dpp_14" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[13][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_14" class="form-control input-sm edit_pj_nilai_pphps42" disabled="disabled" name="pajak[13][2]" type="text" />
@@ -3680,17 +3736,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="15_pphps42" id="edit_pj_p_15" value="10" class="edit_pj_p_pphps42" name="pajak[14][0]" type="checkbox" />
-                                      10%
+                                        <input rel="15_pphps42" id="edit_pj_p_15" value="10" class="edit_pj_p_pphps42" name="pajak[14][0]" type="checkbox" />
+                                        10%
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="15" id="edit_pj_dpp_15" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[14][1]" type="checkbox" value="1" />
+                                        <input rel="15" id="edit_pj_dpp_15" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[14][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_15" class="form-control input-sm edit_pj_nilai_pphps42" disabled="disabled" name="pajak[14][2]" type="text" />
@@ -3700,17 +3756,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="151_pphps42" id="edit_pj_p_151" name="pajak[141][0]" type="checkbox" class="edit_pj_p_pphps42" value="94" />
-                                      Custom
+                                        <input rel="151_pphps42" id="edit_pj_p_151" name="pajak[141][0]" type="checkbox" class="edit_pj_p_pphps42" value="94" />
+                                        Custom
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox" style="display: none">
                                     <label>
-                                      <input rel="151" id="edit_pj_dpp_151" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[141][1]" type="checkbox" value="1" />
+                                        <input rel="151" id="edit_pj_dpp_151" disabled="disabled" class="edit_pj_dpp_pphps42" name="pajak[141][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_151" class="form-control input-sm edit_pj_nilai_pphps42 xnumber validate[required]" disabled="disabled" name="pajak[141][2]" type="text" />
@@ -3723,17 +3779,17 @@ function get_total_pajak_edit(){
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                      <input rel="16_lainnya" id="edit_pj_p_16" class="edit_pj_p_lainnya" name="pajak[15][0]" type="checkbox" value="99" />
-                                      Lainnya
+                                        <input rel="16_lainnya" id="edit_pj_p_16" class="edit_pj_p_lainnya" name="pajak[15][0]" type="checkbox" value="99" />
+                                        Lainnya
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <div class="checkbox" style="display: none">
                                     <label>
-                                      <input rel="16" id="edit_pj_dpp_16" disabled="disabled" class="edit_pj_dpp_lainnya" name="pajak[15][1]" type="checkbox" value="1" />
+                                        <input rel="16" id="edit_pj_dpp_16" disabled="disabled" class="edit_pj_dpp_lainnya" name="pajak[15][1]" type="checkbox" value="1" />
                                     </label>
-                                  </div>
+                                </div>
                             </td>
                             <td>
                                 <input id="edit_pj_nilai_16" class="form-control input-sm edit_pj_nilai_lainnya xnumber validate[required]" disabled="disabled" name="pajak[15][2]" type="text" />
@@ -3753,7 +3809,6 @@ function get_total_pajak_edit(){
                         </tr>
                     </tbody>
                 </table>
-
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" id="btn-edit-pajak" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Edit</button>
@@ -3768,15 +3823,15 @@ function get_total_pajak_edit(){
 <div class="modal" id="myModalMessage" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-              <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-exclamation-sign"></i>&nbsp;&nbsp;&nbsp;Perhatian :</h4>
-          </div>
-          <div class="modal-body message_sppls" style="margin:15px;padding:0px;padding-bottom: 15px;">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> OK</button>
-          </div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-exclamation-sign"></i>&nbsp;&nbsp;&nbsp;Perhatian :</h4>
+            </div>
+            <div class="modal-body message_sppls" style="margin:15px;padding:0px;padding-bottom: 15px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> OK</button>
+            </div>
         </div>
     </div>
 </div>
@@ -3784,29 +3839,29 @@ function get_total_pajak_edit(){
 <div class="modal" id="myModalBatal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-              <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-exclamation-sign"></i>&nbsp;&nbsp;&nbsp;Perhatian :</h4>
-          </div>
-          <div class="modal-body" style="margin:15px;padding:0px;padding-bottom: 15px;">
-            <div class="alert alert-danger">
-              Anda akan membatalkan DPA ?<br />
-              Hal ini akan mempengaruhi SPP dan SPM yang sedang berlangsung.<br/>
-              <p class="small">*) SPP dan SPM yang sedang berlangsung otomatis akan dibatalkan/tolak.</p>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-exclamation-sign"></i>&nbsp;&nbsp;&nbsp;Perhatian :</h4>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger btn-sm yakin_batal"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Ya</button>
-            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Ndak</button>
-          </div>
+            <div class="modal-body" style="margin:15px;padding:0px;padding-bottom: 15px;">
+                <div class="alert alert-danger">
+                    Anda akan membatalkan DPA ?<br />
+                    Hal ini akan mempengaruhi SPP dan SPM yang sedang berlangsung.<br/>
+                    <p class="small">*) SPP dan SPM yang sedang berlangsung otomatis akan dibatalkan/tolak.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm yakin_batal"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Ya</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Ndak</button>
+            </div>
         </div>
     </div>
 </div>
 
 <?php
-    if($this->cantik_model->manual_override()){
-?>
-<style>
+if($this->cantik_model->manual_override()){
+    ?>
+    <style>
     #form_kriteria label{
         display:inline;
         margin-bottom: inherit;
@@ -3815,84 +3870,83 @@ function get_total_pajak_edit(){
         font-size: 90%;
     }
 </style>
+
 <!-- /.modal-dialog untuk menambahkan item transaksi-->
 <div class="modal fade" id="kriteria_override" tabindex="-1" role="dialog" arialabelledby="myModalLabel">
-  <!-- /.modal-content -->
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <form id="form_kriteria" method="post" enctype="multipart/form-data">
-        <input type="hidden" id="act" name="act" value="override_spp"/>
-        <input type="hidden" id="tahun" name="tahun" value="<?php echo $cur_tahun; ?>"/>
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span></button>
-          <h5 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-question-sign"></i>&nbsp;<!-- Manual Override --> Kriteria untuk SPP dan SPM LS-PGW</h5>
-        </div>
-        <div class="modal-body">
-          <?php
-            if(strlen(trim($this->cantik_model->get_keterangan_override()))>0){
-        ?>
-            <div class="alert alert-warning small text-center" style="padding:3px;"><?php echo $this->cantik_model->get_keterangan_override(); ?></div>
-        <?php
-            }
-            /*$u[] = $this->uri->segment(3);
-            $u[] = $this->uri->segment(4);
-            $u[] = $this->uri->segment(5);*/
-            if($this->uri->segment(4)=='APBN-BPPTNBH'){
-        ?>
-            <input type="hidden" id="beda" name="beda" value="<?php echo $this->uri->segment(4); ?>"/>
-        <?php
-            }
-          ?>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Jenis SPP LS-PGW :</label>
-                <?php echo $jenisOption; ?>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Potongan Pajak (keseluruhan):</label>
-                <div class="input-group">
-                    <span class="input-group-addon">Rp.</span>
-                    <input type="text" class="form-control input-sm kepeg_numeric" name="pajak" required="required" placeholder="0" />
+    <!-- /.modal-content -->
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form id="form_kriteria" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="act" name="act" value="override_spp"/>
+                <input type="hidden" id="tahun" name="tahun" value="<?php echo $cur_tahun; ?>"/>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+                    <h5 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-question-sign"></i>&nbsp;<!-- Manual Override --> Kriteria untuk SPP dan SPM LS-PGW</h5>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Potongan Lainnya (keseluruhan):</label>
-                <div class="input-group">
-                    <span class="input-group-addon">Rp.</span>
-                    <input type="text" class="form-control input-sm kepeg_numeric" name="potongan" required="required" placeholder="0"/>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 col-xs-12">
-                  <div class="form-group">
-                    <label for="unit_id">Unit Pegawai:&nbsp;<label class="small" style="background-color:#eee;padding:3px;vertical-align:center;"><input type="checkbox" class="master_unit_id"/>&nbsp;cek semua</label></label>
+                <div class="modal-body">
+                    <?php
+                    if(strlen(trim($this->cantik_model->get_keterangan_override()))>0){
+                        ?>
+                        <div class="alert alert-warning small text-center" style="padding:3px;"><?php echo $this->cantik_model->get_keterangan_override(); ?></div>
+                        <?php
+                    }
+
+                    if($this->uri->segment(4)=='APBN-BPPTNBH'){
+                        ?>
+                        <input type="hidden" id="beda" name="beda" value="<?php echo $this->uri->segment(4); ?>"/>
+                        <?php
+                    }
+                    ?>
                     <div class="row">
-                    <?php 
-											if(!is_null($unitList)){ echo $unitList; }else{ echo "<p class=\"text-center text-info\" style=\"border:1px solid #31708f;margin-left:10px;margin-right:10px;\">Tidak perlu memilih unit untuk membuat SPP</p>"; }
-										?>
-                </div>
-                  </div>
-                </div>
-          </div>
-          <div class="row">
-                <div class="col-md-12 col-xs-12">
+                        <div class="col-md-4">
                             <div class="form-group">
-                    <label for="status_kepeg">Status Kepegawaian:&nbsp;<label class="small" style="background-color:#eee;padding:3px;vertical-align:center;"><input type="checkbox" class="master_status_kepeg"/>&nbsp;cek semua</label></label>
-                <div class="row">
-                  <?php echo $statusKepegOption; ?>
-                </div>
-                  </div>
-                </div>
-          </div>
-          <div class="row">
+                                <label>Jenis SPP LS-PGW :</label>
+                                <?php echo $jenisOption; ?>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Potongan Pajak (keseluruhan):</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Rp.</span>
+                                    <input type="text" class="form-control input-sm kepeg_numeric" name="pajak" required="required" placeholder="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Potongan Lainnya (keseluruhan):</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Rp.</span>
+                                    <input type="text" class="form-control input-sm kepeg_numeric" name="potongan" required="required" placeholder="0"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="unit_id">Unit Pegawai:&nbsp;<label class="small" style="background-color:#eee;padding:3px;vertical-align:center;"><input type="checkbox" class="master_unit_id"/>&nbsp;cek semua</label></label>
+                                <div class="row">
+                                    <?php
+                                    if(strlen(trim($unitList))>0){ echo $unitList; }else{ echo "<p class=\"text-center text-info\" style=\"border:1px solid #31708f;margin-left:10px;margin-right:10px;\">Tidak perlu memilih unit untuk membuat SPP</p>"; }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="status_kepeg">Status Kepegawaian:&nbsp;<label class="small" style="background-color:#eee;padding:3px;vertical-align:center;"><input type="checkbox" class="master_status_kepeg"/>&nbsp;cek semua</label></label>
+                                    <div class="row">
+                                        <?php echo $statusKepegOption; ?>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -3901,88 +3955,87 @@ function get_total_pajak_edit(){
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                <?php
-                                $stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar', '13'=>'Diberhentikan Sementara');
-                                foreach ($stt as $k => $v) {
-                                    $ch = "";
-                                    if(isset($_SESSION['ovr']['status']) && in_array($k,$_SESSION['ovr']['status'])){
-                                        $ch = " checked = \"checked\"";
+                                    <?php
+                                    $stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar', '13'=>'Diberhentikan Sementara');
+                                    foreach ($stt as $k => $v) {
+                                        $ch = "";
+                                        if(isset($_SESSION['ovr']['status']) && in_array($k,$_SESSION['ovr']['status'])){
+                                            $ch = " checked = \"checked\"";
+                                        }
+                                        ?>
+                                        <div class="small col-md-3 col-sm-6 col-xs-12">
+                                            <label>
+                                                <input type="checkbox" class="status" name="status[]" id="status" value="<?php echo $k; ?>"<?php echo $ch; ?>/>
+                                                <?php echo $v; ?>
+                                            </label>
+                                        </div>
+                                        <?php
                                     }
-                            ?>
-                      <div class="small col-md-3 col-sm-6 col-xs-12">
-                        <label>
-                          <input type="checkbox" class="status" name="status[]" id="status" value="<?php echo $k; ?>"<?php echo $ch; ?>/>
-                          <?php echo $v; ?>
-                        </label>
-                      </div>
-                            <?php
-                                }
-                            ?>
+                                    ?>
                                 </div>
                             </div>
-              </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon">Jenis Pegawai :</span>
-                    <select name="jnspeg" id="jnspeg" class="form-control input-sm">
-                      <?php
-                        $_jenispeg = array(array(1,'Dosen Pengajar'),array(2,'Tenaga Kependidikan'));
-                        foreach ($_jenispeg as $k => $v) {
-                          $_s = "";
-                          if(isset($_SESSION['ovr']['jnspeg']) && $_SESSION['ovr']['jnspeg']==$v[0]){
-                            $_s = " selected";
-                          }
-                      ?>
-                      <option value="<?php echo $v[0]; ?>"<?php echo $_s; ?>><?php echo $v[1]; ?></option>
-                      <?php
-                        }
-                      ?>
-                    </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Jenis Pegawai :</span>
+                                    <select name="jnspeg" id="jnspeg" class="form-control input-sm">
+                                        <?php
+                                        $_jenispeg = array(array(1,'Dosen Pengajar'),array(2,'Tenaga Kependidikan'));
+                                        foreach ($_jenispeg as $k => $v) {
+                                            $_s = "";
+                                            if(isset($_SESSION['ovr']['jnspeg']) && $_SESSION['ovr']['jnspeg']==$v[0]){
+                                                $_s = " selected";
+                                            }
+                                            ?>
+                                            <option value="<?php echo $v[0]; ?>"<?php echo $_s; ?>><?php echo $v[1]; ?></option>
+                                            <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Tahun :</span>
+                                    <input type="text" class="form-control input-sm" name="tahun" value="<?php echo $tahun; ?>" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group" id="bulan_input_group" style="display: none;">
+                                    <span class="input-group-addon">Bulan<sup>*</sup> :</span>
+                                    <select name="bulan" id="bulan" class="form-control input-sm">
+                                        <?php
+                                        echo $bulanOption;
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="input-group" id="semester_input_group">
+                                    <span class="input-group-addon">Semester<sup>*</sup> :</span>
+                                    <?php
+                                    echo $semesterOption;
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon">Tahun :</span>
-                    <input type="text" class="form-control input-sm" name="tahun" value="<?php echo $tahun; ?>" readonly="readonly"/>
+                <div class="modal-footer">
+                    <div class="btn-group pull-right">
+                        <button type="submit" class="btn btn-primary btn-flat btn-sm what_a_fck"><i class="fa fa-spinner"></i>&nbsp;&nbsp;Proses <i>Override</i> SPP</button>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <div class="input-group" id="bulan_input_group" style="display: none;">
-                    <span class="input-group-addon">Bulan<sup>*</sup> :</span>
-                    <select name="bulan" id="bulan" class="form-control input-sm">
-                        <?php
-                            echo $bulanOption;
-                        ?>
-                    </select>
-                </div>
-                <div class="input-group" id="semester_input_group">
-                    <span class="input-group-addon">Semester<sup>*</sup> :</span>
-                    <?php
-                        echo $semesterOption;
-                    ?>
-                </div>
-              </div>
-            </div>
-          </div>
-
+            </form>
         </div>
-        <div class="modal-footer">
-          <div class="btn-group pull-right">
-            <button type="submit" class="btn btn-primary btn-flat btn-sm what_a_fck"><i class="fa fa-spinner"></i>&nbsp;&nbsp;Proses <i>Override</i> SPP</button>
-          </div>
-        </div>
-      </form>
-    </div>
     <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
+    </div>
+<!-- /.modal-dialog -->
 </div>
 <?php
     }
@@ -3995,15 +4048,15 @@ function get_total_pajak_edit(){
 <div class="modal" id="modalGedang" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-              <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-exclamation-sign"></i>&nbsp;&nbsp;&nbsp;Perhatian :</h4>
-          </div>
-          <form id="cocoklogi_dpa_kontrak">
-            <input type="hidden" name="kode_akun_belanja" id="kode_akun_belanja" value=""/>
-            <div class="modal-body" style="margin:15px;padding:0px;padding-bottom: 15px;">
-              <div class="row">
-        				<div class="col-md-12">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-exclamation-sign"></i>&nbsp;&nbsp;&nbsp;Perhatian :</h4>
+            </div>
+            <form id="cocoklogi_dpa_kontrak">
+                <input type="hidden" name="kode_akun_belanja" id="kode_akun_belanja" value=""/>
+                <div class="modal-body" style="margin:15px;padding:0px;padding-bottom: 15px;">
+                    <div class="row">
+                        <div class="col-md-12">
         					<!--<div class="col-md-6">-->
         						<div class="form-group">
         							<label for="daftar_kontrak">Daftar Kontrak:</label>
@@ -4014,10 +4067,10 @@ function get_total_pajak_edit(){
   			      </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-success btn-sm yakin_termin"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Buat Kuitansi</button>
-              <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Ndak</button>
+                <button type="button" class="btn btn-success btn-sm yakin_termin"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Buat Kuitansi</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Ndak</button>
             </div>
-          </form>
+            </form>
         </div>
     </div>
 </div>
@@ -4026,14 +4079,14 @@ function get_total_pajak_edit(){
 <div class="modal " id="myModalKuitansi2" role="dialog" aria-labelledby="myModalKuitansiLabel">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-              <h4 class="modal-title" id="myModalLabel">Kuitansi : <span id="kode_badge">-</span></h4>
-          </div>
-          <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
-              <div id="div-cetak">
-              <table class="table_print" id="kuitansi" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
-                <tr>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">Kuitansi : <span id="kode_badge">-</span></h4>
+            </div>
+            <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
+                <div id="div-cetak">
+                    <table class="table_print" id="kuitansi" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+                        <tr>
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
@@ -4045,86 +4098,86 @@ function get_total_pajak_edit(){
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
                             <td class="col-md-1">&nbsp;</td>
-                </tr>
-                  <tr>
-                                <td rowspan="3" style="text-align: center" colspan="2">
-					<img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
-				</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-
-
-                                <td colspan="2">Tahun Anggaran</td>
-                                <td style="text-align: center">:</td>
-                                <td colspan="2"><?=$tahun?></td>
                         </tr>
                         <tr>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
+                            <td rowspan="3" style="text-align: center" colspan="2">
+                                <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                            </td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
 
-                                <td colspan="2">Nomor Bukti</td>
-                                <td style="text-align: center">:</td>
-                                <td colspan="2" id="no_bukti">-</td>
+
+                            <td colspan="2">Tahun Anggaran</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2"><?=$tahun?></td>
+                        </tr>
+                        <tr>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+
+                            <td colspan="2">Nomor Bukti</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2" id="no_bukti">-</td>
                         </tr>
                         <tr class="tr_up">
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
-                                <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
 
-                                <td colspan="2">Anggaran</td>
-                                <td style="text-align: center">:</td>
-                                <td colspan="2" id="txt_akun">-</td>
+                            <td colspan="2">Anggaran</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2" id="txt_akun">-</td>
 
-			</tr>
-			<tr>
-                                <td colspan="11">&nbsp;
-
-				</td>
                         </tr>
-			<tr>
-				<td colspan="11">
-                                    <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
-				</td>
-			</tr>
                         <tr>
-                                <td colspan="11">&nbsp;
+                            <td colspan="11">&nbsp;
 
-				</td>
+                            </td>
                         </tr>
-			<tr class="tr_up">
-				<td colspan="3">Sudah Diterima dari</td>
-				<td>: </td>
-                                <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Jumlah Uang</td>
-				<td>: </td>
-                                <td colspan="7"><b>Rp. <span class="sum_tot_bruto">0</span>,-</b></td>
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Terbilang</td>
-				<td>: </td>
-                                <td colspan="7"><b><span class="text_tot">-</span></b></td>
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Untuk Pembayaran</td>
-				<td>: </td>
-                                <td colspan="7"><span class="edit_here" contenteditable="true" placeheld="yes" id="uraian">- edit here -</span></td>
-			</tr>
-			<tr class="tr_up">
-				<td colspan="3">Sub Kegiatan</td>
-				<td>: </td>
-                                <td colspan="7"><span id="nm_subkomponen_kuitansi">-</span></td>
-			</tr>
                         <tr>
-                                <td colspan="11">&nbsp;
+                            <td colspan="11">
+                                <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="11">&nbsp;
 
-				</td>
+                            </td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Sudah Diterima dari</td>
+                            <td>: </td>
+                            <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Jumlah Uang</td>
+                            <td>: </td>
+                            <td colspan="7"><b>Rp. <span class="sum_tot_bruto">0</span>,-</b></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Terbilang</td>
+                            <td>: </td>
+                            <td colspan="7"><b><span class="text_tot">-</span></b></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Untuk Pembayaran</td>
+                            <td>: </td>
+                            <td colspan="7"><span class="edit_here" contenteditable="true" placeheld="yes" id="uraian" >- edit here -</span></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td colspan="3">Sub Kegiatan</td>
+                            <td>: </td>
+                            <td colspan="7"><span id="nm_subkomponen_kuitansi">-</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="11">&nbsp;
+
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="3"><b>Deskripsi</b></td>
@@ -4135,10 +4188,10 @@ function get_total_pajak_edit(){
                             <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
                             <td >&nbsp;</td>
                             <td ><b>Netto</b></td>
-			</tr>
+                        </tr>
                         <tr id="tr_isi">
                             <td colspan="11">tr_si</td>
-			</tr>
+                        </tr>
                         <tr>
                             <td >&nbsp;</td>
                             <td >&nbsp;</td>
@@ -4151,13 +4204,13 @@ function get_total_pajak_edit(){
                             <td style="text-align: right"><b><span class="sum_tot_pajak">0</span></b></td>
                             <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
                             <td style="text-align: right"><b><span class="sum_tot_netto">0</span></b></td>
-			</tr>
-                        <tr>
-                                <td colspan="11">&nbsp;
-
-				</td>
                         </tr>
-			<tr>
+                        <tr>
+                            <td colspan="11">&nbsp;
+
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="7">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
                                 Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
@@ -4166,22 +4219,22 @@ function get_total_pajak_edit(){
                                 Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y"); ?><br />
                                 Penerima Uang
                             </td>
-			</tr>
+                        </tr>
                         <tr>
-                                <td colspan="11">
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <br>
-				</td>
+                            <td colspan="11">
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                            </td>
                         </tr>
                         <tr >
                             <td colspan="7" style="border-bottom: 1px solid #000">
                                 <span class="edit_here" contenteditable="true" id="nmpppk"><?php // $pic_kuitansi['pppk_nm_lengkap']; ?>- edit here -</span><br>
-                                    NIP. <span class="edit_here" contenteditable="true" id="nippppk"><?php // $pic_kuitansi['pppk_nip'] ; ?>- edit here -</span></td>
+                                NIP. <span class="edit_here" contenteditable="true" id="nippppk"><?php // $pic_kuitansi['pppk_nip'] ; ?>- edit here -</span></td>
                             <td colspan="4" style="border-bottom: 1px solid #000"><span class="edit_here" contenteditable="true" id="penerima_uang">- edit here -</span><br />
-                                <!--NIP. <span class="edit_here" contenteditable="true" id="penerima_uang_nip">- edit here -</span></td>-->
-			</tr>
+                                    <!--NIP. <span class="edit_here" contenteditable="true" id="penerima_uang_nip">- edit here -</span></td>-->
+                        </tr>
                         <tr >
                             <?php if($_SESSION['rsa_level'] == 13) : ?>
                             <td colspan="11">Setuju dibayar tgl : <br>
@@ -4197,13 +4250,13 @@ function get_total_pajak_edit(){
                             <?php endif; ?>
                         </tr>
                         <tr>
-                                <td colspan="11">
-                                    <br>
-                                    <br>
-                                    <br>
-				</td>
+                            <td colspan="11">
+                                <br>
+                                <br>
+                                <br>
+                            </td>
                         </tr>
-                         <tr>
+                        <tr>
                             <?php if($_SESSION['rsa_level'] == 13) : ?>
                              <td colspan="11"><span id="nmbendahara"><?=$pic_kuitansi['bendahara_nm_lengkap']?></span><br>
                                  NIP. <span id="nipbendahara"><?=$pic_kuitansi['bendahara_nip']?></span>
@@ -4216,97 +4269,92 @@ function get_total_pajak_edit(){
                                     NIP. <span id="nippumk"><?php echo isset($pumk->nomor_induk)?$pumk->nomor_induk:''; ?></span>
                             </td>
                             <?php endif; ?>
-
                         </tr>
-			<tr >
-				<td colspan="11" style="border-top:1px solid #000">
-				Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
-				Penerima Barang/jasa
-				</td>
+                        <tr >
+                            <td colspan="11" style="border-top:1px solid #000">
+                                Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+                                Penerima Barang/jasa
+                            </td>
                         </tr>
                         <tr>
-                                <td colspan="11">
-                                    <br>
-                                    <br>
-                                    <br>
-				</td>
+                            <td colspan="11">
+                                <br>
+                                <br>
+                                <br>
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="11" ><span class="edit_here" contenteditable="true" id="penerima_barang">- edit here -</span><br />
-                                    NIP. <span class="edit_here" contenteditable="true" id="penerima_barang_nip">- edit here -</span>
-				</td>
-			</tr>
-
-		</table>
-              </div>
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" id="btn-submit-kuitansi2" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
-            <button type="button" class="btn btn-info" id="cetak" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
-          </div>
+                                NIP. <span class="edit_here" contenteditable="true" id="penerima_barang_nip">- edit here -</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btn-submit-kuitansi2" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
+                <button type="button" class="btn btn-info" id="cetak" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+            </div>
         </div>
     </div>
 </div>
 <!-- END HERE -->
 
-
 <div class="modal" id="myModalUraian" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-          <div class="modal-header">
+            <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                	<h4 class="modal-title">Uraian Kegiatan</h4>
-
+                <h4 class="modal-title">Uraian Kegiatan</h4>
             </div>
-          <div class="modal-body" style="">
-              <div class="alert alert-danger">
-                  <b>Perhatian :</b> <br />
-                  <ul>
-                      <li>Total dari jumlah rupiah uraian yang diisi harus sama dengan jumlah rupiah dari kegiatan.</li>
-                      <li>Apabila tidak sama maka dpa harus dibatalkan dan diusulan sesuai dengan realisasi.</li>
-                  </ul>
+            <div class="modal-body" style="">
+                <div class="alert alert-danger">
+                    <b>Perhatian :</b> <br />
+                    <ul>
+                        <li>Total dari jumlah rupiah uraian yang diisi harus sama dengan jumlah rupiah dari kegiatan.</li>
+                        <li>Apabila tidak sama maka dpa harus dibatalkan dan diusulan sesuai dengan realisasi.</li>
+                    </ul>
+                </div>
+                <div class="alert alert-warning">
+                    <button class="btn btn-warning btn-sm" id="uraian_tambah" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Tambah</button>
+                    <button class="btn btn-success btn-sm" id="uraian_simpan" ><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Simpan</button>
+                </div>
+                <table class="table">
+                    <tbody>
+                        <tr id="tr_head">
+                            <td class="col-md-3">Uraian</td>
+                            <td class="col-md-1">Kuantitas</td>
+                            <td class="col-md-1">Satuan</td>
+                            <td class="col-md-2">Harga@</td>
+                            <td class="col-md-2">Bruto</td>
+                            <td class="col-md-1">Pajak</td>
+                            <td class="col-md-2">Netto</td>
+                        </tr>
+                        <tr>
+                            <!--<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>-->
+                            <td>
+                                <textarea name="uraian_text" class="validate[required] form-control input-sm" id="uraian_text" rows="1"></textarea>
+                            </td>
+                            <td><input type="text" name="uraian_kuantitas" class="validate[required] form-control input-sm xnumber" id="uraian_kuantitas" ></td>
+                            <td><input type="text" name="uraian_satuan" class="validate[required] form-control input-sm" id="uraian_satuan" ></td>
+                            <td><input type="text" name="uraian_harga" class="validate[required] form-control input-sm xnumber" id="uraian_harga" ></td>
+                            <td style="text-align: right"><span id="uraian_bruto" >100.000.000</span></td>
+                            <td>[ <a href="#" >edit</a> ]</td>
+                            <td style="text-align: right"><span id="uraian_netto" >100.000.000</span></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">&nbsp;</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
-              <div class="alert alert-warning">
-                  <button class="btn btn-warning btn-sm" id="uraian_tambah" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Tambah</button>
-                  <button class="btn btn-success btn-sm" id="uraian_simpan" ><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Simpan</button>
-              </div>
-              <table class="table">
-                  <tbody>
-                      <tr id="tr_head">
-                          <td class="col-md-3">Uraian</td>
-                          <td class="col-md-1">Kuantitas</td>
-                          <td class="col-md-1">Satuan</td>
-                          <td class="col-md-2">Harga@</td>
-                          <td class="col-md-2">Bruto</td>
-                          <td class="col-md-1">Pajak</td>
-                          <td class="col-md-2">Netto</td>
-                      </tr>
-                      <tr>
-                          <!--<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>-->
-                          <td>
-                              <textarea name="uraian_text" class="validate[required] form-control input-sm" id="uraian_text" rows="1"></textarea>
-                          </td>
-                          <td><input type="text" name="uraian_kuantitas" class="validate[required] form-control input-sm xnumber" id="uraian_kuantitas" ></td>
-                          <td><input type="text" name="uraian_satuan" class="validate[required] form-control input-sm" id="uraian_satuan" ></td>
-                          <td><input type="text" name="uraian_harga" class="validate[required] form-control input-sm xnumber" id="uraian_harga" ></td>
-                          <td style="text-align: right"><span id="uraian_bruto" >100.000.000</span></td>
-                          <td>[ <a href="#" >edit</a> ]</td>
-                          <td style="text-align: right"><span id="uraian_netto" >100.000.000</span></td>
-                      </tr>
-                  </tbody>
-                  <tfoot>
-                      <tr>
-                          <td colspan="7">&nbsp;</td>
-                      </tr>
-                  </tfoot>
-              </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger btn-sm" id="uraian_submit"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
-            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
-          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" id="uraian_submit"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+            </div>
         </div>
     </div>
 </div>
@@ -4315,42 +4363,63 @@ function get_total_pajak_edit(){
 <div class="modal" id="myModalP3K" tabindex="-1" role="dialog" aria-labelledby="myModalKas">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel">Konfirmasi</h4>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-            <label for="exampleInputEmail1">Pilih PPPK :</label>
-            <?php if(!empty($pppk)): ?>
-            <?php foreach($pppk as $p): ?>
-            <div class="row">
-
-                <div class="col-md-12">
-                  <div class="input-group">
-                    <span class="input-group-addon">
-                      <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
-                    </span>
-                      <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
-                      <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
-                      <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
-                  </div><!-- /input-group -->
-                </div><!-- /.col-lg-6 -->
-
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Konfirmasi</h4>
             </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <?php if($jenis=='4'): ?>
+                        <label for="exampleInputEmail1">Pilih PPK :</label>
+                            <?php if(!empty($ppk)): ?>
+                                <?php foreach($ppk as $p): ?>
+                                <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
+                                        </span>
+                                        <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
+                                        <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
+                                        <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+                                </div>
+                                <?php endforeach;?>
+                            <?php else: ?>
+                            <div class="alert alert-warning">
+                                Anda belum mengusulkan pejabat PPK kepusat.
+                            </div>
+                            <?php endif; ?>
+                    <?php else: ?>
 
-            <?php endforeach;?>
-            <?php else: ?>
-            <div class="alert alert-warning">
-                Anda belum mengusulkan pejabat PPPK kepusat.
+                        <label for="exampleInputEmail1">Pilih PPPK :</label>
+                        <?php if(!empty($pppk)): ?>
+                            <?php foreach($pppk as $p): ?>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
+                                            </span>
+                                            <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
+                                            <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
+                                            <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                                        </div><!-- /input-group -->
+                                    </div><!-- /.col-lg-6 -->
+                                </div>
+                            <?php endforeach;?>
+                        <?php else: ?>
+                            <div class="alert alert-warning">
+                                Anda belum mengusulkan pejabat PPPK kepusat.
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-            <?php endif; ?>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btn-pilih-pppk-ojo-dikopi-id-iki-yo-lek" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Pilih</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
             </div>
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" id="btn-pilih-pppk-ojo-dikopi-id-iki-yo-lek" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Pilih</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
-          </div>
         </div>
     </div>
 </div>
@@ -4359,36 +4428,36 @@ function get_total_pajak_edit(){
 <div class="modal" id="myModalP3K3" tabindex="-1" role="dialog" aria-labelledby="myModalKas">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel">Konfirmasi</h4>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-            <label for="exampleInputEmail1">Pilih PPPK :</label>
-            <?php if(!empty($pppk)): ?>
-            <?php foreach($pppk as $p): ?>
-            <div class="row">
-
-                <div class="col-md-12">
-                  <div class="input-group">
-                    <span class="input-group-addon">
-                      <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
-                    </span>
-                      <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
-                      <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
-                      <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
-                  </div><!-- /input-group -->
-                </div><!-- /.col-lg-6 -->
-
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Konfirmasi</h4>
             </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Pilih PPPK :</label>
+                    <?php if(!empty($pppk)): ?>
+                        <?php foreach($pppk as $p): ?>
+                            <div class="row">
 
-            <?php endforeach;?>
-            <?php else: ?>
-            <div class="alert alert-warning">
-                Anda belum mengusulkan pejabat PPPK kepusat.
-            </div>
-            <?php endif; ?>
-            </div>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
+                                        </span>
+                                        <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
+                                        <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
+                                        <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+
+                            </div>
+
+                        <?php endforeach;?>
+                    <?php else: ?>
+                        <div class="alert alert-warning">
+                            Anda belum mengusulkan pejabat PPPK kepusat.
+                        </div>
+                    <?php endif; ?>
+                </div>
           </div>
 
           <div class="modal-footer">

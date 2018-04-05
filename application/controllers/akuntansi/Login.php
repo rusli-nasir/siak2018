@@ -40,7 +40,7 @@ class Login extends MY_Controller {
 					'kode_user'	=>  $row->kode_user,
 					'alias'	=>  'auditor',
 					'level'	=>  $row->level,
-					'setting_tahun' => 2017,
+					'setting_tahun' => 2018,
 				);
 		$this->session->set_userdata($login_data);
 		redirect(site_url('akuntansi/laporan/lainnya'));
@@ -89,7 +89,7 @@ class Login extends MY_Controller {
 					'kode_user'	=>  $row->kode_user,
 					'alias'	=>  $alias,
 					'level'	=>  $row->level,
-					'setting_tahun' => 2017,
+					'setting_tahun' => 2018,
 				);
 				// print_r($login_data);
 				$this->session->set_userdata($login_data);

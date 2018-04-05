@@ -1,6 +1,6 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-class Ref_akun_model extends CI_Model {
+class Akun_kas_model extends CI_Model {
 /* -------------- Constructor ------------- */
         public function __construct()
         {
@@ -15,14 +15,12 @@ class Ref_akun_model extends CI_Model {
 		$kata_kunci	= form_prep($kata_kunci);
 		if($kata_kunci!='')
 		{
-			$this->db->like('kode_akun', $kata_kunci);
-                        $this->db->or_like('kode_akun_sub', $kata_kunci);
-			$this->db->or_like('nama_akun', $kata_kunci);
-			$this->db->or_like('nama_akun_sub', $kata_kunci);			
+			$this->db->like('kd_kas_2', $kata_kunci);
+			$this->db->or_like('nm_kas_2', $kata_kunci); 
 		}
-		$this->db->order_by("kode_akun", "asc"); 
+		$this->db->order_by("kd_kas_2", "asc"); 
 		/* running query	*/
-		$query		= $this->db->get('ref_akun');
+		$query		= $this->db->get('akun_kas2');
 		if ($query->num_rows()>0){
 			return $query->result();
 		}else{
@@ -30,14 +28,12 @@ class Ref_akun_model extends CI_Model {
 		}
 	}
 	
-	/* Method untuk mengambil data ref_akun */
-	function get_ref_akun($where=""){
-		//var_dump($where);die;
-		if(!$where==""){
-			$this->db->where('kode_akun_sub',$where);
-		}
-		$this->db->order_by("kode_akun_sub");
-		$query = $this->db->get("ref_akun");
+	/* Method untuk mengambil data kegiatan */
+	function get_akun_kas(){
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun1digit,nama_akun1digit FROM akun_belanja ORDER BY kode_akun1digit";
+		$query = $rba->query($query);
+
 		if($query->num_rows()>0){
 			return $query->result();
 		}else{
@@ -45,60 +41,39 @@ class Ref_akun_model extends CI_Model {
 		}
 	}
 	
-	function get_ref_akun_valid($where=""){
-		//var_dump ($where);die;
-		if(is_array($where)){
-			$this->db->where("kode_akun_sub",$where["kode_akun_sub"]);
-			//$this->db->where("kode_akun",$where["kode_akun"]);
-		}
-	
-		$query = $this->db->get("ref_akun");
-		//var_dump ($query);die;
-		if ($query->num_rows() >0){
-			return $query->result();
-		}else{
-			return array();
-		}
-	}
-	
 	/* Method untuk mengubah data kegiatan */
-	function edit_ref_akun($data,$where){
-		//var_dump($where);die;
-		$this->db->where("kode_akun_sub",$where);
-		return $this->db->update('ref_akun',$data);
+	function edit_akun_kas($data,$where){
+		$this->db->where("kd_kas_2",$where);
+		return $this->db->update('akun_kas2',$data);
 	}
 	
-	/* Method untuk menghapus data ref_akun */
-	function delete_ref_akun($where){
-		
-		if(is_array($where)){
-			$this->db->where("kode_akun",$where['kode_akun']);
-			$this->db->where("kode_akun_sub",$where['kode_akun_sub']);
-			//$this->db->where("kode_kegiatan",$where['kode_kegiatan']);
-		}
-
-		return $this->db->delete("ref_akun");
-		//var_dump($this->db->delete("program"));die;
+	/* Method untuk menghapus data kegiatan */
+	function delete_akun_kas($kd_kas_2){
+		$this->db->delete("akun_kas2",array('kd_kas_2'=>$kd_kas_2));
+		/* $this->db->delete("akun_kas3",array('kd_kas_2'=>$kd_kas_2));
+		$this->db->delete("akun_kas4",array('kd_kas_2'=>$kd_kas_2));
+		$this->db->delete("akun_kas5",array('kd_kas_2'=>$kd_kas_2));
+		$this->db->delete("akun_kas6",array('kd_kas_2'=>$kd_kas_2));*/
+		return true;
 	}
 	
 	/* Method untuk menambah data kegiatan */
-	function add_ref_akun($data){
-		//var_dump($data);die;
-		return $this->db->insert("ref_akun",$data);
+	function add_akun_kas($data){
+		return $this->db->insert("akun_kas2",$data);
 	}
 
 
-	function get_single_ref_akun($where="",$field){
+	function get_single_akun_kas($where,$field){
 
-		$this->db->where('kode_akun_sub',$where);
+		$this->db->where($where);
 
-		$query = $this->db->get('ref_akun')->row();
+		$query = $this->db->get('akun_kas2')->row();
 
 		if(empty($field)){
 			return $query ;
 		}
 		elseif($field=='nama'){
-			return $query->nama_ref_akun ;
+			return $query->nm_kas_2 ;
 		}
 
 

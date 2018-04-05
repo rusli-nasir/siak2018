@@ -159,7 +159,7 @@
                          
                         <h3 class="app-title visible-lg-block"><b>REALISASI ANGGARAN ( RSA ) UNDIP</b></h3>
                         <h3 class="app-title hidden-lg"><b>RSA UNDIP </b></h3>
-                        <h4 class="app-title visible-lg-block">Tahun Anggaran : <b><span style="color: #fff903">2017</span></b></h4>
+                        <h4 class="app-title visible-lg-block">Tahun Anggaran : <b><span style="color: #fff903">2018</span></b></h4>
                         <h4 class="app-title hidden-lg">TA : <b><span style="color: #fff903">2017</span></b></h4>
                         
                     <!--</div>-->

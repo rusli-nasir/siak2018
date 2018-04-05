@@ -4,9 +4,72 @@
 
 </style>
 <script type="text/javascript">
+
+
+     
+var scrollEventHandler = function() {
+    if($('#panel-jml-show').visible()) { 
+            // $('#panel-jml').animate({'right': '-=30px'},'slow');
+            $('#panel-jml').hide();
+            // unbindScrollEventHandler();
+
+        } else {
+
+            if($('#tb-data').visible()){
+                    $('#panel-jml').show();
+                    // on = '1' ;
+                    // console.log('0') ;
+
+            }
+        }  
+
+};
+
+function unbindScrollEventHandler() {
+    $(document).unbind('scroll', scrollEventHandler);
+}
+
+$(document).scroll(scrollEventHandler);
+
+function isScrolledIntoView(el) {
+    var elemTop = el.getBoundingClientRect().top;
+    var elemBottom = el.getBoundingClientRect().bottom;
+
+    var isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight);
+    return isVisible;
+}
+
+
+var keluaran = [];
+
 	$(document).ready(function(){
+
+		<?php if($jenis=='GP'): ?>
+			// bootbox.alert({
+		 //        title: "PESAN",
+		 //        message: "UNTUK GUP NIHIL SILAHKAN DIPROSES, GUP NIHIL DIBUAT MELALUI KUITANSI PENGEMBALIAN SEHINGGA HARAP UNTUK MEMBUAT KUITANSI PENGEMBALIAN ( MESKIPUN NOMINALNYA 0 RUPIAH ).<br>APABILA ADA KESALAHAN SILAHKAN HUB. BAPSI",
+		 //    });
+    	<?php endif; ?>
+
+        // bootbox.alert({
+        //         title: "PESAN",
+        //         animate:false,
+        //         message: "UNTUK EDIT KUITANSI SUDAH BISA,<br>SEMENTARA HANYA YG ADA TULISAN <b>[ <u>edit</u> ]</b><br>SILAHKAN.",
+        //     });
+
+        
+        keluaran = [];
             
-           $('#<?=$k_tab?>').addClass('active');
+            if($('#tb-data').visible()){
+                $('#panel-jml').show();
+                // on = '1' ;
+                // console.log('0') ;
+
+            }else{
+                $('#panel-jml').hide();
+            }
+            
+            $('#<?=$k_tab?>').addClass('active');
             
             
             var aktv = '0';    
@@ -17,6 +80,13 @@
                     var options = { mode : mode, popClose : close};
                     $("#div-cetak").printArea( options );
                 });
+
+            $("#cetak_showpengembalian").click(function(){
+                    var mode = 'iframe'; //popup
+                    var close = mode == "popup";
+                    var options = { mode : mode, popClose : close};
+                    $("#div-cetak-showpengembalian").printArea( options );
+                })
 
 
             $(document).on('keyup', '#cr_nomor', function(event){
@@ -61,7 +131,129 @@
             $('#dp1').datepicker({
                 format: 'yyyy-mm-dd'
             });
-                
+
+
+            $(document).on('click','#edit_tgl_kuitansi',function(){
+
+                // bootbox.alert({
+                //     size: "small",
+                //     title: "Perhatian",
+                //     message: 'Silahkan diperiksa isiannya dahulu !',
+                //     animate:false,
+                // });
+
+                var id = $("#kuitansi_id_kuitansi").text() ;
+
+                bootbox.prompt("Masukan tgl :",function(result){ 
+                		//alert(result); 
+                            if(result){
+    	                		if(result != ''){
+                                    // console.log(result);
+    		                		if(confirm("Yakin ?")){
+
+    		                			var r = result ;
+
+    		                			$.ajax({
+    		                                type:"POST",
+    		                                url :"<?=site_url("kuitansi/edit_tgl_kuitansi")?>",
+    		                                data:'id=' + id + '&tgl_kuitansi=' + r,
+    		                                success:function(data){
+
+    		//                                    el.removeClass('btn_batal');
+    		//                                    el.attr('disabled','disabled');
+    		//                                    el.attr('rel','');
+    		//                                    
+    		//                                    $('.ck_' + id).attr('disabled','disabled');
+    		//                                    $('.ck_' + id).attr('rel','');
+
+    											if(data=='ok'){
+
+    												var a = moment(r);
+
+    			                					$('#tgl_kuitansi').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
+
+                                                    $('#tgl_kuitansi_' + id).text(a.locale("id").format("D MMMM YYYY"));
+
+    			                                    // window.location.reload();
+
+                                                    bootbox.alert("Tgl kuitansi berhasil diubah.");
+
+    											}
+
+    											
+    		                                }
+    		                            });
+
+    		                			
+
+    		                		}else{
+    		                			return false;
+    		                		}
+                                }
+	                		}
+
+                	}
+                );
+
+                $('.bootbox-input').attr('readonly','readonly');
+
+                $('.bootbox-input').datepicker({
+	                format: 'yyyy-mm-dd',
+	            });
+
+            });
+
+
+
+
+            $(document).on('click','#edit_alias_no_bukti',function(){
+
+
+                var id = $("#kuitansi_id_kuitansi").text() ;
+
+                bootbox.prompt("Masukan alias :",function(result){ 
+                        //alert(result); 
+                            if(result){
+                                if(result != ''){
+                                    // console.log(result);
+                                    if(confirm("Yakin ?")){
+
+                                        var r = result ;
+
+                                        $.ajax({
+                                            type:"POST",
+                                            url :"<?=site_url("kuitansi/edit_alias_no_bukti")?>",
+                                            data:'id=' + id + '&alias_no_bukti=' + r,
+                                            success:function(data){
+
+                                                if(data=='ok'){
+
+                                                    $('#alias_no_bukti').text('( ' + r + 'A )');
+                                                    $('#alias_no_bukti').show();
+
+                                                    // window.location.reload();
+
+                                                    bootbox.alert("Alias kuitansi berhasil diubah.");
+
+                                                }
+
+                                                
+                                            }
+                                        });
+
+                                        
+
+                                    }else{
+                                        return false;
+                                    }
+                                }
+                            }
+
+                    }
+                );
+
+            });
+
                 
                 $(document).on('change', '[class^="all_ck"]', function(){
                     
@@ -76,18 +268,31 @@
                     //                            return false;
                                 $(this).prop('checked',true);
                                 aktv = '1' ;
+
+                                <?php if(($jenis!='LN')&&($jenis!='LK')&&($jenis!='KS')): ?>
                                 $('.btn_proses').each(function(){
                                     aktv = '0';
                                     return false;
                                 });
+                                <?php endif; ?>
+
+                                <?php if(($jenis=='GP')): ?> //added by mas fahmi
+                                    aktv = '1';
+                                <?php endif; ?>
+
                                 if(aktv == '1'){
-                                    $('#btn-spp').removeAttr('disabled');
+                                    $('.btn-spp').removeAttr('disabled');
+                                    // $('#btn-pindah').removeAttr('disabled');
                                 }else{
-                                    $('#btn-spp').attr('disabled','disabled');
+                                    $('.btn-spp').attr('disabled','disabled');
+                                    // $('#btn-pindah').attr('disabled','disabled');
                                 }
+                                    console.log(aktv);
+                                 $('#btn-pindah').removeAttr('disabled');
 
                             }
                         });
+
                         
                     }else{
                         $('[class^="ck_"]').each(function(){
@@ -100,15 +305,173 @@
                     //                            return false;
                                 $(this).prop('checked',false);
                                 
-                                $('#btn-spp').attr('disabled','disabled');
+                                $('.btn-spp').attr('disabled','disabled');
+                                $('#btn-pindah').attr('disabled','disabled');
 
                             }
                         });
+                        $('[class^="pck"]').each(function(){
+                        	if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                        		$('.btn-spp').removeAttr('disabled');
+                        		$('#btn-pindah').removeAttr('disabled');
+                        		return false;
+
+                        	}
+
+                        });
                     }
+
+
+                        // UNTUK MENGHITUNG JUMLAH KUITANSI //
+
+                        var jml_kuitansi = 0 ;
+
+                        $('[class^="ck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+
+                                
+                            }
+                            
+                        });
+
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_pengembalian_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+
+                                
+                            }
+                            
+                        });
+
+                        $('.jml_kuitansi').text(angka_to_string(jml_kuitansi));
+
+                        // END //
+
+
+
                     
 
                     
                 });
+
+                $(document).on('change', '[class^="all_pck"]', function(){
+                    
+                    if($(this).is(':checked')){
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                    //                        aktv = '0';
+    //                        if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                            if($(this).is(':enabled')){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                    //                            aktv = '1';
+                    //                            return false;
+                                $(this).prop('checked',true);
+                                aktv = '1' ;
+
+                                <?php if(($jenis!='LN')&&($jenis!='LK')&&($jenis!='KS')): ?>
+                                $('.btn_proses').each(function(){
+                                    aktv = '0';
+                                    return false;
+                                });
+                                <?php endif; ?>
+
+                                if(aktv == '1'){
+                                    $('.btn-spp').removeAttr('disabled');
+                                    // $('#btn-pindah').removeAttr('disabled');
+                                }else{
+                                    $('.btn-spp').attr('disabled','disabled');
+                                    // $('#btn-pindah').attr('disabled','disabled');
+                                }
+
+                                 $('#btn-pindah').removeAttr('disabled');
+
+                            }
+                        });
+
+                        
+                    }else{
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                    //                        aktv = '0';
+    //                        if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                            if($(this).is(':enabled')){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                    //                            aktv = '1';
+                    //                            return false;
+                                $(this).prop('checked',false);
+                                
+                                $('.btn-spp').attr('disabled','disabled');
+                                $('#btn-pindah').attr('disabled','disabled');
+
+                            }
+                        });
+                        $('[class^="ck"]').each(function(){
+                        	if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                        		$('.btn-spp').removeAttr('disabled');
+                        		$('#btn-pindah').removeAttr('disabled');
+                        		return false;
+
+                        	}
+
+                        });
+
+                    }
+
+
+                        // UNTUK MENGHITUNG JUMLAH KUITANSI //
+
+                        var jml_kuitansi = 0 ;
+
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_pengembalian_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+
+                                
+                            }
+                            
+                        });
+
+                        $('[class^="ck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+
+                                
+                            }
+                            
+                        });
+
+                        $('.jml_kuitansi').text(angka_to_string(jml_kuitansi));
+
+                        // END //
+
+
+
+                    
+
+                    
+                });
+
                 
             $('[class^="all_ck"]').each(function(){
                 //$('#btn-kuitansi').attr('disabled','disabled');
@@ -121,6 +484,37 @@
 
                 }
             });
+
+            $('[class^="all_pck"]').each(function(){
+                //$('#btn-kuitansi').attr('disabled','disabled');
+                console.log(aktv);
+                               // aktv = '0';
+                if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                    // $('#btn-kuitansi').removeAttr('disabled');
+        //                            aktv = '1';
+        //                            return false;
+                    $(this).prop('checked',false);
+
+                }
+            });
+
+            <?php if($jenis == 'LK'): ?>
+
+            /// CHECK ALL BOX DISABLED ///
+
+            $('[class^="all_ck"]').each(function(){
+
+                    $(this).attr('disabled','disabled');
+
+            });
+
+            $('[class^="all_pck"]').each(function(){
+
+                    $(this).attr('disabled','disabled');
+
+            });
+
+            <?php endif; ?>
                 
                 $('[class^="ck_"]').each(function(){
                         //$('#btn-kuitansi').attr('disabled','disabled');
@@ -133,6 +527,44 @@
 
                         }
                     });
+
+//                 $('[class^="ck_"]').each(function(){
+//                         //$('#btn-kuitansi').attr('disabled','disabled');
+// //                        aktv = '0';
+//                         if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+//                             // $('#btn-kuitansi').removeAttr('disabled');
+// //                            aktv = '1';
+// //                            return false;
+//                             $(this).prop('checked',false);
+
+//                         }
+//                     });
+
+                $('[class^="pck_"]').each(function(){
+                        //$('#btn-kuitansi').attr('disabled','disabled');
+//                        aktv = '0';
+                        if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                            // $('#btn-kuitansi').removeAttr('disabled');
+//                            aktv = '1';
+//                            return false;
+                            $(this).prop('checked',false);
+
+                        }
+                    });
+
+//                 $('[class^="pck_"]').each(function(){
+//                         //$('#btn-kuitansi').attr('disabled','disabled');
+// //                        aktv = '0';
+//                         if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+//                             // $('#btn-kuitansi').removeAttr('disabled');
+// //                            aktv = '1';
+// //                            return false;
+//                             $(this).prop('checked',false);
+
+//                         }
+//                     });
+
+
 //                $(document).on("click",".btn_proses",function(){
 //                    <?php if($_SESSION["rsa_level"] == '4'): ?>
 //                    $('#myModalKonfirmKuitansi').modal('show');
@@ -140,6 +572,7 @@
 //                    document.location.href = "<?=site_url('rsa_gup/spp_gup')?>";
 //                    <?php endif; ?>
 //                });
+
                 $(document).on("click",".btn_batal",function(){
                         if(confirm('Apakah anda yakin ?')){
                             var id = $(this).attr('rel');
@@ -161,11 +594,69 @@
                             });
                         }
 
+                        return false;
+
+                    });
+
+
+
+                $(document).on("click",".btn_batal_pengembalian",function(){
+                        if(confirm('Apakah anda yakin ?')){
+                            var id = $(this).attr('rel');
+                            var el = $(this);
+                            $.ajax({
+                                type:"POST",
+                                url :"<?=site_url("kuitansi/proses_kuitansi_pengembalian")?>",
+                                data:'id=' + id,
+                                success:function(data){
+//                                    el.removeClass('btn_batal');
+//                                    el.attr('disabled','disabled');
+//                                    el.attr('rel','');
+//                                    
+//                                    $('.ck_' + id).attr('disabled','disabled');
+//                                    $('.ck_' + id).attr('rel','');
+
+                                    window.location.reload();
+                                }
+                            });
+                        }
+
+                        return false;
+
+                    });
+
+
+                $(document).on("click",".btn_edit_pengembalian",function(){
+
+                        alert('Belum bisa..');
+
+//                         if(confirm('Apakah anda yakin ?')){
+//                             var id = $(this).attr('rel');
+//                             var el = $(this);
+//                             $.ajax({
+//                                 type:"POST",
+//                                 url :"<?=site_url("kuitansi/proses_kuitansi")?>",
+//                                 data:'id=' + id,
+//                                 success:function(data){
+// //                                    el.removeClass('btn_batal');
+// //                                    el.attr('disabled','disabled');
+// //                                    el.attr('rel','');
+// //                                    
+// //                                    $('.ck_' + id).attr('disabled','disabled');
+// //                                    $('.ck_' + id).attr('rel','');
+
+//                                     window.location.reload();
+//                                 }
+//                             });
+//                         }
+
+                        return false;
+
                     });
                 
 		$(document).on("click","#pilih_tahun",function(){
 
-                            window.location = "<?=site_url($tsite)?>/GP/" + $("#tahun").val();
+                            window.location = "<?=site_url($tsite)?>/<?=$jenis?>/" + $("#tahun").val();
 
                     });
                 
@@ -200,6 +691,23 @@
                                 $('[class^="all_ck"]').prop('checked',false);
                             }
                         }
+
+                        <?php if($jenis=='LK'): ?>
+
+                        if ($(this).prop('checked')) {
+
+                            $('[class^="ck_"]').each(function(){
+                                if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                    $(this).prop('checked','');
+                                }
+                            });
+
+                            $('.ck_' + str).prop('checked','checked');
+
+                        }
+
+                        <?php endif; ?>
+
                         $('[class^="ck_"]').each(function(){
                             //$('#btn-kuitansi').attr('disabled','disabled');
                             aktv = '0';
@@ -211,6 +719,53 @@
 
                             }
                         });
+
+                        $('[class^="pck_"]').each(function(){
+                        	if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+
+                        		aktv = '1';
+
+                        		return false;
+
+                        	}
+
+                        });
+
+                        // UNTUK MENGHITUNG JUMLAH KUITANSI //
+
+                        var jml_kuitansi = 0 ;
+
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_pengembalian_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+                                
+                            }
+
+                        });
+
+                        $('[class^="ck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+                                
+                            }
+
+                        });
+
+                        $('.jml_kuitansi').text(angka_to_string(jml_kuitansi));
+
+                        // END //
+                        <?php if(($jenis!='LN')&&($jenis!='LK')&&($jenis!='KS')): ?>
+
                         $('.btn_proses').each(function(){
                             //$('#btn-kuitansi').attr('disabled','disabled');
                             aktv = '0';
@@ -221,10 +776,30 @@
 
 //                            }
                         });
+
+                        <?php endif; ?>
+                        
+                        <?php if(($jenis=='GP')): ?> //added by fahmi
+                             $('[class^="ck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            aktv = '0';
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                aktv = '1';
+                                
+                                return false;
+
+                            }
+                        });
+                        <?php endif; ?>
+
+
                         if(aktv == '1'){
 //                            $('#btn-kuitansi').attr('rel',kd_usulan);
 //                            $('#btn-submit-kuitansi').attr('rel',kd_usulan);
-                            $('#btn-spp').removeAttr('disabled');
+                            $('.btn-spp').removeAttr('disabled');
+                            $('#btn-pindah').removeAttr('disabled');
+                            // $('#btn-pindah').removeAttr('disabled');
                             // untuk spp ls created by dhanu
 //                            $('#btn-buat-ls').attr('rel',str);
 //                            $('#btn-buat-ls').removeAttr('disabled');
@@ -234,17 +809,228 @@
                         }else{
 //                            $('#btn-kuitansi').attr('rel','');
 //                            $('#btn-submit-kuitansi').attr('rel','');
-                            $('#btn-spp').attr('disabled','disabled');
+                            $('.btn-spp').attr('disabled','disabled');
+                            $('#btn-pindah').attr('disabled','disabled');
+                            // $('#btn-pindah').attr('disabled','disabled');
                             // untuk spp ls created by dhanu
 //                            $('#btn-buat-ls').attr('rel', '');
 //                            $('#btn-buat-ls').attr('disabled','disabled');
                             // end here
                         }
+
+                        
+
                     });
-                    
-                    $(document).on("click",'#btn-spp',function(){
+
+                    $(document).on('change', '[class^="pck_"]', function(){ ////
+
+                        var str = $(this).attr('rel');
+//                        var kd_usulan = str.substr(0,24);
+//                        var badge_ = $('#badge_id_' + str).html();
+//                        var badge = badge_.trim();
+                        var el = $(this) ;
+                        
+                        if(el.is(':enabled')){
+//                            $('[class^="all_ck_"]').prop('checked',false);
+                            if(el.is(':checked')){
+                                // checkbox is checked
+                                // alert('t');
+//                                if((kd_usulan_tmp != kd_usulan) || badge_tmp != badge ){
+//                                    $('[class^="ck_"]').each(function(){
+//                                        $(this).prop('checked',false);
+                //                        $(this).attr('readonly','readonly');
+                //                         console.log($(this).attr('rel'));
+//                                    });
+//                                }
+
+                                el.prop('checked',true);
+                //                console.log(kd_usulan_tmp + ' | ' + kd_usulan);
+//                                kd_usulan_tmp = kd_usulan ;
+//                                badge_tmp = badge ;
+                                
+
+                            }else if(!(el.is(':checked'))){
+                                $('[class^="all_pck"]').prop('checked',false);
+                            }
+                        }
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            aktv = '0';
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                aktv = '1';
+                                
+                                return false;
+
+                            }
+                        });
+                    	$('[class^="ck_"]').each(function(){
+                        	if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+
+                        		aktv = '1';
+
+                        		return false;
+
+                        	}
+
+                        });
+
+
+                        // UNTUK MENGHITUNG JUMLAH KUITANSI //
+
+                        var jml_kuitansi = 0 ;
+
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_pengembalian_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+                                
+                            }
+
+                        });
+
+                        $('[class^="ck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+                                var arel = $(this).attr('rel');
+
+                                var jml_k = parseInt(string_to_angka($("#td_sub_tot_" + arel).text()));
+                                jml_kuitansi = jml_kuitansi + jml_k ; 
+                                
+                            }
+
+                        });
+
+                        $('.jml_kuitansi').text(angka_to_string(jml_kuitansi));
+
+                        // END //
+
+                        <?php if(($jenis!='LN')&&($jenis!='LK')&&($jenis!='KS')): ?>
+
+                        $('.btn_proses').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+                            aktv = '0';
+//                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+//                                aktv = '1';
+                                return false;
+
+//                            }
+                        });
+
+                        <?php endif; ?>
+
+                        if(aktv == '1'){
+//                            $('#btn-kuitansi').attr('rel',kd_usulan);
+//                            $('#btn-submit-kuitansi').attr('rel',kd_usulan);
+                            $('.btn-spp').removeAttr('disabled');
+                            $('#btn-pindah').removeAttr('disabled');
+                            // $('#btn-pindah').removeAttr('disabled');
+                            // untuk spp ls created by dhanu
+//                            $('#btn-buat-ls').attr('rel',str);
+//                            $('#btn-buat-ls').removeAttr('disabled');
+                            // end here
+
+//                            $('#kode_badge').text(badge_tmp);
+                        }else{
+//                            $('#btn-kuitansi').attr('rel','');
+//                            $('#btn-submit-kuitansi').attr('rel','');
+                            $('.btn-spp').attr('disabled','disabled');
+                            $('#btn-pindah').attr('disabled','disabled');
+                            // $('#btn-pindah').attr('disabled','disabled');
+                            // untuk spp ls created by dhanu
+//                            $('#btn-buat-ls').attr('rel', '');
+//                            $('#btn-buat-ls').attr('disabled','disabled');
+                            // end here
+                        }
+
+                        
+
+                    });
+
+                    $(document).on("click",'#btn-pindah',function(){
+                        if(confirm('Yakin akan memproses ?')){
+
                         var rel_kuitansi = [];
                         var i = 0 ;
+                        var jenis = '<?=$jenis?>' ;
+
+                        $('[class^="ck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+//                            aktv = '0';
+                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                                // $('#btn-kuitansi').removeAttr('disabled');
+//                                aktv = '1';
+//                                return false;
+                                    rel_kuitansi[i] = $(this).attr('rel');
+                                    i++;
+                            }
+
+                        });
+
+
+                        $.ajax({
+                            type:"POST",
+                            url :"<?=site_url("kuitansi/pindah_kuitansi_tup")?>",
+                            data:'data=' + rel_kuitansi,
+                            success:function(res){
+                                // if(res == 'sukses'){
+                                    // bootbox.alert({
+                                    //     size: "small",
+                                    //     title: "Perhatian",
+                                    //     message: 'Kuitansi berhasil dipindah', // + JSON.stringify(rel_kuitansi),
+                                    //     animate:false,
+                                    // });
+                                // }else{
+                                    // bootbox.alert({
+                                    //     size: "small",
+                                    //     title: "Perhatian",
+                                    //     message: 'Maaf, kuitansi gagal dipindah!', // + JSON.stringify(rel_kuitansi),
+                                    //     animate:false,
+                                    // });
+
+                                // }
+                                window.location.reload();
+
+                            }
+                        });
+
+                            // if(saldo_kas >= tot_select){
+                                
+                            //     $('#rel_kuitansi').val(JSON.stringify(rel_kuitansi));
+                            //     $('#form_usulkan_spp').submit();
+
+                            // }else{
+                                // bootbox.alert({
+                                //     size: "small",
+                                //     title: "Perhatian",
+                                //     message: 'Belum bisa, wait a sec plis !' , // + JSON.stringify(rel_kuitansi),
+                                //     animate:false,
+                                // });
+                                // return false;
+                            // }
+
+
+                        /* END KONDISI */
+
+//                        console.log(JSON.stringify(rel_kuitansi));
+                        }else{
+                            return false;
+                        }
+                    });
+                    
+                    $(document).on("click",'.btn-spp',function(){
+
+                        var rel_kuitansi = [];
+                        var rel_kuitansi_pengembalian = [];
+                        var i = 0 ;
+                        var jenis = '<?=$jenis?>' ;
+
                         $('[class^="ck_"]').each(function(){
                             //$('#btn-kuitansi').attr('disabled','disabled');
 //                            aktv = '0';
@@ -257,43 +1043,197 @@
                             }
                         });
 
-                        /* KONDISI TIDAK DIPAKAI BIAR BISA BUAT KUITANSI SEBANYAK BANYAKNYA DULU , DAN DIPINDAH PAS BUAT SPP */
+                        i = 0 ;
 
-                        var tot_select = 0 ;
-                        var saldo_kas =  parseInt(string_to_angka($('#saldo_kas').text()));
-                        $('[class^="ck_"]').each(function(){
-                            var relck = $(this).attr('rel');
+                        $('[class^="pck_"]').each(function(){
+                            //$('#btn-kuitansi').attr('disabled','disabled');
+//                            aktv = '0';
                             if(($(this).is(':checked'))&&($(this).is(':enabled'))){
-                                var sub_tot_select = $('#td_sub_tot_' + relck).text();
-                                    tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+                                // $('#btn-kuitansi').removeAttr('disabled');
+//                                aktv = '1';
+//                                return false;
+                                    rel_kuitansi_pengembalian[i] = $(this).attr('rel');
+                                    i++;
                             }
                         });
 
-                        // console.log(saldo_kas + ' - ' + tot_select);
 
-                        if(saldo_kas >= tot_select){
+                        <?php if($jenis=='GP'): ?>
+
+                        if(rel_kuitansi_pengembalian.length > 0){
+
+                        		bootbox.confirm({
+								    message: "Apakah Anda memasukan kuitansi pengembalian untuk melakukan GUP NIHIL?",
+									// message: "Maaf, GUP NIHIL Belum Bisa?",
+								    buttons: {
+								        confirm: {
+								            label: 'Yes',
+								            className: 'btn-success'
+								        },
+								        cancel: {
+								            label: 'No',
+								            className: 'btn-danger'
+								        }
+								    },
+								    callback: function (result) {
+								        // return result;
+										// result = false ;
+								        if(result == true) {
+
+		        	                        /* KONDISI TIDAK DIPAKAI BIAR BISA BUAT KUITANSI SEBANYAK BANYAKNYA DULU , DAN DIPINDAH PAS BUAT SPP */
+
+					                        var tot_select = 0 ;
+					                        var saldo_kas =  parseInt(string_to_angka($('#saldo_kas').text()));
+
+					                        $('[class^="ck_"]').each(function(){
+					                            var relck = $(this).attr('rel');
+					                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+					                                var sub_tot_select = $('#td_sub_tot_' + relck).text();
+					                                    tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+					                            }
+					                        });
+
+					                        $('[class^="pck_"]').each(function(){
+					                            var relck = $(this).attr('rel');
+					                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+					                                var sub_tot_select = $('#td_sub_tot_pengembalian_' + relck).text();
+					                                    tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+					                            }
+					                        });
+
+					                        // console.log(saldo_kas + ' - ' + tot_select);
+
+                                            // 900000000 - 900000000 900000000 - 900000000
+
+					                            if(saldo_kas == tot_select){
+					                                
+					                                $('#rel_kuitansi').val(JSON.stringify(rel_kuitansi));
+					                                $('#rel_kuitansi_pengembalian').val(JSON.stringify(rel_kuitansi_pengembalian));
+					                                $('#form_usulkan_spp').submit();
+
+					                            }else{
+					                                bootbox.alert({
+					                                    size: "small",
+					                                    title: "Perhatian",
+					                                    message: 'Maaf jumlah SPJ tidak sesuai SALDO',
+					                                    animate:false,
+					                                });
+					                                return false;
+					                            }
+
+					                        
+
+								        }
+								    }
+								});
+
+								return false;
+
+                        }else{
+							/* KONDISI TIDAK DIPAKAI BIAR BISA BUAT KUITANSI SEBANYAK BANYAKNYA DULU , DAN DIPINDAH PAS BUAT SPP */
+
+					                        var tot_select = 0 ;
+					                        var saldo_kas =  parseInt(string_to_angka($('#saldo_kas').text()));
+
+					                        $('[class^="ck_"]').each(function(){
+					                            var relck = $(this).attr('rel');
+					                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+					                                var sub_tot_select = $('#td_sub_tot_' + relck).text();
+					                                    tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+					                            }
+					                        });
+
+					                        $('[class^="pck_"]').each(function(){
+					                            var relck = $(this).attr('rel');
+					                            if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+					                                var sub_tot_select = $('#td_sub_tot_pengembalian_' + relck).text();
+					                                    tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+					                            }
+					                        });
+
+					                        // console.log(saldo_kas + ' - ' + tot_select);
+
+
+					                            if(saldo_kas >= tot_select){
+					                                
+					                                $('#rel_kuitansi').val(JSON.stringify(rel_kuitansi));
+					                                $('#rel_kuitansi_pengembalian').val(JSON.stringify(rel_kuitansi_pengembalian));
+					                                $('#form_usulkan_spp').submit();
+
+					                            }else{
+					                                bootbox.alert({
+					                                    size: "small",
+					                                    title: "Perhatian",
+					                                    message: 'Maaf jumlah saldo anda tidak cukup',
+					                                    animate:false,
+					                                });
+					                                return false;
+					                            }
+
+					                        
+
+					                        /* END KONDISI */
+
+					//                        console.log(JSON.stringify(rel_kuitansi));
+						}
+
+					<?php else: ?>
+
+					var tot_select = 0 ;
+                    var saldo_kas =  parseInt(string_to_angka($('#saldo_kas').text()));
+
+                    $('[class^="ck_"]').each(function(){
+                        var relck = $(this).attr('rel');
+                        if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                            var sub_tot_select = $('#td_sub_tot_' + relck).text();
+                                tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+                        }
+                    });
+
+                    $('[class^="pck_"]').each(function(){
+                        var relck = $(this).attr('rel');
+                        if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+                            var sub_tot_select = $('#td_sub_tot_pengembalian_' + relck).text();
+                                tot_select = tot_select + parseInt(string_to_angka(sub_tot_select));
+                        }
+                    });
+
+                    // console.log(saldo_kas + ' - ' + tot_select);
+
+                    if((jenis == 'TP') || (jenis == 'KS')){
+
+                        if(saldo_kas == tot_select){
                             
                             $('#rel_kuitansi').val(JSON.stringify(rel_kuitansi));
+                            $('#rel_kuitansi_pengembalian').val(JSON.stringify(rel_kuitansi_pengembalian));
                             $('#form_usulkan_spp').submit();
 
                         }else{
                             bootbox.alert({
                                 size: "small",
                                 title: "Perhatian",
-                                message: 'Maaf jumlah saldo anda tidak cukup',
+                                message: 'Maaf jumlah tidak sesuai saldo',
                                 animate:false,
                             });
                             return false;
                         }
 
-                        /* END KONDISI */
+                    }else if((jenis == 'LN') || (jenis == 'LK') || (jenis == 'EM')){
+                            $('#rel_kuitansi').val(JSON.stringify(rel_kuitansi));
+                            // $('#rel_kuitansi_pengembalian').val(JSON.stringify(rel_kuitansi_pengembalian));
+                            $('#form_usulkan_spp').submit();
+                    }
 
-//                        console.log(JSON.stringify(rel_kuitansi));
+
+					<?php endif; ?>
+
                     });
                     
                     
-                    $(document).on("click",'#btn-lihat',function(){
+                    $(document).on("click",'.btn-lihat',function(){
+
                         var rel = $(this).attr('rel');
+
                         $.ajax({
                             type:"POST",
                             url :"<?=site_url("kuitansi/get_data_kuitansi")?>",
@@ -304,13 +1244,22 @@
                                     var kuitansi = obj.kuitansi ;
                                     var kuitansi_detail = obj.kuitansi_detail ;
                                     var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
-                                    $('#kode_badge').text('GP');
+                                    $('#kode_badge').text('<?=$jenis?>');
+                                    $('#kuitansi_id_kuitansi').text(kuitansi.id_kuitansi);
                                     $('#kuitansi_tahun').text(kuitansi.tahun);
                                     $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
+                                    $('#kuitansi_jenis').text(kuitansi.jenis);
+                                    if((!!kuitansi.alias_no_bukti)&&(kuitansi.alias_no_bukti!='')){
+                                        $('#alias_no_bukti').text('( ' + kuitansi.alias_no_bukti + ' )');
+                                        $('#alias_no_bukti').show();
+                                    }else{
+                                        $('#alias_no_bukti').text('');
+                                        $('#alias_no_bukti').hide();
+                                    }
                                     $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
-                                    $('#uraian').text(decodeURIComponent(kuitansi.uraian));
+                                    $('#uraian').text(kuitansi.uraian);
                                     $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
-                                    $('#penerima_uang').text(decodeURIComponent(kuitansi.penerima_uang));
+                                    $('#penerima_uang').text(kuitansi.penerima_uang);
                                     // var s = kuitansi.penerima_uang_nip ;
                                     // console.log(s.trim());
                                     // if((s.trim() != '-')&&(s.trim() != '.')){
@@ -349,11 +1298,11 @@
                                     $.each(kuitansi_detail,function(i,v){ 
 
                                         str_isi = str_isi + '<tr class="tr_new">';
-                                        str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
-                                        str_isi = str_isi + '<td style="text-align:center">' + (v.volume * 1) + '</td>' ;
-                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
+                                        str_isi = str_isi + '<td colspan="3" style="border:1px solid #000;">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:center;border:1px solid #000;">' + (v.volume * 1) + '</td>' ;
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">' + v.satuan + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
                                         var str_pajak = '' ;
                                         var str_pajak_nom = '' ;
                                         $.each(kuitansi_detail_pajak,function(ii,vv){
@@ -368,12 +1317,12 @@
                                                 str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
                                             }
                                         });
-                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">'+ str_pajak +'</td>' ; 
                                         str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
-                                        str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" >'+ str_pajak_nom +'</td>' ;  
                                         
-                                        str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                                        str_isi = str_isi + '<td style="border:1px solid #000;border-right:none;"><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;border:1px solid #000;border-left:none;" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
                                         
                                             str_isi = str_isi + '</tr>' ;
 
@@ -425,6 +1374,286 @@
             
                         
                     });
+
+                    $(document).on("click",'.btn-edit',function(){
+
+                        var rel = $(this).attr('rel');
+
+                        $.ajax({
+                            type:"POST",
+                            url :"<?=site_url("kuitansi/get_data_kuitansi")?>",
+                            data:'id=' + rel,
+                            success:function(data){
+//                                    console.log(data);
+                                    var obj = jQuery.parseJSON(data);
+                                    var kuitansi = obj.kuitansi ;
+                                    var kuitansi_detail = obj.kuitansi_detail ;
+                                    var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
+                                    $('#kode_badge_edit').text('<?=$jenis?>');
+                                    $('#kuitansi_id_kuitansi_edit').text(kuitansi.id_kuitansi);
+                                    $('#kuitansi_tahun_edit').text(kuitansi.tahun);
+                                    $('#kuitansi_no_bukti_edit').text(kuitansi.no_bukti);
+                                    $('#kuitansi_jenis_edit').text(kuitansi.jenis);
+                                    if((!!kuitansi.alias_no_bukti)&&(kuitansi.alias_no_bukti!='')){
+                                        $('#alias_no_bukti_edit').text('( ' + kuitansi.alias_no_bukti + ' )');
+                                        $('#alias_no_bukti_edit').show();
+                                    }else{
+                                        $('#alias_no_bukti_edit').text('');
+                                        $('#alias_no_bukti_edit').hide();
+                                    }
+                                    $('#kuitansi_txt_akun_edit').text(kuitansi.nama_akun);
+                                    $('#uraian_edit').text(kuitansi.uraian);
+                                    $('#nm_subkomponen_edit').text(kuitansi.nama_subkomponen);
+                                    $('#penerima_uang_edit').text(kuitansi.penerima_uang);
+                                    // var s = kuitansi.penerima_uang_nip ;
+                                    // console.log(s.trim());
+                                    // if((s.trim() != '-')&&(s.trim() != '.')){
+                                        // console.log('t');
+                                        $('#penerima_uang_nip_edit').text(kuitansi.penerima_uang_nip);
+                                    // }
+                                    // else{
+                                        // console.log('f');
+                                        // $('#snip').hide();
+                                    // }
+                                    var a = moment(kuitansi.tgl_kuitansi);
+//                                    var b = moment(a).add('hours', 1);
+//                                    var c = b.format("YYYY-MM-DD HH-mm-ss");
+                                    $('#tgl_kuitansi_edit').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
+                                    $('#nmpppk_edit').text(kuitansi.nmpppk);
+                                    $('#nippppk_edit').text(kuitansi.nippppk);
+                                    $('#nmbendahara_edit').text(kuitansi.nmbendahara);
+                                    $('#nipbendahara_edit').text(kuitansi.nipbendahara);
+                                    if(kuitansi.nmpumk != ''){
+                                        $('#td_tglpumk_edit').show();
+                                        $('#td_nmpumk_edit').show();
+                                    }else{
+                                        $('#td_tglpumk_edit').hide();
+                                        $('#td_nmpumk_edit').hide();
+                                    }
+                                    $('#nmpumk_edit').text(kuitansi.nmpumk);
+                                    $('#nippumk_edit').text(kuitansi.nippumk);
+                                    $('#penerima_barang_edit').text(kuitansi.penerima_barang);
+                                    $('#penerima_barang_nip_edit').text(kuitansi.penerima_barang_nip);
+                                    
+                                    $('#tr_isi_edit').remove();
+                                    $('.tr_new').remove();
+                                    $('<tr id="tr_isi_edit"><td colspan="11">&nbsp;</td></tr>').insertAfter($('#before_tr_isi_edit'));
+                                    
+                                    var str_isi = '';
+                                    $.each(kuitansi_detail,function(i,v){ 
+
+                                        str_isi = str_isi + '<tr class="tr_new">';
+                                        str_isi = str_isi + '<td colspan="3" style="border:1px solid #000;">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:center;border:1px solid #000;">' + (v.volume * 1) + '</td>' ;
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">' + v.satuan + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" class="sub_tot_bruto_edit_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
+                                        var str_pajak = '' ;
+                                        var str_pajak_nom = '' ;
+                                        $.each(kuitansi_detail_pajak,function(ii,vv){
+                                            if(vv.id_kuitansi_detail == v.id_kuitansi_detail){
+                                                var jenis_pajak_ = vv.jenis_pajak ;
+                                                var jenis_pajak = jenis_pajak_.split("_").join(" ");
+                                                var dpp = vv.dpp == '0' ? '' : '(dpp)';
+                                                // console.log(vv.persen_pajak);
+                                                var str_99 = (vv.persen_pajak == '99')||(vv.persen_pajak == '98')||(vv.persen_pajak == '97')||(vv.persen_pajak == '96')||(vv.persen_pajak == '95')||(vv.persen_pajak == '94')||(vv.persen_pajak == '89')? '' : vv.persen_pajak + '% ' ;
+                                                str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
+                                                
+                                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_edit_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
+                                            }
+                                        });
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">'+ str_pajak +'</td>' ; 
+                                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_edit_'+ i +'">'+'0'+'</span>':str_pajak_nom;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" >'+ str_pajak_nom +'</td>' ;  
+                                        
+                                        str_isi = str_isi + '<td style="border:1px solid #000;border-right:none;"><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;border:1px solid #000;border-left:none;" rel="'+ i +'" class="sub_tot_netto_edit_'+ i +'">0</td>' ; 
+                                        
+                                            str_isi = str_isi + '</tr>' ;
+
+                                            });
+
+                                            
+                                            
+                                            $('#tr_isi_edit').replaceWith(str_isi);
+                                            
+                                            var sum_tot_bruto = 0 ;
+                                            $('[class^="sub_tot_bruto_edit_"').each(function(){
+                                                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
+                                            });
+                                            $('.sum_tot_bruto_edit').html(angka_to_string(sum_tot_bruto));
+                                            
+                                            var sub_tot_pajak = 0 ;
+                                            $('[class^="sub_tot_pajak_edit_"]').each(function(){
+                                                sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
+                                            });
+                                            $('.sum_tot_pajak_edit').html(angka_to_string(sub_tot_pajak));
+                                            
+                                            $('[class^="sub_tot_netto_edit_"]').each(function(){
+                                                var prel = $(this).attr('rel');
+                                                var sub_tot_pajak__  = 0 ;
+//                                                console.log(prel + ' ' + sub_tot_pajak__);
+                                                $('.sub_tot_pajak_edit_' + prel).each(function(){
+                                                    sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
+                                                });
+                                                var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_edit_' + prel ).text())) ;
+                                                $(this).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                                            });
+
+                                            var sum_tot_netto = 0 ;
+                                            $('[class^="sub_tot_netto_edit_"').each(function(){
+                                                sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
+                                            });
+
+                                            $('.sum_tot_netto_edit').html(angka_to_string(sum_tot_netto));
+
+                                            $('.text_tot_edit').html(terbilang(sum_tot_bruto));
+                                            
+                                            $('#nbukti_edit').val(kuitansi.no_bukti);
+                                            $('#myModalKuitansiEdit').modal('show');
+    //                                        i++ ;
+                                        }
+
+            //                        location.reload();
+                        });
+            
+                        
+                    });
+
+                    $(document).on("click",'.btn-lihat-pengembalian',function(){
+
+                        var rel = $(this).attr('rel');
+                        $.ajax({
+                            type:"POST",
+                            url :"<?=site_url("kuitansi/get_data_kuitansi_pengembalian")?>",
+                            data:'id=' + rel,
+                            success:function(data){
+                                   // console.log(data);
+                                    var obj = jQuery.parseJSON(data);
+                                    var kuitansi = obj.kuitansi ;
+                                    var kuitansi_detail = obj.kuitansi_detail ;
+                                    var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
+                                    $('#kode_badge_showpengembalian').text('<?=$jenis?>');
+                                    $('#kuitansi_tahun_showpengembalian').text(kuitansi.tahun);
+                                    $('#kuitansi_no_bukti_showpengembalian').text(kuitansi.no_bukti);
+                                    $('#kuitansi_txt_akun_showpengembalian').text(kuitansi.nama_akun);
+                                    $('#uraian_showpengembalian').text(kuitansi.uraian);
+                                    // $('#nm_subkomponen_showpengembalian').text(kuitansi.nama_subkomponen);
+                                    $('#penerima_uang_showpengembalian').text(kuitansi.penerima_uang);
+                                    // var s = kuitansi.penerima_uang_nip ;
+                                    // console.log(s.trim());
+                                    // if((s.trim() != '-')&&(s.trim() != '.')){
+                                        // console.log('t');
+                                        $('#penerima_uang_nip_showpengembalian').text(kuitansi.penerima_uang_nip);
+                                    // }
+                                    // else{
+                                        // console.log('f');
+                                        // $('#snip').hide();
+                                    // }
+                                    var a = moment(kuitansi.tgl_kuitansi);
+//                                    var b = moment(a).add('hours', 1);
+//                                    var c = b.format("YYYY-MM-DD HH-mm-ss");
+                                    $('#tgl_kuitansi_showpengembalian').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
+                                    $('#nmpppk_showpengembalian').text(kuitansi.nmpppk);
+                                    $('#nippppk_showpengembalian').text(kuitansi.nippppk);
+                                    $('#nmbendahara_showpengembalian').text(kuitansi.nmbendahara);
+                                    $('#nipbendahara_showpengembalian').text(kuitansi.nipbendahara);
+                                    if(kuitansi.nmpumk != ''){
+                                        $('#td_tglpumk_showpengembalian').show();
+                                        $('#td_nmpumk_showpengembalian').show();
+                                    }else{
+                                        $('#td_tglpumk_showpengembalian').hide();
+                                        $('#td_nmpumk_showpengembalian').hide();
+                                    }
+                                    $('#nmpumk_showpengembalian').text(kuitansi.nmpumk);
+                                    $('#nippumk_showpengembalian').text(kuitansi.nippumk);
+                                    $('#penerima_barang_showpengembalian').text(kuitansi.penerima_barang);
+                                    $('#penerima_barang_nip_showpengembalian').text(kuitansi.penerima_barang_nip);
+                                    
+                                    $('#tr_isi_showpengembalian').remove();
+                                    $('.tr_new').remove();
+                                    $('<tr id="tr_isi_showpengembalian"><td colspan="11">&nbsp;</td></tr>').insertAfter($('#before_tr_isi_showpengembalian'));
+                                    
+                                    var str_isi = '';
+                                    $.each(kuitansi_detail,function(i,v){ 
+
+                                        str_isi = str_isi + '<tr class="tr_new">';
+                                        str_isi = str_isi + '<td colspan="3" style="border:1px solid #000;">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:center;border:1px solid #000;">' + (v.volume * 1) + '</td>' ;
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">' + v.satuan + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
+                                        var str_pajak = '' ;
+                                        var str_pajak_nom = '' ;
+                                        $.each(kuitansi_detail_pajak,function(ii,vv){
+                                            if(vv.id_kuitansi_detail == v.id_kuitansi_detail){
+                                                var jenis_pajak_ = vv.jenis_pajak ;
+                                                var jenis_pajak = jenis_pajak_.split("_").join(" ");
+                                                var dpp = vv.dpp == '0' ? '' : '(dpp)';
+                                                // console.log(vv.persen_pajak);
+                                                var str_99 = (vv.persen_pajak == '99')||(vv.persen_pajak == '98')||(vv.persen_pajak == '97')||(vv.persen_pajak == '96')||(vv.persen_pajak == '95')||(vv.persen_pajak == '94')||(vv.persen_pajak == '89')? '' : vv.persen_pajak + '% ' ;
+                                                str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
+                                                
+                                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
+                                            }
+                                        });
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">'+ str_pajak +'</td>' ; 
+                                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" >'+ str_pajak_nom +'</td>' ;  
+                                        
+                                        str_isi = str_isi + '<td style="border:1px solid #000;border-right:none;"><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;border:1px solid #000;border-left:none;" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                                        
+                                            str_isi = str_isi + '</tr>' ;
+
+                                            });
+
+                                            // console.log(str_isi);
+                                            
+                                            $('#tr_isi_showpengembalian').replaceWith(str_isi);
+                                            
+                                            var sum_tot_bruto = 0 ;
+                                            $('[class^="sub_tot_bruto_"').each(function(){
+                                                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
+                                            });
+                                            $('.sum_tot_bruto_showpengembalian').html(angka_to_string(sum_tot_bruto));
+                                            
+                                            var sub_tot_pajak = 0 ;
+                                            $('[class^="sub_tot_pajak_"]').each(function(){
+                                                sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
+                                            });
+                                            $('.sum_tot_pajak_showpengembalian').html(angka_to_string(sub_tot_pajak));
+                                            
+                                            $('[class^="sub_tot_netto_"]').each(function(){
+                                                var prel = $(this).attr('rel');
+                                                var sub_tot_pajak__  = 0 ;
+//                                                console.log(prel + ' ' + sub_tot_pajak__);
+                                                $('.sub_tot_pajak_' + prel).each(function(){
+                                                    sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
+                                                });
+                                                var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_' + prel ).text())) ;
+                                                $(this).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                                            });
+
+                                            var sum_tot_netto = 0 ;
+                                            $('[class^="sub_tot_netto_"').each(function(){
+                                                sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
+                                            });
+
+                                            $('.sum_tot_netto_showpengembalian').html(angka_to_string(sum_tot_netto));
+
+                                            $('.text_tot_showpengembalian').html(terbilang(sum_tot_bruto));
+                                            
+                                            $('#nbukti_showpengembalian').val(kuitansi.no_bukti);
+                                            $('#myModalKuitansiShowPengembalian').modal('show');
+    //                                        i++ ;
+                                        }
+
+            //                        location.reload();
+                        });
+            
+                        
+                    });
                     
                         $(document).on("click","#down",function(){
                         
@@ -443,7 +1672,670 @@
 
 
                         });
+
+                        $(document).on("click","#btn-pengembalian",function(){
+                                // http://rsa.apps.undip.ac.id/index.php/kuitansi/get_next_id
+                                var alias = "<?=$alias?>" ;
+                                // var kd_akun= "113111" ;
+                                $.ajax({
+                                    type:"POST",
+                                    url :"<?=site_url("kuitansi/get_data_pengembalian")?>",
+                                    data:'alias=' + alias + '&jenis=' + '<?=$jenis?>',
+                                    success:function(ret){
+                                        var o = jQuery.parseJSON(ret);
+                                            $('#myModalKuitansiPengembalian #no_bukti_pengembalian').html(o.next_id);
+                                            // $('#myModalKuitansiPengembalian #txt_akun_pengembalian').html(o.nama_akun);
+
+                                            $('#kode_badge_pengembalian').text('<?=$jenis?>');
+
+                                            // $('#nm_subkomponen_kuitansi_pengembalian').text(o.nama_subkegiatan);     
+
+                                            $('#myModalKuitansiPengembalian #uraian_pengembalian').text(o.uraian);     
+
+                                            $('#btn-submit-kuitansi-pengembalian').attr('rel',o.kode_usulan_belanja);
+
+                                            $('#myModalKuitansiPengembalian').modal('show');
+
+
+                                            
+                                    }
+                                });
+
+
+                                
+                                
+
+
+
+                        });
+
+
+        $("#myModalDeskripsi").on('show.bs.modal', function (event) {
+
+                $('.formError').hide();
+
+                // $('#myModalDeskripsi input').each(function(){
+                //     $(this).val('');
+                //     // console.log($(this).val());
+                // });
         });
+
+
+
+
+
+
+                        
+        });
+
+
+        $(document).on("click",".input_boot",function(){
+
+            var el = $(this) ;
+
+            var id_name = el.attr('id').toUpperCase();
+
+            var elval = el.text();
+
+            elval = elval.trim() ;
+
+            var val = '' ;
+
+            if(elval && (elval != '- edit here -')){
+                val = elval ;
+            }
+
+            var dialog = bootbox.prompt({ 
+              size: "large",
+              title: id_name, 
+              value: val,
+              inputType: 'textarea',
+              onEscape: false,
+              closeButton:false,
+              animate:false,
+              callback: function(res){ 
+                if(res){
+                    res = res.trim() ;
+                    if(res != ''){
+                        el.text(res);   
+
+                    }else{
+                        el.text('- edit here -');
+                    }
+                }else{
+                    if(elval == '- edit here -'){
+                        el.text('- edit here -');   
+
+                    }else{
+                        el.text(elval);
+                    }
+                }
+              }
+            }) ;
+
+
+            dialog.init(function(){
+                dialog.find('.bootbox-body').prepend( '<div class="alert alert-warning">Apabila isian kosong harap diberi tanpa strip "-" ( tanpa tanda kutip ) untuk keseragaman</div>');
+                
+            });
+
+
+
+        });
+
+
+    $(document).on("click","#myModalKuitansiPengembalian #nmpppk_pengembalian",function(){
+            $('#myModalP3K').modal('show');
+    });
+
+    $(document).on("click","#myModalKuitansiPengembalian #nippppk_pengembalian",function(){
+            $('#myModalP3K').modal('show');
+    });
+
+    $(document).on("click","#btn-pilih-pppk-ojo-dikopi-id-iki-yo-lek",function(){
+    if($('input[name="id_user"]:checked').length > 0){
+        var id_user = $("input[name='id_user']:checked").val();
+        var nm_pppk = $("#nm_input_" + id_user).val();
+        var nip_pppk = $("#nip_input_" + id_user).val();
+
+        $('#myModalKuitansiPengembalian #nmpppk_pengembalian').text(nm_pppk);
+        $('#myModalKuitansiPengembalian #editpppk_pengembalian').remove();
+        $('#myModalKuitansiPengembalian #nmpppk_pengembalian').after('<span id="editpppk_pengembalian"> [ <a href="#" data-toggle="modal" data-target="#myModalP3K" style="cursor:pointer">edit</a> ]</span>');
+        $('#myModalKuitansiPengembalian #nippppk_pengembalian').text(nip_pppk);
+
+        $('#myModalP3K').modal('hide');
+
+    }else{
+//            alert('Mohon pilih salah satu PPPK.');
+            bootbox.alert({
+                size: "small",
+                title: "Perhatian",
+                message: "Mohon pilih salah satu PPPK.",
+                animate:false,
+            });
+    }
+
+
+
+
+    });
+
+
+    $(document).on("click","#myModalKuitansiEdit #nmpppk_url_edit",function(){
+            $('#myModalP3KEdit').modal('show');
+    });
+
+    $(document).on("click","#myModalKuitansiEdit #nippppk_url_edit",function(){
+            $('#myModalP3KEdit').modal('show');
+    });
+
+    $(document).on("click","#btn-pilih-pppk-edit",function(){
+    if($('input[name="id_user_edit"]:checked').length > 0){
+        var id_user = $("input[name='id_user_edit']:checked").val();
+        var nm_pppk = $("#nm_input_edit_" + id_user).val();
+        var nip_pppk = $("#nip_input_edit_" + id_user).val();
+
+        var id_kuitansi = $('#kuitansi_id_kuitansi_edit').text() ;
+
+        $.ajax({
+                type:"POST",
+                url :"<?=site_url("kuitansi/edit_kuitansi/")?>" + id_kuitansi ,
+                data: "nmpppk=" + nm_pppk + "&nippppk=" + nip_pppk ,
+                success:function(data){
+
+
+        
+
+                        bootbox.alert({
+                            title: "Konfirmasi",
+                            message: "data berhasil di update.",
+                            animate: false,
+                            callback: function(r){ 
+
+        $('#myModalKuitansiEdit #nmpppk_edit').text(nm_pppk);
+        // $('#myModalKuitansiEdit #editpppk_pengembalian').remove();
+        // $('#myModalKuitansiEdit #nmpppk_edit').after('<span id="editpppk_pengembalian"> [ <a href="#" data-toggle="modal" data-target="#myModalP3KEdit" style="cursor:pointer">edit</a> ]</span>');
+        $('#myModalKuitansiEdit #nippppk_edit').text(nip_pppk);
+
+        $('#myModalP3KEdit').modal('hide');
+
+                            }
+                        });
+
+                }
+            });
+
+        
+
+
+
+    }else{
+//            alert('Mohon pilih salah satu PPPK.');
+            bootbox.alert({
+                size: "small",
+                title: "Perhatian",
+                message: "Mohon pilih salah satu PPPK.",
+                animate:false,
+            });
+    }
+
+
+
+
+    });
+
+    $(document).on("click",".tambah_deskripsi",function(){
+            $('.formError').hide();
+            $('#form_deskripsi')[0].reset();
+            $('#myModalDeskripsi').modal('show');
+            $('#iddeskripsi').val($(this).attr('rel'));
+            return false;
+    });
+
+    $(document).on("click",".edit_deskripsi",function(){
+            $('.formError').hide();
+            //$('#form_deskripsi')[0].reset();
+            $('#myModalDeskripsi').modal('show');
+            $('#iddeskripsi').val($(this).attr('rel'));
+            return false;
+    });
+
+    // $(document).on("click","#btn-deskripsi",function(){
+    //         if($("#form_deskripsi").validationEngine("validate")){
+    //         }
+    // });
+
+            $(document).on("click","#btn-deskripsi",function(){
+                if($("#form_deskripsi").validationEngine("validate")){
+                    var rel = $('#iddeskripsi').val();
+                    keluaran = [];
+                    var keluaran_ = [] ;
+                        keluaran_[0] = $('#iddeskripsi').val();
+                        keluaran_[1] = encodeURIComponent($('#deskripsi').val());
+                        keluaran_[2] = $('#kuantitas').val();
+                        keluaran_[3] = $('#satuan').val();
+                        keluaran_[4] = $('#jumlah').val();
+                    
+                    var n = keluaran.length ;
+                    keluaran[n] = keluaran_ ;
+
+                    var nomor = parseInt($('#iddeskripsi').val()) + 1 ;
+
+                    var bruto = parseInt($('#kuantitas').val()) * parseInt($('#jumlah').val()) ;
+
+                    if($('[id^="tr_n_"]').length){
+                        var tr_awal = '<tr id="tr_isi_pengembalian"><td style="border:1px solid #000;" colspan="11">[ <a href="#" rel="0" class="tambah_deskripsi" >tambah</a> ]</td></tr>';
+
+                        $('[id^="tr_n_"]').replaceWith(tr_awal);
+
+                    }
+                        
+                    var str = '<tr id="tr_n_'+ n +'" class="tr_k_'+ n +'">' ;
+                        str =  str + '<td colspan="3" style="border:1px solid #000;">'+ nomor + '.<span id="deskripsi_pengembalian">' + $('#deskripsi').val() +'</span> [ <a href="#" rel="' + n + '" class="edit_deskripsi" style="cursor:pointer">edit</a> ]</td>'; // <span id="tb_hapus_des_'+ nomor +'">[ <a href="#" rel="' + n + '" class="edit_deskripsi" style="cursor:pointer">edit</a> ]</span></td>'; <---- SEBELUMNYA ADA TOMBOL DEL
+                        str =  str + '<td style="text-align:center;border:1px solid #000;"><span id="volume_pengembalian">'+ $('#kuantitas').val() +'</span></td>';
+                        str =  str + '<td style="padding: 0 5px 0 5px;border:1px solid #000;"><span id="satuan_pengembalian">'+ $('#satuan').val() +'</span></td>';
+                        str =  str + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><span id="harga_satuan_pengembalian">'+ angka_to_string($('#jumlah').val()) +'</span></td>';
+                        str =  str + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" rel="'+ n +'" class="pengembalian_sub_tot_bruto_'+ n +'" >'+ angka_to_string(bruto) +'</td>';
+                        str =  str + '<td style="padding: 0 5px 0 5px;border:1px solid #000;"></td>';
+                        str =  str + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><span rel="'+ rel +'" class="pengembalian_sub_tot_pajak_0">0</span></td>';
+                        str =  str + '<td style="border:1px solid #000;border-right:none;"><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>';
+                        str =  str + '<td style="text-align:right;border:1px solid #000;border-left:none;" rel="'+ n +'" class="pengembalian_sub_tot_netto_'+ n +'">'+ angka_to_string(bruto) +'</td>';
+                        str =  str + '</tr>' ;
+                        // str =  str + '<tr id="tr_isi_pengembalian"><td colspan="11">[ <a href="#" rel="'+ nomor +'" class="tambah_deskripsi" >tambah</a> ]</td></tr>' ;
+                       // console.log(JSON.stringify(keluaran));
+                    // $('[id^="tb_hapus_des_"]').hide(); 
+                    $("#tr_isi_pengembalian").replaceWith(str);
+
+                    var tot_bruto = 0 ;
+                    $('[class^="pengembalian_sub_tot_bruto_"]').each(function(){
+                        tot_bruto = tot_bruto + parseInt(string_to_angka($(this).text()));
+                    });
+                    $('.sum_tot_bruto_pengembalian').text(angka_to_string(tot_bruto));
+                    $('.sum_tot_netto_pengembalian').text(angka_to_string(tot_bruto));
+                    $('.text_tot_pengembalian').html(terbilang(tot_bruto));
+
+                    
+                    $('#myModalDeskripsi').modal('hide');
+    //                var n = keluaran.length ;
+    //                    keluaran[n] = keluaran_ ;
+    //                     console.log(JSON.stringify(keluaran));
+                }else{
+                    return false;
+                }
+            });
+
+            $(document).on("focusin","input.xnumber",function(){
+
+                if($(this).val()=='0'){
+                        $(this).val('');
+                }
+                else{
+                        var str = $(this).val();
+                        $(this).val(angka_to_string(str));
+                }
+        });
+        
+        $(document).on("focusout","input.xnumber",function(){
+
+            var kode_usulan_belanja = $(this).attr('rel');
+
+                if($(this).val()==''){
+                        $(this).val('0');
+
+                }
+                else{
+                        var str = $(this).val();
+                        $(this).val(string_to_angka(str));
+
+//                        calcinput(kode_usulan_belanja);
+
+                        //alert(str);
+                        //$(this).val(str);
+                }
+
+        });
+        
+        $(document).on("keyup","input.xnumber",function(event){
+
+            // skip for arrow keys
+            if(event.which >= 37 && event.which <= 40) return;
+
+            // format number
+            $(this).val(function(index, value) {
+                return value
+                .replace(/\D/g, "")
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                ;
+            });
+        });
+
+
+
+        $(document).on("click","#btn-submit-kuitansi-pengembalian",function(){
+
+
+            // var str = $(this).attr('rel') ;
+            // var kd_usulan = str.substr(0,24);
+            // var kd_tambah = str.substr(24,3);
+
+            var no_bukti = $('#myModalKuitansiPengembalian #no_bukti_pengembalian').text();
+
+            var uraian = $('#myModalKuitansiPengembalian #uraian_pengembalian').text();
+
+            var penerima_uang = $('#myModalKuitansiPengembalian #penerima_uang_pengembalian').text();
+
+            var penerima_uang_nip =  $('#myModalKuitansiPengembalian #penerima_uang_nip_pengembalian').text();
+//            var penerima_uang_nip = penerima_uang_nip_.trim();
+
+            var penerima_barang = $('#myModalKuitansiPengembalian #penerima_barang_pengembalian').text();
+
+            var penerima_barang_nip = $('#myModalKuitansiPengembalian #penerima_barang_nip_pengembalian').text();
+
+            var kode_usulan_belanja = "0000000000000000000000" ; // kd_usulan;
+            // var kode_akun_tambah = kd_tambah;
+
+            // NEW ADD
+            var badge_tmp = $('#kode_badge_pengembalian').text();
+
+            var ok = 'true';
+
+            $('#myModalKuitansiPengembalian .input_boot').each(function(){
+                var el = $(this).text();
+                if( el.trim() == '- edit here -' ){
+
+                    ok = 'false';
+
+                }
+            });
+
+
+            $('#myModalKuitansiPengembalian .edit_here').each(function(){
+                var el = $(this).text();
+                if( el.trim() == '- edit here -' ){
+
+                    ok = 'false';
+
+                }
+            });
+
+//            console.log($('#myModalKuitansi .sum_tot_netto').text());
+
+            if(ok == 'true'){
+               if($('#myModalKuitansiPengembalian .sum_tot_netto_pengembalian').text() == '0'){
+                    ok = 'false';
+                }
+            }
+
+//            $('[id^="pilih_pajak_"]').each(function(){
+////            $('.edit_here').each(function(){
+//                var el = $(this).text();
+//                if( el.trim() == '- pilih -' ){
+//
+//                    ok = 'false';
+//
+//                }
+//            });
+
+            if( ok == 'true'){
+
+            if(confirm('Yakin akan memproses ?')){
+
+                // var kode_akun_tambah_ = [];
+                // var i = 0 ;
+                // $('[class^="ck_'+ kode_usulan_belanja +'"]').each(function(){
+                //     //$('#btn-kuitansi').attr('disabled','disabled');
+                //     var el = $(this).attr('rel');
+                //     var kode_akun_tambah = el.substr(24,3);
+
+                //     if(($(this).is(':checked'))&&($(this).is(':enabled'))){
+
+                //         kode_akun_tambah_[i] = kode_akun_tambah;
+                //         i++ ;
+                //     }
+
+
+
+                // });
+
+                var kode_akun_tambah_ = ['001']; //  KARENA DETAILNYA DI IJINKAN HANYA SATU SAJA
+                var pj_p_kode_usulan_all = ["000000000000000000000000001"]; // 000000000000000001113112001
+                var pj_p_id_all = [];
+                var pj_p_jenis_all = [];
+                var pj_p_persen_all = [];
+                var pj_p_dpp_all = [];
+                var pj_p_nilai_all = [];
+
+                var data_detail = { 'deskripsi' : $('#deskripsi_pengembalian').text() , 'volume' : $('#volume_pengembalian').text() , 'satuan' : $('#satuan_pengembalian').text() , 'harga_satuan' : string_to_angka($('#harga_satuan_pengembalian').text()) }; 
+
+                // pajak_kode_usulan:["611111020201010401523159002"]
+                // pajak_id_input:[["1","3"]]
+                // pajak_jenis:[["ppn","pphps21"]]
+                // pajak_dpp:[["0","1"]]
+                // pajak_persen:[["10","15"]]
+                // pajak_nilai:[["100.000","136.364"]]
+
+//                var pajak_ = [];
+//                var i = 0 ;
+//                $('[id^="pilih_pajak_"]').each(function(){
+//                    //$('#btn-kuitansi').attr('disabled','disabled');
+//
+//                        var pajak = $(this).text();
+//                        pajak_[i] = pajak.slice(0, -1);;
+//                        i++ ;
+//
+//
+//
+//
+//                });
+
+//                console.log(kode_akun_tambah_);
+//
+//            console.log(JSON.stringify(pj_p_kode_usulan_all));
+//            console.log(JSON.stringify(pj_p_id_all));
+//            console.log(JSON.stringify(pj_p_jenis_all));
+//            console.log(JSON.stringify(pj_p_dpp_all));
+//            console.log(JSON.stringify(pj_p_persen_all));
+//            console.log(JSON.stringify(pj_p_nilai_all));
+
+                var data =  'kode_unit=' + '<?=$kode_unit?>' + '&no_bukti='+ no_bukti + '&uraian=' + encodeURIComponent(uraian) + '&jenis=' + badge_tmp + '&sumber_dana=<?php echo '-'; ?>' + '&kode_usulan_belanja=' + kode_usulan_belanja + '&kode_akun_tambah=' + JSON.stringify(kode_akun_tambah_) + '&penerima_uang=' + encodeURIComponent(penerima_uang) + '&penerima_uang_nip=' + penerima_uang_nip + '&penerima_barang=' + penerima_barang + '&penerima_barang_nip=' + penerima_barang_nip + '&nmpppk=' + $('#myModalKuitansiPengembalian #nmpppk_pengembalian').text() + '&nippppk=' + $('#myModalKuitansiPengembalian #nippppk_pengembalian').text() + '&nmbendahara=' + $('#myModalKuitansiPengembalian #nmbendahara_pengembalian').text() + '&nipbendahara=' + $('#myModalKuitansiPengembalian #nipbendahara_pengembalian').text() + '&nmpumk=' + $('#myModalKuitansiPengembalian #nmpumk_pengembalian').text() + '&nippumk=' + $('#myModalKuitansiPengembalian #nippumk_pengembalian').text() + '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all) + '&data_detail=' + JSON.stringify(data_detail) ;
+
+                // '&pajak_kode_usulan=' + JSON.stringify(pj_p_kode_usulan_all) + '&pajak_id_input=' + JSON.stringify(pj_p_id_all) + '&pajak_jenis=' + JSON.stringify(pj_p_jenis_all) + '&pajak_dpp=' + JSON.stringify(pj_p_dpp_all) + '&pajak_persen=' + JSON.stringify(pj_p_persen_all) + '&pajak_nilai=' +JSON.stringify(pj_p_nilai_all) ; // '&penerima_uang_nip=' + penerima_uang_nip +
+
+                // console.log(JSON.stringify(data));
+
+
+                $.ajax({
+                    type:"POST",
+                    url :"<?=site_url("kuitansi/submit_kuitansi_pengembalian")?>",
+                    data: data,
+                    success:function(data){
+                       // console.log(data)
+                            location.reload();
+
+                            // bootbox.alert({
+                            //     size: "large",
+                            //     title: "Perhatian",
+                            //     message: 'maaf sedang diperbaiki !',
+                            //     animate: false,
+                            // });
+                    }
+                });
+
+
+                }
+            }else{
+//                alert('Silahkan diperiksa isiannya dahulu !');
+                bootbox.alert({
+                    size: "small",
+                    title: "Perhatian",
+                    message: 'Silahkan diperiksa isiannya dahulu !',
+                    animate:false,
+                });
+            }
+
+        });
+
+            // $(document).on('click','#tbl_uraian_edit',function(){
+            //     alert('belum bisa..');
+            // });
+
+        $(document).on("click",".url_edit",function(){
+
+                    var el = $(this) ;
+
+                    var target = el.attr('ng-target');
+
+                    var el2 = $("#" + target);
+
+                    var id_name = el.attr('rel').toUpperCase();
+
+                    var id_kuitansi = $('#kuitansi_id_kuitansi_edit').text() ;
+
+                    var elval = el2.text();
+
+                    elval = elval.trim() ;
+
+                    var val = '' ;
+
+                    if(elval && (elval != '- edit here -')){
+                        val = elval ;
+                    }
+
+                    var dialog = bootbox.prompt({
+                      size: "large",
+                      title: id_name,
+                      value: val,
+                      inputType: 'textarea',
+                      onEscape: false,
+                      closeButton:false,
+                      animate:false,
+                      callback: function(res){
+                        if(res){
+                            res = res.trim() ;
+                            if(res != ''){
+                                
+                                  $.ajax({
+                                    type:"POST",
+                                    url :"<?=site_url("kuitansi/edit_kuitansi/")?>" + id_kuitansi ,
+                                    data: el.attr('rel') + "=" + res ,
+                                    success:function(data){
+
+
+                                            el2.text(res);
+
+                                            if(id_name == "URAIAN"){
+                                                $("#td_uraian_" + id_kuitansi).text(res);
+                                            }
+                                            bootbox.alert({
+                                                title: "Konfirmasi",
+                                                message: "data berhasil di update.",
+                                                animate: false,
+                                            });
+
+                                    }
+                                });
+                                
+
+                            }else{
+                                el2.text('- edit here -');
+                            }
+                        }else{
+                            if(elval == '- edit here -'){
+                                el2.text('- edit here -');
+
+                            }else{
+                                el2.text(elval);
+                            }
+                        }
+                      }
+                    }) ;
+
+
+                    dialog.init(function(){
+                        dialog.find('.bootbox-body').prepend( '<div class="alert alert-warning">Apabila isian kosong harap diberi tanpa strip "-" ( tanpa tanda kutip ) untuk keseragaman</div>');
+
+                        if(id_name == 'URAIAN'){
+                            $(".bootbox-input-textarea").typeahead({
+                                  source: function(query, process) {
+                                            return $.get("<?=site_url('kuitansi/get_data_uraian')?>", { query : query }, function (data) {
+                                                // console.log(item);
+                                                data = $.parseJSON(data);
+                                                return process(data);
+                                                // var results = data.map(function(item) {
+                                                // var someItem = { nama_pihak_ketiga: item.nama_pihak_ketiga, alamat_ketiga: item.alamat_ketiga };
+                                                //     return JSON.stringify(someItem.contactname);
+                                                // });
+                                                // return process(results);
+                                            });
+                                    },
+                                     updater: function (obj) {
+                                        // var item = JSON.parse(obj);
+                                        // console.log(obj);
+                                        // $('#nama_pihak_ketiga').attr('value', item.id);
+                                        // $('#alamat_ketiga').attr('value', item.alamat_ketiga);
+
+                                        // var arr = obj.split('|');
+                                            // $('#penerima_uang_nip').text(arr[1]);
+                                        // $('#alamat_ketiga').val(arr[1]);
+                                        // $('#nama_bank').val(arr[2]);
+                                        // $('#nama_rek_bank').val(arr[3]);
+                                        // $('#nomor_rek_bank').val(arr[4]);
+                                        // $('#nomor_npwp').val(arr[5]);
+                                        return obj;
+                                    },
+                                  autoSelect: true
+                                });
+
+                        }
+
+                        if((id_name == 'PENERIMA_UANG')||(id_name == 'PENERIMA_BARANG')||(id_name == 'PENERIMA_UANG_NIP')||(id_name == 'PENERIMA_BARANG_NIP')){ 
+                            $(".bootbox-input-textarea").typeahead({
+                                  source: function(query, process) {
+                                            return $.get("<?=site_url('kuitansi/get_data_penerima_only')?>", { query : query }, function (data) {
+                                                // console.log(item);
+                                                data = $.parseJSON(data);
+                                                return process(data);
+                                                // var results = data.map(function(item) {
+                                                // var someItem = { nama_pihak_ketiga: item.nama_pihak_ketiga, alamat_ketiga: item.alamat_ketiga };
+                                                //     return JSON.stringify(someItem.contactname);
+                                                // });
+                                                // return process(results);
+                                            });
+                                    },
+                                     updater: function (obj) {
+                                        // var item = JSON.parse(obj);
+                                        // console.log(obj);
+                                        // $('#nama_pihak_ketiga').attr('value', item.id);
+                                        // $('#alamat_ketiga').attr('value', item.alamat_ketiga);
+
+                                        // var arr = obj.split('|');
+                                        // if(id_name == 'PENERIMA_UANG'){
+                                        //     $('#penerima_uang_nip').text(arr[1]);
+                                        // }
+                                        // if(id_name == 'PENERIMA_BARANG'){
+                                        //     $('#penerima_barang_nip').text(arr[1]);
+                                        // }
+                                        // $('#alamat_ketiga').val(arr[1]);
+                                        // $('#nama_bank').val(arr[2]);
+                                        // $('#nama_rek_bank').val(arr[3]);
+                                        // $('#nomor_rek_bank').val(arr[4]);
+                                        // $('#nomor_npwp').val(arr[5]);
+                                        // return arr[0];
+                                        return obj;
+                                    },
+                                  autoSelect: true
+                                });
+                        }
+
+                    });
+
+
+
+        });
+
+
+        
+
         
 function string_to_angka(str){
 
@@ -600,10 +2492,7 @@ function terbilang(bilangan) {
                               <h3 class="panel-title">KS TERSEDIA</h3>
                             </div>
                             <div class="panel-body">
-                            <?php $i = array('1','2') ; $ni = count($i) ; foreach($i as $n): ?>
-                                <h3 style="margin: 0"><span class="text-danger">KS-<?=$n?> | Rp. <span id="saldo_kas"><?=number_format(get_saldo_tup($_SESSION['rsa_kode_unit_subunit'],$cur_tahun), 0, ",", ".")?> </span>,-</span></h3>
-                                <?php if($n != $ni){ echo '<hr>' ; } ?>
-                            <?php endforeach; ?>
+                            <h3 style="margin: 0"><span class="text-danger">Rp. <span id="saldo_kas"><?php if($nilai_spm != 0){ echo number_format($nilai_spm, 0, ",", ".");}else{ echo '0'; }?> </span>,-</span></h3><hr><b>SILAHKAN PILIH KS : <a href="<?=site_url('rsa_ks/daftar_spp')?>">DISINI</a></b>
                             </div>
                         </div>
                         <?php else: ?>
@@ -617,10 +2506,22 @@ function terbilang(bilangan) {
 		</div>
                 <?php if($_SESSION['rsa_level'] == 13) : ?>
                 <div class="alert alert-warning" >
-                    <button class="btn btn-warning" id="btn-spp" disabled="disabled" ><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Proses SPP</button>
+                    <button class="btn btn-warning btn-spp" disabled="disabled" ><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Proses SPP</button>
+                    <!-- 
                     <button class="btn btn-success" id="btn-lihat-spp" onclick="window.location = '<?php 
-                    if($jenis == 'GP'){echo site_url('rsa_gup/spp_gup') ; }
-                    else if($jenis == 'TP'){echo site_url('rsa_tup/spp_tup') ;}?>'" ><span class="glyphicon glyphicon-open-file" aria-hidden="true"></span> Lihat SPP Berjalan</button>
+                    if($jenis == 'GP'){echo site_url('rsa_gup/get_last_spp') ; }
+                    else if($jenis == 'TP'){echo site_url('rsa_tup/get_last_spp') ;}
+                    else if($jenis == 'LN'){echo site_url('rsa_lsnk/daftar_spp') ;}
+                    else if($jenis == 'LK'){echo site_url('rsa_lsk/daftar_spp') ;}
+                    else if($jenis == 'EM'){echo site_url('rsa_em/daftar_spp') ;}?>'" >
+                    <span class="glyphicon glyphicon-open-file" aria-hidden="true"></span> Lihat SPP Berjalan
+                    </button> -->
+                    <?php if($jenis == 'GP'): ?>
+                    <!-- <button class="btn btn-danger" id="btn-pindah" disabled="disabled" ><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Pindah TUP</button> -->
+                    <?php endif; ?>
+                    <?php  // if(($jenis == 'TP')||($jenis == 'GP')): ?>
+                    <button class="btn btn-info" id="btn-pengembalian" ><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Pengembalian</button>
+                    <?php  // endif; ?>
                 </div>
                 <?php else: ?>
                 <div class="alert alert-warning">
@@ -643,7 +2544,151 @@ function terbilang(bilangan) {
 
 
 
-                    <?php 
+                    
+
+
+                <div class="col-md-12" >
+                    <div class="alert alert-info" style="border-color:#3793a7;" id="panel-jml-show">
+                        <span class="text-danger">Jumlah aktif kuitansi dipilih : <b class="jml_kuitansi">0</b></span>
+                    </div>
+                </div>
+
+                <div style="position: fixed;top: 79px;z-index:999;right:0px;width:300px;display:none;" id="panel-jml" >
+                    <div class="alert alert-info" style="border-radius:0px;border-color:#3793a7;margin-bottom: 0px; ">
+                        <span class="text-danger">Jumlah aktif kuitansi dipilih : <b class="jml_kuitansi">0</b></span>
+                        <button class="btn btn-warning btn-spp" disabled="disabled" ><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Proses SPP</button>
+                    </div>
+                </div>
+
+            <div class="col-md-12 table-responsive" style="" id="tb-data-pengembalian">
+                <table class="table table-bordered table-striped small"  style="" >
+                    <thead>
+                    <tr>
+                        <th colspan="9" class="text-center alert-danger">DAFTAR KUITANSI PENGEMBALIAN</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center col-md-1" style="vertical-align: middle;">No</th>
+                        <th class="text-center col-md-1" style="vertical-align: middle;">Unit</th>
+                        <th class="text-center col-md-2" style="vertical-align: middle;">Nomor</th>
+                        <th class="text-center col-md-2" style="vertical-align: middle;">Tanggal</th>
+                                                <th class="text-center col-md-2" style="vertical-align: middle;">Uraian</th>
+                        <th class="text-center col-md-1" style="vertical-align: middle;">Pengeluaran</th>
+                        <th class="text-center col-md-1" style="vertical-align: middle;">&nbsp;</th>
+                                                <th class="text-center col-md-1" style="vertical-align: middle;">Status</th>
+                                                <!--<th class="text-center col-md-1">Proses</th>-->
+                                                <th class="text-center col-md-1">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon" style="background-color: #f9ff83;"> 
+                                                            <input type="checkbox" aria-label="" rel="" class="all_pck">
+                                                        </span>
+                                                    </div>
+                                                </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php
+        if(!empty($daftar_kuitansi_pengembalian)){
+//                    echo '<pre>';var_dump($daftar_kuitansi);echo '</pre>';
+            $tot_kuitansi = 0 ;
+            foreach ($daftar_kuitansi_pengembalian as $key => $value) {
+
+                ?>
+
+                <tr>
+                        <td class="text-center"><?php echo $key + 1; ?>.</td>
+                        <td class="text-center"><?php echo $value->kode_unit; ?></td>
+                        <td class="text-center"><?php echo $value->no_bukti; ?></td>
+                                                <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
+                        <td class=""><?php echo $value->uraian; ?></td>
+                        <td class="text-right" id="td_sub_tot_pengembalian_<?=$value->id_kuitansi?>">
+                                                <?php echo number_format($value->pengeluaran, 0, ",", ".") ; ?>
+                                                <?php $tot_kuitansi = $tot_kuitansi + $value->pengeluaran ; ?>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="btn-group">
+                                                                <button  class="btn btn-default btn-sm btn-lihat-pengembalian" rel="<?php echo $value->id_kuitansi; ?>" ><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <?php if($value->aktif == "1"):?>
+                                                        <?php if(is_null($value->str_nomor_trx)):?>
+                                                        
+                                                        <a href="#" class="btn_batal_pengembalian" rel="<?php echo $value->id_kuitansi; ?>">Batal</a> | <a href="#" class="btn_edit_pengembalian" rel="<?php echo $value->id_kuitansi; ?>">Edit</a>
+
+                                                        <?php else: ?>
+                                                            <?php if($value->cair == '0'):?>
+                                                                <?php if(!is_null($value->str_nomor_trx_spm)):?>
+                                                                <button type="button" class="btn btn-success btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPM <br>SPM : <?=$value->str_nomor_trx_spm?> <br>SPP : <?=$value->str_nomor_trx?>')" title="STATUS : SPM"><i class="glyphicon glyphicon-file"></i></button>
+                                                                <?php else: ?>
+                                                                    <?php if(!is_null($value->str_nomor_trx)):?>
+                                                                    <button type="button" class="btn btn-warning btn-sm btn_proses" rel="" onclick="bootbox.alert('STATUS : SPP <br>SPP : <?=$value->str_nomor_trx?>')" title="STATUS : SPP"><i class="glyphicon glyphicon-file"></i></button>
+                                                                    <!--<button type="button" class="btn btn-success btn-sm btn_proses" rel="<?php echo $value->id_kuitansi; ?>" title="Diajukan SPP"><i class="glyphicon glyphicon-file"></i></button>-->
+                                                                    <?php endif; ?>
+                                                                <?php endif; ?>
+                                                            <?php else: ?>
+                                                            <button type="button" class="btn btn-info btn-sm btn_cair" rel="" onclick="bootbox.alert('STATUS : CAIR <br>SPM : <?=$value->str_nomor_trx_spm?> <br>SPP : <?=$value->str_nomor_trx?>')" title="STATUS : CAIR"><i class="glyphicon glyphicon-file"></i></button>
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
+                                                    
+                                                    <span>Batal</span> | <span>Edit</span>
+
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                          <?php if($value->aktif == "1"):?>
+                                                            <?php if(is_null($value->str_nomor_trx)):?>
+                                                            <input type="checkbox" aria-label="" rel="<?=$value->id_kuitansi?>" class="pck_<?=$value->id_kuitansi?>">
+                                                            <?php else: ?>
+                                                            <input type="checkbox" checked="checked" aria-label="" rel="" disabled="disabled" class="">
+                                                            <?php endif; ?>
+                                                          
+                                                          <?php else: ?>
+                                                          <input type="checkbox" aria-label="" rel="" disabled="disabled" class="pck_<?=$value->id_kuitansi?>">
+                                                          <?php endif; ?>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                    </tr>
+
+
+                    <?php } ?>
+
+                    <tr class="alert-warning" style="" >
+                        <td colspan="5" class="text-right">
+                            <b>Total :</b>
+                        </td>
+                        <td  class="text-right">
+                            <b><?php echo number_format($tot_kuitansi, 0, ",", "."); ?></b>
+                        </td>
+                        <td colspan="3" >
+                        &nbsp;
+                        </td>
+                    </tr>
+
+                    <?php
+        }else{
+    ?>
+                    <tr>
+                        <td colspan="9" class="text-center alert-warning">
+                        Tidak ada data
+                        </td>
+                    </tr>
+    <?php
+        }
+    ?>
+                    <tr>
+                        <td colspan="9" >&nbsp;</td>
+                    </tr>
+                                        </tbody>
+                </table>
+            </div>
+
+
+            <?php 
                     if(isset($dgu)){
                     ?>
                     <div class="col-md-12">
@@ -694,9 +2739,14 @@ function terbilang(bilangan) {
                     }
                     ?>
 
-			<div class="col-md-12 table-responsive" style="">
-				<table class="table table-bordered table-striped table-hover small"  style="">
+
+
+			<div class="col-md-12 table-responsive" style="" id="tb-data">
+				<table class="table table-bordered table-striped small"  style="" >
 					<thead>
+                    <tr>
+                        <th colspan="9" class="text-center alert-success">DAFTAR KUITANSI PEMBAYARAN</th>
+                    </tr>
 					<tr>
                         <th class="text-center col-md-1" style="vertical-align: middle;">No</th>
                         <th class="text-center col-md-1" style="vertical-align: middle;">Unit</th>
@@ -784,28 +2834,34 @@ function terbilang(bilangan) {
 
                 if(isset($dgu)||isset($dgn)||isset($dgt)||isset($dgr)){
                     setlocale(LC_ALL, 'id_ID.utf8');
-                    if(($value->kode_unit == $dgu)||(stripos($value->no_bukti, $dgn)!== false)||(strftime("%d %B %Y", strtotime($value->tgl_kuitansi)) == $dgt)||(stripos($value->uraian, $dgr)!== false)){
+                    $cdgu = isset($dgu)?($value->kode_unit == $dgu):FALSE;
+                    $cdgn = isset($dgn)?(stripos($value->no_bukti, $dgn)!== false):FALSE;
+                    $cdgt = isset($dgt)?(strftime("%d %B %Y", strtotime($value->tgl_kuitansi)) == $dgt):FALSE;
+                    $cdgr = isset($dgr)?(stripos($value->uraian, $dgr)!== false):FALSE;
+                    if($cdgu||$cdgn||$cdgt||$cdgr){
                 
 	?>
 					<tr>
 						<td class="text-center"><?php echo $key + 1; ?>.</td>
                         <td class="text-center"><?php echo $value->kode_unit; ?></td>
 						<td class="text-center"><?php echo $value->no_bukti; ?></td>
-                                                <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
-						<td class=""><?php echo $value->uraian; ?></td>
+                                                <td class="text-center" id="tgl_kuitansi_<?=$value->id_kuitansi?>"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
+						<td class="" id="td_uraian_<?=$value->id_kuitansi?>"><?php echo $value->uraian; ?></td>
 						<td class="text-right" id="td_sub_tot_<?=$value->id_kuitansi?>">
-                                                <?=number_format($value->pengeluaran, 0, ",", ".")?>
+                                                <?php echo $value->pengeluaran + 0; //number_format($value->pengeluaran, 0, ",", "."); ?>
                                                 <?php $tot_kuitansi = $tot_kuitansi + $value->pengeluaran ; ?>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
-                                                                <button  class="btn btn-default btn-sm" rel="<?php echo $value->id_kuitansi; ?>" id="btn-lihat" ><i class="glyphicon glyphicon-search"></i></button>
+                                                                <button  class="btn btn-default btn-sm btn-lihat" rel="<?php echo $value->id_kuitansi; ?>" ><i class="glyphicon glyphicon-search"></i></button>
 							</div>
                                                 </td>
                                                 <td class="text-center">
                                                     <?php if($value->aktif == "1"):?>
                                                         <?php if(is_null($value->str_nomor_trx)):?>
-                                                        <button type="button" class="btn btn-danger btn-sm btn_batal" rel="<?php echo $value->id_kuitansi; ?>" title="Batal"><i class="glyphicon glyphicon-remove"></i></button>
+
+                                                        <a href="#" class="btn_batal" rel="<?php echo $value->id_kuitansi; ?>">Batal</a> | <a href="#" rel="<?=$value->id_kuitansi?>" class="btn-edit" rel="<?php echo $value->id_kuitansi; ?>">Edit</a>
+
                                                         <?php else: ?>
                                                             <?php if($value->cair == '0'):?>
                                                                 <?php if(!is_null($value->str_nomor_trx_spm)):?>
@@ -821,7 +2877,9 @@ function terbilang(bilangan) {
                                                             <?php endif; ?>
                                                         <?php endif; ?>
                                                     <?php else: ?>
-                                                    <button type="button" class="btn btn-danger btn-sm btn_batal" rel="" disabled="disabled" ><i class="glyphicon glyphicon-remove"></i></button>
+
+                                                    <span>Batal</span> | <span>Edit</span>
+
                                                     <?php endif; ?>
                                                 </td>
                                                 <td class="text-center">
@@ -853,21 +2911,23 @@ function terbilang(bilangan) {
                         <td class="text-center"><?php echo $key + 1; ?>.</td>
                         <td class="text-center"><?php echo $value->kode_unit; ?></td>
                         <td class="text-center"><?php echo $value->no_bukti; ?></td>
-                                                <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
-                        <td class=""><?php echo $value->uraian; ?></td>
+                                                <td class="text-center" id="tgl_kuitansi_<?=$value->id_kuitansi?>"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
+                        <td class="" id="td_uraian_<?=$value->id_kuitansi?>"><?php echo $value->uraian; ?></td>
                         <td class="text-right" id="td_sub_tot_<?=$value->id_kuitansi?>">
-                                                <?=number_format($value->pengeluaran, 0, ",", ".")?>
-                                                <?php $tot_kuitansi = $tot_kuitansi + $value->pengeluaran ; ?>
+                                                <?php echo number_format($value->pengeluaran, 0, ",", "."); //$value->pengeluaran + 0;  //edited by Arief?> 
+                                                <?php $tot_kuitansi += $value->pengeluaran ; ?>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
-                                                                <button  class="btn btn-default btn-sm" rel="<?php echo $value->id_kuitansi; ?>" id="btn-lihat" ><i class="glyphicon glyphicon-search"></i></button>
+                                                                <button  class="btn btn-default btn-sm btn-lihat" rel="<?php echo $value->id_kuitansi; ?>" ><i class="glyphicon glyphicon-search"></i></button>
                             </div>
                                                 </td>
                                                 <td class="text-center">
                                                     <?php if($value->aktif == "1"):?>
                                                         <?php if(is_null($value->str_nomor_trx)):?>
-                                                        <button type="button" class="btn btn-danger btn-sm btn_batal" rel="<?php echo $value->id_kuitansi; ?>" title="Batal"><i class="glyphicon glyphicon-remove"></i></button>
+
+                                                        <a href="#" class="btn_batal" rel="<?php echo $value->id_kuitansi; ?>">Batal</a> | <a href="#" rel="<?=$value->id_kuitansi?>" class="btn-edit" rel="<?php echo $value->id_kuitansi; ?>">Edit</a>
+
                                                         <?php else: ?>
                                                             <?php if($value->cair == '0'):?>
                                                                 <?php if(!is_null($value->str_nomor_trx_spm)):?>
@@ -883,7 +2943,9 @@ function terbilang(bilangan) {
                                                             <?php endif; ?>
                                                         <?php endif; ?>
                                                     <?php else: ?>
-                                                    <button type="button" class="btn btn-danger btn-sm btn_batal" rel="" disabled="disabled" ><i class="glyphicon glyphicon-remove"></i></button>
+                                                    
+                                                    <span>Batal</span> | <span>Edit</span>
+
                                                     <?php endif; ?>
                                                 </td>
                                                 <td class="text-center">
@@ -914,7 +2976,7 @@ function terbilang(bilangan) {
                             <b>Total :</b>
                         </td>
                         <td  class="text-right">
-                            <b><?=number_format($tot_kuitansi, 0, ",", ".")?></b>
+                            <b><?php echo  number_format($tot_kuitansi, 0, ",", "."); //$tot_kuitansi; //edited by Arief ?></b>
                         </td>
                         <td colspan="3" >
                         &nbsp;
@@ -937,10 +2999,22 @@ function terbilang(bilangan) {
                                         </tbody>
 				</table>
                             <form action="<?php 
-                    if($jenis == 'GP'){echo site_url('rsa_gup/create_spp_gup') ; }
-                    else if($jenis == 'TP'){echo site_url('rsa_tup/create_spp_tup') ;}?>" id="form_usulkan_spp" method="post" style="display: none"  >
+                    if($jenis == 'GP'){echo site_url('rsa_gup/create_spp_gup') ;}
+                    else if($jenis == 'TP'){echo site_url('rsa_tup_nihil/create_spp_tup_nihil') ;}
+                    else if($jenis == 'LN'){echo site_url('rsa_lsnk/create_spp_lsnk') ;}
+                    else if($jenis == 'LK'){echo site_url('rsa_lsk/create_spp_lsk') ;}
+                    else if($jenis == 'EM'){echo site_url('rsa_em/create_spp_em') ;}
+                    else if($jenis == 'KS'){echo site_url('rsa_ks_nihil/create_spp_ks_nihil') ;}?>" id="form_usulkan_spp" method="post" style="display: none"  >
                                 <input type="text" name="rel_kuitansi" id="rel_kuitansi" value="" />
+                                <input type="text" name="rel_kuitansi_pengembalian" id="rel_kuitansi_pengembalian" value="" />
                                 <input type="text" name="proses" id="proses" value="SPP-DRAFT" />
+                                <?php if($jenis == 'KS'): ?>
+                                    <input type="text" name="str_nomor_trx_spm_ks" id="str_nomor_trx_spm_ks" value="<?=$no_spm_ks?>" />
+                                <?php elseif($jenis == 'TP'): ?>
+                                    <input type="text" name="str_nomor_trx_spm_tup" id="str_nomor_trx_spm_tup" value="<?=$no_spm_tup?>" />
+                                <?php elseif($jenis == 'GP'): ?>
+                                    <input type="text" name="str_nomor_trx_spm_gup" id="str_nomor_trx_spm_gup" value="<?=$no_spm_gup?>" />
+                                <?php endif; ?>
                             </form>
                             <br>
                             <br>
@@ -1004,10 +3078,10 @@ function terbilang(bilangan) {
                             <td class="col-md-1">&nbsp;</td>
                 </tr>
                   <tr>
-                                <td rowspan="3" style="text-align: center" colspan="2">
+                                <td rowspan="4" style="text-align: center" colspan="2">
 					<img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
 				</td>
-                                <td >&nbsp;</td>
+                                <td >&nbsp;<span id="kuitansi_id_kuitansi" style="display:none">0</span></td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
@@ -1025,7 +3099,17 @@ function terbilang(bilangan) {
 
                                 <td colspan="2">Nomor Bukti</td>
                                 <td style="text-align: center">:</td>
-                                <td colspan="2" id="kuitansi_no_bukti">-</td>
+                                <td colspan="2" ><span id="kuitansi_no_bukti">-</span> <span id="alias_no_bukti" style="display:none"></span> <span style="display:none">[ <a href="#" id="edit_alias_no_bukti">alias</a> ]</span> <br></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+
+                            <td colspan="2">Jenis</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2" id="kuitansi_jenis">-</td>
                         </tr>
                         <tr class="tr_up">
                                 <td >&nbsp;</td>
@@ -1083,32 +3167,32 @@ function terbilang(bilangan) {
                                     &nbsp;
 				</td>
                         </tr>
-                        <tr id="before_tr_isi">
-                            <td colspan="3"><b>Deskripsi</b></td>
-                            <td style="text-align:center"><b>Kuantitas</b></td>
-                            <td style="padding: 0 5px 0 5px;"><b>Satuan</b></td>
-                            <td style="padding: 0 5px 0 5px;"><b>Harga@</b></td>
-                            <td style="padding: 0 5px 0 5px;"><b>Bruto</b></td>
-                            <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
-                            <td >&nbsp;</td>
-                            <td ><b>Netto</b></td>
-			</tr>
+                       
+
+           <tr id="before_tr_isi">
+                            <td colspan="3" style="border:1px solid #000;"><b>Deskripsi</b></td>
+                            <td style="text-align:center;border:1px solid #000;"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;" colspan="2"><b>Pajak</b></td>
+                            <td colspan="2" style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Netto</b></td>
+                        </tr>
                         <tr id="tr_isi">
                             <td colspan="11">&nbsp;</td>
 			</tr>
-                        <tr>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td ><b>Jumlah</b></td>
-                            <td >&nbsp;</td>
-                            <td style="text-align: right"><b><span class="sum_tot_bruto">0</span></b></td>
-                            <td >&nbsp;</td>
-                            <td style="text-align: right"><b><span class="sum_tot_pajak">0</span></b></td>
-                            <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
-                            <td style="text-align: right"><b><span class="sum_tot_netto">0</span></b></td>
-			</tr>
+                        
+
+                    <tr>
+                            <td style="border:1px solid #000;" colspan="4">&nbsp;</td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Jumlah</b></td>
+                            <td style="border:1px solid #000;">&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_bruto">0</span></b></td>
+                            <td style="border:1px solid #000;" >&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_pajak">0</span></b></td>
+                            <td style="border:1px solid #000;border-right:none;"><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right;border:1px solid #000;border-left:none;"><b><span class="sum_tot_netto">0</span></b></td>
+                        </tr>
                         <tr>
                                 <td colspan="11">
                                     &nbsp;
@@ -1117,10 +3201,14 @@ function terbilang(bilangan) {
 			<tr>
                             <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
+                                <?php if($jenis== 'LK'): ?>
+                                Pejabat Pembuat Komitmen (PPK)
+                                <?php else: ?>
                                 Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                                <?php endif; ?>
                             </td>
                             <td colspan="4" style="vertical-align: top;">
-                                Semarang, <span id="tgl_kuitansi">-</span><br />
+                                Semarang, <span id="tgl_kuitansi">-</span> <span style="display:none">[ <a href="#" id="edit_tgl_kuitansi">edit</a> ]</span><br />
                                 Penerima Uang
                             </td>
 			</tr>
@@ -1196,7 +3284,474 @@ function terbilang(bilangan) {
           <div class="modal-footer">
             <!--<button type="button" class="btn btn-success" id="down" ><span class="glyphicon glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</button>-->
             <button type="button" class="btn btn-info" id="cetak" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Tutup</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal " id="myModalKuitansiEdit" role="dialog" aria-labelledby="myModalKuitansiLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+              <h4 class="modal-title" id="myModalLabelEdit">Kuitansi : <span id="kode_badge_edit">-</span></h4>
+          </div>
+          <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
+              <div id="div-cetak-edit">
+              <table class="table_print" id="kuitansi_edit" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+                <tr>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                </tr>
+                  <tr>
+                                <td rowspan="4" style="text-align: center" colspan="2">
+                    <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                </td>
+                                <td >&nbsp;<span id="kuitansi_id_kuitansi_edit" style="display:none">0</span></td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+
+                                <td colspan="2">Tahun Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2"><span id="kuitansi_tahun_edit">0000</span></td>
+                        </tr>
+                        <tr>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Nomor Bukti</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" ><span id="kuitansi_no_bukti_edit">-</span> <span id="alias_no_bukti_edit" style="display:none"></span> <span style="display:none">[ <a href="#" id="edit_alias_no_bukti_edit" >alias</a> ]</span> <br></td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+
+                            <td colspan="2">Jenis</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2" id="kuitansi_jenis_edit">-</td>
+                        </tr>
+                        <tr class="tr_up">
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="kuitansi_txt_akun_edit">-</td>
+
+            </tr>
+            <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr>
+                <td colspan="11">
+                                    <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
+                </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sudah Diterima dari</td>
+                <td>: </td>
+                                <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Jumlah Uang</td>
+                <td>: </td>
+                                <td colspan="7"><b>Rp. <span class="sum_tot_bruto_edit">0</span>,-</b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Terbilang</td>
+                <td>: </td>
+                                <td colspan="7"><b><span class="text_tot_edit">-</span></b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Untuk Pembayaran</td>
+                <td>: </td>
+                                <td colspan="7"><span id="uraian_edit">-</span> [ <a href="#" class="url_edit" rel="uraian" ng-target="uraian_edit" >edit</a> ]</td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sub Kegiatan</td>
+                <td>: </td>
+                                <td colspan="7"><span id="nm_subkomponen_edit">-</span></td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+                       
+
+           <tr id="before_tr_isi_edit">
+                            <td colspan="3" style="border:1px solid #000;"><b>Deskripsi</b></td>
+                            <td style="text-align:center;border:1px solid #000;"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;" colspan="2"><b>Pajak</b></td>
+                            <td colspan="2" style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Netto</b></td>
+                        </tr>
+                        <tr id="tr_isi_edit">
+                            <td colspan="11">&nbsp;</td>
+            </tr>
+                        
+
+                    <tr>
+                            <td style="border:1px solid #000;" colspan="4">&nbsp;</td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Jumlah</b></td>
+                            <td style="border:1px solid #000;">&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_bruto_edit">0</span></b></td>
+                            <td style="border:1px solid #000;" >&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_pajak_edit">0</span></b></td>
+                            <td style="border:1px solid #000;border-right:none;"><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right;border:1px solid #000;border-left:none;"><b><span class="sum_tot_netto_edit">0</span></b></td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr>
+                            <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                                a.n. Kuasa Pengguna Anggaran <br />
+                                <?php if($jenis== 'LK'): ?>
+                                Pejabat Pembuat Komitmen (PPK)
+                                <?php else: ?>
+                                Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                                <?php endif; ?>
+                            </td>
+                            <td colspan="4" style="vertical-align: top;">
+                                Semarang, <span id="tgl_kuitansi_edit">-</span> <span style="display:none">[ <a href="#" id="edit_tgl_kuitansi_edit">edit</a> ]</span><br />
+                                Penerima Uang
+                            </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr >
+                            <td colspan="7" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span id="nmpppk_edit">-</span> [ <a href="#" id="nmpppk_url_edit" rel="nmpppk" ng-target="nmpppk_edit" >edit</a> ]<br>
+                                    NIP. <span id="nippppk_edit">-</span> [ <a href="#" id="nippppk_url_edit" rel="nmpppk" ng-target="nmpppk_edit" >edit</a> ]</td>
+                            <td colspan="4" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span class="edit_here" style="white-space: pre-line;" id="penerima_uang_edit">-</span> [ <a href="#" class="url_edit" rel="penerima_uang" ng-target="penerima_uang_edit" >edit</a> ]<br />
+                                <span id="snip_edit">NIP. <span class="edit_here" id="penerima_uang_nip_edit">-</span> [ <a href="#" class="url_edit" rel="penerima_uang_nip" ng-target="penerima_uang_nip_edit" >edit</a> ]</span>
+                            </td>
+            </tr>
+                        <tr >
+                            <td colspan="7">Setuju dibayar tgl : <br>
+                                Bendahara Pengeluaran
+                            </td>
+                            <td colspan="4" ><span style="display: none" id="td_tglpumk_edit">Lunas dibayar tgl : <br>
+                                    Pemegang Uang Muka Kerja</span>
+                            </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                </td>
+                        </tr>
+                         <tr>
+                             <td colspan="7"><span id="nmbendahara_edit">-</span><br>
+                                 NIP. <span id="nipbendahara_edit">-</span>
+                            </td>
+                            <td colspan="4" ><span style="display: none" id="td_nmpumk_edit"><span id="nmpumk_edit"></span><br>
+                                    NIP. <span id="nippumk_edit"></span></span>
+                            </td>
+                        </tr>
+            <tr >
+                <td colspan="11" style="border-top:1px solid #000">
+                Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+                Penerima Barang/jasa
+                </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr>
+                            <td colspan="11" ><span id="penerima_barang_edit">-</span> [ <a href="#" class="url_edit" rel="penerima_barang" ng-target="penerima_barang_edit" >edit</a> ]<br />
+                                    NIP. <span id="penerima_barang_nip_edit">-</span> [ <a href="#" class="url_edit" rel="penerima_barang_nip" ng-target="penerima_barang_nip_edit" >edit</a> ]
+                </td>
+            </tr>
+
+        </table>
+              </div>
+              </div> 
+
+          
+            
+
+          <div class="modal-footer">
+          <!--
+            <button type="button" class="btn btn-success" id="btn-submit-kuitansi-edit" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
+            <button type="button" class="btn btn-info" id="cetak_edit" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+            -->
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Tutup</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal " id="myModalKuitansiShowPengembalian" role="dialog" aria-labelledby="myModalKuitansiLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+              <h4 class="modal-title" id="myModalLabelShowPengembalian">Kuitansi : <span id="kode_badge_showpengembalian">-</span></h4>
+          </div>
+          <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
+              <div id="div-cetak-showpengembalian">
+              <table class="table_print" id="kuitansi_showpengembalian" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+            <tr>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                </tr>
+                  <tr>
+                                <td rowspan="4" style="text-align: center" colspan="2">
+                    <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                </td>
+                                <td >&nbsp;<span id="kuitansi_id_kuitansi_showpengembalian" style="display:none">0</span></td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+
+                                <td colspan="2">Tahun Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2"><span id="kuitansi_tahun_showpengembalian">0000</span></td>
+                        </tr>
+                        <tr>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Nomor Bukti</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="kuitansi_no_bukti_showpengembalian">-</td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+
+                            <td colspan="2">Jenis</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2"><?=$jenis?></td>
+                        </tr>
+                        <tr class="tr_up">
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="kuitansi_txt_akun_showpengembalian">-</td>
+
+            </tr>
+            <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr>
+                <td colspan="11">
+                                    <h4 style="text-align: center"><b>KUITANSI / BUKTI PENGEMBALIAN</b></h4>
+                </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sudah Diterima dari</td>
+                <td>: </td>
+                                <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Jumlah Uang</td>
+                <td>: </td>
+                                <td colspan="7"><b>Rp. <span class="sum_tot_bruto_showpengembalian">0</span>,-</b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Terbilang</td>
+                <td>: </td>
+                                <td colspan="7"><b><span class="text_tot_showpengembalian">-</span></b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Untuk Pembayaran</td>
+                <td>: </td>
+                                <td colspan="7"><span id="uraian_showpengembalian">-</span></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sub Kegiatan</td>
+                <td>: </td>
+                                <td colspan="7"><span id="nm_subkomponen_showpengembalian">-</span></td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+                        <tr id="before_tr_isi_showpengembalian">
+                            <td colspan="3" style="border:1px solid #000;"><b>Deskripsi</b></td>
+                            <td style="text-align:center;border:1px solid #000;"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;" colspan="2"><b>Pajak</b></td>
+                            <td colspan="2" style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Netto</b></td>
+            </tr>
+
+            <tr id="tr_isi_showpengembalian">
+                            <td colspan="11">&nbsp;</td>
+            </tr>
+                        <tr>
+                            <td style="border:1px solid #000;" colspan="4">&nbsp;</td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Jumlah</b></td>
+                            <td style="border:1px solid #000;">&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_bruto_showpengembalian">0</span></b></td>
+                            <td style="border:1px solid #000;" >&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_pajak_showpengembalian">0</span></b></td>
+                            <td style="border:1px solid #000;border-right:none;"><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right;border:1px solid #000;border-left:none;"><b><span class="sum_tot_netto_showpengembalian">0</span></b></td>
+            </tr>
+
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr>
+                            <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                                a.n. Kuasa Pengguna Anggaran <br />
+                                <?php if($jenis== 'LK'): ?>
+                                Pejabat Pembuat Komitmen (PPK)
+                                <?php else: ?>
+                                Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                                <?php endif; ?>
+                            </td>
+                            <td colspan="4" style="vertical-align: top;">
+                                Semarang, <span id="tgl_kuitansi_showpengembalian">-</span><br />
+                                Penerima Uang
+                            </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr >
+                            <td colspan="7" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span id="nmpppk_showpengembalian">-</span><br>
+                                    NIP. <span id="nippppk_showpengembalian">-</span></td>
+                            <td colspan="4" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span class="edit_here" style="white-space: pre-line;" id="penerima_uang_showpengembalian">-</span><br />
+                                <span id="snip_showpengembalian">NIP. <span class="edit_here" id="penerima_uang_nip_showpengembalian">-</span></span>
+                            </td>
+            </tr>
+                        <tr >
+                            <td colspan="7">Setuju dibayar tgl : <br>
+                                Bendahara Pengeluaran
+                            </td>
+                            <td colspan="4" ><span style="display: none" id="td_tglpumk_showpengembalian">Lunas dibayar tgl : <br>
+                                    Pemegang Uang Muka Kerja</span>
+                            </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                </td>
+                        </tr>
+                         <tr>
+                             <td colspan="7"><span id="nmbendahara_showpengembalian"></span><br>
+                                 NIP. <span id="nipbendahara_showpengembalian"></span>
+                            </td>
+                            <td colspan="4" ><span style="display: none" id="td_nmpumk_showpengembalian"><span id="nmpumk_showpengembalian"></span><br>
+                                    NIP. <span id="nippumk_showpengembalian"></span></span>
+                            </td>
+                        </tr>
+            <tr >
+                <td colspan="11" style="border-top:1px solid #000">
+                Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+                Penerima Barang/jasa
+                </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr>
+                            <td colspan="11" ><span id="penerima_barang_showpengembalian">-</span><br />
+                                    NIP. <span id="penerima_barang_nip_showpengembalian">-</span>
+                </td>
+            </tr>
+
+        </table>
+              </div>
+              </div> 
+              <!-- <form action="<?=site_url('kuitansi/cetak_kuitansi')?>" id="form_kuitansi_showpengembalian" method="post" style="display: none"  >
+                    <input type="text" name="dtable" id="dtable" value="" />
+                    <input type="text" name="nbukti" id="nbukti" value="" />
+                    <input type="text" name="dunit" id="dunit" value="<?=$alias?>" />
+                    <input type="text" name="dtahun" id="dtahun" value="<?=$cur_tahun?>" />
+                </form> -->
+          
+            
+
+          <div class="modal-footer">
+            <!--<button type="button" class="btn btn-success" id="down" ><span class="glyphicon glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</button>-->
+            <button type="button" class="btn btn-info" id="cetak_showpengembalian" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
           </div>
         </div>
     </div>
@@ -1227,3 +3782,419 @@ function terbilang(bilangan) {
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<div class="modal " id="myModalKuitansiPengembalian" role="dialog" aria-labelledby="myModalKuitansiLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+              <h4 class="modal-title" id="myModalLabelPengembalian">Kuitansi : <span id="kode_badge_pengembalian"><?=$jenis?></span></h4>
+          </div>
+          <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
+              <div id="div-cetak-pengembalian">
+              <table class="table_print" id="kuitansi_pengembalian" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+                <tr>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                </tr>
+                  <tr>
+                                <td rowspan="4" style="text-align: center" colspan="2">
+                    <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                </td>
+                                <td >&nbsp;<span id="kuitansi_id_kuitansi_pengembalian" style="display:none">0</span></td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+
+                                <td colspan="2">Tahun Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2"><?=$tahun?></td>
+                        </tr>
+                        <tr>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Nomor Bukti</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="no_bukti_pengembalian">-</td>
+                        </tr>
+                        <tr class="tr_up">
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+
+                            <td colspan="2">Jenis</td>
+                            <td style="text-align: center">:</td>
+                            <td colspan="2"><?=$jenis?></td>
+                        </tr>
+                        <tr class="tr_up">
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="txt_akun_pengembalian">-</td>
+
+            </tr>
+                
+            <tr>
+                                <td colspan="11">&nbsp;
+
+                </td>
+                        </tr>
+            <tr>
+                <td colspan="11">
+                                    <h4 style="text-align: center"><b>KUITANSI / BUKTI PENGEMBALIAN</b></h4>
+                </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">&nbsp;
+
+                </td>
+                        </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sudah Diterima dari</td>
+                <td>: </td>
+                                <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Jumlah Uang</td>
+                <td>: </td>
+                                <td colspan="7"><b>Rp. <span class="sum_tot_bruto_pengembalian">0</span>,-</b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Terbilang</td>
+                <td>: </td>
+                                <td colspan="7"><b><span class="text_tot_pengembalian">-</span></b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Untuk Pembayaran</td>
+                <td>: </td>
+                <td colspan="7"><span id="uraian_pengembalian" >-</span></td> <!-- class="input_boot" style="cursor:pointer" --> <!--contenteditable="true" class="edit_here"-->
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sub Kegiatan</td>
+                <td>: </td>
+                                <td colspan="7"><span id="nm_subkomponen_kuitansi_pengembalian">-</span></td>
+            </tr>
+                        <tr>
+                                <td colspan="11">&nbsp;
+
+                </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="border:1px solid #000;"><b>Deskripsi</b></td>
+                            <td style="text-align:center;border:1px solid #000;"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;" colspan="2"><b>Pajak</b></td>
+                            <td colspan="2" style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Netto</b></td>
+            </tr>
+                        <tr id="tr_isi_pengembalian">
+                            <td style="border:1px solid #000;" colspan="11">[ <a href="#" rel="0" class="tambah_deskripsi" >tambah</a> ]</td>
+            </tr>
+                        <tr>
+                            <td style="border:1px solid #000;" colspan="4">&nbsp;</td>
+                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Jumlah</b></td>
+                            <td style="border:1px solid #000;">&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_bruto_pengembalian">0</span></b></td>
+                            <td style="border:1px solid #000;" >&nbsp;</td>
+                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_pajak_pengembalian">0</span></b></td>
+                            <td style="border:1px solid #000;border-right:none;"><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right;border:1px solid #000;border-left:none;"><b><span class="sum_tot_netto_pengembalian">0</span></b></td>
+            </tr>
+                        <tr>
+                                <td colspan="11">&nbsp;
+
+                </td>
+                        </tr>
+            <tr>
+                            <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                                a.n. Kuasa Pengguna Anggaran <br />
+                                <?php if($jenis== 'LK'): ?>
+                                Pejabat Pembuat Komitmen (PPK)
+                                <?php else: ?>
+                                Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                                <?php endif; ?>
+                            </td>
+                            <td colspan="4" style="vertical-align: top;">
+                                Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y"); ?><br />
+                                Penerima Uang
+                            </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr >
+                            <td colspan="7" style="border-bottom: 1px solid #000;vertical-align: bottom;">
+                                <span class="edit_here" id="nmpppk_pengembalian" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nm_lengkap']; ?>- edit here -</span><br>
+                                    NIP. <span class="edit_here" id="nippppk_pengembalian" style="cursor:pointer"><?php // $pic_kuitansi['pppk_nip'] ; ?>- edit here -</span>
+                                    </td>
+                            <td colspan="4" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span class="input_boot" style="cursor:pointer;white-space: pre-line;" id="penerima_uang_pengembalian">- edit here -</span><br />
+                                NIP. <span class="input_boot" style="cursor:pointer" id="penerima_uang_nip_pengembalian">- edit here -</span>
+                                </td>
+            </tr>
+                        <tr >
+                            <?php if($_SESSION['rsa_level'] == 13) : ?>
+                            <td colspan="11">Setuju dibayar tgl : <br>
+                                Bendahara Pengeluaran
+                            </td>
+                            <?php else: ?>
+                            <td colspan="7">Setuju dibayar tgl : <br>
+                                Bendahara Pengeluaran
+                            </td>
+                            <td colspan="4">Lunas dibayar tgl :<br>
+                                Pemegang Uang Muka Kerja
+                            </td>
+                            <?php endif; ?>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                         <tr>
+                            <?php if($_SESSION['rsa_level'] == 13) : ?>
+                             <td colspan="11"><span id="nmbendahara_pengembalian"><?=$pic_kuitansi['bendahara_nm_lengkap']?></span><br>
+                                 NIP. <span id="nipbendahara_pengembalian"><?=$pic_kuitansi['bendahara_nip']?></span>
+                            </td>
+                            <?php else: ?>
+                            <td colspan="7"><span id="nmbendahara_pengembalian"><?=$pic_kuitansi['bendahara_nm_lengkap']?></span><br>
+                                 NIP. <span id="nipbendahara_pengembalian"><?=$pic_kuitansi['bendahara_nip']?></span>
+                            </td>
+                            <td colspan="4"><span id="nmpumk_pengembalian"><?php echo isset($pumk->nm_lengkap)?$pumk->nm_lengkap:''; ?></span><br>
+                                    NIP. <span id="nippumk_pengembalian"><?php echo isset($pumk->nomor_induk)?$pumk->nomor_induk:''; ?></span>
+                            </td>
+                            <?php endif; ?>
+
+                        </tr>
+            <tr >
+                <td colspan="11" style="border-top:1px solid #000">
+                Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+                Penerima Barang/jasa
+                </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr>
+                            <td colspan="11" ><span class="input_boot" id="penerima_barang_pengembalian" style="cursor:pointer">- edit here -</span><br />
+                                    NIP. <span class="input_boot" id="penerima_barang_nip_pengembalian" style="cursor:pointer">- edit here -</span>
+                </td>
+            </tr>
+
+        </table>
+              </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" id="btn-submit-kuitansi-pengembalian" rel="" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Submit</button>
+            <button type="button" class="btn btn-info" id="cetak_pengembalian" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- POP UP PILIH P3K -->
+<div class="modal" id="myModalP3KEdit" tabindex="-1" role="dialog" aria-labelledby="myModalKas">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabelEdit">Konfirmasi</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+            <?php if($jenis=='LK'): ?>
+                <label for="exampleInputEmail1">Edit PPK :</label>
+                <?php if(!empty($ppk)): ?>
+                <?php foreach($ppk as $p): ?>
+                <div class="row">
+
+                    <div class="col-md-12">
+                      <div class="input-group">
+                        <span class="input-group-addon">
+                          <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user_edit" value="<?=$p->id?>">
+                        </span>
+                          <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_edit_<?=$p->id?>" id="nm_input_edit_<?=$p->id?>" />
+                          <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_edit_<?=$p->id?>" />
+                          <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                      </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+
+                </div>
+
+                <?php endforeach;?>
+                <?php else: ?>
+                <div class="alert alert-warning">
+                    Anda belum mengusulkan pejabat PPK kepusat.
+                </div>
+                <?php endif; ?>
+            <?php else: ?>
+                <label for="exampleInputEmail1">Edit PPPK :</label>
+                <?php if(!empty($pppk)): ?>
+                <?php foreach($pppk as $p): ?>
+                <div class="row">
+
+                    <div class="col-md-12">
+                      <div class="input-group">
+                        <span class="input-group-addon">
+                          <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user_edit" value="<?=$p->id?>">
+                        </span>
+                          <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_edit_<?=$p->id?>" />
+                          <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_edit_<?=$p->id?>" />
+                          <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                      </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+
+                </div>
+
+                <?php endforeach;?>
+                <?php else: ?>
+                <div class="alert alert-warning">
+                    Anda belum mengusulkan pejabat PPPK kepusat.
+                </div>
+                <?php endif; ?>
+            <?php endif; ?>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" id="btn-pilih-pppk-edit" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Simpan</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- POP UP PILIH P3K -->
+<div class="modal" id="myModalDeskripsi" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabelDeskripsi"">Konfirmasi</h4>
+          </div>
+          <div class="modal-body">
+            <form id="form_deskripsi">
+              <div class="form-group">
+                <label for="">Deskripsi</label>
+                <input type="text" class="form-control validate[required]" id="deskripsi" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for="">Kuantitas</label>
+                <input type="text" class="form-control validate[required,min[1]] xnumber" id="kuantitas" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for="">Satuan</label>
+                <input type="text" class="form-control validate[required]" id="satuan" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for="">Jumlah@</label>
+                <input type="text" class="form-control validate[required] xnumber" id="jumlah" placeholder="">
+                <input type="hidden" id="iddeskripsi" value="">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" id="btn-deskripsi" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Pilih</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- POP UP PILIH P3K -->
+<div class="modal" id="myModalP3K" tabindex="-1" role="dialog" aria-labelledby="myModalKas">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Konfirmasi</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <?php if($jenis=='4'): ?>
+                        <label for="exampleInputEmail1">Pilih PPK :</label>
+                            <?php if(!empty($ppk)): ?>
+                                <?php foreach($ppk as $p): ?>
+                                <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
+                                        </span>
+                                        <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
+                                        <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
+                                        <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+                                </div>
+                                <?php endforeach;?>
+                            <?php else: ?>
+                            <div class="alert alert-warning">
+                                Anda belum mengusulkan pejabat PPK kepusat.
+                            </div>
+                            <?php endif; ?>
+                    <?php else: ?>
+
+                        <label for="exampleInputEmail1">Pilih PPPK :</label>
+                        <?php if(!empty($pppk)): ?>
+                            <?php foreach($pppk as $p): ?>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <input type="radio" aria-label="" rel="" class="rdo_up" name="id_user" value="<?=$p->id?>">
+                                            </span>
+                                            <input type="hidden" value="<?=$p->nm_lengkap?>" name="nm_input_<?=$p->id?>" id="nm_input_<?=$p->id?>" />
+                                            <input type="hidden" value="<?=$p->nomor_induk?>" name="nip_input_<?=$p->id?>" id="nip_input_<?=$p->id?>" />
+                                            <input type="text" class="form-control" aria-label="" value="<?=$p->nm_lengkap?>" readonly="readonly">
+                                        </div><!-- /input-group -->
+                                    </div><!-- /.col-lg-6 -->
+                                </div>
+                            <?php endforeach;?>
+                        <?php else: ?>
+                            <div class="alert alert-warning">
+                                Anda belum mengusulkan pejabat PPPK kepusat.
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btn-pilih-pppk-ojo-dikopi-id-iki-yo-lek" ><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Pilih</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Batal</button>
+            </div>
+        </div>
+    </div>
+</div>

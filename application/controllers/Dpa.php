@@ -6,27 +6,25 @@ Class Dpa extends CI_Controller {
 	
     public function __construct()
     {
-            parent::__construct();
-            
-            $this->cur_tahun = $this->setting_model->get_tahun();
-            
-            if ($this->check_session->user_session()){
-		/*	Load library, helper, dan Model	*/
-		$this->load->library(array('form_validation','option','convertion'));
-		$this->load->helper(array('form'));
-		$this->load->model('dpa_model');
-		$this->load->model('menu_model');
-		$this->load->model('unit_model');
-		$this->load->model('subunit_model');
-		$this->load->model('master_unit_model'); 
-		$this->load->model('geser_model'); 
-		$this->load->model('master_unit_model');
-		$this->cur_tahun = $this->setting_model->get_tahun();
-	
-            }else{
-			redirect('welcome','refresh');	// redirect ke halaman home
-		}
+    	parent::__construct();
+    	$this->cur_tahun = $this->setting_model->get_tahun();
+    	if ($this->check_session->user_session()){
+    		$this->load->library(array('form_validation','option','convertion'));
+    		$this->load->helper(array('form'));
+    		$this->load->helper('vayes_helper');
+    		$this->load->model('dpa_model');
+    		$this->load->model('menu_model');
+    		$this->load->model('unit_model');
+    		$this->load->model('subunit_model');
+    		$this->load->model('master_unit_model'); 
+    		$this->load->model('geser_model'); 
+    		$this->load->model('master_unit_model');
+    		$this->cur_tahun = $this->setting_model->get_tahun();
+    	}else{
+    		redirect('welcome','refresh');	
+    	}
     }
+
     function index(){
         if($this->check_session->get_level()==1){ // AKUNTANSI	/*	Jika session user yang aktif unit fakultas	/ biro */
                 redirect('dpa/daftar_unit','refresh');
@@ -53,7 +51,7 @@ Class Dpa extends CI_Controller {
 
     }
     
-    function dashboard_dpa(){
+    function dashboard_dpa(){ 
         $data['cur_tahun'] = $this->cur_tahun ;
             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
 //            $subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul('SELAIN-APBN','2017');
@@ -70,26 +68,36 @@ Class Dpa extends CI_Controller {
 			$array = $this->uri->uri_to_assoc(3);
 			$unit = $array['unit'];
             $sumber_dana = $array['sumber_dana'];
-            $tahun = $array['tahun'];
+            // $tahun = $array['tahun'];
 			//var_dump($unit);die;
+            $data['cur_tahun'] = $this->cur_tahun ;
 			$data['main_menu']  = $this->load->view('main_menu','',TRUE);
  			//$u_unit = $kode_unit;
-			$tahun=$this->setting_model->get_tahun();			
+			$tahun = $this->cur_tahun;			
 			$subdata['sumber_dana']         = $sumber_dana ;
 			//$terbilang=$this->convertion->terbilang();	
 			
 			//$subdata['result_unit_usul'] 	= $this->dpa_model->get_dpa_unit_usul_ya('SELAIN-APBN','2017',$kode_unit);
-			$subdata['result_program_usul'] 	= $this->dpa_model->get_program_unit_usul_idris($unit,$sumber_dana,$tahun);
+
+			// MENCARI TOTAL PER PROGRAM RKAT
+			$subdata['result_program_usul'] 	= $this->dpa_model->get_program_unit_usul_idris($unit,$sumber_dana,$tahun); 
+
+			// echo '<pre>'; var_dump($subdata); die;
+
 			$text_program = array();
 			// $data['text_program']=array();
+
+			// vdebug($subdata['result_program_usul']);
 			
-			foreach($subdata['result_program_usul'] as $r){
-				$kode=$r->kode_usulan_belanja;
-				//$kode=substr($kodex,0,16);
-				$subdata['text_sasaran'][substr($kode,6,4)] = $this->dpa_model->get_single_output(array('kode_kegiatan'=>substr($kode,6,2),'kode_output'=>substr($kode,9,2)),'nama');
-				$subdata['text_program'][substr($kode,6,6)] = $this->dpa_model->get_single_program(array('kode_kegiatan'=>substr($kode,7,2),'kode_output'=>substr($kode,9,2),'kode_program'=>substr($kode,11,2)),'nama');
+			// foreach($subdata['result_program_usul'] as $r){
+			// 	$kode=$r->kode_usulan_belanja;
+			// 	// vdebug($kode);
+			// 	// $subdata['text_sasaran'][substr($kode,6,4)] = $this->dpa_model->get_single_output(array('kode_kegiatan'=>substr($kode,6,2),'kode_output'=>substr($kode,8,2)),'nama');
+			// 	// $subdata['text_program'][substr($kode,6,6)] = $this->dpa_model->get_single_program(array('kode_kegiatan'=>substr($kode,6,2),'kode_output'=>substr($kode,8,2),'kode_program'=>substr($kode,10,2)),'nama');
 				
-			}
+			// }
+			// die;
+			// vdebug($subdata['result_program_usul']);
 			
 			#echo "<pre>";
 			#print_r($subdata);
@@ -296,9 +304,9 @@ Class Dpa extends CI_Controller {
 		/* check session	*/
 		if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==2)||($this->check_session->get_level()==13)||($this->check_session->get_level()==4))){
                         $unit = $this->check_session->get_unit() ;
-                        // echo $unit ; die;
+            // echo $unit ; die;
 			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
-//			$subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
+			// $subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
                         if(!empty($sumber_dana)){
                             $subdata['rsa_usul'] 	= $this->dpa_model->get_dpa_program_usul($unit,$sumber_dana,$this->cur_tahun);
                         }
@@ -306,12 +314,91 @@ Class Dpa extends CI_Controller {
 			$subdata['opt_sumber_dana'] = $this->option->sumber_dana();
 			$data['main_content'] 		= $this->load->view("dpa/daftar_dpa",$subdata,TRUE);
 			/*	Load main template	*/
-//			echo '<pre>';var_dump($subdata['rsa_usul']);echo '</pre>';die;
+			//	echo '<pre>';var_dump($subdata['rsa_usul']);echo '</pre>';die;
 			$this->load->view('main_template',$data);
 		}else{
 			redirect('welcome','refresh');	// redirect ke halaman home
 		}		
     }
+    function daftar_revisi()
+	{
+		/* check session	*/		//if($this->check_session->user_session() && $this->check_session->get_level()==1){
+			/*	Set data untuk main template */
+		// if($this->check_session->user_session()){
+		// 	if($this->check_session->user_session() && $this->check_session->get_level()==1){
+		// 		$data['user_menu']	= $this->load->view('user_menu_','',TRUE);
+		// 	} else {
+		// 		$data['user_menu']	= $this->load->view('form_login_','',TRUE);
+		// 	}
+		// 	if(empty($tahun)){
+	 //                            $tahun = $this->cur_tahun ;
+	 //                        }
+		// 					 $subdata['cur_tahun']               = $tahun;
+		// 		$list["menu"] = $this->menu_model->show();
+		// 		$list["submenu"] = $this->menu_model->show();
+		// 		$data['main_menu']	= $this->load->view('main_menu_',$list,TRUE);
+		// 		$data['breadcrumb']	= $this->load->view('breadcrumb_',array('list'=>array(array('Data Revisi','class="current"'))),TRUE);
+				
+		// 		$subdata['unit_usul'] 		= $this->revisi_model->get_dpa_unit_usul();
+		// 		$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
+		// 		//$subdata_revisi['result_revisi'] 	= $this->revisi_model->search_revisi('','',$this->cur_tahun);
+		// 		//$subdata['row_revisi'] 				= $this->load->view("row_revisi_",$subdata_revisi,TRUE);
+		// 		//$subdata['opt_subunit']				= $this->revisi_model->get_subunit();
+		// 		//$subdata['opt_subunit']				= $this->revisi_model->get_unit();
+		// 		//$subdata['status']					= $this->option->status_revisi();
+		// 		$data['content'] 					= $this->load->view("daftar_dpa",$subdata,TRUE);
+		// 		/*	Load main template	*/
+		// 		$this->load->view('main_template_',$data);
+		// 	//}else{
+		// 		//redirect('home','refresh');	// redirect ke halaman home
+		// 	//}
+		// }else{
+		// 	redirect('home','refresh');	// redirect ke halaman home
+		// }
+
+		
+        
+//        var_dump($this->check_session->get_unit());die;
+		
+		/* check session	*/
+		if($this->check_session->user_session() && (($this->check_session->get_level()==1))){
+                        $unit = $this->check_session->get_unit() ;
+            // echo $unit ; die;
+			$data['main_menu']              = $this->load->view('main_menu','',TRUE);
+			// $subdata['rsa_usul'] 		= $this->dpa_model->get_dpa_program_usul($unit,'SELAIN-APBN','2017');
+                        // if(!empty($sumber_dana)){
+                        //     $subdata['rsa_usul'] 	= $this->dpa_model->get_dpa_program_usul($unit,$sumber_dana,$this->cur_tahun);
+                        // }
+			$subdata['unit_usul'] 		= $this->dpa_model->get_dpa_unit_usul();
+         // $subdata['sumber_dana']     = $sumber_dana ;
+			$subdata['opt_sumber_dana'] = $this->option->sumber_dana();
+			$subdata['cur_tahun'] 			= $this->cur_tahun ;
+			$data['cur_tahun'] 			= $this->cur_tahun ;
+			$data['main_content'] 		= $this->load->view("dpa/daftar_revisi",$subdata,TRUE);
+			/*	Load main template	*/
+			//	echo '<pre>';var_dump($subdata['rsa_usul']);echo '</pre>';die;
+			$this->load->view('main_template',$data);
+		}else{
+			redirect('welcome','refresh');	// redirect ke halaman home
+		}		
+	}
+
+	//editedw
+	function get_revisi_number_unit($unit){
+        $result = $this->dpa_model->get_dpa_unit_revisi($unit,$this->cur_tahun);
+        if($result == 0){
+            echo 'Revisi ke-<span class="badge">'.$result.'</span>';
+        }else{
+            if(($result % 2)==0){
+                echo 'Revisi ke-<span class="badge badge-success">'.$result.'</span>';
+            }else{
+                echo 'Revisi ke-<span class="badge badge-danger">'.$result.'</span>';
+            }
+            
+        }
+        
+        
+    }//end edit
 
     function realisasi_dpa($sumber_dana = "", $jenis = "")
     {
@@ -333,7 +420,7 @@ Class Dpa extends CI_Controller {
                         }
                         $subdata['sumber_dana']         = $sumber_dana ;
 			$subdata['opt_sumber_dana'] 	= $this->option->sumber_dana();
-                        $subdata['jenis']               = $jenis;
+                     $subdata['jenis']               = $jenis;
 			$data['main_content'] 		= $this->load->view("dpa/realisasi_dpa",$subdata,TRUE);
 			/*	Load main template	*/
 //			echo '<pre>';var_dump($subdata['rsa_usul']);echo '</pre>';die;
@@ -479,22 +566,46 @@ Class Dpa extends CI_Controller {
 
     		if(($this->check_session->get_level()==13)||($this->check_session->get_level()==4)){
 
-    			if(($jenis == '1') || ($jenis == '3') || ($jenis == '5')){
+    			// if(($jenis == '1') || ($jenis == '3') || ($jenis == '5')){
 		    		$unit = $this->check_session->get_unit();
 		            $tahun = $this->cur_tahun;
 		            $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
 		            // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
 
 		            echo $dpa_siap ; // - $dpa_kuitansi ;
-		        }else if($jenis == '2'){
-		        	$unit = $this->check_session->get_unit();
-		            $tahun = $this->cur_tahun;
-		            $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
-		            // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
+		        // }else if($jenis == '2'){
+		        // 	$unit = $this->check_session->get_unit();
+		        //     $tahun = $this->cur_tahun;
+		        //     $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
+		        //     // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
 
-		            echo $dpa_siap ; // - $dpa_kuitansi ;
+		        //     echo $dpa_siap ; // - $dpa_kuitansi ;
 
-		        }
+		        // }else if($jenis == '4'){
+		        // 	$unit = $this->check_session->get_unit();
+		        //     $tahun = $this->cur_tahun;
+		        //     $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
+		        //     // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
+
+		        //     echo $dpa_siap ; // - $dpa_kuitansi ;
+
+		        // }else if($jenis == '6'){
+		        // 	$unit = $this->check_session->get_unit();
+		        //     $tahun = $this->cur_tahun;
+		        //     $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
+		        //     // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
+
+		        //     echo $dpa_siap ; // - $dpa_kuitansi ;
+
+		        // }else if($jenis == '7'){
+		        // 	$unit = $this->check_session->get_unit();
+		        //     $tahun = $this->cur_tahun;
+		        //     $dpa_siap = $this->dpa_model->get_notif_dpa_siap($unit,$tahun,$jenis); 
+		        //     // $dpa_kuitansi = $this->dpa_model->get_notif_dpa_kuitansi($unit,$tahun,$jenis); 
+
+		        //     echo $dpa_siap ; // - $dpa_kuitansi ;
+
+		        // }
     		// }elseif($this->check_session->get_level()==3){
 
     		// 	$this->load->model('user_model');
@@ -669,7 +780,7 @@ Class Dpa extends CI_Controller {
     }
         
     function get_impor_number_unit($unit,$sumber_dana,$tahun){
-        $result = $this->dpa_model->get_dpa_unit_impor($unit,$sumber_dana,$tahun);
+        $result = $this->dpa_model->get_dpa_unit_impor($unit,$tahun); // SUMBER DAN SUDAH TIDAK DIPAKAI
         if($result == 0){
             echo 'impor ke-<span class="badge">'.$result.'</span>';
         }else{
@@ -689,7 +800,7 @@ Class Dpa extends CI_Controller {
     }
     
     function get_impor_rkat_unit($unit,$sumber_dana,$tahun){
-        $result = $this->dpa_model->get_dpa_unit_rkat($unit,$sumber_dana,$tahun);
+        $result = $this->dpa_model->get_dpa_unit_rkat($unit,$this->cur_tahun,$sumber_dana); 
         echo number_format($result, 0, ",", ".");
     }
     
@@ -774,6 +885,11 @@ Class Dpa extends CI_Controller {
 
 
 		$subdata['akun_kroscek']    = $this->dpa_model->get_kroscek_akun($sumber_dana,$this->cur_tahun);
+
+		// echo '<pre>' ;
+		// var_dump($subdata) ; 
+		// echo '</pre>' ; 
+		// die ;
 
 		$subdata['sd'] = $sumber_dana ;
 

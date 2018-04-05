@@ -69,44 +69,44 @@ class Kuitansipengembalian_model extends CI_Model{
         
         $stts = '' ;
         if($status == 'AKTIF'){
-            $stts = "AND ( rsa.rsa_kuitansi_pengembalian.aktif = '1' AND rsa.rsa_kuitansi_pengembalian.cair = '0' ) " ;
+            $stts = "AND ( rsa_2018.rsa_kuitansi_pengembalian.aktif = '1' AND rsa_2018.rsa_kuitansi_pengembalian.cair = '0' ) " ;
         }
         elseif($status == 'BATAL'){
-            $stts = "AND ( rsa.rsa_kuitansi_pengembalian.aktif = '0' AND rsa.rsa_kuitansi_pengembalian.cair = '0' ) " ;
+            $stts = "AND ( rsa_2018.rsa_kuitansi_pengembalian.aktif = '0' AND rsa_2018.rsa_kuitansi_pengembalian.cair = '0' ) " ;
         }
         elseif($status == 'CAIR'){
-            $stts = "AND ( rsa.rsa_kuitansi_pengembalian.aktif = '1' AND rsa.rsa_kuitansi_pengembalian.cair = '1' ) " ;
+            $stts = "AND ( rsa_2018.rsa_kuitansi_pengembalian.aktif = '1' AND rsa_2018.rsa_kuitansi_pengembalian.cair = '1' ) " ;
         }
-        $str1 = "SELECT rsa.rsa_kuitansi.id_kuitansi,rsa.rsa_kuitansi.tgl_kuitansi,rba.akun_belanja.nama_akun5digit,"
-                . "rsa.rsa_kuitansi.kode_akun5digit,rsa.rsa_kuitansi_detail.kode_akun_tambah,"
-                . "rsa.rsa_kuitansi.no_bukti,"
-                . "SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_kuitansi.uraian,"
-                . "SUM(rsa.rsa_kuitansi_detail_pajak.rupiah_pajak) AS potongan,rsa.rsa_kuitansi.aktif,rsa.rsa_kuitansi.str_nomor_trx,rsa.rsa_kuitansi.cair "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail "
-                . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun5digit = rsa.rsa_kuitansi.kode_akun5digit "
-                . "AND rba.akun_belanja.kode_akun = rsa.rsa_kuitansi.kode_akun "
-                . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi.sumber_dana "
-                . "JOIN rsa.rsa_kuitansi_detail_pajak "
-                . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,2) = '{$kode_unit_subunit}' "
-                . "AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
-                . "GROUP BY rsa.rsa_kuitansi.id_kuitansi";
+        $str1 = "SELECT rsa_2018.rsa_kuitansi.id_kuitansi,rsa_2018.rsa_kuitansi.tgl_kuitansi,rba_2018.akun_belanja.nama_akun5digit,"
+                . "rsa_2018.rsa_kuitansi.kode_akun5digit,rsa_2018.rsa_kuitansi_detail.kode_akun_tambah,"
+                . "rsa_2018.rsa_kuitansi.no_bukti,"
+                . "SUM(rsa_2018.rsa_kuitansi_detail.volume*rsa_2018.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
+                . "rsa_2018.rsa_kuitansi.uraian,"
+                . "SUM(rsa_2018.rsa_kuitansi_detail_pajak.rupiah_pajak) AS potongan,rsa_2018.rsa_kuitansi.aktif,rsa_2018.rsa_kuitansi.str_nomor_trx,rsa_2018.rsa_kuitansi.cair "
+                . "FROM rsa_2018.rsa_kuitansi "
+                . "JOIN rsa_2018.rsa_kuitansi_detail "
+                . "ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                . "JOIN rba_2018.akun_belanja ON rba_2018.akun_belanja.kode_akun5digit = rsa_2018.rsa_kuitansi.kode_akun5digit "
+                . "AND rba_2018.akun_belanja.kode_akun = rsa_2018.rsa_kuitansi.kode_akun "
+                . "AND rba_2018.akun_belanja.sumber_dana = rsa_2018.rsa_kuitansi.sumber_dana "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pajak "
+                . "ON rsa_2018.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi.kode_unit,1,2) = '{$kode_unit_subunit}' "
+                . "AND rsa_2018.rsa_kuitansi.tahun = '{$tahun}' "
+                . "AND rsa_2018.rsa_kuitansi.jenis = '{$jenis}' "
+                . "GROUP BY rsa_2018.rsa_kuitansi.id_kuitansi";
 
-        $str = "SELECT rsa.rsa_kuitansi_pengembalian.id_kuitansi,rsa.rsa_kuitansi_pengembalian.kode_unit,rsa.rsa_kuitansi_pengembalian.no_bukti,"
-                . "rsa.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa.rsa_kuitansi_pengembalian.uraian,"
-                . "SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_kuitansi_pengembalian.str_nomor_trx,rsa.rsa_kuitansi_pengembalian.str_nomor_trx_spm,rsa.rsa_kuitansi_pengembalian.aktif,rsa.rsa_kuitansi_pengembalian.cair "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.jenis = '{$jenis}' "
+        $str = "SELECT rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi,rsa_2018.rsa_kuitansi_pengembalian.kode_unit,rsa_2018.rsa_kuitansi_pengembalian.no_bukti,"
+                . "rsa_2018.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa_2018.rsa_kuitansi_pengembalian.uraian,"
+                . "SUM(rsa_2018.rsa_kuitansi_detail_pengembalian.volume*rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
+                . "rsa_2018.rsa_kuitansi_pengembalian.str_nomor_trx,rsa_2018.rsa_kuitansi_pengembalian.str_nomor_trx_spm,rsa_2018.rsa_kuitansi_pengembalian.aktif,rsa_2018.rsa_kuitansi_pengembalian.cair "
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian ON rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa_2018.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.jenis = '{$jenis}' "
                 . $stts
-                . "GROUP BY rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "ORDER BY rsa.rsa_kuitansi_pengembalian.tgl_kuitansi DESC";
+                . "GROUP BY rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "ORDER BY rsa_2018.rsa_kuitansi_pengembalian.tgl_kuitansi DESC";
 
        // print_r($str);die;
 
@@ -126,25 +126,25 @@ class Kuitansipengembalian_model extends CI_Model{
         
         $stts = '' ;
         if($status == 'AKTIF'){
-            $stts = "AND ( rsa.rsa_kuitansi.aktif = '1' AND rsa.rsa_kuitansi.cair = '0' ) " ;
+            $stts = "AND ( rsa_2018.rsa_kuitansi.aktif = '1' AND rsa_2018.rsa_kuitansi.cair = '0' ) " ;
         }
         elseif($status == 'BATAL'){
-            $stts = "AND ( rsa.rsa_kuitansi.aktif = '0' AND rsa.rsa_kuitansi.cair = '0' ) " ;
+            $stts = "AND ( rsa_2018.rsa_kuitansi.aktif = '0' AND rsa_2018.rsa_kuitansi.cair = '0' ) " ;
         }
         elseif($status == 'CAIR'){
-            $stts = "AND ( rsa.rsa_kuitansi.aktif = '1' AND rsa.rsa_kuitansi.cair = '1' ) " ;
+            $stts = "AND ( rsa_2018.rsa_kuitansi.aktif = '1' AND rsa_2018.rsa_kuitansi.cair = '1' ) " ;
         }
 
-        $str = "SELECT rsa.rsa_kuitansi.kode_unit,rba.unit.nama_unit,rba.subunit.nama_subunit,rba.sub_subunit.nama_sub_subunit "
-                . "FROM rsa.rsa_kuitansi "
-                . "LEFT JOIN rba.unit ON rba.unit.kode_unit = rsa.rsa_kuitansi.kode_unit "
-                . "LEFT JOIN rba.subunit ON rba.subunit.kode_subunit = rsa.rsa_kuitansi.kode_unit "
-                . "LEFT JOIN rba.sub_subunit ON rba.sub_subunit.kode_sub_subunit = rsa.rsa_kuitansi.kode_unit "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
+        $str = "SELECT rsa_2018.rsa_kuitansi.kode_unit,rba_2018.unit.nama_unit,rba_2018.subunit.nama_subunit,rba_2018.sub_subunit.nama_sub_subunit "
+                . "FROM rsa_2018.rsa_kuitansi "
+                . "LEFT JOIN rba_2018.unit ON rba_2018.unit.kode_unit = rsa_2018.rsa_kuitansi.kode_unit "
+                . "LEFT JOIN rba_2018.subunit ON rba_2018.subunit.kode_subunit = rsa_2018.rsa_kuitansi.kode_unit "
+                . "LEFT JOIN rba_2018.sub_subunit ON rba_2018.sub_subunit.kode_sub_subunit = rsa_2018.rsa_kuitansi.kode_unit "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa_2018.rsa_kuitansi.tahun = '{$tahun}' "
+                . "AND rsa_2018.rsa_kuitansi.jenis = '{$jenis}' "
                 . $stts
-                . "GROUP BY rsa.rsa_kuitansi.kode_unit "
-                . "ORDER BY rsa.rsa_kuitansi.kode_unit ASC";
+                . "GROUP BY rsa_2018.rsa_kuitansi.kode_unit "
+                . "ORDER BY rsa_2018.rsa_kuitansi.kode_unit ASC";
 
        // print_r($str);die;
 
@@ -162,15 +162,15 @@ class Kuitansipengembalian_model extends CI_Model{
 //        $kode_unit_subunit = substr($kode_unit_subunit,0,2);
        $lenunit = strlen($kode_unit_subunit);
 
-        $str = "SELECT rsa.rsa_kuitansi.id_kuitansi,rsa.rsa_kuitansi.no_bukti,"
-                . "rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.uraian,"
-                . "SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_kuitansi.str_nomor_trx,rsa.rsa_kuitansi.aktif,rsa.rsa_kuitansi.cair "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
-                . "GROUP BY rsa.rsa_kuitansi.id_kuitansi";
+        $str = "SELECT rsa_2018.rsa_kuitansi.id_kuitansi,rsa_2018.rsa_kuitansi.no_bukti,"
+                . "rsa_2018.rsa_kuitansi.tgl_kuitansi,rsa_2018.rsa_kuitansi.uraian,"
+                . "SUM(rsa_2018.rsa_kuitansi_detail.volume*rsa_2018.rsa_kuitansi_detail.harga_satuan) AS pengeluaran,"
+                . "rsa_2018.rsa_kuitansi.str_nomor_trx,rsa_2018.rsa_kuitansi.aktif,rsa_2018.rsa_kuitansi.cair "
+                . "FROM rsa_2018.rsa_kuitansi "
+                . "JOIN rsa_2018.rsa_kuitansi_detail ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' AND rsa_2018.rsa_kuitansi.tahun = '{$tahun}' "
+                . "AND rsa_2018.rsa_kuitansi.jenis = '{$jenis}' "
+                . "GROUP BY rsa_2018.rsa_kuitansi.id_kuitansi";
 
 //        print_r($str);die;
 
@@ -188,27 +188,27 @@ class Kuitansipengembalian_model extends CI_Model{
 
         $lenunit = strlen($kode_unit_subunit);
 
-        $str = "SELECT rsa.rsa_kuitansi.tgl_kuitansi,rba.akun_belanja.nama_akun5digit,"
-                . "rsa.rsa_kuitansi.kode_akun5digit,rsa.rsa_detail_belanja_.kode_akun_tambah,"
-                . "rsa.rsa_detail_belanja_.deskripsi,rsa.rsa_kuitansi.no_bukti,"
-                . "(rsa.rsa_detail_belanja_.volume*rsa.rsa_detail_belanja_.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_detail_belanja_.volume,rsa.rsa_detail_belanja_.satuan,rsa.rsa_kuitansi.uraian,"
-                . "SUM(rsa.rsa_kuitansi_detail_pajak.rupiah_pajak) AS potongan "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail "
-                . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "JOIN rsa.rsa_detail_belanja_ "
-                . "ON rsa.rsa_detail_belanja_.kode_usulan_belanja = rsa.rsa_kuitansi_detail.kode_usulan_belanja "
-                . "AND rsa.rsa_detail_belanja_.kode_akun_tambah = rsa.rsa_kuitansi_detail.kode_akun_tambah "
-                . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun5digit = rsa.rsa_kuitansi.kode_akun5digit "
-                . "AND rba.akun_belanja.kode_akun = rsa.rsa_kuitansi.kode_akun "
-                . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi.sumber_dana "
-                . "JOIN rsa.rsa_kuitansi_detail_pajak "
-                . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' "
-                . "AND rsa.rsa_kuitansi.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
-                . "GROUP BY rsa.rsa_kuitansi_detail.id_kuitansi_detail";
+        $str = "SELECT rsa_2018.rsa_kuitansi.tgl_kuitansi,rba_2018.akun_belanja.nama_akun5digit,"
+                . "rsa_2018.rsa_kuitansi.kode_akun5digit,rsa_2018.rsa_detail_belanja_.kode_akun_tambah,"
+                . "rsa_2018.rsa_detail_belanja_.deskripsi,rsa_2018.rsa_kuitansi.no_bukti,"
+                . "(rsa_2018.rsa_detail_belanja_.volume*rsa_2018.rsa_detail_belanja_.harga_satuan) AS pengeluaran,"
+                . "rsa_2018.rsa_detail_belanja_.volume,rsa_2018.rsa_detail_belanja_.satuan,rsa_2018.rsa_kuitansi.uraian,"
+                . "SUM(rsa_2018.rsa_kuitansi_detail_pajak.rupiah_pajak) AS potongan "
+                . "FROM rsa_2018.rsa_kuitansi "
+                . "JOIN rsa_2018.rsa_kuitansi_detail "
+                . "ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                . "JOIN rsa_2018.rsa_detail_belanja_ "
+                . "ON rsa_2018.rsa_detail_belanja_.kode_usulan_belanja = rsa_2018.rsa_kuitansi_detail.kode_usulan_belanja "
+                . "AND rsa_2018.rsa_detail_belanja_.kode_akun_tambah = rsa_2018.rsa_kuitansi_detail.kode_akun_tambah "
+                . "JOIN rba_2018.akun_belanja ON rba_2018.akun_belanja.kode_akun5digit = rsa_2018.rsa_kuitansi.kode_akun5digit "
+                . "AND rba_2018.akun_belanja.kode_akun = rsa_2018.rsa_kuitansi.kode_akun "
+                . "AND rba_2018.akun_belanja.sumber_dana = rsa_2018.rsa_kuitansi.sumber_dana "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pajak "
+                . "ON rsa_2018.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' "
+                . "AND rsa_2018.rsa_kuitansi.tahun = '{$tahun}' "
+                . "AND rsa_2018.rsa_kuitansi.jenis = '{$jenis}' "
+                . "GROUP BY rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail";
 
 //            var_dump($str);die;
 
@@ -222,30 +222,30 @@ class Kuitansipengembalian_model extends CI_Model{
     }
 
     function get_data_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa.rsa_kuitansi_pengembalian.jenis,rsa.rsa_kuitansi_pengembalian.tahun,rsa.rsa_kuitansi_pengembalian.no_bukti,"
-                . "rba.akun_belanja.nama_akun,"
-                . "SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_kuitansi_pengembalian.uraian," // rba.subkomponen_input.nama_subkomponen,"
-                . "rsa.rsa_kuitansi_pengembalian.penerima_uang,rsa.rsa_kuitansi_pengembalian.penerima_uang_nip,rsa.rsa_kuitansi_pengembalian.penerima_barang,rsa.rsa_kuitansi_pengembalian.penerima_barang_nip,"
-                . "rsa.rsa_kuitansi_pengembalian.nmpppk,rsa.rsa_kuitansi_pengembalian.nippppk,rsa.rsa_kuitansi_pengembalian.nmbendahara,rsa.rsa_kuitansi_pengembalian.nipbendahara,rsa.rsa_kuitansi_pengembalian.nmpumk,rsa.rsa_kuitansi_pengembalian.nippumk,rsa.rsa_kuitansi_pengembalian.penerima_uang,rsa.rsa_kuitansi_pengembalian.aktif,rsa.rsa_kuitansi_pengembalian.str_nomor_trx "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun5digit = rsa.rsa_kuitansi_pengembalian.kode_akun5digit "
-                . "AND rba.akun_belanja.kode_akun = rsa.rsa_kuitansi_pengembalian.kode_akun "
-                . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi_pengembalian.sumber_dana "
-                // . "JOIN rba.subkomponen_input ON rba.subkomponen_input.kode_kegiatan = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,2) "
-                // . "AND rba.subkomponen_input.kode_output = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,9,2) "
-                // . "AND rba.subkomponen_input.kode_program = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,11,2) "
-                // . "AND rba.subkomponen_input.kode_komponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,13,2) "
-                // . "AND rba.subkomponen_input.kode_subkomponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,15,2) "
-                . "LEFT JOIN rsa.rsa_kuitansi_detail_pajak_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
-                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
-                . "GROUP BY rsa.rsa_kuitansi_pengembalian.id_kuitansi";
+        $str = "SELECT rsa_2018.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa_2018.rsa_kuitansi_pengembalian.jenis,rsa_2018.rsa_kuitansi_pengembalian.tahun,rsa_2018.rsa_kuitansi_pengembalian.no_bukti,"
+                // . "rba_2018.akun_belanja.nama_akun,"
+                . "SUM(rsa_2018.rsa_kuitansi_detail_pengembalian.volume*rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
+                . "rsa_2018.rsa_kuitansi_pengembalian.uraian," // rba_2018.subkomponen_input.nama_subkomponen,"
+                . "rsa_2018.rsa_kuitansi_pengembalian.penerima_uang,rsa_2018.rsa_kuitansi_pengembalian.penerima_uang_nip,rsa_2018.rsa_kuitansi_pengembalian.penerima_barang,rsa_2018.rsa_kuitansi_pengembalian.penerima_barang_nip,"
+                . "rsa_2018.rsa_kuitansi_pengembalian.nmpppk,rsa_2018.rsa_kuitansi_pengembalian.nippppk,rsa_2018.rsa_kuitansi_pengembalian.nmbendahara,rsa_2018.rsa_kuitansi_pengembalian.nipbendahara,rsa_2018.rsa_kuitansi_pengembalian.nmpumk,rsa_2018.rsa_kuitansi_pengembalian.nippumk,rsa_2018.rsa_kuitansi_pengembalian.penerima_uang,rsa_2018.rsa_kuitansi_pengembalian.aktif,rsa_2018.rsa_kuitansi_pengembalian.str_nomor_trx "
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                // . "JOIN rba_2018.akun_belanja ON rba_2018.akun_belanja.kode_akun5digit = rsa_2018.rsa_kuitansi_pengembalian.kode_akun5digit "
+                // . "AND rba_2018.akun_belanja.kode_akun = rsa_2018.rsa_kuitansi_pengembalian.kode_akun "
+                // . "AND rba_2018.akun_belanja.sumber_dana = rsa_2018.rsa_kuitansi_pengembalian.sumber_dana "
+                // . "JOIN rba_2018.subkomponen_input ON rba_2018.subkomponen_input.kode_kegiatan = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,2) "
+                // . "AND rba_2018.subkomponen_input.kode_output = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,9,2) "
+                // . "AND rba_2018.subkomponen_input.kode_program = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,11,2) "
+                // . "AND rba_2018.subkomponen_input.kode_komponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,13,2) "
+                // . "AND rba_2018.subkomponen_input.kode_subkomponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,15,2) "
+                . "LEFT JOIN rsa_2018.rsa_kuitansi_detail_pajak_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
+                . "WHERE rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "GROUP BY rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi";
 
-//            var_dump($str);die;
+           // echo $str ; die ;
 
             $q = $this->db->query($str);
     //            var_dump($q->num_rows());die;
@@ -258,17 +258,17 @@ class Kuitansipengembalian_model extends CI_Model{
     }
 
     function get_data_detail_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail,rsa.rsa_kuitansi_detail_pengembalian.deskripsi,rsa.rsa_kuitansi_detail_pengembalian.volume,"
-                . "rsa.rsa_kuitansi_detail_pengembalian.satuan,rsa.rsa_kuitansi_detail_pengembalian.harga_satuan,(ROUND(rsa.rsa_kuitansi_detail_pengembalian.volume * rsa.rsa_kuitansi_detail_pengembalian.harga_satuan)) AS bruto "
+        $str = "SELECT rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail,rsa_2018.rsa_kuitansi_detail_pengembalian.deskripsi,rsa_2018.rsa_kuitansi_detail_pengembalian.volume,"
+                . "rsa_2018.rsa_kuitansi_detail_pengembalian.satuan,rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan,(ROUND(rsa_2018.rsa_kuitansi_detail_pengembalian.volume * rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan)) AS bruto "
                 . "" //,GROUP_CONCAT(rsa_kuitansi_detail_pajak.jenis_pajak SEPARATOR '<br>') AS pajak_nom "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "LEFT JOIN rsa.rsa_kuitansi_detail_pajak_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
-                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
-                . "GROUP BY rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail";
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "LEFT JOIN rsa_2018.rsa_kuitansi_detail_pajak_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
+                . "WHERE rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "GROUP BY rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail";
 
 //            var_dump($str);die;
 
@@ -283,16 +283,16 @@ class Kuitansipengembalian_model extends CI_Model{
     }
 
     function get_data_detail_pajak_kuitansi($id_kuitansi,$tahun){
-        $str = "SELECT rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail,rsa.rsa_kuitansi_detail_pajak_pengembalian.jenis_pajak,rsa.rsa_kuitansi_detail_pajak_pengembalian.persen_pajak,"
-                . "rsa.rsa_kuitansi_detail_pajak_pengembalian.dpp,rsa.rsa_kuitansi_detail_pajak_pengembalian.rupiah_pajak "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail_pajak_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
-                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
-                . "GROUP BY rsa.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail_pajak";
+        $str = "SELECT rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail,rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.jenis_pajak,rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.persen_pajak,"
+                . "rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.dpp,rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.rupiah_pajak "
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pajak_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi_detail "
+                . "WHERE rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi = '{$id_kuitansi}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "GROUP BY rsa_2018.rsa_kuitansi_detail_pajak_pengembalian.id_kuitansi_detail_pajak";
 
 //            var_dump($str);die;
 
@@ -310,35 +310,35 @@ class Kuitansipengembalian_model extends CI_Model{
         $str_ = '';
                 if(count($data['array_id']) > 1){
                     foreach($data['array_id'] as $id){
-                        $str_ .= "rsa.rsa_kuitansi.id_kuitansi = '{$id}' OR " ;
+                        $str_ .= "rsa_2018.rsa_kuitansi.id_kuitansi = '{$id}' OR " ;
                     }
                     $str_ = substr($str_,0,  strlen($str_) - 3 );
                 }else{
-                    $str_ = "rsa.rsa_kuitansi.id_kuitansi = '{$data['array_id'][0]}'" ;
+                    $str_ = "rsa_2018.rsa_kuitansi.id_kuitansi = '{$data['array_id'][0]}'" ;
                 }
 
-        $str = "SELECT SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) AS rka,
-        SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,1,6) AS kdunit,rsa.rsa_kuitansi.no_bukti,rsa.rsa_kuitansi.tgl_kuitansi,rsa.rsa_kuitansi.uraian,rba.akun_belanja.nama_akun,rsa.rsa_kuitansi.kode_akun5digit,rsa.rsa_kuitansi.kode_akun,rsa.rsa_kuitansi_detail.id_kuitansi_detail,rsa.rsa_kuitansi_detail.kode_akun_tambah,rsa.rsa_kuitansi_detail.deskripsi,rsa.rsa_kuitansi_detail.volume,"
-                . "rsa.rsa_kuitansi_detail.satuan,rsa.rsa_kuitansi_detail.harga_satuan,(rsa.rsa_kuitansi_detail.volume * rsa.rsa_kuitansi_detail.harga_satuan) AS bruto,"
+        $str = "SELECT SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) AS rka,
+        SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,1,6) AS kdunit,rsa_2018.rsa_kuitansi.no_bukti,rsa_2018.rsa_kuitansi.tgl_kuitansi,rsa_2018.rsa_kuitansi.uraian,rba_2018.akun_belanja.nama_akun,rsa_2018.rsa_kuitansi.kode_akun5digit,rsa_2018.rsa_kuitansi.kode_akun,rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail,rsa_2018.rsa_kuitansi_detail.kode_akun_tambah,rsa_2018.rsa_kuitansi_detail.deskripsi,rsa_2018.rsa_kuitansi_detail.volume,"
+                . "rsa_2018.rsa_kuitansi_detail.satuan,rsa_2018.rsa_kuitansi_detail.harga_satuan,(rsa_2018.rsa_kuitansi_detail.volume * rsa_2018.rsa_kuitansi_detail.harga_satuan) AS bruto,"
                 . "GROUP_CONCAT(IF((rsa_kuitansi_detail_pajak.persen_pajak = '99') OR (rsa_kuitansi_detail_pajak.persen_pajak = '98'),rsa_kuitansi_detail_pajak.jenis_pajak,CONCAT(rsa_kuitansi_detail_pajak.jenis_pajak,' [ ',rsa_kuitansi_detail_pajak.persen_pajak,'% ] ')) SEPARATOR ',<br>') AS pajak_nom,"
                 . "SUM(rsa_kuitansi_detail_pajak.rupiah_pajak) AS total_pajak "
-                . "FROM rsa.rsa_kuitansi "
-                . "JOIN rsa.rsa_kuitansi_detail "
-                . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                . "LEFT JOIN rsa.rsa_kuitansi_detail_pajak "
-                . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun = rsa.rsa_kuitansi.kode_akun "
-                . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi.sumber_dana "
-                . "WHERE rsa.rsa_kuitansi.tahun = '{$data['tahun']}' "
+                . "FROM rsa_2018.rsa_kuitansi "
+                . "JOIN rsa_2018.rsa_kuitansi_detail "
+                . "ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                . "LEFT JOIN rsa_2018.rsa_kuitansi_detail_pajak "
+                . "ON rsa_2018.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail "
+                . "JOIN rba_2018.akun_belanja ON rba_2018.akun_belanja.kode_akun = rsa_2018.rsa_kuitansi.kode_akun "
+                . "AND rba_2018.akun_belanja.sumber_dana = rsa_2018.rsa_kuitansi.sumber_dana "
+                . "WHERE rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' "
                 . "AND ( " . $str_ . " ) "
-                . "GROUP BY rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                . "ORDER BY SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) ASC,"
-                . "SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,1,6) ASC,"
-                . "rsa.rsa_kuitansi.tgl_kuitansi ASC,"
-                . "rsa.rsa_kuitansi.kode_akun ASC,"
-                . "rsa.rsa_kuitansi.no_bukti ASC,"
-                . "rsa.rsa_kuitansi_detail.kode_akun_tambah ASC,"
-                . "rsa.rsa_kuitansi_detail_pajak.jenis_pajak ASC";
+                . "GROUP BY rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail "
+                . "ORDER BY SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) ASC,"
+                . "SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,1,6) ASC,"
+                . "rsa_2018.rsa_kuitansi.tgl_kuitansi ASC,"
+                . "rsa_2018.rsa_kuitansi.kode_akun ASC,"
+                . "rsa_2018.rsa_kuitansi.no_bukti ASC,"
+                . "rsa_2018.rsa_kuitansi_detail.kode_akun_tambah ASC,"
+                . "rsa_2018.rsa_kuitansi_detail_pajak.jenis_pajak ASC";
 
 //            var_dump($str);die;
 
@@ -356,17 +356,17 @@ class Kuitansipengembalian_model extends CI_Model{
 
         $lenunit = strlen($kode_unit_subunit);
 
-        $str = "SELECT  SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengembalian "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.jenis = 'GP' "
-                . "AND rsa.rsa_kuitansi_pengembalian.aktif = '1' "
-                . "AND rsa.rsa_kuitansi_pengembalian.str_nomor_trx IS NOT NULL "
-                . "AND rsa.rsa_kuitansi_pengembalian.cair = '0' "
-                . "GROUP BY SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit})";
+        $str = "SELECT  SUM(rsa_2018.rsa_kuitansi_detail_pengembalian.volume*rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengembalian "
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.jenis = 'GP' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.aktif = '1' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.str_nomor_trx IS NOT NULL "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.cair = '0' "
+                . "GROUP BY SUBSTR(rsa_2018.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit})";
 
            // var_dump($str);
 
@@ -383,17 +383,17 @@ class Kuitansipengembalian_model extends CI_Model{
 
         $lenunit = strlen($kode_unit_subunit);
 
-        $str = "SELECT  SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengembalian "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
-                . "ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.jenis = 'TP' "
-                . "AND rsa.rsa_kuitansi_pengembalian.aktif = '1' "
-                . "AND rsa.rsa_kuitansi_pengembalian.str_nomor_trx IS NOT NULL "
-                . "AND rsa.rsa_kuitansi_pengembalian.cair = '0' "
-                . "GROUP BY SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit})";
+        $str = "SELECT  SUM(rsa_2018.rsa_kuitansi_detail_pengembalian.volume*rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengembalian "
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit}) = '{$kode_unit_subunit}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.tahun = '{$tahun}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.jenis = 'TP' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.aktif = '1' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.str_nomor_trx IS NOT NULL "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.cair = '0' "
+                . "GROUP BY SUBSTR(rsa_2018.rsa_kuitansi_pengembalian.kode_unit,1,{$lenunit})";
 
            // var_dump($str);
 
@@ -432,14 +432,14 @@ class Kuitansipengembalian_model extends CI_Model{
 
         $lenkode = strlen($data['kode_unit_subunit']);
 
-        $str = "SELECT SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengembalian "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian "
-                . "ON rsa.rsa_kuitansi_pengembalian.id_kuitansi = rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi "
-                . "WHERE SUBSTR(rsa.rsa_kuitansi_pengembalian.kode_unit,1,{$lenkode}) = '{$data['kode_unit_subunit']}' "
-                . "AND rsa.rsa_kuitansi_pengembalian.id_kuitansi IN ({$id_kuitansi}) "
-                . "AND rsa.rsa_kuitansi_pengembalian.tahun = '{$data['tahun']}' "
-                . "GROUP BY rsa.rsa_kuitansi_pengembalian.kode_unit";
+        $str = "SELECT SUM(rsa_2018.rsa_kuitansi_detail_pengembalian.volume*rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengembalian "
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian "
+                . "ON rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi "
+                . "WHERE SUBSTR(rsa_2018.rsa_kuitansi_pengembalian.kode_unit,1,{$lenkode}) = '{$data['kode_unit_subunit']}' "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi IN ({$id_kuitansi}) "
+                . "AND rsa_2018.rsa_kuitansi_pengembalian.tahun = '{$data['tahun']}' "
+                . "GROUP BY rsa_2018.rsa_kuitansi_pengembalian.kode_unit";
 
 
         // echo $str ; die ;
@@ -647,39 +647,39 @@ class Kuitansipengembalian_model extends CI_Model{
                 $str_ = '';
                 if(count($data['array_id']) > 1){
                     foreach($data['array_id'] as $id){
-                        $str_ .= "rsa.rsa_kuitansi.id_kuitansi = '{$id}' OR " ;
+                        $str_ .= "rsa_2018.rsa_kuitansi.id_kuitansi = '{$id}' OR " ;
                     }
                     $str_ = substr($str_,0,  strlen($str_) - 3 );
                 }else{
-                    $str_ = "rsa.rsa_kuitansi.id_kuitansi = '{$data['array_id'][0]}'" ;
+                    $str_ = "rsa_2018.rsa_kuitansi.id_kuitansi = '{$data['array_id'][0]}'" ;
                 }
    //     echo $str_ ; die;
 
                 $lenkode = strlen($data['kode_unit_subunit']) ; 
                 
-                $str = "SELECT SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) AS rka,rsa.rsa_kuitansi.id_kuitansi,SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) AS kode_usulan_rkat,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,rba.akun_belanja.nama_akun5digit,"
-                        . "rsa.rsa_kuitansi.kode_akun5digit,SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran "
-                        . "FROM rsa.rsa_kuitansi "
-                        . "JOIN rsa.rsa_kuitansi_detail "
-                        . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                        . "JOIN rba.komponen_input ON rba.komponen_input.kode_kegiatan = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,2) "
-                        . "AND rba.komponen_input.kode_output = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,9,2) "
-                        . "AND rba.komponen_input.kode_program = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,11,2) "
-                        . "AND rba.komponen_input.kode_komponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,13,2) "
-                        . "JOIN rba.subkomponen_input ON rba.subkomponen_input.kode_kegiatan = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,2) "
-                        . "AND rba.subkomponen_input.kode_output = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,9,2) "
-                        . "AND rba.subkomponen_input.kode_program = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,11,2) "
-                        . "AND rba.subkomponen_input.kode_komponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,13,2) "
-                        . "AND rba.subkomponen_input.kode_subkomponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,15,2) "
-                        . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun5digit = rsa.rsa_kuitansi.kode_akun5digit "
-                        . "AND rba.akun_belanja.kode_akun = rsa.rsa_kuitansi.kode_akun "
-                        . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi.sumber_dana "
-                        . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$lenkode}) = '{$data['kode_unit_subunit']}' "
-                        . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
+                $str = "SELECT SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) AS rka,rsa_2018.rsa_kuitansi.id_kuitansi,SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) AS kode_usulan_rkat,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,rba_2018.akun_belanja.nama_akun5digit,"
+                        . "rsa_2018.rsa_kuitansi.kode_akun5digit,SUM(rsa_2018.rsa_kuitansi_detail.volume*rsa_2018.rsa_kuitansi_detail.harga_satuan) AS pengeluaran "
+                        . "FROM rsa_2018.rsa_kuitansi "
+                        . "JOIN rsa_2018.rsa_kuitansi_detail "
+                        . "ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                        . "JOIN rba_2018.komponen_input ON rba_2018.komponen_input.kode_kegiatan = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,2) "
+                        . "AND rba_2018.komponen_input.kode_output = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,9,2) "
+                        . "AND rba_2018.komponen_input.kode_program = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,11,2) "
+                        . "AND rba_2018.komponen_input.kode_komponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,13,2) "
+                        . "JOIN rba_2018.subkomponen_input ON rba_2018.subkomponen_input.kode_kegiatan = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,2) "
+                        . "AND rba_2018.subkomponen_input.kode_output = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,9,2) "
+                        . "AND rba_2018.subkomponen_input.kode_program = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,11,2) "
+                        . "AND rba_2018.subkomponen_input.kode_komponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,13,2) "
+                        . "AND rba_2018.subkomponen_input.kode_subkomponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,15,2) "
+                        . "JOIN rba_2018.akun_belanja ON rba_2018.akun_belanja.kode_akun5digit = rsa_2018.rsa_kuitansi.kode_akun5digit "
+                        . "AND rba_2018.akun_belanja.kode_akun = rsa_2018.rsa_kuitansi.kode_akun "
+                        . "AND rba_2018.akun_belanja.sumber_dana = rsa_2018.rsa_kuitansi.sumber_dana "
+                        . "WHERE SUBSTR(rsa_2018.rsa_kuitansi.kode_unit,1,{$lenkode}) = '{$data['kode_unit_subunit']}' "
+                        . "AND rsa_2018.rsa_kuitansi.jenis = '{$jenis}' "
                         . "AND ( " . $str_ . " ) "
-                        . "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' "
-                        . "GROUP BY SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10),SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,19,5) "
-                        . "ORDER BY SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) ASC,SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,19,5) ASC";
+                        . "AND rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' "
+                        . "GROUP BY SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10),SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,19,5) "
+                        . "ORDER BY SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) ASC,SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,19,5) ASC";
 
        //                 echo $str;die;
 //            var_dump($str);die;
@@ -787,35 +787,35 @@ class Kuitansipengembalian_model extends CI_Model{
 
                 $strlen = strlen($data['kode_unit_subunit']);
 
-                // $str = "SELECT rsa.rsa_kuitansi.id_kuitansi,"
-                //         . "SUBSTR(rsa.rsa_kuitansi_detail_pajak.jenis_pajak,1,3) AS jenis,"
-                //         . "SUM(rsa.rsa_kuitansi_detail_pajak.rupiah_pajak) AS rupiah "
-                //         . "FROM rsa.rsa_kuitansi "
-                //         . "JOIN rsa.rsa_kuitansi_detail "
-                //         . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                //         . "JOIN rsa.rsa_kuitansi_detail_pajak "
-                //         . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                //         . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$strlen}) = '{$data['kode_unit_subunit']}' "
-                //         . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
-                //         . "AND rsa.rsa_kuitansi.id_kuitansi IN ( " . $str_ . " ) "
-                //         . "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' "
-                //         . "GROUP BY SUBSTR(rsa.rsa_kuitansi_detail_pajak.jenis_pajak,1,3) "
-                //         . "ORDER BY SUBSTR(rsa.rsa_kuitansi_detail_pajak.jenis_pajak,1,3) DESC";
+                // $str = "SELECT rsa_2018.rsa_kuitansi.id_kuitansi,"
+                //         . "SUBSTR(rsa_2018.rsa_kuitansi_detail_pajak.jenis_pajak,1,3) AS jenis,"
+                //         . "SUM(rsa_2018.rsa_kuitansi_detail_pajak.rupiah_pajak) AS rupiah "
+                //         . "FROM rsa_2018.rsa_kuitansi "
+                //         . "JOIN rsa_2018.rsa_kuitansi_detail "
+                //         . "ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                //         . "JOIN rsa_2018.rsa_kuitansi_detail_pajak "
+                //         . "ON rsa_2018.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail "
+                //         . "WHERE SUBSTR(rsa_2018.rsa_kuitansi.kode_unit,1,{$strlen}) = '{$data['kode_unit_subunit']}' "
+                //         . "AND rsa_2018.rsa_kuitansi.jenis = '{$jenis}' "
+                //         . "AND rsa_2018.rsa_kuitansi.id_kuitansi IN ( " . $str_ . " ) "
+                //         . "AND rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' "
+                //         . "GROUP BY SUBSTR(rsa_2018.rsa_kuitansi_detail_pajak.jenis_pajak,1,3) "
+                //         . "ORDER BY SUBSTR(rsa_2018.rsa_kuitansi_detail_pajak.jenis_pajak,1,3) DESC";
 
-                $str = "SELECT rsa.rsa_kuitansi.id_kuitansi,"
-                        . "rsa.rsa_kuitansi_detail_pajak.jenis_pajak AS jenis,"
-                        . "SUM(rsa.rsa_kuitansi_detail_pajak.rupiah_pajak) AS rupiah "
-                        . "FROM rsa.rsa_kuitansi "
-                        . "JOIN rsa.rsa_kuitansi_detail "
-                        . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                        . "JOIN rsa.rsa_kuitansi_detail_pajak "
-                        . "ON rsa.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa.rsa_kuitansi_detail.id_kuitansi_detail "
-                        . "WHERE SUBSTR(rsa.rsa_kuitansi.kode_unit,1,{$strlen}) = '{$data['kode_unit_subunit']}' "
-                        . "AND rsa.rsa_kuitansi.jenis = '{$jenis}' "
-                        . "AND rsa.rsa_kuitansi.id_kuitansi IN ( " . $str_ . " ) "
-                        . "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' "
-                        . "GROUP BY rsa.rsa_kuitansi_detail_pajak.jenis_pajak "
-                        . "ORDER BY SUBSTR(rsa.rsa_kuitansi_detail_pajak.jenis_pajak,8,2) ASC";
+                $str = "SELECT rsa_2018.rsa_kuitansi.id_kuitansi,"
+                        . "rsa_2018.rsa_kuitansi_detail_pajak.jenis_pajak AS jenis,"
+                        . "SUM(rsa_2018.rsa_kuitansi_detail_pajak.rupiah_pajak) AS rupiah "
+                        . "FROM rsa_2018.rsa_kuitansi "
+                        . "JOIN rsa_2018.rsa_kuitansi_detail "
+                        . "ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                        . "JOIN rsa_2018.rsa_kuitansi_detail_pajak "
+                        . "ON rsa_2018.rsa_kuitansi_detail_pajak.id_kuitansi_detail = rsa_2018.rsa_kuitansi_detail.id_kuitansi_detail "
+                        . "WHERE SUBSTR(rsa_2018.rsa_kuitansi.kode_unit,1,{$strlen}) = '{$data['kode_unit_subunit']}' "
+                        . "AND rsa_2018.rsa_kuitansi.jenis = '{$jenis}' "
+                        . "AND rsa_2018.rsa_kuitansi.id_kuitansi IN ( " . $str_ . " ) "
+                        . "AND rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' "
+                        . "GROUP BY rsa_2018.rsa_kuitansi_detail_pajak.jenis_pajak "
+                        . "ORDER BY SUBSTR(rsa_2018.rsa_kuitansi_detail_pajak.jenis_pajak,8,2) ASC";
 
            // var_dump($str);die;
 
@@ -839,8 +839,10 @@ class Kuitansipengembalian_model extends CI_Model{
         $q = '';
         if($jenis == 'GUP'){
                 $q = $this->db->get('trx_spp_gup_data');
+        }else if($jenis == 'GUP-NIHIL'){
+                $q = $this->db->get('trx_spp_gup_nihil_data');
         }else if($jenis == 'TUP'){
-                $q = $this->db->get('trx_spp_tup_data');
+                $q = $this->db->get('trx_spp_tup_nihil_data');
         }else if($jenis == 'LSNK'){
                 $q = $this->db->get('trx_spp_lsnk_data');
         }else if($jenis == 'LSK'){
@@ -848,7 +850,7 @@ class Kuitansipengembalian_model extends CI_Model{
         }else if($jenis == 'EM'){
                 $q = $this->db->get('trx_spp_em_data');
         }else if($jenis == 'KS'){
-                $q = $this->db->get('trx_spp_ks_data');
+                $q = $this->db->get('trx_spp_ks_nihil_data');
         }
 
         
@@ -903,36 +905,36 @@ class Kuitansipengembalian_model extends CI_Model{
                 $str_ = '';
                 if(count($data['array_id']) > 1){
                     foreach($data['array_id'] as $id){
-                        $str_ .= "rsa.rsa_kuitansi.id_kuitansi = '{$id}' OR " ;
+                        $str_ .= "rsa_2018.rsa_kuitansi.id_kuitansi = '{$id}' OR " ;
                     }
                     $str_ = substr($str_,0,  strlen($str_) - 3 );
                 }else{
-                    $str_ = "rsa.rsa_kuitansi.id_kuitansi = '{$data['array_id'][0]}'" ;
+                    $str_ = "rsa_2018.rsa_kuitansi.id_kuitansi = '{$data['array_id'][0]}'" ;
                 }
    //     echo $str_ ; die;
-                $str = "SELECT SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) AS rka,rsa.rsa_kuitansi.id_kuitansi,SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) AS kode_usulan_rkat,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,rba.akun_belanja.nama_akun5digit,"
-                        . "rsa.rsa_kuitansi.kode_akun5digit,SUM(rsa.rsa_kuitansi_detail.volume*rsa.rsa_kuitansi_detail.harga_satuan) AS pengeluaran "
-                        . "FROM rsa.rsa_kuitansi "
-                        . "JOIN rsa.rsa_kuitansi_detail "
-                        . "ON rsa.rsa_kuitansi_detail.id_kuitansi = rsa.rsa_kuitansi.id_kuitansi "
-                        . "JOIN rba.komponen_input ON rba.komponen_input.kode_kegiatan = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,2) "
-                        . "AND rba.komponen_input.kode_output = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,9,2) "
-                        . "AND rba.komponen_input.kode_program = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,11,2) "
-                        . "AND rba.komponen_input.kode_komponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,13,2) "
-                        . "JOIN rba.subkomponen_input ON rba.subkomponen_input.kode_kegiatan = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,2) "
-                        . "AND rba.subkomponen_input.kode_output = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,9,2) "
-                        . "AND rba.subkomponen_input.kode_program = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,11,2) "
-                        . "AND rba.subkomponen_input.kode_komponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,13,2) "
-                        . "AND rba.subkomponen_input.kode_subkomponen = SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,15,2) "
-                        . "JOIN rba.akun_belanja ON rba.akun_belanja.kode_akun5digit = rsa.rsa_kuitansi.kode_akun5digit "
-                        . "AND rba.akun_belanja.kode_akun = rsa.rsa_kuitansi.kode_akun "
-                        . "AND rba.akun_belanja.sumber_dana = rsa.rsa_kuitansi.sumber_dana "
-                        . "WHERE rsa.rsa_kuitansi.kode_unit = '{$data['kode_unit_subunit']}' "
-                        . "AND rsa.rsa_kuitansi.jenis = 'L3' "
+                $str = "SELECT SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) AS rka,rsa_2018.rsa_kuitansi.id_kuitansi,SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) AS kode_usulan_rkat,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,rba_2018.akun_belanja.nama_akun5digit,"
+                        . "rsa_2018.rsa_kuitansi.kode_akun5digit,SUM(rsa_2018.rsa_kuitansi_detail.volume*rsa_2018.rsa_kuitansi_detail.harga_satuan) AS pengeluaran "
+                        . "FROM rsa_2018.rsa_kuitansi "
+                        . "JOIN rsa_2018.rsa_kuitansi_detail "
+                        . "ON rsa_2018.rsa_kuitansi_detail.id_kuitansi = rsa_2018.rsa_kuitansi.id_kuitansi "
+                        . "JOIN rba_2018.komponen_input ON rba_2018.komponen_input.kode_kegiatan = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,2) "
+                        . "AND rba_2018.komponen_input.kode_output = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,9,2) "
+                        . "AND rba_2018.komponen_input.kode_program = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,11,2) "
+                        . "AND rba_2018.komponen_input.kode_komponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,13,2) "
+                        . "JOIN rba_2018.subkomponen_input ON rba_2018.subkomponen_input.kode_kegiatan = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,2) "
+                        . "AND rba_2018.subkomponen_input.kode_output = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,9,2) "
+                        . "AND rba_2018.subkomponen_input.kode_program = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,11,2) "
+                        . "AND rba_2018.subkomponen_input.kode_komponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,13,2) "
+                        . "AND rba_2018.subkomponen_input.kode_subkomponen = SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,15,2) "
+                        . "JOIN rba_2018.akun_belanja ON rba_2018.akun_belanja.kode_akun5digit = rsa_2018.rsa_kuitansi.kode_akun5digit "
+                        . "AND rba_2018.akun_belanja.kode_akun = rsa_2018.rsa_kuitansi.kode_akun "
+                        . "AND rba_2018.akun_belanja.sumber_dana = rsa_2018.rsa_kuitansi.sumber_dana "
+                        . "WHERE rsa_2018.rsa_kuitansi.kode_unit = '{$data['kode_unit_subunit']}' "
+                        . "AND rsa_2018.rsa_kuitansi.jenis = 'L3' "
                         . "AND ( " . $str_ . " ) "
-                        . "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' "
-                        . "GROUP BY SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10),SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,19,5) "
-                        . "ORDER BY SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,7,10) ASC,SUBSTR(rsa.rsa_kuitansi.kode_usulan_belanja,19,5) ASC";
+                        . "AND rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' "
+                        . "GROUP BY SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10),SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,19,5) "
+                        . "ORDER BY SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,7,10) ASC,SUBSTR(rsa_2018.rsa_kuitansi.kode_usulan_belanja,19,5) ASC";
 
                 //        echo $str;die;
 //            var_dump($str);die;
@@ -966,15 +968,17 @@ class Kuitansipengembalian_model extends CI_Model{
             $id_kuitansi = substr($id_kuitansi, 0, -1) ;
         
 
-            $str = "SELECT rsa.rsa_kuitansi_pengembalian.id_kuitansi,rsa.rsa_kuitansi_pengembalian.no_bukti,"
-                . "rsa.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa.rsa_kuitansi_pengembalian.uraian,"
-                . "SUM(rsa.rsa_kuitansi_detail_pengembalian.volume*rsa.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
-                . "rsa.rsa_kuitansi_pengembalian.str_nomor_trx,rsa.rsa_kuitansi_pengembalian.str_nomor_trx_spm,rsa.rsa_kuitansi_pengembalian.aktif,rsa.rsa_kuitansi_pengembalian.cair "
-                . "FROM rsa.rsa_kuitansi_pengembalian "
-                . "JOIN rsa.rsa_kuitansi_detail_pengembalian ON rsa.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa.rsa_kuitansi_pengembalian.id_kuitansi "
-                . "WHERE rsa.rsa_kuitansi_pengembalian.id_kuitansi IN ({$id_kuitansi}) GROUP BY rsa.rsa_kuitansi_pengembalian.id_kuitansi";
+            $str = "SELECT rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi,rsa_2018.rsa_kuitansi_pengembalian.no_bukti,"
+                . "rsa_2018.rsa_kuitansi_pengembalian.tgl_kuitansi,rsa_2018.rsa_kuitansi_pengembalian.uraian,"
+                . "SUM(rsa_2018.rsa_kuitansi_detail_pengembalian.volume*rsa_2018.rsa_kuitansi_detail_pengembalian.harga_satuan) AS pengeluaran,"
+                . "rsa_2018.rsa_kuitansi_pengembalian.str_nomor_trx,rsa_2018.rsa_kuitansi_pengembalian.str_nomor_trx_spm,rsa_2018.rsa_kuitansi_pengembalian.aktif,rsa_2018.rsa_kuitansi_pengembalian.cair "
+                . "FROM rsa_2018.rsa_kuitansi_pengembalian "
+                . "JOIN rsa_2018.rsa_kuitansi_detail_pengembalian ON rsa_2018.rsa_kuitansi_detail_pengembalian.id_kuitansi = rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi "
+                . "WHERE rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi IN ({$id_kuitansi}) GROUP BY rsa_2018.rsa_kuitansi_pengembalian.id_kuitansi";
 
             // print_r($str);die;
+
+
 
             $q = $this->db->query($str);
 
@@ -998,10 +1002,10 @@ class Kuitansipengembalian_model extends CI_Model{
         $pekerjaan = 0 ;
         foreach($data['array_id'] as $id){
             $str = "SELECT * "
-                . "FROM rsa.rsa_kuitansi "
-                . "WHERE rsa.rsa_kuitansi.kode_unit = '{$data['kode_unit_subunit']}' "
-                . "AND rsa.rsa_kuitansi.id_kuitansi = '{$id}' "
-                . "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' ";
+                . "FROM rsa_2018.rsa_kuitansi "
+                . "WHERE rsa_2018.rsa_kuitansi.kode_unit = '{$data['kode_unit_subunit']}' "
+                . "AND rsa_2018.rsa_kuitansi.id_kuitansi = '{$id}' "
+                . "AND rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' ";
 
          //   var_dump($str);die;
 
@@ -1019,8 +1023,8 @@ class Kuitansipengembalian_model extends CI_Model{
         $pekerjaan = 0 ;
         foreach($data['array_id'] as $id){
             $str = "SELECT * FROM rsa_spm_prosespihak3 LEFT JOIN rsa_kuitansi_pihak3 ON rsa_spm_prosespihak3.id_rup=rsa_kuitansi_pihak3.kontrak_id LEFT JOIN rsa_spm_rekananpihak3 ON rsa_spm_prosespihak3.id_rekanan=rsa_spm_rekananpihak3.id_rekanan WHERE kuitansi_id = '{$id}' ";
-               // . "AND rsa.rsa_kuitansi.id_kuitansi = '{$id}' "
-                //. "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' ";
+               // . "AND rsa_2018.rsa_kuitansi.id_kuitansi = '{$id}' "
+                //. "AND rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' ";
 
          //   var_dump($str);die;
 
@@ -1037,8 +1041,8 @@ class Kuitansipengembalian_model extends CI_Model{
         //$pekerjaan = 0 ;
         foreach($data['array_id'] as $id){
             $str = "SELECT * FROM rsa_spm_rinciankontrak LEFT JOIN rsa_kuitansi_pihak3 ON rsa_spm_rinciankontrak.id_pembayaran=rsa_kuitansi_pihak3.kontrak_id LEFT JOIN rsa_spm_kontrakpihak3 ON rsa_spm_rinciankontrak. 	id_pembayaran=rsa_spm_kontrakpihak3.id WHERE kuitansi_id = '{$id}' ";
-               // . "AND rsa.rsa_kuitansi.id_kuitansi = '{$id}' "
-                //. "AND rsa.rsa_kuitansi.tahun = '{$data['tahun']}' ";
+               // . "AND rsa_2018.rsa_kuitansi.id_kuitansi = '{$id}' "
+                //. "AND rsa_2018.rsa_kuitansi.tahun = '{$data['tahun']}' ";
 
          //   var_dump($str);die;
 

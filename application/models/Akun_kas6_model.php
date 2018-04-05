@@ -68,18 +68,26 @@ class Akun_kas6_model extends CI_Model{
 		return $this->db->insert("akun_kas6",$data);
 	}
 	*/
-	function get_akun_kas6($where=""){
-		if(is_array($where)){
-			$this->db->where($where);
-			/*$this->db->where("kd_kas_5",$where["kd_kas_5"]);
-			$this->db->where("kd_kas_4",$where["kd_kas_4"]);
-			$this->db->where("kd_kas_3",$where["kd_kas_3"]);
-			$this->db->where("kd_kas_2",$where["kd_kas_2"]);*/
-		}
-		
-		$query = $this->db->get("akun_kas6");
-		//var_dump($query);die;
+	function get_akun_kas6($kode_akun5digit){
+
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun,nama_akun FROM akun_belanja WHERE kode_akun5digit = '{$kode_akun5digit}' ORDER BY kode_akun";
+		$query = $rba->query($query);
+
 		if ($query->num_rows() > 0){
+			
+			return $query->result();
+		}else{
+			return array();
+		}
+	}
+
+	function get_akun_sebelum($kode_akun5digit){
+		$rba = $this->load->database('rba', TRUE);
+		$query = "SELECT DISTINCT kode_akun5digit,nama_akun5digit FROM akun_belanja WHERE kode_akun5digit = '{$kode_akun5digit}'";
+		$query = $rba->query($query);
+
+		if($query->num_rows()>0){
 			return $query->result();
 		}else{
 			return array();

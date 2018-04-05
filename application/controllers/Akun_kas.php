@@ -1,12 +1,13 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-Class Ref_akun extends CI_Controller{
+Class Akun_kas extends CI_Controller{
 /* -------------- Constructor ------------- */
 	public function __construct(){
 		parent::__construct();
 		/*	Load library, helper, dan Model	*/
 		$this->load->library(array('form_validation','option'));
 		$this->load->helper('form');
+		$this->load->helper('vayes_helper');
 		$this->load->model(array('akun_kas_model','menu_model'));
 	}
 	
@@ -20,18 +21,23 @@ Class Ref_akun extends CI_Controller{
 	function daftar_akun_kas()
 	{
 		/* check session	*/
-		if($this->check_session->user_session() && $this->check_session->get_level()==100){
+		if($this->check_session->user_session() && ($this->check_session->get_level()==100)||($this->check_session->get_level()==11)){
 			/*	Set data untuk main template */
-			$data['main_menu']= $this->load->view('main_menu','',TRUE);	
+			$data['user_menu']								= $this->load->view('user_menu','',TRUE);
+			$data['main_menu']								= $this->load->view('main_menu','',TRUE);		
 			$tahun = $this->setting_model->get_tahun();
-			$subdata['cur_tahun'] = $tahun;
-			$subdata_akun["result_akun_kas"] = $this->akun_kas_model->get_akun_kas();
-			$subdata["row_akun_kas"]	= $this->load->view("akun_kas2/row_akun_kas",$subdata_akun,TRUE);
-			$data['main_content'] 		= $this->load->view("akun_kas1/daftar_akun_kas",$subdata,TRUE);
+			$subdata['cur_tahun'] 							= $tahun;
+			$subdata_akun_kas['result_akun_kas'] 		= $this->akun_kas_model->get_akun_kas();
+			// vdebug($subdata_akun_kas);
+			$subdata['row_akun_kas'] 						= $this->load->view("akun_kas/row_akun_kas",$subdata_akun_kas,TRUE);
+			$data['main_content'] 							= $this->load->view("akun_kas/daftar_akun_kas",$subdata,TRUE);
+			//$data['breadcrumb']	= $this->load->view('breadcrumb_',array('list'=>array(array('Kas 2','class="current"'))),TRUE);
+			/*	Load main template	*/
+			//var_dump($subdata);die;
 			$this->load->view('main_template',$data);
 		}else{
 			redirect('welcome','refresh');	// redirect ke halaman home
-		}		
+		}
 	}
 
 	

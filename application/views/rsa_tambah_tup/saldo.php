@@ -55,6 +55,33 @@ $(document).on("click","#show",function(){
                             </thead>
                             <tbody id="tb-isi" >
                                 <?php foreach($unit_usul as $i => $u){ ?>
+                                <?php if(($u->kode_unit == '41')||($u->kode_unit == '42')||($u->kode_unit == '43')||($u->kode_unit == '44')): ?>
+                                    <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
+                                                <td class=""><b><?=$u->kode_unit?></b></td>
+                                                <td class="text-danger"><b><?=$u->nama_unit?></b></td>
+                                                <td class="">&nbsp;</td>
+                                                <td style="">&nbsp;</td>
+                                                <td align="center">&nbsp;</td>
+                                            </tr>
+                                        <?php foreach($subunit_usul as $ii => $uu){ ?>
+                                        <?php if(substr($uu->kode_subunit,0,2) == $u->kode_unit): ?>
+                                        <tr rel="<?=$uu->kode_subunit?>" class="tr-unit" height="25px">
+                                            <td class="" style="padding-left: 30px"><b><?=$uu->kode_subunit?></b></td>
+                                            <td class="text-danger" style="padding-left: 30px"><b><?=$uu->nama_subunit?></b></td>
+                                            <td class="" style="text-align: right"><?=number_format($uu->saldo, 0, ",", ".")?></td>
+                                            <td style="">&nbsp;</td>
+                                            <td align="center">
+                                                <?php if(empty($uu->saldo)):?>
+                                                <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+
+                                                <?php else: ?>
+                                                <a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php endif; ?>
+                                        <?php } ?>
+                                <?php else: ?>
                                     <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                         <td class=""><b><?=$u->kode_unit?></b></td>
                                         <td class="text-danger"><b><?=$u->nama_unit?></b></td>
@@ -69,7 +96,7 @@ $(document).on("click","#show",function(){
                                             <?php endif; ?>
                                         </td>
                                     </tr>
-                                    
+                                <?php endif; ?>
                                 <?php } ?>
                             </tbody>
                             <tfoot>

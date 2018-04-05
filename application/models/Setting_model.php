@@ -88,6 +88,51 @@ class Setting_model extends CI_Model {
 		}
 	}
 
+	function get_gup(){
+		$this->db->where('flag','1');
+		$query =$this->db->get('setting');
+		if($query->num_rows()!=1){
+			return false;
+		}else{
+			$tahun = $query->row();
+			return $tahun->gup;
+		}
+	}
+
+	function get_tup(){
+		$this->db->where('flag','1');
+		$query =$this->db->get('setting');
+		if($query->num_rows()!=1){
+			return false;
+		}else{
+			$tahun = $query->row();
+			return $tahun->tup;
+		}
+	}
+
+
+	function get_lsk(){
+		$this->db->where('flag','1');
+		$query =$this->db->get('setting');
+		if($query->num_rows()!=1){
+			return false;
+		}else{
+			$tahun = $query->row();
+			return $tahun->lsk;
+		}
+	}
+
+	function get_lsnk(){
+		$this->db->where('flag','1');
+		$query =$this->db->get('setting');
+		if($query->num_rows()!=1){
+			return false;
+		}else{
+			$tahun = $query->row();
+			return $tahun->lsnk;
+		}
+	}
+
 	function get_available_tahun($unit=""){
 		
 		$q1 = $this->db->query("SELECT tahun FROM detail_belanja WHERE flag_cetak='1'
@@ -114,11 +159,47 @@ class Setting_model extends CI_Model {
 			$this->db->update('setting',array('flag'=>'1'));
 		}
 		else{
-			$this->db->insert('setting',array('nilai'=>$tahun,'flag'=>'1'));
+			$this->db->insert('setting',array('nilai'=>$tahun,'flag'=>'1','lsk'=>'1','lsnk'=>'1'));
 					//var_dump($query);die;
 		}
 
 
+
+		
+	}
+
+	function ubah_gup($posisi){
+
+
+			$this->db->where('flag','1');
+			$this->db->update('setting',array('gup'=>$posisi));
+
+		
+	}
+
+	function ubah_tup($posisi){
+
+
+			$this->db->where('flag','1');
+			$this->db->update('setting',array('tup'=>$posisi));
+
+		
+	}
+
+	function ubah_lsk($posisi){
+
+
+			$this->db->where('flag','1');
+			$this->db->update('setting',array('lsk'=>$posisi));
+
+		
+	}
+
+	function ubah_lsnk($posisi){
+
+
+			$this->db->where('flag','1');
+			$this->db->update('setting',array('lsnk'=>$posisi));
 
 		
 	}

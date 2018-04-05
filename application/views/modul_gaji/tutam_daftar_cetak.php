@@ -38,7 +38,7 @@
                   <td><?php echo $this->cantik_model->getUnit($v->unit_id);?></td>
                   <td><?php echo $this->cantik_model->getStatus($v->status); ?></td>
                   <td>'<?php echo $v->npwp; ?></td>
-                  <td><?php echo $rek->nmbank; ?></td>
+                  <td><?php echo $rek->kelompok_bank; ?></td>
                   <td><?php echo $rek->nmpemilik; ?></td>
                   <td>'<?php echo $rek->norekening; ?></td>
                   <td align="right">'<?php echo $v->nominal; ?></td>
@@ -54,7 +54,7 @@
           }
 ?>
                 <tr>
-                  <th colspan="9">&nbsp;</th>
+                  <th colspan="10">&nbsp;</th>
                   <th>'<?php echo $total; ?></th>
                   <th>&nbsp;</th>
                   <th>'<?php echo $total_pajak; ?></th>
@@ -67,6 +67,10 @@
 <?php
 				}
 ?>
+            </table>
+            <table style="border-collapse:collapse;" border="0" align="center">
+                <tr><td colspan="13">&nbsp;</td></tr>
+                <tr><td colspan="13">&nbsp;</td></tr>
 								<tr>
                   <td colspan="4">
                     Mengetahui,<br />
@@ -83,7 +87,7 @@
                     NIP. <?php echo $bpp->nomor_induk; ?>
                   </td>
                   <td colspan="5">
-                    <?php echo date("d")." ".$this->cantik_model->wordMonth(date("m"))." ".date("Y"); ?><br />
+                    '<?php echo date("d")." ".$this->cantik_model->wordMonth(date("m"))." ".date("Y"); ?><br />
                     Pembuat Daftar,<br />
                     <br /><br /><br /><br />
                     .................................<br />

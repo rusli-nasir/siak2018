@@ -150,7 +150,7 @@ $(document).ready(function(){
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/dpa/realisasi_dpa/SELAIN-APBN/6" >
+                           <a href="<?php echo base_url(); ?>index.php/dpa/realisasi_dpa/SELAIN-APBN/7" >
  <i class="fa fa-pencil-square fa-5x"></i>
                       <h4>DPA</h4>
                       </a>
@@ -161,7 +161,7 @@ $(document).ready(function(){
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/kuitansi/daftar_kuitansi/LN" >
+                           <a href="<?php echo base_url(); ?>index.php/kuitansi/daftar_kuitansi/EM" >
  <i class="fa fa-file-archive-o fa-5x"></i>
                       <h4>Kuitansi</h4>
                       </a>

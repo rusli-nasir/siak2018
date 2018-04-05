@@ -23,22 +23,25 @@ public function __construct(){
 		show_404('page');
 	}
 	
-	function daftar_akun_kas6($kd_kas_2,$kd_kas_3,$kd_kas_4,$kd_kas_5)
+	function daftar_akun_kas6($kode_akun5digit)
 	{
 		/* check session	*/
 		if($this->check_session->user_session() && ($this->check_session->get_level()==100)||($this->check_session->get_level()==11)){
 			/*	Set data untuk main template */
 			$data['user_menu']	= $this->load->view('user_menu','',TRUE);
-			$data['main_menu']	= $this->load->view('main_menu','',TRUE);
+			$data['main_menu']	= $this->load->view('main_menu','',TRUE);	
 			$tahun = $this->setting_model->get_tahun();
 			$subdata['cur_tahun'] = $tahun;
-			$subdata_akun_kas6["result_akun_kas6"] = $this->akun_kas6_model->search_akun_kas6($kd_kas_2,$kd_kas_3,$kd_kas_4,$kd_kas_5);
+			$subdata_akun_kas6["result_akun_kas6"] = $this->akun_kas6_model->get_akun_kas6($kode_akun5digit);
 			$subdata["row_akun_kas6"]	= $this->load->view("akun_kas6/row_akun_kas6",$subdata_akun_kas6,TRUE);
-			$subdata["result_akun_kas2"]	= $this->akun_kas2_model->get_akun_kas2($kd_kas_2);
-			$subdata["result_akun_kas3"]	= $this->akun_kas3_model->get_akun_kas3(array('kd_kas_3'=>$kd_kas_3,'kd_kas_2'=>$kd_kas_2));
-			$subdata["result_akun_kas4"]	= $this->akun_kas4_model->get_akun_kas4(array('kd_kas_4'=>$kd_kas_4,'kd_kas_3'=>$kd_kas_3,'kd_kas_2'=>$kd_kas_2));
-			$subdata["result_akun_kas5"]	= $this->akun_kas5_model->get_akun_kas5(array('kd_kas_5'=>$kd_kas_5,'kd_kas_4'=>$kd_kas_4,'kd_kas_3'=>$kd_kas_3,'kd_kas_2'=>$kd_kas_2));
+			$subdata['result_akun_kas']	= $this->akun_kas2_model->get_akun_sebelum(substr($kode_akun5digit,0,1));
+			$subdata["result_akun_kas2"]	= $this->akun_kas3_model->get_akun_sebelum(substr($kode_akun5digit,0,2));
+			$subdata["result_akun_kas3"]	= $this->akun_kas4_model->get_akun_sebelum(substr($kode_akun5digit,0,3));
+			$subdata["result_akun_kas4"]	= $this->akun_kas5_model->get_akun_sebelum(substr($kode_akun5digit,0,4));
+			$subdata["result_akun_kas5"]	= $this->akun_kas6_model->get_akun_sebelum(substr($kode_akun5digit,0,5));
+
 			$data["main_content"]			= $this->load->view("akun_kas6/daftar_akun_kas6",$subdata,TRUE);
+			
 			/*	Load main template	*/
 			$this->load->view('main_template',$data);
 		}else{

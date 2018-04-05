@@ -12,17 +12,17 @@ var status_edit = true;
 					data:data,
 					type:"POST",
 					success:function(respon){
-                                            if (respon=="berhasil"){
-                                                    refresh_row();
-                                            } else {
-                                                    var r = respon; 
-                                                    while (r.search(/<[^>]*>/)!=-1){
-                                                            r = r.replace(/<[^>]*>/,'');
-                                                    }
-                                                    alert(r);
-                                            }
+                 if (respon=="berhasil"){
+                         refresh_row();
+                 } else {
+                         var r = respon; 
+                         while (r.search(/<[^>]*>/)!=-1){
+                                 r = r.replace(/<[^>]*>/,'');
+                         }
+                         alert(r);
+                 }
 					
-				}
+					}
 				})
 			}
 		})
@@ -181,49 +181,54 @@ var status_edit = true;
                 <hr />
 <div class="debug"></div>
 <?php
+	$akun_kas = isset($result_akun_kas[0])?$result_akun_kas[0]:'';
 	$akun_kas2 = isset($result_akun_kas2[0])?$result_akun_kas2[0]:'';
 	$akun_kas3 = isset($result_akun_kas3[0])?$result_akun_kas3[0]:'';
 	//var_dump($result_output);
 ?>
 <table class="table table-striped table-bordered">
 <tr>
+	<td class="col-md-2">NAMA KAS 1 DIGIT</td>
+	<td ><span id="kd_kas_2"><?=isset($akun_kas->kode_akun1digit)?$akun_kas->kode_akun1digit:''?></span> - <?=isset($akun_kas->nama_akun1digit)?$akun_kas->nama_akun1digit:''?> [ <a href="<?php echo site_url("akun_kas/daftar_akun_kas/")?>" style="text-decoration:underline">lihat</a> ]</td>
+</tr>
+<tr>
 	<td  class="col-md-2">AKUN KAS 2 DIGIT</td>
-	<td ><span id="kd_kas_2"><?=isset($akun_kas2->kd_kas_2)?$akun_kas2->kd_kas_2:''?></span> - <?=isset($akun_kas2->nm_kas_2)?$akun_kas2->nm_kas_2:''?> [ <a href="<?php echo site_url("akun_kas3/daftar_akun_kas3/".$akun_kas2->kd_kas_2)?>" style="text-decoration:underline">lihat</a> ]</td>
+	<td ><span id="kd_kas_2"><?=isset($akun_kas2->kode_akun2digit)?$akun_kas2->kode_akun2digit:''?></span> - <?=isset($akun_kas2->nama_akun2digit)?$akun_kas2->nama_akun2digit:''?> [ <a href="<?php echo site_url("akun_kas2/daftar_akun_kas2/".$akun_kas->kode_akun1digit)?>" style="text-decoration:underline">lihat</a> ]</td>
 </tr>
 <tr>
 	<td class="col-md-2">AKUN KAS 3 DIGIT</td>
-	<td ><span id="kd_kas_3"><?=isset($akun_kas3->kd_kas_3)?$akun_kas3->kd_kas_3:''?></span> - <?=isset($akun_kas3->nm_kas_3)?$akun_kas3->nm_kas_3:''?></td>
+	<td ><span id="kd_kas_3"><?=isset($akun_kas3->kode_akun3digit)?$akun_kas3->kode_akun3digit:''?></span> - <?=isset($akun_kas3->nama_akun3digit)?$akun_kas3->nama_akun3digit:''?></td>
 </tr>
 </table>
 <div id="temp" style="display:none"></div>
 <form id="form_edit_akun_kas4" onsubmit="return false">
-<table  class="table table-striped">
+<table class="table table-striped table-bordered table-hover">
 <thead>
 	<tr>
 		<th class="col-md-2">Kode Kas 4</th>
 		<th class="col-md-9">Nama Kas 4</th>
-		<th class="col-md-1" colspan="2" style="text-align:center">Aksi</th>
+		<!-- <th class="col-md-1" colspan="2" style="text-align:center">Aksi</th> -->
 	</tr>
-	<tr>
+<!-- 	<tr>
 		<th colspan="2" align="center"><input type="text" class="form-control" style="text-align:center" name="filter_akun_kas4" id="filter_akun_kas4" value="- Masukkan kata kunci untuk memfilter data -"></th>
 		<th colspan="2" align="center"><input type="button" class="btn btn-default" style="" name="tampil_semua" id="tampil_semua" value="Tampilkan Semua"></th>
-	</tr>
+	</tr> -->
 </thead>
 <tbody id="row_space">
 <?=isset($row_akun_kas4)?$row_akun_kas4:""?>
 </tbody>
 </table>
 </form>
-<form id="form_add_akun_kas4" onsubmit="return false">
+<!-- <form id="form_add_akun_kas4" onsubmit="return false">
 <input type=hidden name=kd_kas_3 id=kd_kas_3_ed value="<?php echo !empty($akun_kas3->kd_kas_3)?$akun_kas3->kd_kas_3:''; ?>" />
 <table class="table table-striped">
 <tbody>
 <tr id="add_akun_kas4">
 	<td class="col-md-2">
 		<div class="input-group">
-                        <span class="input-group-addon" id="text-addon"><?php echo !empty($akun_kas3->kd_kas_3)?$akun_kas3->kd_kas_3:'';?></span>
-                        <input type="text" id="kd_kas_4" class="validate[required,custom[integer],maxSize[1],minSize[1]] form-control" name="kd_kas_4" style="text-align:center"/>
-                    </div>
+         <span class="input-group-addon" id="text-addon"><?php echo !empty($akun_kas3->kd_kas_3)?$akun_kas3->kd_kas_3:'';?></span>
+         <input type="text" id="kd_kas_4" class="validate[required,custom[integer],maxSize[1],minSize[1]] form-control" name="kd_kas_4" style="text-align:center"/>
+     </div>
 	</td>
 	<td class="col-md-9"><input name="nm_kas_4" id="nm_kas_4" class="validate[required] form-control" type="text"></td>
 	<td align="center" class="col-md-1">
@@ -235,7 +240,7 @@ var status_edit = true;
 </tr>
 </tbody>
 </table>
-</form>
+</form> -->
 
 </div>
 </div>

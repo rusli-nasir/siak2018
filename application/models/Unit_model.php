@@ -92,33 +92,33 @@
                           
                             $kode_unit_ = substr($kd_unit,0,2);
                             $kode_subunit = substr($kd_unit,2,2);
-                            if($kode_unit_ == '41'){
+                            if($kode_unit_ == '14'){
                                 switch ($kode_subunit){
-                                    case '11'       : return 'W11'; break;
-                                    case '12'       : return 'W12'; break;
-                                    case '13'       : return 'W13'; break;
-                                    case '14'       : return 'W14'; break;
+                                    case '01'       : return 'W11'; break;
+                                    case '02'       : return 'W12'; break;
+                                    case '03'       : return 'W13'; break;
+                                    case '04'       : return 'W14'; break;
                                 }
-                            }elseif($kode_unit_ == '42'){
+                            }elseif($kode_unit_ == '15'){
                                 switch ($kode_subunit){
-                                    case '11'       : return 'W21'; break;
-                                    case '12'       : return 'W22'; break;
-                                    case '13'       : return 'W23'; break;
-                                    case '14'       : return 'W24'; break;
+                                    case '01'       : return 'W21'; break;
+                                    case '02'       : return 'W22'; break;
+                                    case '03'       : return 'W23'; break;
+                                    case '04'       : return 'W24'; break;
                                 }
-                            }elseif($kode_unit_ == '43'){
+                            }elseif($kode_unit_ == '16'){
                                 switch ($kode_subunit){
-                                    case '11'       : return 'W31'; break;
-                                    case '12'       : return 'W32'; break;
-                                    case '13'       : return 'W33'; break;
-                                    case '14'       : return 'W34'; break;
+                                    case '01'       : return 'W31'; break;
+                                    case '02'       : return 'W32'; break;
+                                    case '03'       : return 'W33'; break;
+                                    case '04'       : return 'W34'; break;
                                 }
-                            }elseif($kode_unit_ == '44'){
+                            }elseif($kode_unit_ == '17'){
                                 switch ($kode_subunit){
-                                    case '11'       : return 'W41'; break;
-                                    case '12'       : return 'W42'; break;
-                                    case '13'       : return 'W43'; break;
-                                    case '14'       : return 'W44'; break;
+                                    case '01'       : return 'W41'; break;
+                                    case '02'       : return 'W42'; break;
+                                    case '03'       : return 'W43'; break;
+                                    case '04'       : return 'W44'; break;
                                 }
                             }
                        }else{
@@ -209,52 +209,52 @@
                     if((substr($alias,0,2) == 'W1') || (substr($alias,0,2) == 'W2') || (substr($alias,0,2) == 'W3') || (substr($alias,0,2) == 'W4') ) {
                         switch ($alias) {
                             case 'W11':
-                                return '4111';
+                                return '1401';
                                 break;
                             case 'W12':
-                                return '4113';
+                                return '1402';
                                 break;
                             case 'W13':
-                                return '4112';
+                                return '1403';
                                 break;
                             case 'W14':
-                                return '4114';
+                                return '1404';
                                 break;
                             case 'W21':
-                                return '4211';
+                                return '1501';
                                 break;
                             case 'W22':
-                                return '4213';
+                                return '1502';
                                 break;
                             case 'W23':
-                                return '4212';
+                                return '1503';
                                 break;
                             case 'W24':
-                                return '4214';
+                                return '1504';
                                 break;
                             case 'W31':
-                                return '4311';
+                                return '1601';
                                 break;
                             case 'W32':
-                                return '4313';
+                                return '1602';
                                 break;
                             case 'W33':
-                                return '4312';
+                                return '1603';
                                 break;
                             case 'W34':
-                                return '4314';
+                                return '1604';
                                 break;
                             case 'W41':
-                                return '4411';
+                                return '1701';
                                 break;
                             case 'W42':
-                                return '4413';
+                                return '1702';
                                 break;
                             case 'W43':
-                                return '4412';
+                                return '1703';
                                 break;
                             case 'W44':
-                                return '4414';
+                                return '1704';
                                 break;
                             default:
                                 # code...

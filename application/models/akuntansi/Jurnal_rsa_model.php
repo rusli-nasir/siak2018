@@ -45,6 +45,7 @@ class Jurnal_rsa_model extends CI_Model {
         $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
         $hasil['kode_akun'] = $this->db->query('SELECT SUBSTR(kode_usulan_belanja,-6) as kode_akun FROM rsa_kuitansi_detail WHERE id_kuitansi='.$hasil['id_kuitansi'])->row_array()['kode_akun'];
+        $hasil['kode_usulan_belanja'] = $this->db->query('SELECT kode_usulan_belanja FROM rsa_kuitansi_detail WHERE id_kuitansi='.$hasil['id_kuitansi'])->row_array()['kode_usulan_belanja'];
 
 
         $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);

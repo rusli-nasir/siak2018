@@ -23,12 +23,12 @@ Class Kontrak extends CI_Controller {
       if(!isset($_SESSION['tkk']['status_kepeg'])){
         $_SESSION['tkk']['status_kepeg'][0] = 4;
       }
-      
+
       // otomatis set tahun
       if(!isset($_SESSION['tkk']['tahun'])){
         $_SESSION['tkk']['tahun'] = $this->cur_tahun;
       }
-      
+
       // otomatis set seluruh unit
       if(!isset($_SESSION['tkk']['unit_id'])){
         if(substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='42' || substr($_SESSION['rsa_kode_unit_subunit'],0,2)=='91'){
@@ -93,29 +93,35 @@ Class Kontrak extends CI_Controller {
   }
 
   public function proses_lihat(){
-    // print_r($_SESSION); exit;
-    // set session
-    // data yang diklik -> dimasukkan ke dalam session
     unset($_SESSION['tkk']);
+
     $_SESSION['tkk']['tahun'] = $_POST['tahun'];
+
     if(isset($_POST['unit_id'])){
       $_SESSION['tkk']['unit_id'] = $_POST['unit_id'];
+    }else{
+      echo $this->cantik_model->msgGagal("Pilih salah satu unit yang akan ditampilkan data gaji tenaga kontrak-nya."); exit;
     }
+
     if(isset($_POST['status_kepeg'])){
-      // $_SESSION['tkk']['status_kepeg'] = $_POST['status_kepeg'];
       $_SESSION['tkk']['status_kepeg'][0] = $_POST['status_kepeg'];
     }
+
     if(isset($_POST['status'])){
       $_SESSION['tkk']['status'] = $_POST['status'];
+    }else{
+      echo $this->cantik_model->msgGagal("Pilih salah satu status yang akan ditampilkan data gaji tenaga kontrak-nya."); exit;
     }
+
     if(isset($_POST['jnspeg'])){
       $_SESSION['tkk']['jnspeg'] = $_POST['jnspeg'];
     }
+
     if(isset($_POST['bulan'])){
       $_SESSION['tkk']['bulan'] = $_POST['bulan'];
     }
-    echo "1";
-    exit;
+
+    echo 1; exit;
   }
 
   public function showDialogProsesGaji(){
@@ -162,10 +168,6 @@ Class Kontrak extends CI_Controller {
 
 
   public function proses2(){
-    // print_r($_POST);
-    // echo "<pre>";
-    // print_r($_SESSION['tkk']);
-    // echo "</pre>";
     if(!isset($_SESSION['tkk'])){
       echo $this->cantik_model->msgGagal('Pilih kriteria proses gaji tenaga kontrak sebelum melakukan proses'); exit;
     }
@@ -186,7 +188,6 @@ Class Kontrak extends CI_Controller {
     }elseif(isset($_SESSION['tkk']['status']) && is_array($_SESSION['tkk']['status']) && count($_SESSION['tkk']['status'])==1){
       $sql.= " AND `status` = ".$_SESSION['tkk']['status'][0];
     }
-    // echo $sql; exit;
     $q = $this->db->query($sql);
     $row = $q->num_rows();
     if($row > 0){
@@ -196,8 +197,8 @@ Class Kontrak extends CI_Controller {
         $sql = "SELECT * FROM kepeg_tr_dgaji WHERE bulan LIKE '".$_SESSION['tkk']['bulan']."' AND tahun LIKE '".$_SESSION['tkk']['tahun']."' AND pegid = ".$v->id." AND nip LIKE '".$v->nip."'";
         $q2 = $this->db->query($sql);
         if($q2->num_rows()==0){
-          $sql = "INSERT INTO kepeg_tr_dgaji(bulan, tahun, pegid, nip, unitid, pedid, jabid, jnspeg, status, statuspeg, nominalg) VALUES ('".$_SESSION['tkk']['bulan']."', '".$_SESSION['tkk']['tahun']."', '".$v->id."', '".$v->nip."', '".$v->unit_id."', '".$v->ijazah_id."', '".$v->jabatan_id."', '".$v->jnspeg."', '".$v->status."', '".$v->status_kepeg."', '".$this->cantik_model->gajiKontrak($v->ijazah_id)."')";
-          // echo "<br/><small>".$i.". ".$sql."</small>";
+          $sql = "INSERT INTO kepeg_tr_dgaji(bulan, tahun, pegid, nip, unitid, pedid, jabid, jnspeg, status, statuspeg, nominalg) VALUES ('".$_SESSION['tkk']['bulan']."', '".$_SESSION['tkk']['tahun']."', '".$v->id."', '".$v->nip."', '".$v->unit_id."', '".$v->ijazah_id."', '".$v->jabatan_id."', '".$v->jnspeg."', '".$v->status."', '".$v->status_kepeg."', '".$this->cantik_model->get_nominal_tkk($v->jabatan_id, $v->ijazah_id, $v->nip, $v->jnspeg)."')";
+          // echo $sql."<br />";
           $this->db->query($sql);
         }
         $i++;
@@ -292,7 +293,8 @@ Class Kontrak extends CI_Controller {
     $list["submenu"]        = $this->menu_model->show();
     //$data['main_menu']  = $this->load->view('main_menu','',TRUE);
     $data['message']  = validation_errors();
-    $data['filename'] = "daftar_cetak_gaji_tkk_".str_replace(", ", "-", $subdata['daftar_unit'])."_".date('YmdHis').".xls";
+    // $data['filename'] = "daftar_cetak_gaji_tkk_".str_replace(", ", "-", $subdata['daftar_unit'])."_".date('YmdHis').".xls";
+    $data['filename'] = $_SESSION['tkk']['tahun'].$_SESSION['tkk']['bulan']."_daftar_cetak_gaji_tkk_".date('YmdHis').".xls";
     $this->load->view('cetak_template_excel',$data);
   }
 

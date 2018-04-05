@@ -185,25 +185,45 @@ function refresh_row(){
                 </div>
                 <hr />
 <div id="temp" style="display:none"></div>
+<?php
+	$akun_kas = isset($result_akun_kas[0])?$result_akun_kas[0]:'';
+?>
+<table class="table table-striped table-bordered">
+<tbody>
+
+<tr>
+	<td class="col-md-2">KODE KAS 1 DIGIT</td>
+	<td ><span id="kd_kas_2"><?=isset($akun_kas->kode_akun1digit)?$akun_kas->kode_akun1digit:''?></span></td>
+</tr>
+<tr>
+	<td class="col-md-2">NAMA KAS 1 DIGIT</td>
+
+	<td><?=isset($akun_kas->nama_akun1digit)?$akun_kas->nama_akun1digit:''?></td>
+</tr>
+
+</tbody>
+
+</table>
+<div id="temp" style="display:none"></div>
 <form id="form_edit_akun_kas2" onsubmit="return false">
-<table class="table table-striped">
-	<thead>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
 	<tr >
 		<th class="col-md-1" >Kode 2</th>
 		<th class="col-md-10" >Nama Kode 2</th>
-		<th class="col-md-1" colspan="2" style="text-align:center">Aksi</th>
+		<!-- <th class="col-md-1" colspan="2" style="text-align:center">Aksi</th> -->
 	</tr>
-	<tr>
+<!-- 	<tr>
 		<th colspan="2" align="center"><input type="text" name="filter" class="form-control" id="filter_akun_kas2" value="- Masukkan kata kunci untuk memfilter data -" style="text-align:center"></th>
 		<th colspan="2" align="center"><input type="button" name="show_all" class="btn btn-default" id="tampil_semua" value="Tampilkan Semua"></th>
-	</tr>
+	</tr> -->
 	</thead>
 	<tbody id="row_space">
 	<?=isset($row_akun_kas2)?$row_akun_kas2:""?>
 	</tbody>
 </table>
 </form>
-<form id="form_add_akun_kas2" onsubmit="return false">
+<!-- <form id="form_add_akun_kas2" onsubmit="return false">
 <table class="table table-striped">
 <tbody>
 	<tr id="add_akun_kas2">
@@ -214,12 +234,12 @@ function refresh_row(){
 				<button type="submit" class="btn btn-default btn-sm" id="add" aria-label="Left Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
 				<button type="reset" class="btn btn-default btn-sm" id="reset" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 			</div>
-			<!-- <input type="submit" class="btn btn-default" name="submit" id="add" value="simpan"> -->
+			<input type="submit" class="btn btn-default" name="submit" id="add" value="simpan">
 		</td>
 	</tr>
 </tbody>
 </table>
-</form>
+</form> -->
 
 
 </div>

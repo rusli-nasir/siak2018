@@ -4,13 +4,15 @@ $(document).ready(function(){
      // $("#notif-dpa-gup").load( "<?=site_url('dpa/get_notif_dpa_siap/1')?>");
      // $("#notif-dpa-tup").load( "<?=site_url('dpa/get_notif_dpa_siap/3')?>");
      $("#notif-dpa-ks").load( "<?=site_url('dpa/get_notif_dpa_siap/5')?>");
+     $("#notif-tambah-ks-spp-spm").load( "<?=site_url('rsa_tambah_ks/get_notif_approve')?>");
+     $("#notif-ks-spp-spm").load( "<?=site_url('rsa_ks/get_notif_approve')?>");
 });
 </script>
 <div id="page-wrapper" >
             <div id="page-inner">
                 <div class="row">
                     <div class="col-lg-12">
-                     <h2>KELOLA TUP</h2>   
+                     <h2>KELOLA KS</h2>   
                     </div>
                 </div>              
                  <!-- /. ROW  -->
@@ -32,11 +34,13 @@ $(document).ready(function(){
                     <?php if($this->check_session->get_level() == 11) : // KUASA BUU ?>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_tup/daftar_unit_kbuu" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/daftar_unit_kbuu" >
  <i class="fa fa-arrow-circle-down fa-5x"></i>
-                      <h4>TUP</h4>
+                      <h4>KS</h4>
                       </a>
                       </div>
+
+                       <span class="badge badge-danger bg-notif" id="notif-tambah-ks-spp-spm">0</span>
                      
                      
                   </div>
@@ -45,13 +49,42 @@ $(document).ready(function(){
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_tup/daftar_unit" >
+                           <!-- <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/spp_tambah_ks" >
  <i class="fa fa-arrow-circle-down fa-5x"></i>
-                      <h4>TUP</h4>
+                      <h4>KS</h4>
+                      </a> -->
+                      <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/daftar_unit" >
+ <i class="fa fa-arrow-circle-down fa-5x"></i>
+                      <h4>KS</h4>
+                      </a>
+                      </div>
+
+
+                      <span class="badge badge-danger bg-notif" id="notif-tambah-ks-spp-spm">0</span>
+                     
+                     
+                  </div>
+                    
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <a href="<?php echo base_url(); ?>index.php/rsa_ks/daftar_spp" >
+ <i class="fa fa-file fa-5x"></i>
+                      <h4>KS NIHIL</h4>
                       </a>
                       </div>
                      
                      
+                  </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <a href="<?php echo base_url(); ?>index.php/rsa_gup/daftar_spm" >
+ <i class="fa fa-bars fa-5x"></i>
+                      <h4>Daftar SPM</h4>
+                      </a>
+                      </div>
+                     
+
                   </div>
 
                     
@@ -97,7 +130,7 @@ $(document).ready(function(){
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tup/spp_ks" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_ks/daftar_spp" >
  <i class="fa fa-file fa-5x"></i>
                       <h4>KS NIHIL</h4>
                       </a>
@@ -106,20 +139,6 @@ $(document).ready(function(){
                      
                   </div>
 
-
-                  
-                    
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
-                      <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_gup/daftar_spp" >
- <i class="fa fa-bars fa-5x"></i>
-                      <h4>Daftar SPP</h4>
-                      </a>
-                      </div>
-                     
-                     
-                  </div>
-                    
                     
                     
                     <?php elseif($this->check_session->get_level() == 14) : // PPK ?>
@@ -127,27 +146,33 @@ $(document).ready(function(){
 
                   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_tup/spm_tambah_tup" >
+                           <!-- <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/spp_tambah_ks" >
  <i class="fa fa-arrow-circle-down fa-5x"></i>
-                      <h4>TUP</h4>
+                      <h4>KS</h4>
+                      </a> -->
+                      <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/daftar_spm" >
+ <i class="fa fa-arrow-circle-down fa-5x"></i>
+                      <h4>KS</h4>
                       </a>
                       </div>
+
+                      <span class="badge badge-danger bg-notif" id="notif-tambah-ks-spp-spm">0</span>
                      
                      
                   </div>
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tup/spm_tup" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_ks/daftar_spp" >
  <i class="fa fa-file fa-5x"></i>
-                      <h4>TUP NIHIL</h4>
+                      <h4>KS NIHIL</h4>
                       </a>
                       </div>
                      
                      
                   </div>
 
-                                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
                            <a href="<?php echo base_url(); ?>index.php/rsa_gup/daftar_spm" >
  <i class="fa fa-bars fa-5x"></i>
@@ -155,34 +180,40 @@ $(document).ready(function(){
                       </a>
                       </div>
                      
-                     
+
                   </div>
 
                     
                     <?php elseif($this->check_session->get_level() == 2) : // KPA ?>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tambah_tup/spm_tambah_tup_kpa" >
+                           <!-- <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/spp_tambah_ks" >
  <i class="fa fa-arrow-circle-down fa-5x"></i>
-                      <h4>TUP</h4>
+                      <h4>KS</h4>
+                      </a> -->
+                      <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/daftar_spm_kpa" >
+ <i class="fa fa-arrow-circle-down fa-5x"></i>
+                      <h4>KS</h4>
                       </a>
                       </div>
+
+                      <span class="badge badge-danger bg-notif" id="notif-tambah-ks-spp-spm">0</span>
                      
                      
                   </div>
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
-                           <a href="<?php echo base_url(); ?>index.php/rsa_tup/spm_tup_kpa" >
+                           <a href="<?php echo base_url(); ?>index.php/rsa_ks/daftar_spp" >
  <i class="fa fa-file fa-5x"></i>
-                      <h4>TUP NIHIL</h4>
+                      <h4>KS NIHIL</h4>
                       </a>
                       </div>
                      
                      
                   </div>
 
-                                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
                            <a href="<?php echo base_url(); ?>index.php/rsa_gup/daftar_spm" >
  <i class="fa fa-bars fa-5x"></i>
@@ -190,7 +221,7 @@ $(document).ready(function(){
                       </a>
                       </div>
                      
-                     
+
                   </div>
                     
                     <?php elseif($this->check_session->get_level() == 4) : // PUMK ?>
@@ -205,6 +236,22 @@ $(document).ready(function(){
 
 
                   </div>
+
+
+                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                      <div class="div-square">
+                           <!-- <a href="<?php echo base_url(); ?>index.php/rsa_tambah_ks/spp_tambah_ks" >
+ <i class="fa fa-arrow-circle-down fa-5x"></i>
+                      <h4>KS</h4>
+                      </a> -->
+                      <a href="<?php echo base_url(); ?>index.php/rsa_spumk/daftar_spumk" >
+ <i class="fa fa-arrow-circle-down fa-5x"></i>
+                      <h4>SPUMK</h4>
+                      </a>
+                      </div>
+                     
+                     
+                  </div>
                     
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
                       <div class="div-square">
@@ -216,6 +263,9 @@ $(document).ready(function(){
 
 
                   </div>
+
+
+
                     
 
                     <?php endif; ?>

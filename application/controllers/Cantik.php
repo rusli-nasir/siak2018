@@ -173,6 +173,28 @@ Class Cantik extends CI_Controller {
     }
   }
 
+  public function aduhai(){
+    $sql = "SELECT b.nomor, a.nomor AS id, a.total_sumberdana  FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON a.id_tr_sppls = b.id_sppls  WHERE a.proses = 5";
+    $q = $this->db->query($sql);
+    if($q->num_rows()>0){
+      $r = $q->result();
+      $i=1;
+      foreach ($r as $k => $v) {
+        // $akun = explode(",",$v->detail_belanja);
+        // foreach ($akun as $k2 => $v2) {
+          $sql = "UPDATE trx_urut_spm_cair SET str_nomor_trx_spp = '".$v->nomor."', nominal = '".$v->total_sumberdana."' WHERE str_nomor_trx_spm LIKE '".$v->id."'";
+          if($this->db->query($sql)){
+            echo $i." Sukses"; echo "<br />";
+          }else{
+            echo $i.". ".$sql; echo "<br />";
+          }
+          // echo $i.". ".$sql."<br/>";
+        // }
+        $i++;
+      }
+    }
+  }
+
   public function kataorang(){
     // $sql = "SELECT a.tgl_proses, c.kode_akun_tambah, c.kode_usulan_belanja FROM trx_lsphk3 a LEFT JOIN rsa_kuitansi_pihak3 b ON a.id_kuitansi = b.kuitansi_id LEFT JOIN rsa_spm_kontrakpihak3 c ON c.id_kontrak = b.kontrak_id WHERE posisi LIKE 'SPM-FINAL-KBUU' ORDER BY c.kode_usulan_belanja";
     $sql = "SELECT a.tgl_proses, b.kode_usulan_belanja, b.jenis, b.kode_akun_tambah FROM trx_lsphk3 a JOIN rsa_kuitansi_lsphk3 b ON a.id_kuitansi = b.id_kuitansi JOIN rsa_kuitansi_pihak3 c ON b.id_kuitansi = c.kuitansi_id WHERE posisi LIKE 'SPM-FINAL-KBUU' ORDER BY b.jenis";

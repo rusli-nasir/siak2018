@@ -69,7 +69,7 @@ $(document).on("click",".tb-lihat",function(){
 //    var sumber_dana = $('#sumber_dana').val();
     var tahun = $('#tahun').val();
     
-    window.location = "<?=site_url("rsa_tambah_tup/spm_tambah_tup_kbuu/")?>" + unit + '/' + tahun; 
+    window.location = "<?=site_url("rsa_up/spm_up_kbuu/")?>" + unit + '/' + tahun; 
     
 });
 
@@ -124,7 +124,7 @@ $(document).on("click",".tb-lihat",function(){
                             <tbody id="tb-isi" >
                                 <?php foreach($unit_usul as $i => $u){ ?>
                                     <?php if(($u->kode_unit == '41')||($u->kode_unit == '42')||($u->kode_unit == '43')||($u->kode_unit == '44')): ?>
-                                        <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
+                                            <tr rel="<?=$u->kode_unit?>" class="tr-unit" height="25px">
                                                 <td class=""><b><?=$u->kode_unit?></b></td>
                                                 <td class="text-danger"><b><?=$u->nama_unit?></b></td>
                                                 <td class="">&nbsp;</td>
@@ -140,13 +140,13 @@ $(document).on("click",".tb-lihat",function(){
                                             <td style=""><?php setlocale(LC_ALL, 'id_ID.utf8'); echo empty($uu->tgl_proses)?'':strftime("%d %B %Y", strtotime($uu->tgl_proses)); ?></td>
                                             <td align="center">
                                                 <?php if($uu->posisi=='SPM-FINAL-VERIFIKATOR'): ?>
-                                                <button class="btn btn-success tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <button class="btn btn-success btn-sm tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                                 <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
                                                 <?php elseif(($uu->posisi=='SPM-FINAL-KBUU')||($uu->posisi=='SPM-FINAL-BUU')): ?>
-                                                <button class="btn btn-danger tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <button class="btn btn-danger btn-sm tb-lihat" rel="<?=$uu->kode_subunit?>"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                                 <!--<a href="<?=site_url('rsa_up/spm_up_verifikator/').$uu->kode_subunit?>" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</a>-->
                                                 <?php else: ?>
-                                                <button disabled="disabled" class="btn btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
+                                                <button disabled="disabled" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Lihat</button>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>

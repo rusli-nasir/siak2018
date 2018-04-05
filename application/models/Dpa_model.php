@@ -14,12 +14,12 @@ class Dpa_model extends CI_Model {
         // function get_dpa_unit_usul($sumber_dana,$tahun){
         function get_dpa_unit_usul(){
                 $rba = $this->load->database('rba', TRUE);
-                $query1 = "SELECT unit.nama_unit,unit.kode_unit "
-                        . "FROM detail_belanja_ "
-                        . "JOIN unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = unit.kode_unit "
-                        . "WHERE detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' "
-                        . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
-                        . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
+                // $query1 = "SELECT unit.nama_unit,unit.kode_unit "
+                //         . "FROM detail_belanja_ "
+                //         . "JOIN unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = unit.kode_unit "
+                //         . "WHERE detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' "
+                //         . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
+                //         . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
 
                 $query = "SELECT unit.nama_unit,unit.kode_unit "
                         . "FROM unit "
@@ -39,19 +39,19 @@ class Dpa_model extends CI_Model {
             
             $rba = $this->load->database('rba', TRUE);
 
-            $query1 = "SELECT unit.nama_unit,unit.kode_unit "
-                    . "FROM detail_belanja_ "
-                    . "JOIN rba.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba.unit.kode_unit "
-                    . "JOIN rsa.rsa_verifikator_unit ON rba.unit.kode_unit = rsa.rsa_verifikator_unit.kode_unit_subunit "
-                    . "WHERE rsa.rsa_verifikator_unit.id_user_verifikator = '{$id_user_verifikator}' "
-                    . "AND detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' "
-                    . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
-                    . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
+            // $query1 = "SELECT unit.nama_unit,unit.kode_unit "
+            //         . "FROM detail_belanja_ "
+            //         . "JOIN rba_2018.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba_2018.unit.kode_unit "
+            //         . "JOIN rsa_2018.rsa_verifikator_unit ON rba_2018.unit.kode_unit = rsa_2018.rsa_verifikator_unit.kode_unit_subunit "
+            //         . "WHERE rsa_2018.rsa_verifikator_unit.id_user_verifikator = '{$id_user_verifikator}' "
+            //         . "AND detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' "
+            //         . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
+            //         . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
 
             $query = "SELECT unit.nama_unit,unit.kode_unit "
                         . "FROM unit "
-                        . "JOIN rsa.rsa_verifikator_unit ON rba.unit.kode_unit = rsa.rsa_verifikator_unit.kode_unit_subunit "
-                        . "WHERE rsa.rsa_verifikator_unit.id_user_verifikator = '{$id_user_verifikator}' "
+                        . "JOIN rsa_2018.rsa_verifikator_unit ON rba_2018.unit.kode_unit = rsa_2018.rsa_verifikator_unit.kode_unit_subunit "
+                        . "WHERE rsa_2018.rsa_verifikator_unit.id_user_verifikator = '{$id_user_verifikator}' "
                         . "GROUP BY unit.kode_unit "
                         . "ORDER BY unit.kode_unit ASC";
                         
@@ -91,14 +91,14 @@ class Dpa_model extends CI_Model {
         }
 		  function get_program_unit_usul($unit,$sumber_dana,$tahun){
               $rba = $this->load->database('rba', TRUE);
-                $query = "SELECT *,SUM(volume*harga_satuan)as total,rba.unit.nama_unit,rba.kegiatan.nama_kegiatan,rba.output.nama_output,rba.program.nama_program
-FROM rsa.rsa_detail_belanja_
+                $query = "SELECT *,SUM(volume*harga_satuan)as total,rba_2018.unit.nama_unit,rba_2018.kegiatan.nama_kegiatan,rba_2018.output.nama_output,rba_2018.program.nama_program
+FROM rsa_2018.rsa_detail_belanja_
 
-JOIN rba.unit ON LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = rba.unit.kode_unit
+JOIN rba_2018.unit ON LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = rba_2018.unit.kode_unit
 
-LEFT JOIN rba.kegiatan ON rba.kegiatan.kode_kegiatan = SUBSTR(rsa.rsa_detail_belanja_.kode_usulan_belanja,7,2)
-LEFT JOIN rba.output ON kode_output = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) AND rba.output.kode_kegiatan = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2)
-LEFT JOIN rba.program ON kode_program = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) AND rba.program.kode_kegiatan = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) AND rba.program.kode_output = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2)
+LEFT JOIN rba_2018.kegiatan ON rba_2018.kegiatan.kode_kegiatan = SUBSTR(rsa_2018.rsa_detail_belanja_.kode_usulan_belanja,7,2)
+LEFT JOIN rba_2018.output ON kode_output = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) AND rba_2018.output.kode_kegiatan = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2)
+LEFT JOIN rba_2018.program ON kode_program = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) AND rba_2018.program.kode_kegiatan = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) AND rba_2018.program.kode_output = SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2)
  "
                         . "WHERE rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' AND LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = '{$unit}' "
                         . "GROUP BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,6)"
@@ -113,21 +113,25 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(rsa_detail_belanja_.kode_usulan_b
         }
         
         function get_program_unit_usul_idris($unit,$sumber_dana,$tahun){
+
               $rba = $this->load->database('rba', TRUE);
 
-                $query = "SELECT *,SUM(det1.volume*det1.harga_satuan)as total,rba.unit.nama_unit,rba.kegiatan.nama_kegiatan,rba.output.nama_output,rba.program.nama_program
-FROM detail_belanja_ AS det1
+                $query = "SELECT *,SUM(det1.volume*det1.harga_satuan)as total,rba_2018.unit.nama_unit,rba_2018.kegiatan.nama_kegiatan,rba_2018.output.nama_output,rba_2018.program.nama_program
+FROM rba_2018.detail_belanja_ AS det1
 
-JOIN rba.unit ON LEFT(det1.kode_usulan_belanja,2) = rba.unit.kode_unit
+JOIN rba_2018.unit ON LEFT(det1.kode_usulan_belanja,2) = rba_2018.unit.kode_unit
 
-LEFT JOIN rba.kegiatan ON rba.kegiatan.kode_kegiatan = SUBSTR(det1.kode_usulan_belanja,7,2)
-LEFT JOIN rba.output ON kode_output = SUBSTR(det1.kode_usulan_belanja,9,2) AND rba.output.kode_kegiatan = SUBSTR(det1.kode_usulan_belanja,7,2)
-LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AND rba.program.kode_kegiatan = SUBSTR(det1.kode_usulan_belanja,7,2) AND rba.program.kode_output = SUBSTR(det1.kode_usulan_belanja,9,2)
+LEFT JOIN rba_2018.kegiatan ON rba_2018.kegiatan.kode_kegiatan = SUBSTR(det1.kode_usulan_belanja,7,2)
+LEFT JOIN rba_2018.output ON kode_output = SUBSTR(det1.kode_usulan_belanja,9,2) AND rba_2018.output.kode_kegiatan = SUBSTR(det1.kode_usulan_belanja,7,2)
+LEFT JOIN rba_2018.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AND rba_2018.program.kode_kegiatan = SUBSTR(det1.kode_usulan_belanja,7,2) AND rba_2018.program.kode_output = SUBSTR(det1.kode_usulan_belanja,9,2)
  "
                         . "WHERE det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND LEFT(det1.kode_usulan_belanja,2) = '{$unit}' " 
-                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' AND LEFT(det2.kode_usulan_belanja,2) = '{$unit}' GROUP BY LEFT(det2.kode_usulan_belanja,2)  ) "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' AND LEFT(det2.kode_usulan_belanja,2) = '{$unit}' GROUP BY LEFT(det2.kode_usulan_belanja,2)  ) "
                         . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,6)"
                         . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,6) ASC";
+
+        // echo $query; die; 
+
             //var_dump($query);die;
         $q = $rba->query($query);//query($query);
         //var_dump($query);die;
@@ -140,8 +144,8 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
         
 		 function get_jumlah_unit_usul($unit,$sumber_dana,$tahun){
 
-                $query = "SELECT *,rba.unit.nama_unit,rba.unit.kode_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,6) as program,SUM(volume*harga_satuan)as total  FROM rsa_detail_belanja_"
-                        . " JOIN rba.unit ON LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = rba.unit.kode_unit "
+                $query = "SELECT *,rba_2018.unit.nama_unit,rba_2018.unit.kode_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,6) as program,SUM(volume*harga_satuan)as total  FROM rsa_detail_belanja_"
+                        . " JOIN rba_2018.unit ON LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = rba_2018.unit.kode_unit "
                         . "WHERE rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' AND LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = '{$unit}' ";
 
          $q = $this->db->query($query);//query($query);
@@ -155,10 +159,10 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             $rba = $this->load->database('rba',TRUE);
 
-                $query = "SELECT *,rba.unit.nama_unit,rba.unit.kode_unit,SUBSTR(det1.kode_usulan_belanja,7,6) as program,SUM(det1.volume*det1.harga_satuan)as total  FROM detail_belanja_ AS det1"
-                        . " JOIN rba.unit ON LEFT(det1.kode_usulan_belanja,2) = rba.unit.kode_unit "
+                $query = "SELECT *,rba_2018.unit.nama_unit,rba_2018.unit.kode_unit,SUBSTR(det1.kode_usulan_belanja,7,6) as program,SUM(det1.volume*det1.harga_satuan)as total  FROM detail_belanja_ AS det1"
+                        . " JOIN rba_2018.unit ON LEFT(det1.kode_usulan_belanja,2) = rba_2018.unit.kode_unit "
                         . "WHERE det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND LEFT(det1.kode_usulan_belanja,2) = '{$unit}' "
-                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' AND LEFT(det2.kode_usulan_belanja,2) = '{$unit}' GROUP BY LEFT(det2.kode_usulan_belanja,2)  ) " ;
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' AND LEFT(det2.kode_usulan_belanja,2) = '{$unit}' GROUP BY LEFT(det2.kode_usulan_belanja,2)  ) " ;
 
          $q = $rba->query($query);//query($query);
         $result = $q->result();
@@ -167,15 +171,15 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         }
         
-        function get_dpa_unit_impor($unit,$sumber_dana,$tahun){
+        function get_dpa_unit_impor($unit,$tahun){ // $sumber_dana, SUMBER DANA DIHILANGKAN
 //                $rba = $this->load->database('rba', TRUE);
                 $lenunit = strlen($unit);
-                $query = "SELECT MAX(rba.detail_belanja_.impor) AS impor "
-                        . "FROM rba.detail_belanja_ "
+                $query = "SELECT MAX(rba_2018.detail_belanja_.impor) AS impor "
+                        . "FROM rba_2018.detail_belanja_ "
 //                        . "JOIN unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = unit.kode_unit "
-                        . "WHERE LEFT(rba.detail_belanja_.kode_usulan_belanja,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.sumber_dana = '{$sumber_dana}' AND rba.detail_belanja_.tahun = '{$tahun}' "
-                        . "GROUP BY LEFT(rba.detail_belanja_.kode_usulan_belanja,{$lenunit}) "
-                        . "ORDER BY LEFT(rba.detail_belanja_.kode_usulan_belanja,{$lenunit}) ASC";
+                        . "WHERE LEFT(rba_2018.detail_belanja_.kode_usulan_belanja,{$lenunit}) = '{$unit}' AND rba_2018.detail_belanja_.tahun = '{$tahun}' "
+                        . "GROUP BY LEFT(rba_2018.detail_belanja_.kode_usulan_belanja,{$lenunit}) "
+                        . "ORDER BY LEFT(rba_2018.detail_belanja_.kode_usulan_belanja,{$lenunit}) ASC";
                         
                        // echo $query; die;
 
@@ -187,17 +191,17 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         }
         
-        function get_dpa_unit_revisi($unit,$sumber_dana,$tahun){
+        function get_dpa_unit_revisi($unit,$tahun){ // SUMBER DANA DIHILANGKAN
 //                $rba = $this->load->database('rba', TRUE);
                 $lenunit = strlen($unit);
-                $query = "SELECT MAX(rba.detail_belanja_.revisi) AS revisi "
-                        . "FROM rba.detail_belanja_ "
+                $query = "SELECT MAX(rba_2018.detail_belanja_.revisi) AS revisi "
+                        . "FROM rba_2018.detail_belanja_ "
 //                        . "JOIN unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = unit.kode_unit "
-                        . "WHERE LEFT(rba.detail_belanja_.kode_usulan_belanja,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.sumber_dana = '{$sumber_dana}' AND rba.detail_belanja_.tahun = '{$tahun}' "
-                        . "GROUP BY LEFT(rba.detail_belanja_.kode_usulan_belanja,{$lenunit}) "
-                        . "ORDER BY LEFT(rba.detail_belanja_.kode_usulan_belanja,{$lenunit}) ASC";
+                        . "WHERE LEFT(rba_2018.detail_belanja_.kode_usulan_belanja,{$lenunit}) = '{$unit}' AND rba_2018.detail_belanja_.tahun = '{$tahun}' "
+                        . "GROUP BY LEFT(rba_2018.detail_belanja_.kode_usulan_belanja,{$lenunit}) "
+                        . "ORDER BY LEFT(rba_2018.detail_belanja_.kode_usulan_belanja,{$lenunit}) ASC";
                         
-//                        echo $query; die;
+                       // echo $query; die;
 
                 $q = $this->db->query($query);
 
@@ -237,6 +241,9 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 //                        . "GROUP BY LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) "
                         . "ORDER BY LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) ASC";
 
+
+                // echo $query; die;
+
                 $q = $this->db->query($query);
 
 		$result = $q->row();
@@ -245,11 +252,47 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         }
 
-        function get_dpa_unit_rkat($unit,$sumber_dana,$tahun){
-                $rba = $this->load->database('rba', TRUE);
+//         function get_dpa_unit_rkat($unit,$sumber_dana,$tahun){
+//                 $rba = $this->load->database('rba', TRUE);
+
+//                 $query = "SELECT MAX(revisi) AS revisi FROM detail_belanja_ WHERE "
+//                         . "LEFT(detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' "
+//                         . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
+//                         . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
+
+//                 $q = $rba->query($query);
+
+//                 $result = $q->row();
+
+// 		$revisi = empty($result)?'0':$result->revisi ;
+
+//                 $query = "SELECT SUM(detail_belanja_.volume*detail_belanja_.harga_satuan) AS rkat "
+//                         . "FROM detail_belanja_ "
+// //                        . "JOIN unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = unit.kode_unit "
+//                         . "WHERE LEFT(detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' AND revisi = '{$revisi}' "
+//                         . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
+//                         . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
+
+
+//                         // echo $query ; die;
+
+//                 $q = $rba->query($query);
+
+// 		$result = $q->row();
+
+// 		return empty($result)?'0':$result->rkat ;
+
+//         }
+
+
+        function get_dpa_unit_rkat($unit,$tahun,$sumber_dana=""){
+        // echo $sumber_dana; die;
+               $rba = $this->load->database('rba', TRUE);
+            // $this->cur_tahun = $this->setting_model->get_tahun();
+            // $tahun = $this->cur_tahun;
 
                 $query = "SELECT MAX(revisi) AS revisi FROM detail_belanja_ WHERE "
-                        . "LEFT(detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' "
+                        . "LEFT(detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND detail_belanja_.tahun = '{$tahun}' "
                         . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
                         . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
 
@@ -257,23 +300,36 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
                 $result = $q->row();
 
-		$revisi = empty($result)?'0':$result->revisi ;
+        $revisi = empty($result)?'0':$result->revisi ;
+
+        if($sumber_dana==""){
 
                 $query = "SELECT SUM(detail_belanja_.volume*detail_belanja_.harga_satuan) AS rkat "
+                        . "FROM detail_belanja_ "
+//                        . "JOIN unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = unit.kode_unit "
+                        . "WHERE LEFT(detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND detail_belanja_.tahun = '{$tahun}' AND revisi = '{$revisi}' "
+                        . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
+                        . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
+
+        }else{
+
+                    $query = "SELECT SUM(detail_belanja_.volume*detail_belanja_.harga_satuan) AS rkat "
                         . "FROM detail_belanja_ "
 //                        . "JOIN unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = unit.kode_unit "
                         . "WHERE LEFT(detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' AND revisi = '{$revisi}' "
                         . "GROUP BY LEFT(detail_belanja_.kode_usulan_belanja,2) "
                         . "ORDER BY LEFT(detail_belanja_.kode_usulan_belanja,2) ASC";
 
+        }
+
 
                         // echo $query ; die;
 
                 $q = $rba->query($query);
 
-		$result = $q->row();
+        $result = $q->row();
 
-		return empty($result)?'0':$result->rkat ;
+        return empty($result)?'0':$result->rkat ;
 
         }
 
@@ -304,7 +360,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
                 $query = "SELECT SUM(detail_belanja_.volume*detail_belanja_.harga_satuan) AS rsa "
                         . "FROM detail_belanja_ "
-//                        . "JOIN rba.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba.unit.kode_unit "
+//                        . "JOIN rba_2018.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba_2018.unit.kode_unit "
                         . "WHERE SUBSTR(detail_belanja_.kode_usulan_belanja,1,2) = '{$unit}' AND detail_belanja_.sumber_dana = '{$sumber_dana}' AND detail_belanja_.tahun = '{$tahun}' AND detail_belanja_.impor = '{$impor}' "
                         . "GROUP BY SUBSTR(detail_belanja_.kode_usulan_belanja,1,2) ";
 
@@ -354,7 +410,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                 $tanggal_impor = date("Y-m-d H:i:s");
 
                 $query = "INSERT INTO rsa_detail_belanja_ (kode_usulan_belanja,deskripsi,sumber_dana,volume,satuan,harga_satuan,tahun,username,tanggal_transaksi,flag_cetak,revisi,kode_akun_tambah,impor,tanggal_impor) "
-                        . "SELECT kode_usulan_belanja,deskripsi,sumber_dana,volume,satuan,harga_satuan,tahun,username,tanggal_transaksi,flag_cetak,revisi,kode_akun_tambah,'{$impor}' AS impor,'{$tanggal_impor}' AS tanggal_impor FROM rba.detail_belanja_ WHERE LEFT(rba.detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND rba.detail_belanja_.sumber_dana = '{$sumber_dana}' AND rba.detail_belanja_.revisi = '{$revisi}'";
+                        . "SELECT kode_usulan_belanja,deskripsi,sumber_dana,volume,satuan,harga_satuan,tahun,username,tanggal_transaksi,flag_cetak,revisi,kode_akun_tambah,'{$impor}' AS impor,'{$tanggal_impor}' AS tanggal_impor FROM rba_2018.detail_belanja_ WHERE LEFT(rba_2018.detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND rba_2018.detail_belanja_.sumber_dana = '{$sumber_dana}' AND rba_2018.detail_belanja_.revisi = '{$revisi}'";
 
     //            echo $query ; die ;
 
@@ -386,7 +442,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
             $result = $q->row();
             $revisi = empty($result)?'1':($result->revisi + 1 ) ;
             $tanggal_impor = date("Y-m-d H:i:s");
-            $query = "INSERT INTO rba.detail_belanja_b (kode_usulan_belanja,deskripsi,sumber_dana,volume,satuan,harga_satuan,tahun,username,tanggal_transaksi,flag_cetak,revisi,kode_akun_tambah,impor,proses) "
+            $query = "INSERT INTO rba_2018.detail_belanja_b (kode_usulan_belanja,deskripsi,sumber_dana,volume,satuan,harga_satuan,tahun,username,tanggal_transaksi,flag_cetak,revisi,kode_akun_tambah,impor,proses) "
                     . "SELECT kode_usulan_belanja,deskripsi,sumber_dana,volume,satuan,harga_satuan,tahun,username,tanggal_transaksi,flag_cetak,revisi,kode_akun_tambah,impor,proses FROM rsa_detail_belanja_ WHERE LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.impor = '{$impor}'";
 
             //echo $query ; die ;
@@ -412,7 +468,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
                 $query = "SELECT SUM(rsa_detail_belanja_.volume*rsa_detail_belanja_.harga_satuan) AS rsa "
                         . "FROM rsa_detail_belanja_ "
-//                        . "JOIN rba.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba.unit.kode_unit "
+//                        . "JOIN rba_2018.unit ON LEFT(detail_belanja_.kode_usulan_belanja,2) = rba_2018.unit.kode_unit "
                         . "WHERE LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' AND rsa_detail_belanja_.impor = '{$impor}' "
                         . "AND LEFT(rsa_detail_belanja_.proses,1) = '6' "
                         . "GROUP BY LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) ";
@@ -432,23 +488,23 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                 
                 $lenkd = strlen($unit);
 
-                $query = "SELECT LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) AS k_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(rsa_detail_belanja_.volume*rsa_detail_belanja_.harga_satuan) AS jumlah_tot,rsa_detail_belanja_.proses "
+                $query = "SELECT LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) AS k_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) AS kode_rka,rba_2018.program.nama_program,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,SUM(rsa_detail_belanja_.volume*rsa_detail_belanja_.harga_satuan) AS jumlah_tot,rsa_detail_belanja_.proses "
                         . "FROM rsa_detail_belanja_ "
-                        . "JOIN rba.program ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                        . "JOIN rba_2018.program ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba_2018.program.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba_2018.program.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba_2018.program.kode_program "
+                        . "JOIN rba_2018.komponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba_2018.komponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba_2018.komponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba_2018.komponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba_2018.komponen_input.kode_komponen "
+                        . "JOIN rba_2018.subkomponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba_2018.subkomponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba_2018.subkomponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba_2018.subkomponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba_2018.subkomponen_input.kode_komponen AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,15,2) = rba_2018.subkomponen_input.kode_subkomponen "
                         . "WHERE LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) = '{$unit}' AND rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' "
                         . "GROUP BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) "
                         . "ORDER BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) ASC";
                         
-                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
-                        . "FROM rba.detail_belanja_ AS det1 "
-                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba_2018.program.nama_program,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba_2018.detail_belanja_ AS det1 "
+                        . "JOIN rba_2018.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.program.kode_program "
+                        . "JOIN rba_2018.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.komponen_input.kode_komponen "
+                        . "JOIN rba_2018.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba_2018.subkomponen_input.kode_subkomponen "
                         . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
                         . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
-                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
                         . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
                         . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
 
@@ -513,9 +569,9 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             $jml_dpa = 0 ;
 
-            $query1 = "SELECT COUNT(det1.proses) AS jml FROM rsa_detail_belanja_  AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '3'  AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit})  ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) " ;
+            // $query1 = "SELECT COUNT(det1.proses) AS jml FROM rsa_detail_belanja_  AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '3'  AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit})  ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) " ;
 
-            $query = "SELECT COUNT(det1.proses) AS jml FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '3' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) ) AND (det1.kode_usulan_belanja,det1.kode_akun_tambah) NOT IN ( SELECT rsa_kuitansi_detail.kode_usulan_belanja,rsa_kuitansi_detail.kode_akun_tambah FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi_detail.id_kuitansi = rsa_kuitansi.id_kuitansi  WHERE SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa_kuitansi_detail.tahun = '{$tahun}' AND rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' )" ;
+            $query = "SELECT COUNT(det1.proses) AS jml FROM rsa_2018.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '3' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_2018.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) ) AND (det1.kode_usulan_belanja,det1.kode_akun_tambah) NOT IN ( SELECT rsa_kuitansi_detail.kode_usulan_belanja,rsa_kuitansi_detail.kode_akun_tambah FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi_detail.id_kuitansi = rsa_kuitansi.id_kuitansi  WHERE SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa_kuitansi_detail.tahun = '{$tahun}' AND rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' )" ;
 
 
             // echo $query; die;
@@ -597,11 +653,11 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
         function get_rsa_program_usul($unit,$sumber_dana,$tahun){
 //                $rba = $this->load->database('rba', TRUE);
                 $lenunit = strlen($unit);
-                $query = "SELECT LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) AS k_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(rsa_detail_belanja_.volume*rsa_detail_belanja_.harga_satuan) AS jumlah_tot,rsa_detail_belanja_.proses "
+                $query = "SELECT LEFT(rsa_detail_belanja_.kode_usulan_belanja,2) AS k_unit,SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) AS kode_rka,rba_2018.program.nama_program,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,SUM(rsa_detail_belanja_.volume*rsa_detail_belanja_.harga_satuan) AS jumlah_tot,rsa_detail_belanja_.proses "
                         . "FROM rsa_detail_belanja_ "
-                        . "JOIN rba.program ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                        . "JOIN rba_2018.program ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba_2018.program.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba_2018.program.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba_2018.program.kode_program "
+                        . "JOIN rba_2018.komponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba_2018.komponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba_2018.komponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba_2018.komponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba_2018.komponen_input.kode_komponen "
+                        . "JOIN rba_2018.subkomponen_input ON SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,2) = rba_2018.subkomponen_input.kode_kegiatan AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,9,2) = rba_2018.subkomponen_input.kode_output AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,11,2) = rba_2018.subkomponen_input.kode_program AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,13,2) = rba_2018.subkomponen_input.kode_komponen AND SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,15,2) = rba_2018.subkomponen_input.kode_subkomponen "
                         . "WHERE LEFT(rsa_detail_belanja_.kode_usulan_belanja,{$lenunit}) = '{$unit}' AND rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_detail_belanja_.tahun = '{$tahun}' AND LEFT(rsa_detail_belanja_.proses,1) >= '3' "
                         . "GROUP BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) "
                         . "ORDER BY SUBSTR(rsa_detail_belanja_.kode_usulan_belanja,7,10) ASC";
@@ -621,18 +677,18 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                 
                 $lenkd = strlen($unit);
 
-                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
-                        . "FROM rba.detail_belanja_ AS det1 "
-                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba_2018.program.nama_program,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba_2018.detail_belanja_ AS det1 "
+                        . "JOIN rba_2018.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.program.kode_program "
+                        . "JOIN rba_2018.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.komponen_input.kode_komponen "
+                        . "JOIN rba_2018.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba_2018.subkomponen_input.kode_subkomponen "
                         . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
                         . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
-                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
                         . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
                         . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
 						
-						// echo $query; die;
+						// echo $query2; die;
 
                 $q= $this->db->query($query2);
 
@@ -681,14 +737,14 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                 
                 $lenkd = strlen($unit);
 
-                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
-                        . "FROM rba.detail_belanja_ AS det1 "
-                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba_2018.program.nama_program,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba_2018.detail_belanja_ AS det1 "
+                        . "JOIN rba_2018.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.program.kode_program "
+                        . "JOIN rba_2018.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.komponen_input.kode_komponen "
+                        . "JOIN rba_2018.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba_2018.subkomponen_input.kode_subkomponen "
                         . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
                         . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
-                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
                         . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
                         . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
                         
@@ -741,14 +797,14 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                 
                 $lenkd = strlen($unit);
 
-                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
-                        . "FROM rba.detail_belanja_ AS det1 "
-                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba_2018.program.nama_program,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba_2018.detail_belanja_ AS det1 "
+                        . "JOIN rba_2018.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.program.kode_program "
+                        . "JOIN rba_2018.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.komponen_input.kode_komponen "
+                        . "JOIN rba_2018.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba_2018.subkomponen_input.kode_subkomponen "
                         . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
                         . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
-                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
                         . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
                         . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
 
@@ -799,14 +855,14 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                 
                 $lenkd = strlen($unit);
 
-                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba.program.nama_program,rba.komponen_input.nama_komponen,rba.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
-                        . "FROM rba.detail_belanja_ AS det1 "
-                        . "JOIN rba.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.program.kode_program "
-                        . "JOIN rba.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.komponen_input.kode_komponen "
-                        . "JOIN rba.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba.subkomponen_input.kode_subkomponen "
+                $query2 = "SELECT SUBSTR(det1.kode_usulan_belanja,1,2) AS k_unit,SUBSTR(det1.kode_usulan_belanja,7,10) AS kode_rka,rba_2018.program.nama_program,rba_2018.komponen_input.nama_komponen,rba_2018.subkomponen_input.nama_subkomponen,SUM(det1.volume*det1.harga_satuan) AS jumlah_tot "
+                        . "FROM rba_2018.detail_belanja_ AS det1 "
+                        . "JOIN rba_2018.program ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.program.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.program.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.program.kode_program "
+                        . "JOIN rba_2018.komponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.komponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.komponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.komponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.komponen_input.kode_komponen "
+                        . "JOIN rba_2018.subkomponen_input ON SUBSTR(det1.kode_usulan_belanja,7,2) = rba_2018.subkomponen_input.kode_kegiatan AND SUBSTR(det1.kode_usulan_belanja,9,2) = rba_2018.subkomponen_input.kode_output AND SUBSTR(det1.kode_usulan_belanja,11,2) = rba_2018.subkomponen_input.kode_program AND SUBSTR(det1.kode_usulan_belanja,13,2) = rba_2018.subkomponen_input.kode_komponen AND SUBSTR(det1.kode_usulan_belanja,15,2) = rba_2018.subkomponen_input.kode_subkomponen "
                         . "WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenkd}) = '{$unit}' "
                         . "AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' "
-                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
+                        . "AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE LEFT(det2.kode_usulan_belanja,{$lenkd}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,{$lenkd})  ) "
                         . "GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10) "
                         . "ORDER BY SUBSTR(det1.kode_usulan_belanja,7,10) ASC";
                         
@@ -1055,6 +1111,11 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 			}
 		}
 		function get_single_output($where,$field){
+                // vdebug($where);
+
+            echo '<pre>';
+            var_dump($where);
+            
 					$rba = $this->load->database('rba', TRUE);
 					$query = $rba->get('output')->row();
 
@@ -1066,9 +1127,11 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 				}
 		}
 		function get_single_program($where,$field){
+            // vdebug($where);
 			$rba = $this->load->database('rba', TRUE);
 				$rba->where($where);
 				$query = $rba->get('program')->row();
+
 				if(strlen(trim($field))<=0){
 					if(count($query)>0){
 						return $query;
@@ -1099,13 +1162,51 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         function get_kroscek_akun($sumber_dana,$tahun){
 
+            $sql = "SELECT ta.kdunit,ta.kdsubsubunit,td.nama_sub_subunit AS unit,ta.kode_usulan_belanja,ta.anggaran,tc.serapan,tb.revisi
+                    FROM (
+                        SELECT SUBSTR(t1.kode_usulan_belanja,1,2) AS kdunit,SUBSTR(t1.kode_usulan_belanja,1,6) AS kdsubsubunit,SUBSTR(t1.kode_usulan_belanja,1,22) as kode_usulan_belanja,SUM(t1.volume * t1.harga_satuan) AS anggaran,t1.revisi
+                        FROM rba_2018.detail_belanja_ AS t1
+                        WHERE t1.sumber_dana = '{$sumber_dana}' AND t1.tahun = '{$tahun}'
+                        GROUP BY SUBSTR(t1.kode_usulan_belanja,1,22), t1.revisi
+                        ORDER BY SUBSTR(t1.kode_usulan_belanja,1,22), t1.revisi
+                        ) AS ta
+                    LEFT JOIN(
+                        SELECT SUBSTR(t3.kode_usulan_belanja,1,2) AS kdunit,SUBSTR(t3.kode_usulan_belanja,1,22) as kode_usulan_belanja,SUM(t3.volume * t3.harga_satuan) AS serapan,t3.revisi
+                        FROM rsa_2018.rsa_detail_belanja_ AS t3
+                        WHERE t3.sumber_dana = '{$sumber_dana}' AND t3.tahun = '{$tahun}'
+                        GROUP BY SUBSTR(t3.kode_usulan_belanja,1,22), t3.revisi
+                        ORDER BY SUBSTR(t3.kode_usulan_belanja,1,22), t3.revisi
+                        ) AS tc
+                    ON ta.kode_usulan_belanja = tc.kode_usulan_belanja AND ta.revisi = tc.revisi
+                    JOIN
+                        (
+                        SELECT SUBSTR(t2.kode_usulan_belanja,1,2) AS kdunit, MAX(t2.revisi) AS revisi
+                        FROM rba_2018.detail_belanja_ AS t2
+                        WHERE t2.sumber_dana = '{$sumber_dana}' AND t2.tahun = '{$tahun}'
+                        GROUP BY SUBSTR(t2.kode_usulan_belanja,1,2)
+                        ORDER BY SUBSTR(t2.kode_usulan_belanja,1,2)
+                        ) AS tb
+                    ON ta.kdunit = tb.kdunit AND ta.revisi = tb.revisi
+                    JOIN rba_2018.sub_subunit AS td ON ta.kdsubsubunit = td.kode_sub_subunit
+                    ORDER BY ta.kdunit,ta.kode_usulan_belanja,tb.revisi
+                    " ;
+            $q = $this->db->query($sql);
+            $data = $q->result_array() ;
+        // vdebug($data);
+        // echo '<pre>'; var_dump($data); echo '</pre>';  die;
+            return $data ; 
+        }
+
+
+        function get_kroscek_akun_($sumber_dana,$tahun){ // FUNGSI LAMA
+
             // $rba = $this->load->database('rba', TRUE);
 
-            // $str1 = "(SELECT rba.detail_belanja_.kode_usulan_belanja FROM rba.detail_belanja_ WHERE rba.detail_belanja_.sumber_dana = 'SELAIN-APBN' GROUP BY rba.detail_belanja_.kode_usulan_belanja) UNION DISTINCT (SELECT rsa.rsa_detail_belanja_.kode_usulan_belanja FROM rsa.rsa_detail_belanja_ WHERE rsa.rsa_detail_belanja_.sumber_dana = 'SELAIN-APBN' AND GROUP BY rsa.rsa_detail_belanja_.kode_usulan_belanja) ORDER BY kode_usulan_belanja ASC" ;
+            // $str1 = "(SELECT rba_2018.detail_belanja_.kode_usulan_belanja FROM rba_2018.detail_belanja_ WHERE rba_2018.detail_belanja_.sumber_dana = 'SELAIN-APBN' GROUP BY rba_2018.detail_belanja_.kode_usulan_belanja) UNION DISTINCT (SELECT rsa_2018.rsa_detail_belanja_.kode_usulan_belanja FROM rsa_2018.rsa_detail_belanja_ WHERE rsa_2018.rsa_detail_belanja_.sumber_dana = 'SELAIN-APBN' AND GROUP BY rsa_2018.rsa_detail_belanja_.kode_usulan_belanja) ORDER BY kode_usulan_belanja ASC" ;
 
             $rba = $this->load->database('rba', TRUE);
 
-            $query = "SELECT rba.unit.kode_unit FROM rba.unit GROUP BY rba.unit.kode_unit ORDER BY rba.unit.kode_unit" ; 
+            $query = "SELECT rba_2018.unit.kode_unit FROM rba_2018.unit GROUP BY rba_2018.unit.kode_unit ORDER BY rba_2018.unit.kode_unit" ; 
 
             $q = $rba->query($query);
 
@@ -1132,7 +1233,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
                     $lenunit = strlen($unit);
 
 
-                    $str = "SELECT rba.detail_belanja_.kode_usulan_belanja FROM rba.detail_belanja_ WHERE SUBSTR(rba.detail_belanja_.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rba.detail_belanja_.sumber_dana = '{$sumber_dana}' AND rba.detail_belanja_.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) )  GROUP BY rba.detail_belanja_.kode_usulan_belanja ORDER BY rba.detail_belanja_.kode_usulan_belanja ASC" ;
+                    $str = "SELECT rba_2018.detail_belanja_.kode_usulan_belanja FROM rba_2018.detail_belanja_ WHERE SUBSTR(rba_2018.detail_belanja_.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rba_2018.detail_belanja_.sumber_dana = '{$sumber_dana}' AND rba_2018.detail_belanja_.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) )  GROUP BY rba_2018.detail_belanja_.kode_usulan_belanja ORDER BY rba_2018.detail_belanja_.kode_usulan_belanja ASC" ;
 
                     $query = $rba->query($str);
 
@@ -1164,7 +1265,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             // $rba = $this->load->database('rba', TRUE);
 
-            // $query = "SELECT rba.unit.kode_unit FROM rba.unit GROUP BY rba.unit.kode_unit ORDER BY rba.unit.kode_unit" ; 
+            // $query = "SELECT rba_2018.unit.kode_unit FROM rba_2018.unit GROUP BY rba_2018.unit.kode_unit ORDER BY rba_2018.unit.kode_unit" ; 
 
             // $q = $rba->query($query);
 
@@ -1190,7 +1291,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
                     $lenunit = strlen($unit);
 
-                    $str = "SELECT rsa.rsa_detail_belanja_.kode_usulan_belanja FROM rsa.rsa_detail_belanja_ WHERE SUBSTR(rsa.rsa_detail_belanja_.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa.rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa.rsa_detail_belanja_.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) )  GROUP BY rsa.rsa_detail_belanja_.kode_usulan_belanja ORDER BY rsa.rsa_detail_belanja_.kode_usulan_belanja ASC" ;
+                    $str = "SELECT rsa_2018.rsa_detail_belanja_.kode_usulan_belanja FROM rsa_2018.rsa_detail_belanja_ WHERE SUBSTR(rsa_2018.rsa_detail_belanja_.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND rsa_2018.rsa_detail_belanja_.sumber_dana = '{$sumber_dana}' AND rsa_2018.rsa_detail_belanja_.revisi = ( SELECT MAX(det2.revisi) FROM rsa_2018.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) )  GROUP BY rsa_2018.rsa_detail_belanja_.kode_usulan_belanja ORDER BY rsa_2018.rsa_detail_belanja_.kode_usulan_belanja ASC" ;
 
                     $query = $rsa->query($str);
 
@@ -1313,7 +1414,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         function get_nama_sub_subunit($kode_sub_subunit){
 
-            $str = "SELECT rba.sub_subunit.nama_sub_subunit FROM rba.sub_subunit WHERE rba.sub_subunit.kode_sub_subunit = '{$kode_sub_subunit}'" ;
+            $str = "SELECT rba_2018.sub_subunit.nama_sub_subunit FROM rba_2018.sub_subunit WHERE rba_2018.sub_subunit.kode_sub_subunit = '{$kode_sub_subunit}'" ;
 
             $query = $this->db->query($str);
 
@@ -1327,7 +1428,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             $unit = substr($kode,0,2);
 
-            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rba.detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba.detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,2) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY det1.kode_usulan_belanja" ;
+            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rba_2018.detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rba_2018.detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,2) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY det1.kode_usulan_belanja" ;
 
             // echo $str ; die;
 
@@ -1345,7 +1446,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
         function get_rsa($kode,$sumber_dana,$tahun){
 
-            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rsa.rsa_detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.proses > 0 AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE det2.kode_usulan_belanja = '{$kode}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY det1.kode_usulan_belanja" ;
+            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rsa_2018.rsa_detail_belanja_ AS det1 WHERE det1.kode_usulan_belanja = '{$kode}' AND det1.proses > 0 AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_2018.rsa_detail_belanja_ AS det2 WHERE det2.kode_usulan_belanja = '{$kode}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY LEFT(det2.kode_usulan_belanja,2) ) GROUP BY det1.kode_usulan_belanja" ;
 
             $query = $this->db->query($str);
 
@@ -1363,7 +1464,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             $lenunit = strlen($unit) ;
 
-            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND SUBSTR(det1.proses,1,1) = '6' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10)" ;
+            $str = "SELECT SUM(det1.volume * det1.harga_satuan) AS jumlah FROM rsa_2018.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND SUBSTR(det1.proses,1,1) = '6' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_2018.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,7,10)" ;
 
             // echo $str ;  die;
 
@@ -1383,7 +1484,7 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             $lenunit = strlen($unit) ;
 
-            $str = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,$lenunit) " ;
+            $str = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa_2018.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_2018.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,$lenunit) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,$lenunit) " ;
 
 
             // echo $str ; die ;
@@ -1404,9 +1505,9 @@ LEFT JOIN rba.program ON kode_program = SUBSTR(det1.kode_usulan_belanja,11,2) AN
 
             $lenunit = strlen($unit) ;
 
-            $str1 = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,$lenunit) " ;
+            $str1 = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa_2018.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_2018.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,$lenunit) ) GROUP BY SUBSTR(det1.kode_usulan_belanja,1,$lenunit) " ;
 
-            $str = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) ) AND (det1.kode_usulan_belanja,det1.kode_akun_tambah) NOT IN ( SELECT rsa_kuitansi_detail.kode_usulan_belanja,rsa_kuitansi_detail.kode_akun_tambah FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi_detail.id_kuitansi = rsa_kuitansi.id_kuitansi  WHERE SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,7,10) = '{$kode}' AND rsa_kuitansi_detail.sumber_dana = '{$sumber_dana}' AND rsa_kuitansi_detail.tahun = '{$tahun}' AND rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' )" ;
+            $str = "SELECT COUNT(det1.proses) AS jml_proses FROM rsa_2018.rsa_detail_belanja_ AS det1 WHERE SUBSTR(det1.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(det1.kode_usulan_belanja,7,10) = '{$kode}' AND det1.sumber_dana = '{$sumber_dana}' AND det1.tahun = '{$tahun}' AND SUBSTR(det1.proses,1,1) = '{$id_proses}' AND SUBSTR(det1.proses,2,1) = '{$jenis}' AND det1.revisi = ( SELECT MAX(det2.revisi) FROM rsa_2018.rsa_detail_belanja_ AS det2 WHERE SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND det2.sumber_dana = '{$sumber_dana}' AND det2.tahun = '{$tahun}' GROUP BY SUBSTR(det2.kode_usulan_belanja,1,{$lenunit}) ) AND (det1.kode_usulan_belanja,det1.kode_akun_tambah) NOT IN ( SELECT rsa_kuitansi_detail.kode_usulan_belanja,rsa_kuitansi_detail.kode_akun_tambah FROM rsa_kuitansi_detail JOIN rsa_kuitansi ON rsa_kuitansi_detail.id_kuitansi = rsa_kuitansi.id_kuitansi  WHERE SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,1,{$lenunit}) = '{$unit}' AND SUBSTR(rsa_kuitansi_detail.kode_usulan_belanja,7,10) = '{$kode}' AND rsa_kuitansi_detail.sumber_dana = '{$sumber_dana}' AND rsa_kuitansi_detail.tahun = '{$tahun}' AND rsa_kuitansi.aktif = '1' AND rsa_kuitansi.cair = '0' )" ;
 
 
             // echo $str ; die ;

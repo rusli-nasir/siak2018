@@ -17,6 +17,40 @@
 
 
                     });
+
+			$(document).on("click","#createspp",function(){
+
+                            window.location = "<?=site_url("rsa_tambah_ks/spp_tambah_ks")?>/" ;
+
+                            // alert('t');
+
+
+
+                    });
+
+			$(".doc-posisi").each(function(){
+         		var string = $(this).text() ,substring = "DITOLAK";
+         		if(string.indexOf(substring) !== -1){
+         				$(this).addClass('danger');
+         		}
+
+         		/*
+
+				<?php var_dump($_SESSION); ?>
+         		*/
+
+         		string = $(this).text() ,substring = "SPM-FINAL-KBUU";
+         		if(string.indexOf(substring) !== -1){
+         				$(this).addClass('info');
+         		}
+
+         		// string = $(this).text() ,substring = "SPP-DRAFT";
+         		// if(string.indexOf(substring) !== -1){
+         		// 		$(this).addClass('success');
+         		// }
+
+         });
+			
         });
         
         
@@ -27,7 +61,7 @@
                 
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>DAFTAR SPP KS</h2> 
+                        <h2>DAFTAR SPP</h2> 
                     </div>
                 </div>
                 <hr />
@@ -47,7 +81,7 @@
 									<button type="button" class="btn btn-primary btn-sm" id="pilih_tahun">Pilih Tahun</button>
 								</div>
 								<div class="col-md-7">
-									<button class="btn btn-danger" id="createspp" style="margin: 0 auto; width: 40%; display: block;" data-original-title="" title=""><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create SPP</button>
+									<button class="btn btn-danger" type="button" id="createspp" style="margin: 0 auto; width: 40%; display: block;" data-original-title="" title=""><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create SPP</button>
 								</div>
 							</div>
 						</div>
@@ -61,10 +95,12 @@
 					<thead>
 					<tr>
 						<th class="text-center col-md-1">No</th>
-                                                <th class="text-center col-md-3">Nomor</th>
-						<th class="text-center col-md-3">Tanggal</th>
-						<th class="text-center col-md-3">Status</th>
-						<th class="text-center col-md-2">Lihat</th>
+                        <th class="text-center col-md-2">SPP</th>
+                        <th class="text-center col-md-2">SPM</th>
+						<th class="text-center col-md-2">Tanggal</th>
+						<th class="text-center col-md-2">Nominal</th>
+						<th class="text-center col-md-2">Status</th>
+						<th class="text-center col-md-1">Lihat</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -74,17 +110,19 @@
 	?>
 					<tr>
 						<td class="text-center"><?php echo $key + 1; ?>.</td>
-						<td class="text-center"><?php echo $value->str_nomor_trx; ?></td>
-                                                <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_proses)); ?><br /></td>
-						<td class="text-center"><?php echo $value->posisi; ?></td>
-						<td class="text-center">&nbsp;</td>
+						<td class="text-center"><?php echo $value->str_nomor_trx_spp; ?></td>
+						<td class="text-center"><?php echo $value->str_nomor_trx_spm; ?></td>
+                        <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_proses)); ?><br /></td>
+                        <td class="text-center"><?php echo number_format($value->jumlah_bayar, 0, ",", "."); ?></td>
+						<td class="text-center doc-posisi"><?php echo $value->posisi; ?></td>
+						<td class="text-center"><b>[ <a href="<?=site_url('/rsa_tambah_ks/spp_tambah_ks_lihat/').urlencode(base64_encode($value->str_nomor_trx_spp))?>">L</a> | <a href="<?=site_url('/kuitansi/daftar_kuitansi/KS/').$cur_tahun.'/'.$kode_unit_subunit.'/'.urlencode(base64_encode($value->str_nomor_trx_spm))?>">C</a> ]</b></td>
 					</tr>
 	<?php
 			}
 		}else{
 	?>
 					<tr>
-						<td colspan="5" class="text-center alert-warning">
+						<td colspan="7" class="text-center alert-warning">
 						Tidak ada data
 						</td>
 					</tr>
@@ -92,7 +130,7 @@
 		}
 	?>
 					<tr>
-						<td colspan="5" >&nbsp;</td>
+						<td colspan="7" >&nbsp;</td>
 					</tr>
                                         </tbody>
 				</table>

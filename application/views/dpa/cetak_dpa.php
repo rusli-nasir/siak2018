@@ -58,9 +58,11 @@ $('#myTabs li:eq(2) a').tab('show')
 <div id="page-wrapper" >
 <div id="page-inner">
  <div id="temp" style="display:none"></div> 
- <?php //foreach($unit_usul as $i => $u){ 
- ini_set('display_errors', 0);
+ <?php 
+ //foreach($unit_usul as $i => $u){ 
+ // ini_set('display_errors', 0);
  $u = isset($result_program_usul[0])?$result_program_usul[0]:'';
+ // vdebug($u);
  //var_dump($u);
  $total = isset($result_jumlah_usul[0])?$result_jumlah_usul[0]:'';
  ?>
@@ -111,6 +113,8 @@ $('#myTabs li:eq(2) a').tab('show')
 						<li>Peraturan Majelis Wali Amanat Universitas Diponegoro Nomor 7 Tahun 2016 tentang Kebijakan Umum Universitas Diponegoro;</li>
 						<li>Peraturan Rektor Nomor 4 Tahun 2016 tentang Organisasi dan Tata Kerja Unsur-Unsur Dibawah Rektor Universitas Diponegoro;</li>
 						<li>Peraturan Rektor Universitas Diponegoro Nomor 16 tahun 2016, tentang Rencana Kerja dan Anggaran Tahun 2017;</li>
+						<li>Peraturan Rektor Diponegoro Nomor 07 Tahun 2017, tentang Perubahan atas Peraturan Rektor Nomor 16 Tahun 2017, tentang Rencana Kerja dan Anggaran Tahunan Universitas Diponegoro Tahun 2017</li>
+						<li>Peraturan Rektor Diponegoro Nomor 17 Tahun 2017, tentang Perubahan Kedua atas Peraturan Rektor Nomor 16 Tahun 2017, tentang Rencana Kerja dan Anggaran Tahunan Universitas Diponegoro Tahun 2017</li>
 					</ol>
 					
 				B. Dengan ini disahkan alokasi anggaran untuk :
@@ -130,7 +134,7 @@ $('#myTabs li:eq(2) a').tab('show')
 						}else if ($u->sumber_dana=="APBN-LAINNYA"){
 							echo "SPI - SILPA - PINJAMAN";
 						}
-					?>:&nbsp; Rp. <?=number_format($total->total,0,",",".")?>&nbsp;(<?=$terbilang?> rupiah) </li>
+					?>:&nbsp; Rp <?=number_format($total->total,0,",",".")?>&nbsp;(<?=$terbilang?> rupiah) </li>
 				</ol>
 				D. Pernyataan syarat dan ketentuan: 
 				<ol type="1" style=" text-align: justify;">
@@ -145,7 +149,7 @@ $('#myTabs li:eq(2) a').tab('show')
 				<td colspan="1" align="left">
 			<?php
 			$revisi=$u->impor;
-			$tgl=$u->tanggal_impor;
+			$tgl = '2017-12-31'; //$u->tanggal_impor;
 			$revisix=$revisi-1;
 			if($revisix==0){
 			?>
@@ -154,8 +158,8 @@ $('#myTabs li:eq(2) a').tab('show')
 			<?php
 			}else{
 			?>
-			Revisi : <?=$revisix?><br>
-			Tanggal : <?=date_format($tgl, 'Y-m-d H:i:s');?>
+			Revisi : <?php echo '0'; // $revisix; ?><br>
+			Tanggal : <?php echo $tgl; // date_format($tgl, 'Y-m-d H:i:s');?>
 			<?php
 			}
 			?>
@@ -170,8 +174,8 @@ $('#myTabs li:eq(2) a').tab('show')
 					
 					<br>
 					<br>
-					Dr. Darsono, SE, Akt, MBA<br>
-					NIP. 1962081319900110011
+					Dr. Darsono, S.E., Akt., MBA.<br>
+					NIP 1962081319900110011
 				</div>
 				</td>
 			</tr>
@@ -213,168 +217,93 @@ $('#myTabs li:eq(2) a').tab('show')
 				<td colspan="4" align="left" ><br><br>UNIT KERJA/SUKPA: <?=$u->kode_unit?> (<?=$u->nama_unit?>)</td>
 			</tr>
 			<tr>
-				<td colspan="4" align="left">TOTAL ANGGARAN: <b>Rp. <span class="total_global_0"></span><?=number_format($total->total, 0, ',', '.');?></b></td>
+				<td colspan="4" align="left">TOTAL ANGGARAN: <b>Rp <span class="total_global_0"></span><?=number_format($total->total, 0, ',', '.');?></b></td>
 			</tr>
 			<tr height="50px">
-				<th width="30%" style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>TUJUAN</b></th>
-				<th width="30%" style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>SASARAN</b></th>
-				<th width="30%"style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>PROGRAM</b></th>
-				<th width="10%"style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>JUMLAH (RP)</b></th>
+				<th width="30%" style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>TUJUAN/SASARAN</b></th>
+				<th width="30%" style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>PROGRAM</b></th>
+				<th width="30%" style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>IKU</b></th>
+				<th width="10%" style="vertical-align:middle;text-align:center;border:1px solid #000;"  align="center"><b>JUMLAH (RP)</b></th>
 			</tr>
-		 <?php // BISMILLAAH
-		 /*
-			$i=0;
-			foreach($result_program_usul as $r){
-				$kode_usulan=$r->kode_usulan_belanja;
-				$k[$i]=substr($kode_usulan,6,2);
-				$i++;
-			}
-			$k=array_unique($k);
-			//var_dump($k);exit;
-			$i=0;
-			foreach($result_program_usul as $r){
-				$kode_usulan=$r->kode_usulan_belanja;
-				$j[substr($kode_usulan,6,2)][$i]=substr($kode_usulan,8,2);
-				$i++;
-			}
-			//$j=array_unique($j);
-			//var_dump($j);exit;
-			$i=0;
-			foreach($result_program_usul as $r){
-				$kode_usulan=$r->kode_usulan_belanja;
-				$l[substr($kode_usulan,8,2)][$i]=array(substr($kode_usulan,10,2),$r->total);
-				$i++;
-			}
-			foreach($j as $a => $b){
-				$j[$a]=array_unique($b);
-			}
-		*/
-			//foreach($result_program_usul as $num_row=>$row){ $kode=$row->kode_usulan_belanja;
-		/*	 
-		 foreach( $k as $x1 => $x2 ){
-		?>
-			<tr>
-				<td style="vertical-align:top;text-align:left"><?php echo $x2;?>-<?php echo get_kegiatan_name($x2)?></td>
-				<td colspan="3">
-					<table border="1">
-						
-					<?php foreach( $j[$x2] as $x3 => $x4 ){?>
-						<tr>
-							<td width="30%" style="vertical-align:top;text-align:left"><?php echo $x4;?></td>
-							<td>
-								<table id="table-dpa-detail" border="1">
-								
-						<tr>
-								
-								<?php 
-								$total=0;
-								foreach($l[$x4] as $x5 => $x6 ){
-									$total+=$x6[1];
-									?>
-									<tr>
-										<td width="60%"><?php echo $x2.$x4.$x6[0];?>-
-										</td>
-										<td width="20%"  style=" text-align: right;">Rp. <b><?=number_format($x6[1],0,",",".")?></b></td>
-										
-									</tr>
-									
-								<?php } ?>
-								<tr class="alert alert-warning">
-										<td>TOTAL PER SASARAN</td>
-										<td style=" text-align: right;"><b>Rp. <?=number_format($total,0,",",".")?></b></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					<?php }?>
-					
-					</table>
-				</td>
-				
-				
-			</tr>
-		<?php 
-		 }
-			*/
-			$i=0;
-			$total=0;
-                        $array_keg = array();
-                        $tot_arr = count($result_program_usul); 
-			for($i=0;$i<count($result_program_usul);$i++){
-				$total+=$v->total;
-				$sStyle="";
-				if($i!=0){
-					if($result_program_usul[$i]->nama_kegiatan!=$result_program_usul[($i-1)]->nama_kegiatan){
+			<?php // BISMILLAH
+				$i=0;
+				$total=0;
+				$grand_total=0;
+	            $array_keg = array();
+	            $tot_arr = count($result_program_usul); 
+				for($i=0;$i<count($result_program_usul);$i++){
+					// $total+=$v->total;
+					$sStyle="";
+					if($i!=0){
+						if($result_program_usul[$i]->nama_kegiatan!=$result_program_usul[($i-1)]->nama_kegiatan){
+							$kegiatan = $result_program_usul[$i]->nama_kegiatan;
+							$style = " style=\"border:1px solid #000;border-bottom:0;padding:3px;".$sStyle."\"";
+
+						}else{
+							$kegiatan = "";
+							$style = " style=\"border:1px solid #000;border-top:0;border-bottom:0;padding:3px;".$sStyle."\"";
+						}
+					}else{
 						$kegiatan = $result_program_usul[$i]->nama_kegiatan;
 						$style = " style=\"border:1px solid #000;border-bottom:0;padding:3px;".$sStyle."\"";
-					/*
-					if($i!=0){				
-		?>
-		<tr>
-			<td colspan="3" style="border:1px solid #000;text-align:center;">Total</td>
-			<td style="text-align:right;border:1px solid #000;"><?php echo number_format($total,0,',','.');?>,-</td>
-		</tr>
-		<?php
 					}
-					*/
-					}else{
-						$kegiatan = "";
-						$style = " style=\"border:1px solid #000;border-top:0;border-bottom:0;padding:3px;".$sStyle."\"";
-					}
-				}else{
-					$kegiatan = $result_program_usul[$i]->nama_kegiatan;
-					$style = " style=\"border:1px solid #000;border-bottom:0;padding:3px;".$sStyle."\"";
-				}
-		?>
+			?>
                 <?php if ( ( $kegiatan != "" ) && ( $i != 0 ) ) { ?>
                 
-                <tr>
-			<td style="border:1px solid #000;" colspan="3" align="center">SUB TOTAL</td>
-			
-			<td style="border:1px solid #000;"><?php echo number_format($total,0,',','.'); ?>,-</td>
-		</tr>
+        <tr>
+			<td style="border:1px solid #000;vertical-align:top;" colspan="3" align="center">SUB TOTAL</td>
+			<td style="border:1px solid #000;text-align:right;vertical-align:top;"><?php echo number_format($total,0,',','.'); ?>,-</td>
+		</tr>	
+				<?php $grand_total = $grand_total + $total; ?>
                 <?php $total = 0 ; ?>
                 <?php } ?>
                 
 		<tr>
 			<td<?php echo $style; ?>><?php echo $kegiatan; ?></td>
-			<td style="border:1px solid #000;"><?php echo $result_program_usul[$i]->nama_output; ?></td>
-			<td style="border:1px solid #000;"><?php echo $result_program_usul[$i]->nama_program; ?></td>
-			<td style="border:1px solid #000;text-align:right;"><?php echo number_format($result_program_usul[$i]->total,0,',','.'); ?>,-</td>
+			<td style="border:1px solid #000;vertical-align:top;"><?php echo $result_program_usul[$i]->nama_output; ?></td>
+			<td style="border:1px solid #000;vertical-align:top;"><?php echo $result_program_usul[$i]->nama_program; ?></td>
+			<td style="border:1px solid #000;text-align:right;vertical-align:top;"><?php echo number_format($result_program_usul[$i]->total,0,',','.'); ?>,-</td>
 		</tr>
-                <?php $total = $total + $result_program_usul[$i]->total ?>
+        
+        <?php $total = $total + $result_program_usul[$i]->total ; ?>
+        
                 
-                <?php if ( ($i + 1 ) == $tot_arr ) { ?>
+        <?php if ( ($i + 1 ) == $tot_arr ) { ?>
                 
-                <tr>
-				<td style="border:1px solid #000;" colspan="3" align="center">SUB TOTAL</td>
-			<td style="border:1px solid #000;" ><?php echo number_format($total,0,',','.'); ?>,-</td>
+        <tr>
+				<td style="border:1px solid #000;vertical-align:top;" colspan="3" align="center">SUB TOTAL</td>
+				<td style="border:1px solid #000;text-align:right;vertical-align:top;" ><?php echo number_format($total,0,',','.'); ?>,-</td>
 		</tr>
+				<?php $grand_total = $grand_total + $total; ?>
                 <?php $total = 0 ; ?>
                 <?php } ?>
                 
 		<?php
 			}
 		?>
-		 <tr>
-				<td colspan="2" align="left" style="text-v">
+		<tr>
+				<td style="border:1px solid #000;vertical-align:top;" colspan="3" align="center">GRAND TOTAL</td>
+				<td style="border:1px solid #000;text-align:right;vertical-align:top;" ><?php echo number_format($grand_total,0,',','.'); ?>,-</td>
+		</tr>
+		<tr>
+		<td colspan="2" align="left" style="text-v">
 			<?php
-			$revisi=$u->impor;
-			$tgl=$u->tanggal_impor;
-			$revisix=$revisi-1;
-			if($revisix==0){
+			$revisi = $u->impor;
+			$tgl = '2017-12-31'; //$u->tanggal_impor;
+			$revisix = $revisi - 1;
+			if($revisix == 0){
 			?>
 			Revisi : -<br>
 			Tanggal : -
 			<?php
 			}else{
 			?>
-			Revisi : <?=$revisix?><br>
-			Tanggal : <?=date_format($tgl, 'Y-m-d H:i:s');?>
+			Revisi : <?php echo '0'; // $revisix; ?><br>
+			Tanggal : <?php echo $tgl; // date_format($tgl, 'Y-m-d H:i:s');?>
 			<?php
 			}
 			?>
-				</td>
+		</td>
 				<td colspan="2" align="right">
 				<div style="width:300px;float:right;">
 					Semarang, 30 Desember 2016<br>
@@ -384,8 +313,8 @@ $('#myTabs li:eq(2) a').tab('show')
 					
 					<br>
 					<br>
-					Dr. Darsono, SE, Akt, MBA<br>
-					NIP. 1962081319900110011
+					Dr. Darsono, S.E., Akt., MBA.<br>
+					NIP 1962081319900110011
 				</div>
 				</td>
 			</tr>

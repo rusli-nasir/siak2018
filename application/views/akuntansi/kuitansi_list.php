@@ -277,7 +277,7 @@ tbody td, thead th {
 					<?php }elseif($result->jenis=='TUP'){ ?>
 						<a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php }else{ ?>					
-							<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->str_nomor_trx_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx)).'/?id_kuitansi='.$result->id_kuitansi);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1) or isset($tab8) or isset($tab11) or isset($tab12)){ ?>

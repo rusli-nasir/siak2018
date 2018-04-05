@@ -1,6 +1,12 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+
+
+    // bootbox.alert({
+    //             title: "PESAN",
+    //             message: "UNTUK SPM GUP JANGAN DIPROSES DULU, LAGI DIPERBAIKI GUP NIHIL NYA.THX",
+    //         });
     
     $('#spm_tab a').click(function(e) {
         e.preventDefault();
@@ -108,6 +114,14 @@ $(document).ready(function(){
                     $("#div-cetak-kuitansi").printArea( options );
                 });
 
+    $("#cetak-showpengembalian").click(function(){
+                    var mode = 'iframe'; //popup
+                    var close = mode == "popup";
+                    var options = { mode : mode, popClose : close};
+//                    console.log($("#" + id_cetak).html());
+                    $("#div-cetak-showpengembalian").printArea( options );
+                });
+
     $("#cetak-rekappajak").click(function(){
                     var mode = 'iframe'; //popup
                     var close = mode == "popup";
@@ -209,7 +223,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
     
     $(document).on("click",'#proses_spp',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPP-FINAL' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' ;
+            var data = 'proses=' + 'SPP-FINAL' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&rel_kuitansi_pengembalian=' + encodeURIComponent('<?=$rel_kuitansi_pengembalian?>') ;
             $.ajax({
                 type:"POST",
                 url :"<?=site_url('rsa_gup/proses_spp_gup')?>",
@@ -229,7 +243,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
     
     $(document).on("click",'#proses_spm',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPM-DRAFT-PPK' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&nomor_trx_spp=' + $('#nomor_trx').html() + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmppk=' + $('#nmppk').text() + '&nipppk=' + $('#nipppk').text() + '&nmkpa=' + $('#nmkpa').text() + '&nipkpa=' + $('#nipkpa').text() + '&nmverifikator=' + $('#nmverifikator').text() + '&nipverifikator=' + $('#nipverifikator').text() + '&nmkbuu=' + $('#nmkbuu').text() + '&nipkbuu=' + $('#nipkbuu').text() + '&nmbuu=' + $('#nmbuu').text() + '&nipbuu=' + $('#nipbuu').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') ;
+            var data = 'proses=' + 'SPM-DRAFT-PPK' + '&nomor_trx=' + $('#nomor_trx_spm').html() + '&jenis=' + 'SPM' + '&nomor_trx_spp=' + $('#nomor_trx').html() + '&jumlah_bayar=' + string_to_angka($('#jumlah_bayar').text()) + '&terbilang=' + $('#terbilang').text() + '&untuk_bayar=' + $('#untuk_bayar').text() + '&penerima=' + $('#penerima').text() + '&alamat=' + $('#alamat').text() + '&nmbank=' + $('#nmbank').text() + '&rekening=' + $('#rekening').text() + '&npwp=' + $('#npwp').text() + '&nmppk=' + $('#nmppk').text() + '&nipppk=' + $('#nipppk').text() + '&nmkpa=' + $('#nmkpa').text() + '&nipkpa=' + $('#nipkpa').text() + '&nmverifikator=' + $('#nmverifikator').text() + '&nipverifikator=' + $('#nipverifikator').text() + '&nmkbuu=' + $('#nmkbuu').text() + '&nipkbuu=' + $('#nipkbuu').text() + '&nmbuu=' + $('#nmbuu').text() + '&nipbuu=' + $('#nipbuu').text() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>') + '&jumlah_pengembalian=' + '<?=$detail_gup['pengembalian']?>' + '&rel_kuitansi_pengembalian=' + encodeURIComponent('<?=$rel_kuitansi_pengembalian?>') ;
             $.ajax({
                 type:"POST",
                 url :"<?=site_url('rsa_gup/usulkan_spm_gup')?>",
@@ -249,7 +263,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
     
     $(document).on("click",'#tolak_spp_',function(){
         if(confirm('Apakah anda yakin ?')){
-            var data = 'proses=' + 'SPP-DITOLAK' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&ket=' + $('#ket').val() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>');
+            var data = 'proses=' + 'SPP-DITOLAK' + '&nomor_trx=' + $('#nomor_trx').html() + '&jenis=' + 'SPP' + '&ket=' + $('#ket').val() + '&rel_kuitansi=' + encodeURIComponent('<?=$rel_kuitansi?>')  + '&rel_kuitansi_pengembalian=' + encodeURIComponent('<?=$rel_kuitansi_pengembalian?>');
             $.ajax({
                 type:"POST",
                 url :"<?=site_url('rsa_gup/proses_spp_gup')?>",
@@ -298,7 +312,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
     
     });
     
-    $(document).on("click",'#btn-lihat',function(){
+    $(document).on("click",'.btn-lihat',function(){
                         var rel = $(this).attr('rel');
                         $.ajax({
                             type:"POST",
@@ -310,13 +324,13 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                     var kuitansi = obj.kuitansi ;
                                     var kuitansi_detail = obj.kuitansi_detail ;
                                     var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
-                                    $('#kode_badge').text('GP');
+                                    $('#kode_badge').text(kuitansi.jenis);
                                     $('#kuitansi_tahun').text(kuitansi.tahun);
                                     $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
                                     $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
-                                    $('#uraian').text(decodeURIComponent(kuitansi.uraian));
+                                    $('#uraian').text(kuitansi.uraian);
                                     $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
-                                    $('#penerima_uang').text(decodeURIComponent(kuitansi.penerima_uang));
+                                    $('#penerima_uang').text(kuitansi.penerima_uang);
                                     // var s = kuitansi.penerima_uang_nip ;
                                     // console.log(s.trim());
                                     // if((s.trim() != '-')&&(s.trim() != '.')){
@@ -431,6 +445,144 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
             
                         
                     });
+
+
+
+    $(document).on("click",'.btn-lihat-pengembalian',function(){
+
+                        var rel = $(this).attr('rel');
+                        $.ajax({
+                            type:"POST",
+                            url :"<?=site_url("kuitansi/get_data_kuitansi_pengembalian")?>",
+                            data:'id=' + rel,
+                            success:function(data){
+                                   // console.log(data);
+                                    var obj = jQuery.parseJSON(data);
+                                    var kuitansi = obj.kuitansi ;
+                                    var kuitansi_detail = obj.kuitansi_detail ;
+                                    var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
+                                    $('#kode_badge_showpengembalian').text(kuitansi.jenis);
+                                    $('#kuitansi_tahun_showpengembalian').text(kuitansi.tahun);
+                                    $('#kuitansi_no_bukti_showpengembalian').text(kuitansi.no_bukti);
+                                    $('#kuitansi_txt_akun_showpengembalian').text(kuitansi.nama_akun);
+                                    $('#uraian_showpengembalian').text(kuitansi.uraian);
+                                    // $('#nm_subkomponen_showpengembalian').text(kuitansi.nama_subkomponen);
+                                    $('#penerima_uang_showpengembalian').text(kuitansi.penerima_uang);
+                                    // var s = kuitansi.penerima_uang_nip ;
+                                    // console.log(s.trim());
+                                    // if((s.trim() != '-')&&(s.trim() != '.')){
+                                        // console.log('t');
+                                        $('#penerima_uang_nip_showpengembalian').text(kuitansi.penerima_uang_nip);
+                                    // }
+                                    // else{
+                                        // console.log('f');
+                                        // $('#snip').hide();
+                                    // }
+                                    var a = moment(kuitansi.tgl_kuitansi);
+//                                    var b = moment(a).add('hours', 1);
+//                                    var c = b.format("YYYY-MM-DD HH-mm-ss");
+                                    $('#tgl_kuitansi_showpengembalian').text(a.locale("id").format("D MMMM YYYY"));//kuitansi.tgl_kuitansi);
+                                    $('#nmpppk_showpengembalian').text(kuitansi.nmpppk);
+                                    $('#nippppk_showpengembalian').text(kuitansi.nippppk);
+                                    $('#nmbendahara_showpengembalian').text(kuitansi.nmbendahara);
+                                    $('#nipbendahara_showpengembalian').text(kuitansi.nipbendahara);
+                                    if(kuitansi.nmpumk != ''){
+                                        $('#td_tglpumk_showpengembalian').show();
+                                        $('#td_nmpumk_showpengembalian').show();
+                                    }else{
+                                        $('#td_tglpumk_showpengembalian').hide();
+                                        $('#td_nmpumk_showpengembalian').hide();
+                                    }
+                                    $('#nmpumk_showpengembalian').text(kuitansi.nmpumk);
+                                    $('#nippumk_showpengembalian').text(kuitansi.nippumk);
+                                    $('#penerima_barang_showpengembalian').text(kuitansi.penerima_barang);
+                                    $('#penerima_barang_nip_showpengembalian').text(kuitansi.penerima_barang_nip);
+                                    
+                                    $('#tr_isi_showpengembalian').remove();
+                                    $('.tr_new').remove();
+                                    $('<tr id="tr_isi_showpengembalian"><td colspan="11">&nbsp;</td></tr>').insertAfter($('#before_tr_isi_showpengembalian'));
+                                    
+                                    var str_isi = '';
+                                    $.each(kuitansi_detail,function(i,v){ 
+
+                                        str_isi = str_isi + '<tr class="tr_new">';
+                                        str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:center">' + (v.volume * 1) + '</td>' ;
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
+                                        var str_pajak = '' ;
+                                        var str_pajak_nom = '' ;
+                                        $.each(kuitansi_detail_pajak,function(ii,vv){
+                                            if(vv.id_kuitansi_detail == v.id_kuitansi_detail){
+                                                var jenis_pajak_ = vv.jenis_pajak ;
+                                                var jenis_pajak = jenis_pajak_.split("_").join(" ");
+                                                var dpp = vv.dpp == '0' ? '' : '(dpp)';
+                                                // console.log(vv.persen_pajak);
+                                                var str_99 = (vv.persen_pajak == '99')||(vv.persen_pajak == '98')||(vv.persen_pajak == '97')||(vv.persen_pajak == '96')||(vv.persen_pajak == '95')||(vv.persen_pajak == '94')||(vv.persen_pajak == '89')? '' : vv.persen_pajak + '% ' ;
+                                                str_pajak = str_pajak + jenis_pajak + ' ' + str_99 + dpp + '<br>' ;
+                                                
+                                                str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
+                                            }
+                                        });
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
+                                        str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
+                                        str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
+                                        
+                                        str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                                        
+                                            str_isi = str_isi + '</tr>' ;
+
+                                            });
+
+                                            // console.log(str_isi);
+                                            
+                                            $('#tr_isi_showpengembalian').replaceWith(str_isi);
+                                            
+                                            var sum_tot_bruto = 0 ;
+                                            $('[class^="sub_tot_bruto_"').each(function(){
+                                                sum_tot_bruto = sum_tot_bruto + parseInt(string_to_angka($(this).html()));
+                                            });
+                                            $('.sum_tot_bruto_showpengembalian').html(angka_to_string(sum_tot_bruto));
+                                            
+                                            var sub_tot_pajak = 0 ;
+                                            $('[class^="sub_tot_pajak_"]').each(function(){
+                                                sub_tot_pajak = sub_tot_pajak + parseInt(string_to_angka($(this).text())) ;
+                                            });
+                                            $('.sum_tot_pajak_showpengembalian').html(angka_to_string(sub_tot_pajak));
+                                            
+                                            $('[class^="sub_tot_netto_"]').each(function(){
+                                                var prel = $(this).attr('rel');
+                                                var sub_tot_pajak__  = 0 ;
+//                                                console.log(prel + ' ' + sub_tot_pajak__);
+                                                $('.sub_tot_pajak_' + prel).each(function(){
+                                                    sub_tot_pajak__ = sub_tot_pajak__ + parseInt(string_to_angka($(this).text())) ;
+                                                });
+                                                var sub_tot_bruto_ = parseInt(string_to_angka($('.sub_tot_bruto_' + prel ).text())) ;
+                                                $(this).html(angka_to_string(sub_tot_bruto_ - sub_tot_pajak__));
+                                            });
+
+                                            var sum_tot_netto = 0 ;
+                                            $('[class^="sub_tot_netto_"').each(function(){
+                                                sum_tot_netto = sum_tot_netto + parseInt(string_to_angka($(this).html()));
+                                            });
+
+                                            $('.sum_tot_netto_showpengembalian').html(angka_to_string(sum_tot_netto));
+
+                                            $('.text_tot_showpengembalian').html(terbilang(sum_tot_bruto));
+                                            
+                                            $('#nbukti_showpengembalian').val(kuitansi.no_bukti);
+                                            $('#myModalKuitansiShowPengembalian').modal('show');
+    //                                        i++ ;
+                                        }
+
+            //                        location.reload();
+                        });
+            
+                        
+                    });
+
 
 });
 
@@ -705,7 +857,7 @@ function terbilang(bilangan) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : GUP</b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : GUP<?php if($detail_gup['pengembalian']!='0'){echo '-NIHIL';} ?></b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal	: <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
@@ -874,13 +1026,14 @@ function terbilang(bilangan) {
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000;">
                                                                                     <?php 
-                                                                                    if($data->jenis == 'PPN'){
-                                                                                            echo 'Pajak Pertambahan Nilai';
-                                                                                    }elseif($data->jenis == 'PPh'){
-                                                                                            echo 'Pajak Penghasilan';
-                                                                                    }else{
-                                                                                            echo 'Lainnya';
-                                                                                    }
+                                                                                    // if($data->jenis == 'PPN'){
+                                                                                    //         echo 'Pajak Pertambahan Nilai';
+                                                                                    // }elseif($data->jenis == 'PPh'){
+                                                                                    //         echo 'Pajak Penghasilan';
+                                                                                    // }else{
+                                                                                    //         echo 'Lainnya';
+                                                                                    // }
+                                                                                    echo $data->jenis;
                                                                                     ?>
                                                                             </td>
                                                                             <td  style='text-align: right;mso-number-format:"\@";'>
@@ -1289,7 +1442,7 @@ function terbilang(bilangan) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun_spm?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : GUP</b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : GUP<?php if($detail_gup['pengembalian']!='0'){echo '-NIHIL';} ?></b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal  : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm==''?'':strftime("%d %B %Y", strtotime($tgl_spm)); ?></td>
@@ -1461,13 +1614,14 @@ function terbilang(bilangan) {
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000;">
                                                                                     <?php 
-                                                                                    if($data->jenis == 'PPN'){
-                                                                                            echo 'Pajak Pertambahan Nilai';
-                                                                                    }elseif($data->jenis == 'PPh'){
-                                                                                            echo 'Pajak Penghasilan';
-                                                                                    }else{
-                                                                                            echo 'Lainnya';
-                                                                                    }
+                                                                                    // if($data->jenis == 'PPN'){
+                                                                                    //         echo 'Pajak Pertambahan Nilai';
+                                                                                    // }elseif($data->jenis == 'PPh'){
+                                                                                    //         echo 'Pajak Penghasilan';
+                                                                                    // }else{
+                                                                                    //         echo 'Lainnya';
+                                                                                    // }
+                                                                                    echo $data->jenis;
                                                                                     ?>
                                                                             </td>
                                                                             <td  style='text-align: right;mso-number-format:"\@";'>
@@ -2040,13 +2194,14 @@ function terbilang(bilangan) {
                             </td>
                                 <td style="border:none;">
                                         <?php 
-                                        if($data->jenis == 'PPN'){
-                                                echo 'Pajak Pertambahan Nilai';
-                                        }elseif($data->jenis == 'PPh'){
-                                                echo 'Pajak Penghasilan';
-                                        }else{
-                                                echo 'Lainnya';
-                                        }
+                                        // if($data->jenis == 'PPN'){
+                                        //         echo 'Pajak Pertambahan Nilai';
+                                        // }elseif($data->jenis == 'PPh'){
+                                        //         echo 'Pajak Penghasilan';
+                                        // }else{
+                                        //         echo 'Lainnya';
+                                        // }
+                                        echo $data->jenis;
                                         ?>
                                 </td>
                                 <td style='border:none;mso-number-format:"\@";' class="text-right">
@@ -2270,10 +2425,93 @@ function terbilang(bilangan) {
           
           <div style="background-color: #EEE; padding: 10px;">
               	<div class="row">
+
+            <div class="col-md-12 table-responsive">
+                            <div style="background-color: #FFF;">
+                <table class="table table-bordered table-striped table-hover small">
+                    <thead>
+                    <tr>
+                        <th colspan="6" class="text-center alert-danger">DAFTAR KUITANSI PENGEMBALIAN</th>
+                    </tr>
+                    <tr>
+                                                <th class="text-center col-md-1" style="vertical-align: middle;">No</th>
+                                                <th class="text-center col-md-2" style="vertical-align: middle;">Nomor</th>
+                        <th class="text-center col-md-2" style="vertical-align: middle;">Tanggal</th>
+                                                <th class="text-center col-md-2" style="vertical-align: middle;">Uraian</th>
+                        <th class="text-center col-md-2" style="vertical-align: middle;">Pengeluaran</th>
+                        <th class="text-center col-md-1" style="vertical-align: middle;">&nbsp;</th>
+                                                <!--<th class="text-center col-md-1" style="vertical-align: middle;">Status</th>-->
+                                                <!--<th class="text-center col-md-1">Proses</th>-->
+<!--                                                <th class="text-center col-md-1">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon" style="background-color: #f9ff83;"> 
+                                                            <input type="checkbox" aria-label="" rel="" class="all_ck">
+                                                        </span>
+                                                    </div>
+                                                </th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+    <?php
+        if(!empty($daftar_kuitansi_pengembalian)){
+//                    echo '<pre>';var_dump($daftar_kuitansi);echo '</pre>';
+            $tot_kuitansi = 0 ;
+            foreach ($daftar_kuitansi_pengembalian as $key => $value) {
+    ?>
+                    <tr>
+                        <td class="text-center"><?php echo $key + 1; ?>.</td>
+                        <td class="text-center"><?php echo $value->no_bukti; ?></td>
+                                                <td class="text-center"><?php setlocale(LC_ALL, 'id_ID.utf8'); echo strftime("%d %B %Y", strtotime($value->tgl_kuitansi)); ?><br /></td>
+                        <td class=""><?php echo $value->uraian; ?></td>
+                        <td class="text-right">
+                            <?=number_format($value->pengeluaran, 0, ",", ".")?>
+                            <?php $tot_kuitansi = $tot_kuitansi + $value->pengeluaran ; ?>
+                        </td>
+                                                <td class="text-center">
+                                                    <div class="btn-group">
+                                                                <button  class="btn btn-default btn-sm btn-lihat-pengembalian" rel="<?php echo $value->id_kuitansi; ?>" ><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                                                </td>
+                    </tr>
+    <?php
+            } 
+    ?>
+            <tr class="alert-warning" style="" >
+                        <td colspan="4" class="text-right">
+                            <b>Total :</b>
+                        </td>
+                        <td  class="text-right">
+                            <b><?=number_format($tot_kuitansi, 0, ",", ".")?></b>
+                        </td>
+                        <td >
+                        &nbsp;
+                        </td>
+                    </tr>
+    <?php   
+            }else{
+    ?>
+                    <tr>
+                        <td colspan="6" class="text-center alert-warning">
+                        Tidak ada data
+                        </td>
+                    </tr>
+    <?php
+        }
+    ?>
+                    <tr>
+                        <td colspan="6" >&nbsp;</td>
+                    </tr>
+                                        </tbody>
+                </table>
+                            </div>
+            </div>
 			<div class="col-md-12 table-responsive">
                             <div style="background-color: #FFF;">
 				<table class="table table-bordered table-striped table-hover small">
 					<thead>
+                    <tr>
+                        <th colspan="6" class="text-center alert-success">DAFTAR KUITANSI PEMBAYARAN</th>
+                    </tr>
 					<tr>
                                                 <th class="text-center col-md-1" style="vertical-align: middle;">No</th>
                                                 <th class="text-center col-md-2" style="vertical-align: middle;">Nomor</th>
@@ -2310,7 +2548,7 @@ function terbilang(bilangan) {
                         </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
-                                                                <button  class="btn btn-default btn-sm" rel="<?php echo $value->id_kuitansi; ?>" id="btn-lihat" ><i class="glyphicon glyphicon-search"></i></button>
+                                                                <button  class="btn btn-default btn-sm btn-lihat" rel="<?php echo $value->id_kuitansi; ?>" ><i class="glyphicon glyphicon-search"></i></button>
 							</div>
                                                 </td>
 					</tr>
@@ -2700,6 +2938,227 @@ function terbilang(bilangan) {
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal " id="myModalKuitansiShowPengembalian" role="dialog" aria-labelledby="myModalKuitansiLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+              <h4 class="modal-title" id="myModalLabelShowPengembalian">Kuitansi : <span id="kode_badge_showpengembalian">-</span></h4>
+          </div>
+          <div class="modal-body" style="margin:0px;padding:15px;background-color: #EEE;">
+              <div id="div-cetak-showpengembalian">
+              <table class="table_print" id="kuitansi_showpengembalian" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 800px;border: 1px solid #000;background-color: #FFF;" cellspacing="0px" border="0">
+                <tr>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                            <td class="col-md-1">&nbsp;</td>
+                </tr>
+                  <tr>
+                                <td rowspan="3" style="text-align: center" colspan="2">
+                    <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+                </td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+
+                                <td colspan="2">Tahun Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2"><span id="kuitansi_tahun_showpengembalian">0000</span></td>
+                        </tr>
+                        <tr>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Nomor Bukti</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="kuitansi_no_bukti_showpengembalian">-</td>
+                        </tr>
+                        <tr class="tr_up">
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+                                <td >&nbsp;</td>
+
+                                <td colspan="2">Anggaran</td>
+                                <td style="text-align: center">:</td>
+                                <td colspan="2" id="kuitansi_txt_akun_showpengembalian">-</td>
+
+            </tr>
+            <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr>
+                <td colspan="11">
+                                    <h4 style="text-align: center"><b>KUITANSI / BUKTI PENGEMBALIAN</b></h4>
+                </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sudah Diterima dari</td>
+                <td>: </td>
+                                <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$nm_unit?></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Jumlah Uang</td>
+                <td>: </td>
+                                <td colspan="7"><b>Rp. <span class="sum_tot_bruto_showpengembalian">0</span>,-</b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Terbilang</td>
+                <td>: </td>
+                                <td colspan="7"><b><span class="text_tot_showpengembalian">-</span></b></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Untuk Pembayaran</td>
+                <td>: </td>
+                                <td colspan="7"><span id="uraian_showpengembalian">-</span></td>
+            </tr>
+            <tr class="tr_up">
+                <td colspan="3">Sub Kegiatan</td>
+                <td>: </td>
+                                <td colspan="7"><span id="nm_subkomponen_showpengembalian">-</span></td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+                        <tr id="before_tr_isi_showpengembalian">
+                            <td colspan="3"><b>Deskripsi</b></td>
+                            <td style="text-align:center"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
+                            <td >&nbsp;</td>
+                            <td ><b>Netto</b></td>
+            </tr>
+                        <tr id="tr_isi_showpengembalian">
+                            <td colspan="11">&nbsp;</td>
+            </tr>
+                        <tr>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td ><b>Jumlah</b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_bruto_showpengembalian">0</span></b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_pajak_showpengembalian">0</span></b></td>
+                            <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right"><b><span class="sum_tot_netto_showpengembalian">0</span></b></td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    &nbsp;
+                </td>
+                        </tr>
+            <tr>
+                            <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
+                                a.n. Kuasa Pengguna Anggaran <br />
+                                Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
+                            </td>
+                            <td colspan="4" style="vertical-align: top;">
+                                Semarang, <span id="tgl_kuitansi_showpengembalian">-</span><br />
+                                Penerima Uang
+                            </td>
+            </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr >
+                            <td colspan="7" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span id="nmpppk_showpengembalian">-</span><br>
+                                    NIP. <span id="nippppk_showpengembalian">-</span></td>
+                            <td colspan="4" style="border-bottom: 1px solid #000;vertical-align: bottom;"><span class="edit_here" style="white-space: pre-line;" id="penerima_uang_showpengembalian">-</span><br />
+                                <span id="snip_showpengembalian">NIP. <span class="edit_here" id="penerima_uang_nip_showpengembalian">-</span></span>
+                            </td>
+            </tr>
+                        <tr >
+                            <td colspan="7">Setuju dibayar tgl : <br>
+                                Bendahara Pengeluaran
+                            </td>
+                            <td colspan="4" ><span style="display: none" id="td_tglpumk_showpengembalian">Lunas dibayar tgl : <br>
+                                    Pemegang Uang Muka Kerja</span>
+                            </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                                </td>
+                        </tr>
+                         <tr>
+                             <td colspan="7"><span id="nmbendahara_showpengembalian"></span><br>
+                                 NIP. <span id="nipbendahara_showpengembalian"></span>
+                            </td>
+                            <td colspan="4" ><span style="display: none" id="td_nmpumk_showpengembalian"><span id="nmpumk_showpengembalian"></span><br>
+                                    NIP. <span id="nippumk_showpengembalian"></span></span>
+                            </td>
+                        </tr>
+            <tr >
+                <td colspan="11" style="border-top:1px solid #000">
+                Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+                Penerima Barang/jasa
+                </td>
+                        </tr>
+                        <tr>
+                                <td colspan="11">
+                                    <br>
+                                    <br>
+                                    <br>
+                </td>
+                        </tr>
+                        <tr>
+                            <td colspan="11" ><span id="penerima_barang_showpengembalian">-</span><br />
+                                    NIP. <span id="penerima_barang_nip_showpengembalian">-</span>
+                </td>
+            </tr>
+
+        </table>
+              </div>
+              </div> 
+              <!-- <form action="<?=site_url('kuitansi/cetak_kuitansi')?>" id="form_kuitansi_showpengembalian" method="post" style="display: none"  >
+                    <input type="text" name="dtable" id="dtable" value="" />
+                    <input type="text" name="nbukti" id="nbukti" value="" />
+                    <input type="text" name="dunit" id="dunit" value="<?=$alias?>" />
+                    <input type="text" name="dtahun" id="dtahun" value="<?=$cur_tahun?>" />
+                </form> -->
+          
+            
+
+          <div class="modal-footer">
+            <!--<button type="button" class="btn btn-success" id="down" ><span class="glyphicon glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</button>-->
+            <button type="button" class="btn btn-info" id="cetak-showpengembalian" rel="" ><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
+          </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal " id="myModalKuitansi" role="dialog" aria-labelledby="myModalKuitansiLabel">
     <div class="modal-dialog modal-xl" role="document">

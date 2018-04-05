@@ -452,7 +452,8 @@ function terbilang(bilangan) {
                                                             <?php endif; ?>
                                                         <?php endif; ?>
                                                     <?php else: ?>
-                                                    <button type="button" class="btn btn-danger btn-sm btn_batal" rel="" disabled="disabled" ><i class="glyphicon glyphicon-remove"></i></button>
+                                                   
+													<button type="button" class="btn btn-danger btn-sm btn_batal" disabled=disabled rel="<?php echo $value->id_kuitansi; ?>" title="Batal"><i class="glyphicon glyphicon-remove"></i></button>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td class="text-center">                                                                                                      

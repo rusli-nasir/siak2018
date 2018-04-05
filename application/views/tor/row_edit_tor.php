@@ -7,7 +7,7 @@
             <input name="kode_akun_tambah_edit" class="form-control" id="kode_akun_tambah_edit" type="text" value="<?php echo $value->kode_akun_tambah; ?>" readonly="readonly" /></td>
 	<td >
             <!-- <input name="deskripsi_edit" class="validate[required] form-control" id="deskripsi_edit" type="text" value="<?php echo $value->deskripsi; ?>" /> -->
-            <textarea name="deskripsi_edit" class="validate[required] form-control" id="deskripsi_edit" rows="1"><?php echo $value->deskripsi; ?></textarea>
+            <textarea name="deskripsi_edit" class="validate[required] form-control" id="deskripsi_edit" rows="5"><?php echo $value->deskripsi; ?></textarea>
         </td>
 	<td ><input name="volume_edit" rel="<?=$value->kode_usulan_belanja?>" class="validate[required,funcCall[checkfloat]] calculate form-control xfloat" id="volume_edit" type="text" value="<?php echo $value->volume + 0; ?>" data-toggle="tooltip" data-placement="top" title="Silahkan masukan angka bulat atau pecahan. Kalo masih error silahkan kontak sy. thx" /></td>
 	<td ><input name="satuan_edit" class="validate[required,maxSize[30]] form-control" id="satuan_edit" type="text" value="<?php echo $value->satuan; ?>" /></td>

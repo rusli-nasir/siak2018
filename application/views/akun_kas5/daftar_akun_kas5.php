@@ -257,6 +257,7 @@ function angka_to_string(num){
                 <hr />
 <div class="debug"></div>
 <?php
+	$akun_kas = isset($result_akun_kas[0])?$result_akun_kas[0]:'';
 	$akun_kas2 = isset($result_akun_kas2[0])?$result_akun_kas2[0]:'';
 	$akun_kas3 = isset($result_akun_kas3[0])?$result_akun_kas3[0]:'';
 	$akun_kas4 = isset($result_akun_kas4[0])?$result_akun_kas4[0]:'';
@@ -264,39 +265,43 @@ function angka_to_string(num){
 ?>
 <table class="table table-striped table-bordered">
 <tr>
+	<td class="col-md-2">NAMA KAS 1 DIGIT</td>
+	<td ><span id="kd_kas_2"><?=isset($akun_kas->kode_akun1digit)?$akun_kas->kode_akun1digit:''?></span> - <?=isset($akun_kas->nama_akun1digit)?$akun_kas->nama_akun1digit:''?> [ <a href="<?php echo site_url("akun_kas/daftar_akun_kas/")?>" style="text-decoration:underline">lihat</a> ]</td>
+</tr>
+<tr>
 	<td class="col-md-2">AKUN KAS 2 DIGIT</td>
-	<td><span id="kd_kas_2"><?=isset($akun_kas2->kd_kas_2)?$akun_kas2->kd_kas_2:''?></span> - <?=isset($akun_kas2->nm_kas_2)?$akun_kas2->nm_kas_2:''?> [ <a href="<?php echo site_url("akun_kas3/daftar_akun_kas3/".$akun_kas2->kd_kas_2)?>" style="text-decoration:underline">lihat</a> ]</td>
+	<td><span id="kd_kas_2"><?=isset($akun_kas2->kode_akun2digit)?$akun_kas2->kode_akun2digit:''?></span> - <?=isset($akun_kas2->nama_akun2digit)?$akun_kas2->nama_akun2digit:''?> [ <a href="<?php echo site_url("akun_kas2/daftar_akun_kas2/".substr($akun_kas2->kode_akun2digit,0,1))?>" style="text-decoration:underline">lihat</a> ]</td>
 </tr>
 <tr>
 	<td class="col-md-2">AKUN KAS 3 DIGIT</td>
-	<td><span id="kd_kas_3"><?=isset($akun_kas3->kd_kas_3)?$akun_kas3->kd_kas_3:''?></span> - <?=isset($akun_kas3->nm_kas_3)?$akun_kas3->nm_kas_3:''?> [ <a href="<?php echo site_url("akun_kas4/daftar_akun_kas4/".$akun_kas2->kd_kas_2.'/'.$akun_kas3->kd_kas_3)?>" style="text-decoration:underline">lihat</a> ]</td>
+	<td><span id="kd_kas_3"><?=isset($akun_kas3->kode_akun3digit)?$akun_kas3->kode_akun3digit:''?></span> - <?=isset($akun_kas3->nama_akun3digit)?$akun_kas3->nama_akun3digit:''?> [ <a href="<?php echo site_url("akun_kas3/daftar_akun_kas3/".$akun_kas2->kode_akun2digit)?>" style="text-decoration:underline">lihat</a> ]</td>
 </tr>
 <tr>
 	<td class="col-md-2">AKUN KAS 4 DIGIT</td>
-	<td><span id="kd_kas_4"><?=isset($akun_kas4->kd_kas_4)?$akun_kas4->kd_kas_4:''?></span> - <?=isset($akun_kas4->nm_kas_4)?$akun_kas4->nm_kas_4:''?></td>
+	<td><span id="kd_kas_4"><?=isset($akun_kas4->kode_akun4digit)?$akun_kas4->kode_akun4digit:''?></span> - <?=isset($akun_kas4->nama_akun4digit)?$akun_kas4->nama_akun4digit:''?></td>
 </tr>
 
 </table>
 <div id="temp" style="display:none"></div>
 <form id="form_edit_akun_kas5" onsubmit="return false">
-<table class="table table-striped">
+<table class="table table-striped table-bordered table-hover">
 <thead>
 	<tr>
 		<th class="col-md-2">Kode</th>
 		<th class="col-md-9">Nama Kas 5</th>
-		<th class="col-md-1" colspan="2" style="text-align:center">Aksi</th>
+		<!-- <th class="col-md-1" colspan="2" style="text-align:center">Aksi</th> -->
 	</tr>
-	<tr>
+<!-- 	<tr>
 		<th colspan="2" align="center"><input type="text" class="form-control" style="text-align:center" name="filter_akun_kas5" id="filter_akun_kas5" value="- Masukkan kata kunci untuk memfilter data -"></th>
 		<th colspan="2" align="center"><input type="button" class="form-control" name="tampil_semua" id="tampil_semua" value="Tampilkan Semua"></th>
-	</tr>
+	</tr> -->
 </thead>
 <tbody id="row_space">
 <?=isset($row_akun_kas5)?$row_akun_kas5:""?>
 </tbody>
 </table>
 </form>
-<form id="form_add_akun_kas5" onsubmit="return false">
+<!-- <form id="form_add_akun_kas5" onsubmit="return false">
 <input type=hidden name=kd_kas_4 id=kd_kas_4_ed value="<?php echo !empty($akun_kas4->kd_kas_4)?$akun_kas4->kd_kas_4:''; ?>" />
 <table class="table table-striped">
 <tbody>
@@ -314,12 +319,12 @@ function angka_to_string(num){
 				<button type="submit" class="btn btn-default btn-sm" id="add" aria-label="Left Align"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
 				<button type="reset" class="btn btn-default btn-sm" id="reset" aria-label="Center Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 			</div>
-			<!-- <input type="submit" class="btn btn-default" name="submit" id="add" value="simpan"> -->
+			<input type="submit" class="btn btn-default" name="submit" id="add" value="simpan">
 		</td>
 </tr>
 </tbody>
 </table>
-</form>
+</form> -->
 
 </div>
 </div>

@@ -9,7 +9,7 @@
             <!-- <input name="deskripsi_edit" class="validate[required] form-control" id="deskripsi_edit" type="text" value="<?php echo $value->deskripsi; ?>" /> -->
             <textarea name="deskripsi_edit" class="validate[required] form-control" id="deskripsi_edit" rows="1"><?php echo $value->deskripsi; ?></textarea>
         </td>
-	<td ><input name="volume_edit" rel="<?=$value->kode_usulan_belanja?>" class="validate[required,funcCall[checkfloat]] calculate form-control xfloat" id="volume_edit" type="text" value="<?php echo $value->volume + 0; ?>" data-toggle="tooltip" data-placement="top" title="Silahkan masukan angka bulat atau pecahan. Kalo masih error silahkan kontak sy. thx" /></td>
+	<td ><input name="volume_edit" rel="<?=$value->kode_usulan_belanja?>" class="validate[required,funcCall[checkfloat]] calculate form-control xfloat" id="volume_edit" type="text" value="<?php echo $value->volume + 0; ?>" data-toggle="tooltip" data-placement="top" title="Silahkan masukan angka bulat atau pecahan." /></td>
 	<td ><input name="satuan_edit" class="validate[required,maxSize[30]] form-control" id="satuan_edit" type="text" value="<?php echo $value->satuan; ?>" /></td>
 	<td ><input name="tarif_edit" rel="<?=$value->kode_usulan_belanja?>" class="validate[required,custom[integer],min[1]] calculate form-control xnumber" id="tarif_edit" type="text" value="<?php echo $value->harga_satuan;?>" /></td>
 	<td >

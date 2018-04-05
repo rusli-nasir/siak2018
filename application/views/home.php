@@ -15,7 +15,10 @@
                              <strong>Welcome Jhon Doe ! </strong> You Have No pending Task For Today.
                         </div>
                        -->
-					   <p class="lead">Selamat datang di aplikasi realisasi anggaran ( RSA ) Universitas Diponegoro tahun 2017.</p>
+                       <p class="alert alert-danger">
+                           Untuk mengakses RSA tahun <b class="">2017</b> silahkan melalui link berikut : <b><span class=""><a href="http://10.69.12.215/rsa/2017/">http://10.69.12.215/rsa/2017/</a></span></b>
+                       </p>
+					   <p class="lead">Selamat datang di aplikasi realisasi anggaran ( RSA ) Universitas Diponegoro tahun <?=$cur_tahun?>.</p>
 					   <p align="justify">Sistem Informasi Realisasi Anggaran UNDIP merupakan solusi dalam pengumpulan data-data realisasi anggaran dan pemetaan Realisasi anggaran. Sistem ini membantu semua satuan kerja dalam menyusun Realisasi anggaran secara online. Setiap unit dapat melakukan Pemetaan Realisasi anggarannya masing-masing tanpa tercampur dengan unit lainnya.</p>
 <h2>Menu-Menu Utama</h2>
 <table class="table table-striped">

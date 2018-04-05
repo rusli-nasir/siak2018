@@ -35,6 +35,7 @@
                 <li><a href="<?php echo site_url('ikw'); ?>"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Insentif Kinerja Wajib</a></li>
                 <li><a href="<?php echo site_url('modul_gaji/ipp'); ?>"><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;Insentif Perbaikan Penghasilan</a></li>
                 <li><a href="<?php echo site_url('tutam'); ?>"><i class="glyphicon glyphicon-gift"></i>&nbsp;&nbsp;Insentif Tugas Tambahan</a></li>
+								<li><a href="<?php echo site_url('ikk_dosen'); ?>"><i class="glyphicon glyphicon-gift"></i>&nbsp;&nbsp;Insentif Kelebihan Kinerja (IKK) Dosen</a></li>
              <?php
 						 	if(intval($_SESSION['rsa_kode_unit_subunit'])==51){
 						 ?>

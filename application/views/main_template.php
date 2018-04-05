@@ -1,6 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <?php
+    $time = microtime();
+    $time = explode(' ', $time);
+    $time = $time[1] + $time[0];
+    $start = $time;
+    ?>
+    <script type="text/javascript">
+         var timerStart = Date.now();
+    </script>
+       
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="<?php echo base_url(); ?>frontpage/assets/ico/favicon.ico">
@@ -16,15 +26,17 @@
    
    
     <link href="<?php echo base_url(); ?>frontpage/css/custom.css" rel="stylesheet" />
-    
+	
     <link media="screen" rel="stylesheet" href="<?php echo base_url(); ?>frontpage/plugins/jvalidation/css/validationEngine.jquery.css" />
     
     <link href="<?php echo base_url(); ?>frontpage/plugins/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     
-    <!--<link href="<?php echo base_url(); ?>frontpage/css/bootstrap-datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet"/>-->
+	<!--<link href="<?php echo base_url(); ?>frontpage/css/bootstrap-datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet"/>-->
 
     <link href="<?php echo base_url(); ?>frontpage/plugins/datepicker/css/datepicker.css" rel="stylesheet"/>
-    
+
+    <link href="<?php echo base_url(); ?>frontpage/plugins/bootstrap-toggle-master/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+	
     <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-3.1.0/jquery-3.1.0.min.js"></script>
 
     <!--<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/js/jquery-2.2.4/jquery-2.2.4.min.js"></script>-->
@@ -78,11 +90,17 @@
 
     <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/jquery.visible.js"></script>
 
+    <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/bootstrap3-typeahead.js"></script>
+
+    <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
+
+    <script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/notify.min.js"></script>
+
     
     
     <!--<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/custom.js"></script>-->
-    
-    
+	
+	
 
     <!--<script type="text/javascript" src="<?php echo base_url(); ?>frontpage/plugins/KeyTable.js"></script>-->
     
@@ -124,18 +142,13 @@
             
       $(document).ready(function(){
           
-          jQuery.fx.off = true;
+            jQuery.fx.off = true;
           
-        if( $.trim( $('.body-msg-text').html() ).length ) {
-            //alert($('.body-msg-text').text());
-            $('#myModalMsg').modal('show');
-        }
+            if( $.trim( $('.body-msg-text').html() ).length ) {
+                //alert($('.body-msg-text').text());
+                $('#myModalMsg').modal('show');
+            }
          
-           
-            
-            
-            
-                
             $('.marquee-div').marquee({
                     //speed in milliseconds of the marquee
                     duration: 20000,
@@ -167,11 +180,11 @@
                 $('.modal:visible').length && $(document.body).addClass('modal-open');
             });
             
+
+            $("#infoModal").modal("show");
             
 
       });
-      
-    
 
     </script>
   
@@ -181,9 +194,17 @@
     
 </head>
 <body>
+<!--
     <div class="modal_ajax_loading" style="background-color: rgba(242, 156, 152, 0.1);width:100%;height:100vh;z-index:9999;position:fixed;display:none;">
       <div style="position: fixed;top: 50%; left: 50%;transform: translate(-50%,-50%);width: 60px;height: 60px;color:#fff;font-weight: bold;text-align: center;">
         <img src="<?php echo base_url(); ?>assets/img/heart.gif" width="60"/>
+      </div>
+    </div>
+    -->
+
+    <div class="modal_ajax_loading" style="background-color: rgba(242, 156, 152, 0.1);width:100%;height:100vh;z-index:9999;position:fixed;display:none;">
+      <div style="position: fixed;top: 50%; left: 50%;transform: translate(-50%,-50%);color:#fff;font-weight: bold;text-align: center;">
+        <img src="<?php echo base_url(); ?>assets/img/heart.gif" />
       </div>
     </div>
     <div id="wrapper">
@@ -204,7 +225,7 @@
                         <h3 class="app-title visible-lg-block"><b>REALISASI ANGGARAN ( RSA ) UNDIP</b></h3>
                         <h3 class="app-title hidden-lg"><b>RSA UNDIP </b></h3>
                         <h4 class="app-title visible-lg-block">Tahun Anggaran : <b><span style="color: #fff903"><?php echo isset($cur_tahun)?$cur_tahun:''; ?></span></b></h4>
-                        <h4 class="app-title hidden-lg">TA : <b><span style="color: #fff903">2017</span></b></h4>
+                        <h4 class="app-title hidden-lg">TA : <b><span style="color: #fff903"><?php echo isset($cur_tahun)?$cur_tahun:''; ?></span></b></h4>
                         
                     <!--</div>-->
 <!--                        <div class="row">
@@ -224,8 +245,8 @@
             </div>
         </div>
         <!-- /. NAV TOP  -->
-    
-    
+	
+	
 
     <?php // echo (isset($message))?$message:'';?>
 
@@ -313,12 +334,12 @@
         </div>
         
         <?php endif; ?>
-    
+	
     <?php echo (isset($main_content))?$main_content:'';?>
       
      
-        
-    <div class="footer">
+		
+    <div class="footer" style="background-color: #ca5053;">
       
     
             <div class="row">
@@ -347,64 +368,76 @@
         </div>
     </div>
 </div>
-    </div>
     
     
     
     <!-- MODAL -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 
 </div>
-<div class="modal fade" id="myModalMsg" tabindex="-1" role="dialog" aria-labelledby="myModalMsgLabel">
+<div class="modal" id="myModalMsg" tabindex="-1" role="dialog" aria-labelledby="myModalMsgLabel">
 
 </div>
-<div class="modal fade" id="myModalOption" tabindex="-1" role="dialog" aria-labelledby="myModalOptionLabel">
+<div class="modal" id="myModalOption" tabindex="-1" role="dialog" aria-labelledby="myModalOptionLabel">
 
 </div>
 <?php
 $pengumuman = 0;
 if($pengumuman !=0){
 ?>
-    <!-- modal maintenance by andys -->
-    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-                 <h4 class="modal-title" id="memberModalLabel">Maintenance System!</h4>
-            </div>
-            <div class="modal-body">
+	<!-- modal maintenance by andys -->
+	<div class="modal" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+				</button>
+				 <!-- <h4 class="modal-title" id="memberModalLabel">Maintenance System!</h4> -->
+                 <h4 class="modal-title" id="memberModalLabel">PERHATIAN</h4>
+
+			</div>
+			<div class="modal-body">
+                <p>TOLONG JANGAN ADA BUAT DPA BARU SEKITAR 5 MENIT DARI SEKARANG . KARENA AKAN ADA EKSPOR PERUBAHAN RKAT DARI MWA.</p>
+                <p>( tinggal sholat ashar dulu kalo bisa..)</p>
+            <!--
+				<p>
+				Terima kasih telah menjadi inspirasi kami untuk selalu berusaha meningkatkan performa system setiap saat. 
+				Oleh karena itu, kami akan melakukan proses maintenance pada: 
+				<br/><br/>
+				<b>Rabu, 5 Mei 2017</b> mulai pukul <b>12:00 WIB</b> sampai dengan pukul <b>13:00 WIB</b>.
+				<br/><br/>
+				Kami mohon maaf atas ketidaknyamanannya dan pastikan Anda Tidak menggunakan system di luar jam di atas.
+				</p>
+            -->
+				<br>
+            <!--
+				<p>
+					Terima kasih<br><br>
+					ttd<br>
+					Ka. Subbag Data. & Applikasi
+				<p>
+            -->
                 <p>
-                Terima kasih telah menjadi inspirasi kami untuk selalu berusaha meningkatkan performa system setiap saat. 
-                Oleh karena itu, kami akan melakukan proses maintenance pada: 
-                <br/><br/>
-                <b>Rabu, 5 Mei 2017</b> mulai pukul <b>12:00 WIB</b> sampai dengan pukul <b>13:00 WIB</b>.
-                <br/><br/>
-                Kami mohon maaf atas ketidaknyamanannya dan pastikan Anda Tidak menggunakan system di luar jam di atas.
-                </p>
-                <br>
+                    TERIMA KASIH<br><br>
+                    <br>
+                    
                 <p>
-                    Terima kasih<br><br>
-                    ttd<br>
-                    Ka. Subbag Data. & Applikasi
-                <p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-    </div>
-    <!-- modal -->
-    <!-- END MODAL -->
-    <?php if(!empty($_SESSION['rsa_kode_unit_subunit'])){ ?>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#infoModal').modal('show');
-        });
-    </script>
-    <?php } ?>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- modal -->
+	<!-- END MODAL -->
+	<?php if(!empty($_SESSION['rsa_kode_unit_subunit'])){ ?>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#infoModal').modal('show');
+		});
+	</script>
+	<?php } ?>
 <?php } ?>
 <!-- END MODAL -->
         
@@ -425,13 +458,45 @@ if($pengumuman !=0){
     ajaxStart: function() { $('.modal_ajax_loading').show();  },
     ajaxStop: function() { $('.modal_ajax_loading').hide(); }
     });
-    $(document).ready(function(e){
-        $('a, button').tooltip({
-            delay:0,
-            template:'<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width:200px;min-width:150px;"></div></div>',
-            trigger: 'hover'
-        });
-    });
+	$(document).ready(function(e){
+		$('a, button').tooltip({
+			delay:0,
+			template:'<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width:200px;min-width:150px;"></div></div>',
+			trigger: 'hover'
+		});
+	});
+
+    // $(document).ajaxComplete(function( event, xhr, settings ) {
+        
+
+        // });
+
+
 </script>
+<script type="text/javascript">
+   $(document).ready(function() {
+    var time_dom =  (Date.now()-timerStart) / 1000;
+    $("#time_dom").html("Time until DOMready: "+time_dom+" seconds");
+});
+   $(window).on('load', function() {
+    var time_all_load = (Date.now()-timerStart) / 1000;
+    $("#time_all_load").html("Time until everything loaded: "+time_all_load+" seconds");
+});
+</script>
+
+<?php
+$time = microtime();
+$time = explode(' ', $time);
+$time = $time[1] + $time[0];
+$finish = $time;
+$total_time = round(($finish - $start), 4);
+?>
+<div class="col-md-12 text-right" style="color: #fff;z-index: 1;">
+    <span>Page generated in <?php echo $total_time ?> seconds</span>
+    <br>
+    <span id="time_dom" style="margin: 0px;padding: 0px;"></span>
+    | 
+    <span id="time_all_load" style="margin: 0px;padding: 0px;"></span>
+</div>
 </body>
 </html>

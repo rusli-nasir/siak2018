@@ -13,7 +13,7 @@ $(function(){
 	$('.cetak').on('click', function(e){
 		window.location = '<?php echo site_url('ikw/daftar2_cetak'); ?>';
 	});
-	
+
 	$('#form-ikw-lihat').on('submit',function(e){
 		e.preventDefault();
 		$('#kriteria_ikw_lihat').modal('hide');
@@ -29,7 +29,7 @@ $(function(){
 			}
 		});
 	});
-	
+
 	$('#sword_art_online').on('submit',function(e){
 		e.preventDefault();
 		$.post('<?php echo site_url('ikw/ikw_proses'); ?>',$('#sword_art_online').serialize(),function(data){
@@ -44,14 +44,14 @@ $(function(){
 			}
 		});
 	});
-	
+
 	$('#simpan_pot').on('click',function(e){
 		var a=confirm('Yakin menyimpan potongan ini?');
 		if(a){
 			$('#sword_art_online').submit();
 		}
 	});
-	
+
 	// checkbox
 	$('#master_unit_id').change(function () {
 		if ($(this).prop('checked')) {
@@ -82,26 +82,26 @@ $(function(){
 		cek_checked();
 	});
 	//$('#master_status').trigger('change');
-	
+
 	// modal madul // reset status jika cancel
 	$('#kriteria_ikw').on('hidden.bs.modal', function () {
 			$('#form-ikw-lihat')[0].reset();
 			cek_checked();
 	});
-	
+
 	$('input[type=checkbox]').each(function(){
 		$(this).on('change',function(){
 			cek_checked();
 		});
 	});
-	
+
 	cek_checked();
-	
+
 	$('.trash').on('click',function(){
 		var a=confirm('Yakin akan menghapus data ini?');
 		if(a){
 			var id = $(this).attr('id');
-			$.post('<?php echo site_url('ikw/ikw_proses'); ?>',{'id':id, 'act':'ikw_hapus_single'},function(data){ 
+			$.post('<?php echo site_url('ikw/ikw_proses'); ?>',{'id':id, 'act':'ikw_hapus_single'},function(data){
 				if(data!='1'){
 					$('#myModalMsg .body-msg-text').html(data); $('#myModalMsg').modal('show');
 				}else{
@@ -111,9 +111,9 @@ $(function(){
 			});
 		}
 	});
-	
+
 	$('.opsi-float-bar').on('click',function(){ $('#float-bar').toggle(); });
-	
+
 	$('.isian').inputmask("numeric", {
 		radixPoint: ",",
 		/*groupSeparator: ".",*/
@@ -123,7 +123,7 @@ $(function(){
 		rightAlign: true,
 		oncleared: function () { self.Value('0'); }
 	});
-	
+
 });
 
 function cek_checked(){
@@ -171,7 +171,7 @@ function cek_checked(){
         	<div class="col-md-12" style="background-color:#fff;padding:3px;">
           	<h4 class="text-center">
             	Daftar Potongan berdasarkan Kinerja Penerima Insentif Kinerja Wajib <?php echo $this->cantik_model->getJenisPeg($_SESSION['ikw']['jnspeg']); ?><br/>Universitas Diponegoro<br/>
-              Semester <?php echo $this->cantik_model->wordMonth($_SESSION['ikw']['bulan']); ?> Tahun <?php echo $_SESSION['ikw']['tahun']; ?>
+              Bulan <?php echo $this->cantik_model->wordMonth($_SESSION['ikw']['bulan']); ?> Tahun <?php echo $_SESSION['ikw']['tahun']; ?>
             </h4>
             <p style="font-weight:bold;" class="small">
             	Unit : <?php echo $daftar_unit; ?><br />
@@ -231,7 +231,7 @@ if(isset($dt) && is_array($dt) && count($dt)>0){
                     	<?php echo $v->kinerja_tdk_tercapai; ?>
                     </td>
                     <td class="text-right"><?php echo $this->cantik_model->number($v->pot_ikw); ?></td>
-                    <td><button type="button" class="btn btn-danger btn-sm trash" title="hapus data ini dari daftar" 
+                    <td><button type="button" class="btn btn-danger btn-sm trash" title="hapus data ini dari daftar"
                     id="<?php echo $v->id_trans; ?>"><i class="glyphicon glyphicon-trash"></i></button></td>
                   </tr>
 <?php
@@ -316,6 +316,7 @@ if(isset($dt) && is_array($dt) && count($dt)>0){
 								</div>
 								<div class="col-md-12">
 	            <?php
+							/*
 								$stt = array( '1'=>'Aktif Bekerja', '2'=>'Pensiun', '3'=>'Cuti', '4'=>'Meninggal Dunia', '5'=>'Pindah Instansi Lain', '6'=>'Ijin Belajar', '7'=>'Non Aktif', '8'=>'Diberhentikan', '9'=>'Mengundurkan Diri', '10'=>'Dipekerjakan', '11'=>'Diperbantukan', '12'=>'Tugas Belajar');
 								foreach ($stt as $k => $v) {
 									$ch = "";
@@ -331,6 +332,8 @@ if(isset($dt) && is_array($dt) && count($dt)>0){
 		              </div>
 							<?php
 								}
+								*/
+								echo $this->cantik_model->opsiStatusKepeg($_SESSION['ikw']['status']);
 							?>
 								</div>
 							</div>

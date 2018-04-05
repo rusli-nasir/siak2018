@@ -17,7 +17,7 @@ Class Akun_kas5 extends CI_Controller{
 	}
 	
 	/* Method untuk menampilkan daftar komponen input*/
-	function daftar_akun_kas5($kd_kas_2,$kd_kas_3,$kd_kas_4)
+	function daftar_akun_kas5($kode_akun4digit)
 	{
 		/* check session	*/
 		if($this->check_session->user_session() && ($this->check_session->get_level()==100)||($this->check_session->get_level()==11)){
@@ -26,11 +26,12 @@ Class Akun_kas5 extends CI_Controller{
 			$data['main_menu']	= $this->load->view('main_menu','',TRUE);	
 			$tahun = $this->setting_model->get_tahun();
 			$subdata['cur_tahun'] = $tahun;
-			$subdata_akun_kas5["result_akun_kas5"] = $this->akun_kas5_model->search_akun_kas5($kd_kas_2,$kd_kas_3,$kd_kas_4);
+			$subdata_akun_kas5["result_akun_kas5"] = $this->akun_kas5_model->get_akun_kas5($kode_akun4digit);
 			$subdata["row_akun_kas5"]	= $this->load->view("akun_kas5/row_akun_kas5",$subdata_akun_kas5,TRUE);
-			$subdata["result_akun_kas2"]	= $this->akun_kas2_model->get_akun_kas2($kd_kas_2);
-			$subdata["result_akun_kas3"]	= $this->akun_kas3_model->get_akun_kas3(array('kd_kas_3'=>$kd_kas_3,'kd_kas_2'=>$kd_kas_2));
-			$subdata["result_akun_kas4"]	= $this->akun_kas4_model->get_akun_kas4(array('kd_kas_4'=>$kd_kas_4,'kd_kas_3'=>$kd_kas_3,'kd_kas_2'=>$kd_kas_2));
+			$subdata['result_akun_kas']	= $this->akun_kas2_model->get_akun_sebelum(substr($kode_akun4digit,0,1));
+			$subdata["result_akun_kas2"]	= $this->akun_kas3_model->get_akun_sebelum(substr($kode_akun4digit,0,2));
+			$subdata["result_akun_kas3"]	= $this->akun_kas4_model->get_akun_sebelum(substr($kode_akun4digit,0,3));
+			$subdata["result_akun_kas4"]	= $this->akun_kas5_model->get_akun_sebelum(substr($kode_akun4digit,0,4));
 
 			$data["main_content"]			= $this->load->view("akun_kas5/daftar_akun_kas5",$subdata,TRUE);
 			
