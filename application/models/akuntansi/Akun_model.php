@@ -412,7 +412,9 @@ class Akun_model extends CI_Model {
     {
     	$this->db->select('nama_akun as nama');
     	$this->db->select('kode_akun as akun_6');
-    	$hasil = $this->db->get_where('akun_belanja',array('nama_akun' => 'Biaya BBM'))->row_array();
+    	$this->db->where("nama_akun like '%BBM%'");
+    	$hasil = $this->db->get('akun_belanja')->row_array();
+    	// $hasil = $this->db->get_where('akun_belanja',array('nama_akun' => 'Biaya BBM'))->row_array();
 
     	if ($mode == 'akrual'){
     		$hasil['akun_6'] = substr_replace($hasil['akun_6'],7,0,1);
