@@ -83,6 +83,7 @@ INSERT INTO `akuntansi_relasi_unit` (`id`, `kode_akun`, `kode_unit`) VALUES
 (69,	'111222',	'all'),
 (70,	'111315',	'all'),
 (71,	'111514',	'all'),
-(72,	'111223',	'all');
+(72,	'111223',	'all'),
+(73,	'911211',	'all');
 
 -- 2018-04-02 07:49:43

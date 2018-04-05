@@ -1410,7 +1410,7 @@
                 }
 
 
-            function spm_gup_lihat_99($url){
+            function spm_gup_lihat_99($url,$kd_unit,$tahun,$id_kuitansi = null){
                 // die($url);
 
                     if(1){
@@ -1426,9 +1426,7 @@
                             $arr_url = explode('/', $url);
                             $kd_unit = $this->unit_model->get_kd_unit_by_alias($arr_url[1]);
                             $tahun = $arr_url[4] ;
-                            if (isset($_GET['id_kuitansi'])) {
-                                $subdata['id_kuitansi'] = $_GET['id_kuitansi'];
-                            }
+                            $subdata['id_kuitansi'] = $id_kuitansi; 
 
 
 
