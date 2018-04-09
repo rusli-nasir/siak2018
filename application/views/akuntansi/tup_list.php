@@ -156,7 +156,7 @@ tbody td, thead th {
                         <?php if(isset($tab1)){ ?>
                         <a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }else{ ?>
-                        <a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->str_nomor_trx,'trx_nomor_tup')))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php } ?>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<?php if(isset($tab1)){ ?>
@@ -229,6 +229,14 @@ function get_tabel_by_jenis($jenis)
 		return 'rsa_kuitansi_detail_pajak_lsphk3';
 	}
 }
+
+function get_no_spp($spm,$tabel)
+{
+	$ci =& get_instance();
+	$ci->load->model('akuntansi/Kuitansi_model','Kuitansi_model');
+	return $ci->Kuitansi_model->get_no_spp($spm,$tabel);
+}
+
 function get_detail_pajak($no_bukti,$jenis)
 {
 	$ci =& get_instance();

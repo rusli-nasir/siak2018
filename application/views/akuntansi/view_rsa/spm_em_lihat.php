@@ -274,26 +274,17 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                         var rel = $(this).attr('rel');
                         $.ajax({
                             type:"POST",
-                            url :"<?=site_url("akuntansi/bridge_kuitansi/get_data_kuitansi")?>",
+                            url :"<?=site_url("kuitansi/get_data_kuitansi")?>",
                             data:'id=' + rel,
                             success:function(data){
-                                //    console.log(data);
+//                                    console.log(data);
                                     var obj = jQuery.parseJSON(data);
                                     var kuitansi = obj.kuitansi ;
                                     var kuitansi_detail = obj.kuitansi_detail ;
                                     var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
                                     $('#kode_badge').text(kuitansi.jenis);
-                                    $('#kuitansi_id_kuitansi').text(kuitansi.id_kuitansi);
                                     $('#kuitansi_tahun').text(kuitansi.tahun);
                                     $('#kuitansi_no_bukti').text(kuitansi.no_bukti);
-                                    $('#kuitansi_jenis').text(kuitansi.jenis);
-                                    if((!!kuitansi.alias_no_bukti)&&(kuitansi.alias_no_bukti!='')){
-                                        $('#alias_no_bukti').text('( ' + kuitansi.alias_no_bukti + ' )');
-                                        $('#alias_no_bukti').show();
-                                    }else{
-                                        $('#alias_no_bukti').text('');
-                                        $('#alias_no_bukti').hide();
-                                    }
                                     $('#kuitansi_txt_akun').text(kuitansi.nama_akun);
                                     $('#uraian').text(kuitansi.uraian);
                                     $('#nm_subkomponen').text(kuitansi.nama_subkomponen);
@@ -336,11 +327,11 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                     $.each(kuitansi_detail,function(i,v){ 
 
                                         str_isi = str_isi + '<tr class="tr_new">';
-                                        str_isi = str_isi + '<td colspan="3" style="border:1px solid #000;">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
-                                        str_isi = str_isi + '<td style="text-align:center;border:1px solid #000;">' + (v.volume * 1) + '</td>' ;
-                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">' + v.satuan + '</td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;">' + angka_to_string(v.harga_satuan) + '</td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
+                                        str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:center">' + (v.volume * 1) + '</td>' ;
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
                                         var str_pajak = '' ;
                                         var str_pajak_nom = '' ;
                                         $.each(kuitansi_detail_pajak,function(ii,vv){
@@ -355,12 +346,12 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                                 str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
                                             }
                                         });
-                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">'+ str_pajak +'</td>' ; 
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
                                         str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" >'+ str_pajak_nom +'</td>' ;  
+                                        str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
                                         
-                                        str_isi = str_isi + '<td style="border:1px solid #000;border-right:none;"><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;border:1px solid #000;border-left:none;" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                                        str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
                                         
                                             str_isi = str_isi + '</tr>' ;
 
@@ -418,7 +409,7 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                         var rel = $(this).attr('rel');
                         $.ajax({
                             type:"POST",
-                            url :"<?=site_url("akuntansi/bridge_kuitansi/get_data_kuitansi_pengembalian")?>",
+                            url :"<?=site_url("kuitansi/get_data_kuitansi_pengembalian")?>",
                             data:'id=' + rel,
                             success:function(data){
                                    // console.log(data);
@@ -427,7 +418,6 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                     var kuitansi_detail = obj.kuitansi_detail ;
                                     var kuitansi_detail_pajak = obj.kuitansi_detail_pajak ;
                                     $('#kode_badge_showpengembalian').text(kuitansi.jenis);
-                                    $('#kuitansi_jenis_showpengembalian').text(kuitansi.jenis); //
                                     $('#kuitansi_tahun_showpengembalian').text(kuitansi.tahun);
                                     $('#kuitansi_no_bukti_showpengembalian').text(kuitansi.no_bukti);
                                     $('#kuitansi_txt_akun_showpengembalian').text(kuitansi.nama_akun);
@@ -472,11 +462,11 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                     $.each(kuitansi_detail,function(i,v){ 
 
                                         str_isi = str_isi + '<tr class="tr_new">';
-                                        str_isi = str_isi + '<td colspan="3" style="border:1px solid #000;">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
-                                        str_isi = str_isi + '<td style="text-align:center;border:1px solid #000;">' + (v.volume * 1) + '</td>' ;
-                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">' + v.satuan + '</td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;">' + angka_to_string(v.harga_satuan) + '</td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
+                                        str_isi = str_isi + '<td colspan="3">' + (i+1) + '. ' + v.deskripsi + '</td>' ; 
+                                        str_isi = str_isi + '<td style="text-align:center">' + (v.volume * 1) + '</td>' ;
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">' + v.satuan + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;">' + angka_to_string(v.harga_satuan) + '</td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;" class="sub_tot_bruto_' + i +'">' + angka_to_string((v.bruto * 1)) + '</td>' ;
                                         var str_pajak = '' ;
                                         var str_pajak_nom = '' ;
                                         $.each(kuitansi_detail_pajak,function(ii,vv){
@@ -491,12 +481,12 @@ $('#myModalKonfirm').on('hidden.bs.modal', function (e) {
                                                 str_pajak_nom = str_pajak_nom + '<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+ angka_to_string(vv.rupiah_pajak) +'</span><br>' ; 
                                             }
                                         });
-                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;border:1px solid #000;">'+ str_pajak +'</td>' ; 
+                                        str_isi = str_isi + '<td style="padding: 0 5px 0 5px;">'+ str_pajak +'</td>' ; 
                                         str_pajak_nom = (str_pajak_nom=='')?'<span rel="'+ i +'" class="sub_tot_pajak_'+ i +'">'+'0'+'</span>':str_pajak_nom;
-                                        str_isi = str_isi + '<td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;" >'+ str_pajak_nom +'</td>' ;  
+                                        str_isi = str_isi + '<td style="text-align:right;" >'+ str_pajak_nom +'</td>' ;  
                                         
-                                        str_isi = str_isi + '<td style="border:1px solid #000;border-right:none;"><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
-                                        str_isi = str_isi + '<td style="text-align:right;border:1px solid #000;border-left:none;" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
+                                        str_isi = str_isi + '<td><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></td>' ;
+                                        str_isi = str_isi + '<td style="text-align:right" rel="'+ i +'" class="sub_tot_netto_'+ i +'">0</td>' ; 
                                         
                                             str_isi = str_isi + '</tr>' ;
 
@@ -698,13 +688,6 @@ function terbilang(bilangan) {
 
  return kaLimat + "Rupiah";
 }
-
-<?php if (isset($id_kuitansi)): ?>
-    $(document).ready(function(){
-        $("[rel=<?php echo $id_kuitansi ?>]").click();
-    });
-<?php endif ?>
-
 </script>  
 
 <div id="page-inner">
@@ -726,31 +709,31 @@ function terbilang(bilangan) {
     $stts_kbuu = '';
     ?>
                         
-        <?php if($doc == ''){ $stts_bendahara = 'active'; ?>
+        <?php if($doc_em == ''){ $stts_bendahara = 'active'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> belum diusulkan oleh bendahara.</div>
-    <?php }elseif($doc == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
+    <?php }elseif($doc_em == 'SPP-DRAFT'){ $stts_bendahara = 'done'; $stts_ppk = 'active'; ?>
         <div class="alert alert-info" style="border:1px solid #a94442;">SPP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
-    <?php }elseif($doc == 'SPP-DITOLAK'){ $stts_bendahara = 'done'; $stts_ppk = 'tolak'; ?>
+    <?php }elseif($doc_em == 'SPP-DITOLAK'){ $stts_bendahara = 'done'; $stts_ppk = 'tolak'; ?>
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >PPK SUKPA</span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc == 'SPP-FINAL'){ $stts_bendahara = 'done';  $stts_ppk = 'done'; ?>   
+    <?php }elseif($doc_em == 'SPP-FINAL'){ $stts_bendahara = 'done';  $stts_ppk = 'done'; ?>   
         <div class="alert alert-info" style="border:1px solid #a94442;">SPP Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah diterima oleh <b><span class="text-danger" >PPK SUKPA</span></b> .</div>
-    <?php }elseif($doc == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done';  $stts_kpa = 'active'; ?>   
+    <?php }elseif($doc_em == 'SPM-DRAFT-PPK'){ $stts_bendahara = 'done'; $stts_ppk = 'done';  $stts_kpa = 'active'; ?>   
         <div class="alert alert-info" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KPA </span></b> .</div>
-    <?php }elseif($doc == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
+    <?php }elseif($doc_em == 'SPM-DRAFT-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'active';  ?>   
         <div class="alert alert-info" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >VERIFIKATOR </span></b> .</div>
-    <?php }elseif($doc == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'tolak' ; ?>   
+    <?php }elseif($doc_em == 'SPM-DITOLAK-KPA'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'tolak' ; ?>   
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KPA </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
+    <?php }elseif($doc_em == 'SPM-FINAL-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'active' ?>   
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> menunggu persetujuan <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'tolak'; ?>   
+    <?php }elseif($doc_em == 'SPM-DITOLAK-VERIFIKATOR'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'tolak'; ?>   
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >VERIFIKATOR </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done'; ?>   
+    <?php }elseif($doc_em == 'SPM-FINAL-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done'; ?>   
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah disetujui oleh <b><span class="text-danger" >KUASA BUU </span></b> .</div>
-    <?php }elseif($doc == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'tolak'; ?>   
+    <?php }elseif($doc_em == 'SPM-DITOLAK-KBUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'tolak'; ?>   
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >KUASA BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
-    <?php }elseif($doc == 'SPM-FINAL-BUU'){$stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done'; $stts_buu = 'done';  ?> 
+    <?php }elseif($doc_em == 'SPM-FINAL-BUU'){$stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done'; $stts_buu = 'done';  ?> 
         <div class="alert alert-success" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah difinalisasi oleh <b><span class="text-danger" >BUU </span></b> .</div>
-    <?php }elseif($doc == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done'; $stts_buu = 'tolak'; ?>   
+    <?php }elseif($doc_em == 'SPM-DITOLAK-BUU'){ $stts_bendahara = 'done'; $stts_ppk = 'done'; $stts_kpa = 'done' ; $stts_verifikator = 'done'; $stts_kbuu = 'done'; $stts_buu = 'tolak'; ?>   
         <div class="alert alert-warning" style="border:1px solid #a94442;">SPM Tahun <b><span class="text-danger" ><?=$cur_tahun?></span></b> telah ditolak oleh <b><span class="text-danger" >BUU </span></b> <b>[ <a href="#" data-toggle="modal" data-target="#myModalLihatKet" >alasan</a> ]</b>.</div>
     <?php } ?>
         
@@ -827,7 +810,7 @@ function terbilang(bilangan) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : <?=strtoupper($jenis)?></b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : EM</b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal  : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo !isset($tgl_spp)?'':strftime("%d %B %Y", strtotime($tgl_spp)); ?></b></td>
@@ -859,10 +842,16 @@ function terbilang(bilangan) {
                 <tr>
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
-                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar_spp" style='mso-number-format:"\@";'><?php echo isset($detail_spp['nom'])?number_format($detail_spp['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo isset($detail_spp['terbilang'])?ucwords($detail_spp['terbilang']):''; ?></span></b>)</li>
-                                                <li>Untuk Keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'-'?></span></li>
-                                                <li>Nama Penerima : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:'-'?></span></li>
+                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar_spp" style='mso-number-format:"\@";'><?php echo isset($detail_em['nom'])?number_format($detail_em['nom'], 0, ",", "."):''; ?></span>,-<br>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang_spp"><?php echo isset($detail_em['terbilang'])?ucwords($detail_em['terbilang']):''; ?></span></b>)</li>
+                                                <!-- <li>Untuk keperluan : <span id="untuk_bayar_spp"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
+                                                <li>Nama bendahara pengeluaran : <span id="penerima_spp"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
+                                                <li>Alamat : <span id="alamat_spp"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
+                                                <li>Nama Bank : <span id="nmbank_spp"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening_spp"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
+                                                <li>No. NPWP : <span id="npwp_spp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li> -->
+                                                <li>Untuk pekerjaan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'-'?></span></li>
+                                                <li>Nama pihak ketiga : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:'-'?></span></li>
                                                 <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:'-'?></span></li>
                                                 <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:'-'?></span></li>
                                                 <li>Nama Rekening Bank : <span id="nmrekening"><?=isset($detail_pic->nama_rek_penerima)?$detail_pic->nama_rek_penerima:'-'?></span></li>
@@ -905,10 +894,10 @@ function terbilang(bilangan) {
                                                                     <?php endif; ?>
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000">
-                                                                                    <?=$data->nama_akun4digit?>
+                                                                                    <?=$data->nama_akun5digit?>
                                                                             </td>
                                                                             <td  style="text-align: center;border-right: solid 1px #000;">
-                                                                                    <?=$data->kode_akun4digit?>
+                                                                                    <?=$data->kode_akun5digit?>
                                                                             </td>
                                                                             <td style='text-align: right;mso-number-format:"\@";'>
                                                                                     <?php $jml_pengeluaran = $jml_pengeluaran + $data->pengeluaran ; ?>
@@ -1086,7 +1075,7 @@ function terbilang(bilangan) {
                             <tr >
                             <td colspan="7" style="text-align: center;border-bottom: none;">
                                 <h4><b>UNIVERSITAS DIPONEGORO</b></h4>
-                                <h5><b>RINCIAN SURAT PERMINTAAN PEMBAYARAN <?=strtoupper($jenis)?></b></h5>
+                                <h5><b>RINCIAN SURAT PERMINTAAN PEMBAYARAN EM</b></h5>
                             </td>
                         </tr>
                         <tr>
@@ -1127,15 +1116,14 @@ function terbilang(bilangan) {
                             </td>
                             <td colspan="5" style="border-left: none;border-top: none;">
                                 <ol style="list-style: none;">
-                                    <li>: <span id="nomor_kontrak"><?=isset($detail_kontrak->nomor_kontrak)?$detail_kontrak->nomor_kontrak:'-'?></span> &nbsp; <span id="tgl_kontrak"><?=isset($detail_kontrak->tgl_kontrak)?$detail_kontrak->tgl_kontrak:'-'?></span></li>
-                                    <li>: <span id="nilai_kontrak"><?=isset($detail_kontrak->nilai_kontrak)?number_format($detail_kontrak->nilai_kontrak, 0, ",", "."):'-'?></span></li>
-                                    <li>: <span id="nilai_kontrak_terbayar"><?=isset($detail_kontrak->nilai_kontrak_terbayar)?number_format($detail_kontrak->nilai_kontrak_terbayar, 0, ",", "."):'-'?></span></li>
-                                    <li>: <span id="termin"><?=isset($detail_kontrak->termin)?$detail_kontrak->termin:'-'?></span></li>
-                                    <li>: <span id="jenis_kegiatan"><?=isset($detail_kontrak->jenis_kegiatan)?$detail_kontrak->jenis_kegiatan:'-'?></span></li>
-                                    <li>: <span id="nomor_bap"><?=isset($detail_kontrak->nomor_bap)?$detail_kontrak->nomor_bap:'-'?></span></li>
-                                    <li>: <span id="nomor_bast"><?=isset($detail_kontrak->nomor_bast)?$detail_kontrak->nomor_bast:'-'?></span></li>
+                                    <li>: -</li>
+                                    <li>: -</li>
+                                    <li>: -</li>
+                                    <li>: Lunas</li>
+                                    <li>: Non Fisik</li>
+                                    <li>: Terlampir</li>
+                                    <li>: Terlampir</li>
                                     <li>:</li>
-
                                 </ol>
                             </td>
                         </tr>
@@ -1181,11 +1169,11 @@ function terbilang(bilangan) {
                         <?php endif; ?>
                             <tr>
                                 <td class="text-center">&nbsp;</td>
-                                <td style="padding-left: 10px;"><?=$data->nama_akun4digit?></td>
+                                <td style="padding-left: 10px;"><?=$data->nama_akun5digit?></td>
                                 <?php if(!empty($data_akun_rkat)):?> 
                                     <?php foreach($data_akun_rkat as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
-                                            <?php if($da->kode_akun4digit == $data->kode_akun4digit):?>
+                                            <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
                                             <?php $pagu_rkat =  $da->pagu_rkat ;?>
                                             <?php endif;?>
@@ -1199,7 +1187,7 @@ function terbilang(bilangan) {
                                 <?php if(!empty($data_akun_pengeluaran_lalu)): ?> 
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
-                                            <?php if($da->kode_akun4digit == $data->kode_akun4digit):?>
+                                            <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
                                             <?php $empty_pengeluaran_lalu = true ; ?>
@@ -1365,7 +1353,7 @@ function terbilang(bilangan) {
 </form>
             <div class="alert alert-warning" style="text-align:center">
                 
-                <?php if($doc == 'SPP-DRAFT'){ ?>
+                <?php if($doc_em == 'SPP-DRAFT'){ ?>
                     <button type="button" class="btn btn-info" id="cetak" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                     <button type="button" class="btn btn-default" id="xls_spp" rel=""><span class="fa fa-file-excel-o" aria-hidden="true"></span> Unduh .xls</button>
                     <!--<a href="#" class="btn btn-success" id="down"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</a>-->
@@ -1412,12 +1400,12 @@ function terbilang(bilangan) {
                                 <tr style="border-top: none;border-bottom: none;">
                                     <td colspan="2" style="border-right: none;border-right: none;border-top: none;border-bottom: none;"><b>TAHUN ANGGARAN : <?=$cur_tahun_spm?></b></td>
                                     <td style="text-align: center;border-right: none;border-left: none;border-top: none;border-bottom: none;" colspan="2">&nbsp;</td>
-                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : <?=strtoupper($jenis)?></b></td>
+                                    <td style="border-left: none;border-top: none;border-bottom: none;"><b>JENIS : EM</b></td>
                                 </tr>
                                 <tr style="border-top: none;">
                                     <td colspan="2" style="border-right: none;border-top:none;"><b>Tanggal  : <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm==''?'':strftime("%d %B %Y", strtotime($tgl_spm)); ?></td>
                                     <td style="text-align: center;border-left: none;border-right: none;border-top:none;" colspan="2" >&nbsp;</td>
-                                    <td style="border-left: none;border-top:none;"><b>Nomor : <span id="nomor_trx_spm"><?=$nomor_spm?></span><br><span style="<?=(($alias_spm!='-')&&(!empty($alias_spm)))?'':'display:none'?>" id="alias_spm_text">( <?=isset($alias_spm)?$alias_spm:''?> )</span></b></td>
+                                                                                                            <td style="border-left: none;border-top:none;"><b>Nomor : <span id="nomor_trx_spm"><?=$nomor_spm?></span><br><span style="<?=(($alias_spm!='-')&&(!empty($alias_spm)))?'':'display:none'?>" id="alias_spm_text">( <?=isset($alias_spm)?$alias_spm:''?> )</span></b></td>
                                 </tr>
                                 <tr >
                                     <td colspan="5"><b>Satuan Unit Kerja Pengguna Anggaran (SUKPA) : <?=$unit_kerja?></b></td>
@@ -1442,15 +1430,21 @@ function terbilang(bilangan) {
                 <tr>
                                     <td colspan="5" style="line-height: 16px;border-bottom: none;border-top: none;">
                                         <ol style="list-style-type: lower-alpha;margin-top: 0px;margin-bottom: 0px;" >
-                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar" style='mso-number-format:"\@";'><?php echo isset($detail_spm['nom'])?number_format($detail_spm['nom'], 0, ",", "."):''; ?></span>,-<br>
-                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_spm['terbilang'])?ucwords($detail_spm['terbilang']):''; ?></span></b>)</li>
-                                                <li>Untuk Keperluan : <span id="untuk_bayar"><?=isset($detail_spm_pic->untuk_bayar)?$detail_spm_pic->untuk_bayar:'-'?></span></li>
-                                                <li>Nama Penerima : <span id="penerima"><?=isset($detail_spm_pic->penerima)?$detail_spm_pic->penerima:'-'?></span></li>
-                                                <li>Alamat : <span id="alamat"><?=isset($detail_spm_pic->alamat_penerima)?$detail_spm_pic->alamat_penerima:'-'?></span></li>
-                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_spm_pic->nama_bank_penerima)?$detail_spm_pic->nama_bank_penerima:'-'?></span></li>
-                                                <li>Nama Rekening Bank : <span id="nmrekening"><?=isset($detail_spm_pic->nama_rek_penerima)?$detail_spm_pic->nama_rek_penerima:'-'?></span></li>
-                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_spm_pic->no_rek_penerima)?$detail_spm_pic->no_rek_penerima:'-'?></span></li>
-                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_spm_pic->npwp_penerima)?$detail_spm_pic->npwp_penerima:'-'?></span></li>
+                                            <li>Jumlah pembayaran yang diminta : Rp. <span id="jumlah_bayar" style='mso-number-format:"\@";'><?php echo isset($detail_em_spm['nom'])?number_format($detail_em_spm['nom'], 0, ",", "."):''; ?></span>,-<br>
+                                                &nbsp;&nbsp;&nbsp;(Terbilang : <b><span id="terbilang"><?php echo isset($detail_em_spm['terbilang'])?ucwords($detail_em_spm['terbilang']):''; ?></span></b>)</li>
+                                                <!-- <li>Untuk keperluan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:''?></span></li>
+                                                <li>Nama bendahara pengeluaran : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:''?></span></li>
+                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:''?></span></li>
+                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:''?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:''?></span></li>
+                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:''?></span></li> -->
+                                                <li>Untuk pekerjaan : <span id="untuk_bayar"><?=isset($detail_pic->untuk_bayar)?$detail_pic->untuk_bayar:'-'?></span></li>
+                                                <li>Nama pihak ketiga : <span id="penerima"><?=isset($detail_pic->penerima)?$detail_pic->penerima:'-'?></span></li>
+                                                <li>Alamat : <span id="alamat"><?=isset($detail_pic->alamat_penerima)?$detail_pic->alamat_penerima:'-'?></span></li>
+                                                <li>Nama Bank : <span id="nmbank"><?=isset($detail_pic->nama_bank_penerima)?$detail_pic->nama_bank_penerima:'-'?></span></li>
+                                                <li>Nama Rekening Bank : <span id="nmrekening"><?=isset($detail_pic->nama_rek_penerima)?$detail_pic->nama_rek_penerima:'-'?></span></li>
+                                                <li>No. Rekening Bank : <span id="rekening"><?=isset($detail_pic->no_rek_penerima)?$detail_pic->no_rek_penerima:'-'?></span></li>
+                                                <li>No. NPWP : <span id="npwp"><?=isset($detail_pic->npwp_penerima)?$detail_pic->npwp_penerima:'-'?></span></li>
 
                                         </ol>
                                     </td>
@@ -1493,10 +1487,10 @@ function terbilang(bilangan) {
                                                                     <?php endif; ?>
                                                                     <tr>
                                                                             <td style="border-right: solid 1px #000">
-                                                                                    <?=$data->nama_akun4digit?>
+                                                                                    <?=$data->nama_akun5digit?>
                                                                             </td>
                                                                             <td  style="text-align: center;border-right: solid 1px #000;">
-                                                                                    <?=$data->kode_akun4digit?>
+                                                                                    <?=$data->kode_akun5digit?>
                                                                             </td>
                                                                             <td style='text-align: right;mso-number-format:"\@";'>
                                                                                     <?php $jml_pengeluaran = $jml_pengeluaran + $data->pengeluaran ; ?>
@@ -1648,16 +1642,15 @@ function terbilang(bilangan) {
                                     <td  style="border-left: none;border-right: none;border-top:none;">&nbsp;</td>
                                 <td  style="line-height: 16px;border-left: none;border-top:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spm_kpa==''?'':strftime("%d %B %Y", strtotime($tgl_spm_kpa)); ?><br />
-                                     <?php
-
-                                    $kpa = "Kuasa Pengguna Anggaran" ;
-                                    if($unit_id==25){
-                                        $kpa = "Pejabat Penandatangan SPM" ;
-                                    }
-
-                                    ?>
-
-                                    <?=$kpa?><br>
+                                     <?php 
+									if($unit_id==91){
+									?>
+									Pejabat Penandatangan SPM
+									<?php }else{
+										?>
+									
+										Kuasa Pengguna Anggaran
+									<?php }?><br>
                                                                         <br>
                                                                         <br>
                                                                         <br>
@@ -1689,8 +1682,8 @@ function terbilang(bilangan) {
                                         NIP. <span id="nipverifikator"><?php echo isset($detail_verifikator->nomor_induk)? $detail_verifikator->nomor_induk : '' ;?></span><br>
                                     </td>
                                     <td colspan="2" style="vertical-align: top;line-height: 16px;padding-left: 10px;">
-                                        <?php if(isset($detail_spm['nom'])){ ?>
-                                            <?php if($detail_spm['nom'] >= 100000000){ ?>
+                                        <?php if(isset($detail_em_spm['nom'])){ ?>
+                                            <?php if($detail_em_spm['nom'] >= 100000000){ ?>
                                             Setuju dibayar : <br>
                                             Kuasa Bendahara Umum Undip harap membayar<br>
                                             kepada nama yang tersebut sesuai SPM dari KPA<br>
@@ -1738,7 +1731,7 @@ function terbilang(bilangan) {
                             <tr >
                             <td colspan="7" style="text-align: center;border-bottom: none;">
                                 <h4><b>UNIVERSITAS DIPONEGORO</b></h4>
-                                <h5><b>RINCIAN SURAT PERINTAH MEMBAYAR <?=strtoupper($jenis)?></b></h5>
+                                <h5><b>RINCIAN SURAT PERINTAH MEMBAYAR EM</b></h5>
                             </td>
                         </tr>
                         <tr>
@@ -1779,15 +1772,14 @@ function terbilang(bilangan) {
                             </td>
                             <td colspan="5" style="border-left: none;border-top: none;">
                                 <ol style="list-style: none;">
-                                    <li>: <span id=""><?=isset($detail_kontrak->nomor_kontrak)?$detail_kontrak->nomor_kontrak:'-'?></span> &nbsp; <span id=""><?=isset($detail_kontrak->tgl_kontrak)?$detail_kontrak->tgl_kontrak:'-'?></span></li>
-                                    <li>: <span id=""><?=isset($detail_kontrak->nilai_kontrak)?number_format($detail_kontrak->nilai_kontrak, 0, ",", "."):'-'?></span></li>
-                                    <li>: <span id=""><?=isset($detail_kontrak->nilai_kontrak_terbayar)?number_format($detail_kontrak->nilai_kontrak_terbayar, 0, ",", "."):'-'?></span></li>
-                                    <li>: <span id=""><?=isset($detail_kontrak->termin)?$detail_kontrak->termin:'-'?></span></li>
-                                    <li>: <span id=""><?=isset($detail_kontrak->jenis_kegiatan)?$detail_kontrak->jenis_kegiatan:'-'?></span></li>
-                                    <li>: <span id=""><?=isset($detail_kontrak->nomor_bap)?$detail_kontrak->nomor_bap:'-'?></span></li>
-                                    <li>: <span id=""><?=isset($detail_kontrak->nomor_bast)?$detail_kontrak->nomor_bast:'-'?></span></li>
+                                    <li>: -</li>
+                                    <li>: -</li>
+                                    <li>: -</li>
+                                    <li>: Lunas</li>
+                                    <li>: Non Fisik</li>
+                                    <li>: Terlampir</li>
+                                    <li>: Terlampir</li>
                                     <li>:</li>
-
                                 </ol>
                             </td>
                         </tr>
@@ -1833,11 +1825,11 @@ function terbilang(bilangan) {
                         <?php endif; ?>
                             <tr>
                                 <td class="text-center">&nbsp;</td>
-                                <td style="padding-left: 10px;"><?=$data->nama_akun4digit?></td>
+                                <td style="padding-left: 10px;"><?=$data->nama_akun5digit?></td>
                                 <?php if(!empty($data_akun_rkat)):?> 
                                     <?php foreach($data_akun_rkat as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
-                                            <?php if($da->kode_akun4digit == $data->kode_akun4digit):?>
+                                            <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->pagu_rkat, 0, ",", ".")?></td>
                                             <?php $pagu_rkat =  $da->pagu_rkat ;?>
                                             <?php endif;?>
@@ -1851,7 +1843,7 @@ function terbilang(bilangan) {
                                 <?php if(!empty($data_akun_pengeluaran_lalu)): ?> 
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
-                                            <?php if($da->kode_akun4digit == $data->kode_akun4digit):?>
+                                            <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
                                             <?php $empty_pengeluaran_lalu = true ; ?>
@@ -2016,7 +2008,7 @@ function terbilang(bilangan) {
 </form>
             <div class="alert alert-warning" style="text-align:center">
                
-                <?php if($doc == 'SPM-DRAFT-PPK'){ ?>
+                <?php if($doc_em == 'SPM-DRAFT-PPK'){ ?>
                     <button type="button" class="btn btn-info" id="cetak-spm" rel=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Cetak</button>
                     <button type="button" class="btn btn-default" id="xls_spm" rel=""><span class="fa fa-file-excel-o" aria-hidden="true"></span> Unduh .xls</button>
                     <!--<a href="#" class="btn btn-success" id="down_2"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Download</a>-->
@@ -2052,12 +2044,12 @@ function terbilang(bilangan) {
                             <tr >
                                 <td colspan="6" class="text-center" style="text-align: center;border: none;">
                                     <h4><b>UNIVERSITAS DIPONEGORO</b></h4>
-                                    <h5><b>SURAT PERTANGGUNGJAWABAN <?=strtoupper($jenis)?></b></h5>
+                                    <h5><b>SURAT PERTANGGUNGJAWABAN EM</b></h5>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="border: none;">&nbsp;</td>
-                                <td colspan="3" style="text-transform: uppercase;border: none;"><b>SUKPA : <?=$unit_kerja?></b></td>
+                                <td colspan="2" style="border: none;">&nbsp;</td>
+                                <td colspan="2" style="text-transform: uppercase;border: none;"><b>SUKPA : <?=$unit_kerja?></b></td>
                                 <td colspan="2" style="text-transform: uppercase;border: none;"><b>UNIT KERJA : <?=$unit_kerja?></b></td>
                             </tr>
                             <tr>
@@ -2067,9 +2059,9 @@ function terbilang(bilangan) {
                                 <td class="text-center" style="width: 50px;">NO</td>
                                 <td class="text-center">KODE SUB KEGIATAN<br>/ RINCIAN AKUN</td>
                                 <td class="text-center">URAIAN</td>
-                                <td class="text-center">SPJ <?=strtoupper($jenis)?> s.d SPM LALU<br>( Rp )</td>
-                                <td class="text-center">SPJ <?=strtoupper($jenis)?> SPM INI<br>( Rp )</td>
-                                <td class="text-center">SPJ <?=strtoupper($jenis)?> s.d SPM INI<br>( Rp )</td>
+                                <td class="text-center">SPJ EM s.d BULAN LALU<br>( Rp )</td>
+                                <td class="text-center">SPJ EM BULAN INI<br>( Rp )</td>
+                                <td class="text-center">SPJ EM s.d BULAN INI<br>( Rp )</td>
                             </tr>
                             <tr >
                                 <td style="">&nbsp;</td>
@@ -2102,13 +2094,13 @@ function terbilang(bilangan) {
                         <?php endif; ?>
                             <tr>
                                 <td class="text-center">&nbsp;</td>
-                                <td class="text-center"><?=$data->kode_akun4digit?></td>
-                                <td style="padding-left: 10px;"><?=$data->nama_akun4digit?></td>
+                                <td class="text-center"><?=$data->kode_akun5digit?></td>
+                                <td style="padding-left: 10px;"><?=$data->nama_akun5digit?></td>
                                 <?php $empty_pengeluaran_lalu = false ; ?>
                                 <?php if(!empty($data_akun_pengeluaran_lalu)):?> 
                                     <?php foreach($data_akun_pengeluaran_lalu as $da): ?>
                                         <?php if($da->kode_usulan_rkat == $data->kode_usulan_rkat):?> 
-                                            <?php if($da->kode_akun4digit == $data->kode_akun4digit):?>
+                                            <?php if($da->kode_akun5digit == $data->kode_akun5digit):?>
                                             <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><?=number_format($da->jml_spm_lalu, 0, ",", ".")?></td>
                                             <?php $jml_spm_lalu =  $da->jml_spm_lalu ;?>
                                             <?php $empty_pengeluaran_lalu = true ; ?>
@@ -2263,7 +2255,7 @@ function terbilang(bilangan) {
                                 <td colspan="14" class="text-center" style="text-align: center;border: none;">
                                     <b style="text-transform: uppercase;">KEGIATAN : <?=$data->nama_komponen?> </b><br>
                                     <b style="text-transform: uppercase;">SUB KEGIATAN : <?=$data->nama_subkomponen?> </b><br>
-                                    <b style="text-transform: uppercase;">KODE AKUN  : <?=$data->kode_akun4digit?> <span style="display: inline-block;width: 100px;">&nbsp;</span> URAIAN AKUN : <?=$data->nama_akun4digit?></b><br>
+                                    <b style="text-transform: uppercase;">KODE AKUN  : <?=$data->kode_akun5digit?> <span style="display: inline-block;width: 100px;">&nbsp;</span> URAIAN AKUN : <?=$data->nama_akun5digit?></b><br>
                                     <b style="text-transform: uppercase;">BULAN  : <?=$bulan?> <span style="display: inline-block;width: 100px;">&nbsp;</span> TAHUN : <?=$cur_tahun?></b><br>
                                 </td>
                             </tr>
@@ -2290,7 +2282,7 @@ function terbilang(bilangan) {
                             <?php $tot_bruto = 0 ;?>
                             <?php $tot_pajak = 0 ;?>
                             <?php foreach($rincian_akun_pengeluaran as $rincian): ?>
-                            <?php if(($rincian->rka == $data->rka)&&($rincian->kode_akun4digit == $data->kode_akun4digit)):?>
+                            <?php if(($rincian->rka == $data->rka)&&($rincian->kode_akun5digit == $data->kode_akun5digit)):?>
                             <tr>
                                 <td class="text-center" style="vertical-align: top"><?=$kl?></td>
                                 <td class="text-center" style="vertical-align: top"><?php echo strftime("%d-%m-%Y", strtotime($rincian->tgl_kuitansi)) ;?></td>
@@ -2577,7 +2569,7 @@ function terbilang(bilangan) {
                 <table id="table_rekappajak" class="table_lamppajak" style="font-family:arial;font-size:12px; line-height: 21px;border-collapse: collapse;width: 1300px;border: 1px solid #000;background-color: #FFF;" cellspacing="0" border="1" cellpadding="0" >
                     <tbody>
                             <tr >
-                                <td colspan="17" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                <td colspan="15" class="text-left" style="text-align: left;border: none;padding-left:20px;">
                                     <!--<h4><b>UNIVERSITAS DIPONEGORO</b></h4>-->
                                     <h5><b>Lampiran Pajak</b></h5>
                                     <h5><b>Nomor SPP : <?=$nomor_spp?></b></h5>
@@ -2590,7 +2582,7 @@ function terbilang(bilangan) {
                                     <b>Nama Wajib Pajak</b>
                                     <!--<b style="text-transform: uppercase;">SUKPA : <?=$unit_kerja?> <span style="display: inline-block;width: 100px;">&nbsp;</span> UNIT KERJA : <?=$unit_kerja?></b><br>-->
                                 </td>
-                                <td colspan="15" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                <td colspan="13" class="text-left" style="text-align: left;border: none;padding-left:20px;">
                                     : Bendahara Pengeluaran Undip
                                 </td>
                             </tr>
@@ -2600,12 +2592,12 @@ function terbilang(bilangan) {
                                     <b>NPWP</b>
                                     <!--<b style="text-transform: uppercase;">SUKPA : <?=$unit_kerja?> <span style="display: inline-block;width: 100px;">&nbsp;</span> UNIT KERJA : <?=$unit_kerja?></b><br>-->
                                 </td>
-                                <td colspan="15" class="text-left" style="text-align: left;border: none;padding-left:20px;">
+                                <td colspan="13" class="text-left" style="text-align: left;border: none;padding-left:20px;">
                                     : 00.018.856.5-517.000
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="17" style="border: none;">&nbsp;</td>
+                                <td colspan="15" style="border: none;">&nbsp;</td>
                             </tr>
                             <?php $jk = 1; ?>
                             <?php if(!empty($data_rekap_pajak)): ?>
@@ -2622,13 +2614,11 @@ function terbilang(bilangan) {
 
                             <?php $tot_sub_pajak_ = 0 ;?>
                             <?php $tot_pajak_ = 0 ;?> 
-                            <?php $tot_pajak_potongan_ = 0 ;?> 
-                            <?php $tot_pajak_tabungan_ = 0 ;?> 
 
                             <?php foreach($data_rekap_pajak as $data_pajak => $akun ):?>  
 
                             <tr>
-                                <td colspan="17" style="border-bottom: none;">&nbsp;</td>
+                                <td colspan="15" style="border-bottom: none;">&nbsp;</td>
                             </tr>
  
                             <tr>
@@ -2640,8 +2630,6 @@ function terbilang(bilangan) {
                                 <td class="text-center" rowspan="2"><b>Jml Kotor</b></td>
                                 <td class="text-center" rowspan="2"><b>PPN</b></td>
                                 <td class="text-center" colspan="5"><b>PPh</b></td>
-                                <td class="text-center" rowspan="2"><b>Potongan Pajak</b></td>
-                                <td class="text-center" rowspan="2"><b>Tabungan Pajak</b></td>
                                 <td class="text-center" rowspan="2"><b>Lainnya</b></td>
                                 <td class="text-center" rowspan="2"><b>Jml Pajak</b></td>
                                 <td class="text-center" rowspan="2"><b>Jml Bersih</b></td>
@@ -2654,8 +2642,6 @@ function terbilang(bilangan) {
                                 <td class="text-center"><b>26</b></td>
                             </tr>    
                             <tr>     
-                                <td class="text-center"><b>Rp</b></td>
-                                <td class="text-center"><b>Rp</b></td>
                                 <td class="text-center"><b>Rp</b></td>
                                 <td class="text-center"><b>Rp</b></td>
                                 <td class="text-center"><b>Rp</b></td>
@@ -2685,9 +2671,6 @@ function terbilang(bilangan) {
                             <?php $tot_sub_pajak = 0 ;?>
                             <?php $tot_pajak = 0 ;?> 
 
-                            <?php $tot_pajak_potongan = 0 ;?>
-                            <?php $tot_pajak_tabungan = 0 ;?>
-
                             <?php foreach($akun as $i => $data):?> 
 
                                
@@ -2710,8 +2693,6 @@ function terbilang(bilangan) {
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh23, 0, ",", ".")?></td>
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh4_2, 0, ",", ".")?></td>
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->PPh26, 0, ",", ".")?></td>
-                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->Potongan_Pajak, 0, ",", ".")?></td>
-                                <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->Tabungan_Pajak, 0, ",", ".")?></td>
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($data->Lainnya, 0, ",", ".")?></td>
                                 <?php $tot_sub_pajak =  $data->PPN +  $data->PPh21 +  $data->PPh22 +  $data->PPh23  + $data->PPh4_2 +  $data->PPh26 + $data->Lainnya;?> 
                                 <td class="text-right" style='vertical-align: top;padding-right: 10px;mso-number-format:"\@";'><?=number_format($tot_sub_pajak, 0, ",", ".")?></td>
@@ -2727,9 +2708,6 @@ function terbilang(bilangan) {
                                 <?php $tot_pajak_lainnya = $tot_pajak_lainnya + $data->Lainnya ;?>
                                 <?php $tot_pajak = $tot_pajak + $tot_sub_pajak ;?>
 
-                                <?php $tot_pajak_potongan = $tot_pajak_potongan + $data->Potongan_Pajak ;?>
-                                <?php $tot_pajak_tabungan = $tot_pajak_tabungan + $data->Tabungan_Pajak ;?>
-
                             </tr>
                             <?php $kl++ ; ?>
 
@@ -2744,8 +2722,6 @@ function terbilang(bilangan) {
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_23, 0, ",", ".")?></b></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_4_2, 0, ",", ".")?></b></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_26, 0, ",", ".")?></b></td>
-                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b></b><?=number_format($tot_pajak_potongan, 0, ",", ".")?></td>
-                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b></b><?=number_format($tot_pajak_tabungan, 0, ",", ".")?></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_lainnya, 0, ",", ".")?></b></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak, 0, ",", ".")?></b></td>
                                 
@@ -2765,8 +2741,7 @@ function terbilang(bilangan) {
                             <?php $tot_pajak_lainnya_ = $tot_pajak_lainnya_ + $tot_pajak_lainnya ;?>
                             <?php $tot_pajak_ = $tot_pajak_ + $tot_pajak ;?>
 
-                            <?php $tot_pajak_potongan_ = $tot_pajak_potongan_ + $tot_pajak_potongan ;?>
-                            <?php $tot_pajak_tabungan_ = $tot_pajak_tabungan_ + $tot_pajak_tabungan ;?>
+                            
 
 
                             <?php endforeach;?>
@@ -2779,8 +2754,6 @@ function terbilang(bilangan) {
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_23_, 0, ",", ".")?></b></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_4_2_, 0, ",", ".")?></b></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_26_, 0, ",", ".")?></b></td>
-                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_potongan_, 0, ",", ".")?></b></td>
-                                <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_tabungan_, 0, ",", ".")?></b></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_lainnya_, 0, ",", ".")?></b></td>
                                 <td class="text-right" style='padding-right: 10px;mso-number-format:"\@";'><b><?=number_format($tot_pajak_, 0, ",", ".")?></b></td>
                                 
@@ -2789,15 +2762,15 @@ function terbilang(bilangan) {
                                 
                             </tr>
                             <tr>
-                                <td colspan="17" style="border-bottom: none;">&nbsp;</td>
+                                <td colspan="15" style="border-bottom: none;">&nbsp;</td>
                             </tr>
                             <?php else: ?>
                             <tr>
-                                <td class="text-center" colspan="17">- data kosong -</td>
+                                <td class="text-center" colspan="15">- data kosong -</td>
                             </tr>
                             <?php endif; ?>
                             <tr>
-                                <td colspan="13" style="border-bottom: none;border-top: none;border-right:none;">&nbsp;</td>
+                                <td colspan="11" style="border-bottom: none;border-top: none;border-right:none;">&nbsp;</td>
                                 <td colspan="4" style="border-bottom: none;border-top: none;border-left:none;">
                                     Semarang, <?php setlocale(LC_ALL, 'id_ID.utf8'); echo $tgl_spp==''?'':strftime("%d %B %Y", strtotime($tgl_spp)); //  ?> <br>
                                     Bendahara Pengeluaran SUKPA<br>
@@ -2810,7 +2783,7 @@ function terbilang(bilangan) {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="17" style="border-top: none;">&nbsp;</td>
+                                <td colspan="15" style="border-top: none;">&nbsp;</td>
                             </tr>
                     </tbody>
             </table>
@@ -2923,10 +2896,10 @@ function terbilang(bilangan) {
                             <td class="col-md-1">&nbsp;</td>
                 </tr>
                   <tr>
-                                <td rowspan="4" style="text-align: center" colspan="2">
+                                <td rowspan="3" style="text-align: center" colspan="2">
                     <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
                 </td>
-                                <td >&nbsp;<span id="kuitansi_id_kuitansi_showpengembalian" style="display:none">0</span></td>
+                                <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
@@ -2945,16 +2918,6 @@ function terbilang(bilangan) {
                                 <td colspan="2">Nomor Bukti</td>
                                 <td style="text-align: center">:</td>
                                 <td colspan="2" id="kuitansi_no_bukti_showpengembalian">-</td>
-                        </tr>
-                        <tr class="tr_up">
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-
-                            <td colspan="2">Jenis</td>
-                            <td style="text-align: center">:</td>
-                            <td colspan="2" id="kuitansi_jenis_showpengembalian"><?=$jenis?></td>
                         </tr>
                         <tr class="tr_up">
                                 <td >&nbsp;</td>
@@ -3013,26 +2976,30 @@ function terbilang(bilangan) {
                 </td>
                         </tr>
                         <tr id="before_tr_isi_showpengembalian">
-                            <td colspan="3" style="border:1px solid #000;"><b>Deskripsi</b></td>
-                            <td style="text-align:center;border:1px solid #000;"><b>Kuantitas</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Satuan</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Harga@</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Bruto</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;" colspan="2"><b>Pajak</b></td>
-                            <td colspan="2" style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Netto</b></td>
+                            <td colspan="3"><b>Deskripsi</b></td>
+                            <td style="text-align:center"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
+                            <td >&nbsp;</td>
+                            <td ><b>Netto</b></td>
             </tr>
                         <tr id="tr_isi_showpengembalian">
                             <td colspan="11">&nbsp;</td>
             </tr>
                         <tr>
-                            <td style="border:1px solid #000;" colspan="4">&nbsp;</td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Jumlah</b></td>
-                            <td style="border:1px solid #000;">&nbsp;</td>
-                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_bruto_showpengembalian">0</span></b></td>
-                            <td style="border:1px solid #000;" >&nbsp;</td>
-                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_pajak_showpengembalian">0</span></b></td>
-                            <td style="border:1px solid #000;border-right:none;"><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
-                            <td style="text-align: right;border:1px solid #000;border-left:none;"><b><span class="sum_tot_netto_showpengembalian">0</span></b></td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td ><b>Jumlah</b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_bruto_showpengembalian">0</span></b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_pajak_showpengembalian">0</span></b></td>
+                            <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right"><b><span class="sum_tot_netto_showpengembalian">0</span></b></td>
             </tr>
                         <tr>
                                 <td colspan="11">
@@ -3042,11 +3009,7 @@ function terbilang(bilangan) {
             <tr>
                             <td colspan="7" style="vertical-align: top;">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
-                                <?php if(strtoupper($jenis)== 'LSK'): ?>
-                                Pejabat Pembuat Komitmen (PPK)
-                                <?php else: ?>
                                 Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
-                                <?php endif; ?>
                             </td>
                             <td colspan="4" style="vertical-align: top;">
                                 Semarang, <span id="tgl_kuitansi_showpengembalian">-</span><br />
@@ -3154,9 +3117,9 @@ function terbilang(bilangan) {
                             <td class="col-md-1">&nbsp;</td>
                 </tr>
                   <tr>
-                                <td rowspan="4" style="text-align: center" colspan="2">
-                    <img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
-                </td>
+                                <td rowspan="3" style="text-align: center" colspan="2">
+					<img src="<?php echo base_url(); ?>/assets/img/logo_1.png" width="60">
+				</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
@@ -3178,16 +3141,6 @@ function terbilang(bilangan) {
                                 <td colspan="2" id="kuitansi_no_bukti">-</td>
                         </tr>
                         <tr class="tr_up">
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-                            <td >&nbsp;</td>
-
-                            <td colspan="2">Jenis</td>
-                            <td style="text-align: center">:</td>
-                            <td colspan="2" id="kuitansi_jenis">-</td>
-                        </tr>
-                        <tr class="tr_up">
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
@@ -3197,113 +3150,113 @@ function terbilang(bilangan) {
                                 <td style="text-align: center">:</td>
                                 <td colspan="2" id="kuitansi_txt_akun">-</td>
 
-            </tr>
-            <tr>
+			</tr>
+			<tr>
                                 <td colspan="11">
                                     &nbsp;
-                </td>
+				</td>
                         </tr>
-            <tr>
-                <td colspan="11">
+			<tr>
+				<td colspan="11">
                                     <h4 style="text-align: center"><b>KUITANSI / BUKTI PEMBAYARAN</b></h4>
-                </td>
-            </tr>
+				</td>
+			</tr>
                         <tr>
                                 <td colspan="11">
                                     &nbsp;
-                </td>
+				</td>
                         </tr>
-            <tr class="tr_up">
-                <td colspan="3">Sudah Diterima dari</td>
-                <td>: </td>
+			<tr class="tr_up">
+				<td colspan="3">Sudah Diterima dari</td>
+				<td>: </td>
                                 <td colspan="7">Pejabat Pembuat Komitmen/ Pejabat Pelaksana dan Pengendali Kegiatan SUKPA <?=$unit_kerja?></td>
-            </tr>
-            <tr class="tr_up">
-                <td colspan="3">Jumlah Uang</td>
-                <td>: </td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Jumlah Uang</td>
+				<td>: </td>
                                 <td colspan="7"><b>Rp. <span class="sum_tot_bruto">0</span>,-</b></td>
-            </tr>
-            <tr class="tr_up">
-                <td colspan="3">Terbilang</td>
-                <td>: </td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Terbilang</td>
+				<td>: </td>
                                 <td colspan="7"><b><span class="text_tot">-</span></b></td>
-            </tr>
-            <tr class="tr_up">
-                <td colspan="3">Untuk Pembayaran</td>
-                <td>: </td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Untuk Pembayaran</td>
+				<td>: </td>
                                 <td colspan="7"><span id="uraian">-</span></td>
-            </tr>
-            <tr class="tr_up">
-                <td colspan="3">Sub Kegiatan</td>
-                <td>: </td>
+			</tr>
+			<tr class="tr_up">
+				<td colspan="3">Sub Kegiatan</td>
+				<td>: </td>
                                 <td colspan="7"><span id="nm_subkomponen">-</span></td>
-            </tr>
+			</tr>
                         <tr>
                                 <td colspan="11">
                                     &nbsp;
-                </td>
+				</td>
                         </tr>
                         <tr id="before_tr_isi">
-                            <td colspan="3" style="border:1px solid #000;"><b>Deskripsi</b></td>
-                            <td style="text-align:center;border:1px solid #000;"><b>Kuantitas</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Satuan</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Harga@</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Bruto</b></td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;" colspan="2"><b>Potongan</b></td>
-                            <td colspan="2" style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Netto</b></td>
-            </tr>
+                            <td colspan="3"><b>Deskripsi</b></td>
+                            <td style="text-align:center"><b>Kuantitas</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Satuan</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Harga@</b></td>
+                            <td style="padding: 0 5px 0 5px;"><b>Bruto</b></td>
+                            <td style="padding: 0 5px 0 5px;" colspan="2"><b>Pajak</b></td>
+                            <td >&nbsp;</td>
+                            <td ><b>Netto</b></td>
+			</tr>
                         <tr id="tr_isi">
                             <td colspan="11">&nbsp;</td>
-            </tr>
+			</tr>
                         <tr>
-                            <td style="border:1px solid #000;" colspan="4">&nbsp;</td>
-                            <td style="padding: 0 5px 0 5px;border:1px solid #000;"><b>Jumlah</b></td>
-                            <td style="border:1px solid #000;">&nbsp;</td>
-                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_bruto">0</span></b></td>
-                            <td style="border:1px solid #000;" >&nbsp;</td>
-                            <td style="text-align:right;padding: 0 5px 0 5px;border:1px solid #000;"><b><span class="sum_tot_pajak">0</span></b></td>
-                            <td style="border:1px solid #000;border-right:none;"><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
-                            <td style="text-align: right;border:1px solid #000;border-left:none;"><b><span class="sum_tot_netto">0</span></b></td>
-            </tr>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td >&nbsp;</td>
+                            <td ><b>Jumlah</b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_bruto">0</span></b></td>
+                            <td >&nbsp;</td>
+                            <td style="text-align: right"><b><span class="sum_tot_pajak">0</span></b></td>
+                            <td ><b><span style="margin-left:10px;margin-right:10px;">=</span><span style="margin-left:10px;margin-right:10px;">Rp.</span></b></td>
+                            <td style="text-align: right"><b><span class="sum_tot_netto">0</span></b></td>
+			</tr>
                         <tr>
                                 <td colspan="11">
                                     &nbsp;
-                </td>
+				</td>
                         </tr>
-            <tr>
-                            <td colspan="7">Setuju dibebankan pada mata anggaran berkenaan, <br />
+			<tr>
+                            <td colspan="8">Setuju dibebankan pada mata anggaran berkenaan, <br />
                                 a.n. Kuasa Pengguna Anggaran <br />
-                                <?php if(strtoupper($jenis)== 'LSK'): ?>
-                                Pejabat Pembuat Komitmen (PPK)
-                                <?php else: ?>
                                 Pejabat Pelaksana dan Pengendali Kegiatan (PPPK)
-                                <?php endif; ?>
                             </td>
-                            <td colspan="4">
+                            <td colspan="3">
                                 Semarang, <span id="tgl_kuitansi">-</span><br />
                                 Penerima Uang
                             </td>
-            </tr>
+			</tr>
                         <tr>
                                 <td colspan="11">
                                     <br>
                                     <br>
                                     <br>
                                     <br>
-                </td>
+				</td>
                         </tr>
                         <tr >
-                            <td colspan="7" style="border-bottom: 1px solid #000"><span id="nmpppk">-</span><br>
+                            <td colspan="8" style="border-bottom: 1px solid #000"><span id="nmpppk">-</span><br>
                                     NIP. <span id="nippppk">-</span></td>
-                            <td colspan="4" style="border-bottom: 1px solid #000"><span class="edit_here" id="penerima_uang">-</span><br />
+                            <td colspan="3" style="border-bottom: 1px solid #000"><span class="edit_here" id="penerima_uang">-</span><br />
                                 NIP. <span class="edit_here" id="penerima_uang_nip">-</span>
                             </td>
-            </tr>
+			</tr>
                         <tr >
-                            <td colspan="7">Setuju dibayar tgl : <br>
+                            <td colspan="8">Setuju dibayar tgl : <br>
                                 Bendahara Pengeluaran
                             </td>
-                            <td colspan="4" ><span style="display: none" id="td_tglpumk">Lunas dibayar tgl : <br>
+                            <td colspan="3" ><span style="display: none" id="td_tglpumk">Lunas dibayar tgl : <br>
                                     Pemegang Uang Muka Kerja</span>
                             </td>
                         </tr>
@@ -3312,36 +3265,36 @@ function terbilang(bilangan) {
                                     <br>
                                     <br>
                                     <br>
-                </td>
+				</td>
                         </tr>
                          <tr>
-                             <td colspan="7"><span id="nmbendahara_kuitansi"></span><br>
+                             <td colspan="8"><span id="nmbendahara_kuitansi"></span><br>
                                  NIP. <span id="nipbendahara_kuitansi"></span>
                             </td>
-                            <td colspan="4" ><span style="display: none" id="td_nmpumk"><span id="nmpumk"></span><br>
+                            <td colspan="3" ><span style="display: none" id="td_nmpumk"><span id="nmpumk"></span><br>
                                     NIP. <span id="nippumk"></span></span>
                             </td>
                         </tr>
-            <tr >
-                <td colspan="11" style="border-top:1px solid #000">
-                Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
-                Penerima Barang/jasa
-                </td>
+			<tr >
+				<td colspan="11" style="border-top:1px solid #000">
+				Barang/Pekerjaan tersebut telah diterima /diselesaikan  dengan lengkap dan baik.<br>
+				Penerima Barang/jasa
+				</td>
                         </tr>
                         <tr>
                                 <td colspan="11">
                                     <br>
                                     <br>
                                     <br>
-                </td>
+				</td>
                         </tr>
                         <tr>
                             <td colspan="11" ><span id="penerima_barang">-</span><br />
                                     NIP. <span id="penerima_barang_nip">-</span>
-                </td>
-            </tr>
+				</td>
+			</tr>
 
-        </table>
+		</table>
               </div>
               </div> 
           
