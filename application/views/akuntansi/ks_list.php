@@ -152,7 +152,7 @@ tbody td, thead th {
 				<tr>
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>						
-						<a href="<?php echo site_url('akuntansi/rsa_tambah_ks/spm_tambah_ks_lihat/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+						<a href="<?php echo site_url('akuntansi/rsa_ks/spm_ks_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->nomor_trx_spm).'/KS'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 					</td>
 					<td><?php echo date("d/m/Y", strtotime($result->tgl_spm)); ?></td>
