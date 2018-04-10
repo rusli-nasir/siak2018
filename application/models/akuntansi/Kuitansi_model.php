@@ -812,15 +812,59 @@ class Kuitansi_model extends CI_Model {
 
         $disabler = "";
 
+
 		if($limit!=null OR $start!=null){
-			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp, trx_spm_ks_data.str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_ks_data AS id_kuitansi FROM trx_spm_ks_data, trx_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_ks_data.nomor_trx_spm = id_trx_nomor_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks $disabler AND
-			(trx_spm_ks_data.str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
+			$query = $this->db->query("  
+                                        SELECT 
+                                            *, trx_spp_ks_data.str_nomor_trx as no_spp, 
+                                            trx_spm_ks_data.str_nomor_trx AS str_nomor_trx_spm, 
+                                            trx_spm_ks_data.str_nomor_trx AS no_spm, 
+                                            id_trx_spm_ks_data AS id_kuitansi,
+                                            kas_bendahara.kd_akun_kas AS kd_akun_kas,
+                                            kas_bendahara.debet
+                                        FROM 
+                                            trx_spm_ks_data, 
+                                            trx_ks, 
+                                            kas_bendahara,
+                                            -- kas_kerjasama, 
+                                            trx_spp_ks_data 
+                                        WHERE 
+                                            trx_spm_ks_data.nomor_trx_spm = id_trx_nomor_ks_spm AND 
+                                            posisi='SPM-FINAL-KBUU' AND 
+                                            flag_proses_akuntansi=0 AND
+                                            kas_bendahara.no_spm = trx_spm_ks_data.str_nomor_trx AND 
+                                            -- no_spm = trx_spm_ks_data.str_nomor_trx AND 
+                                            nomor_trx_spp=id_trx_nomor_ks $disabler AND
+                                             (trx_spm_ks_data.str_nomor_trx LIKE '%$keyword%') $unit 
+                                        LIMIT 
+                                            $start, $limit
+                                        ");
 		}else{
-			$query = $this->db->query("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spp, trx_spm_ks_data.str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_ks_data AS id_kuitansi FROM trx_spm_ks_data, trx_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_ks_data.nomor_trx_spm = id_trx_nomor_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks $disabler AND
-			(trx_spm_ks_data.str_nomor_trx LIKE '%$keyword%') $unit");
+			$query = $this->db->query("  
+                                        SELECT 
+                                            *, trx_spp_ks_data.str_nomor_trx as no_spp, 
+                                            trx_spm_ks_data.str_nomor_trx AS str_nomor_trx_spm, 
+                                            trx_spm_ks_data.str_nomor_trx AS no_spm, 
+                                            id_trx_spm_ks_data AS id_kuitansi,
+                                            kas_bendahara.kd_akun_kas AS kd_akun_kas,
+                                            kas_bendahara.debet
+                                        FROM 
+                                            trx_spm_ks_data, 
+                                            trx_ks, 
+                                            kas_bendahara,
+                                            -- kas_kerjasama, 
+                                            trx_spp_ks_data 
+                                        WHERE 
+                                            trx_spm_ks_data.nomor_trx_spm = id_trx_nomor_ks_spm AND 
+                                            posisi='SPM-FINAL-KBUU' AND 
+                                            flag_proses_akuntansi=0 AND
+                                            kas_bendahara.no_spm = trx_spm_ks_data.str_nomor_trx AND 
+                                            -- no_spm = trx_spm_ks_data.str_nomor_trx AND 
+                                            nomor_trx_spp=id_trx_nomor_ks $disabler AND
+                                             (trx_spm_ks_data.str_nomor_trx LIKE '%$keyword%') $unit 
+                                        ");
 		}
-        // die("SELECT *, trx_spp_tambah_ks_data.str_nomor_trx as no_spm FROM trx_spm_ks_data, trx_ks, kas_kerjasama, trx_spp_tambah_ks_data WHERE trx_spm_ks_data.nomor_trx_spm = id_trx_nomor_ks_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = trx_spm_ks_data.str_nomor_trx AND nomor_trx_spp=id_trx_nomor_tambah_ks AND
-        //     (trx_spm_ks_data.str_nomor_trx LIKE '%$keyword%') $unit");
+        // vdebug($query->result_array());
 		return $query;
 	}
     
