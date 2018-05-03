@@ -157,9 +157,9 @@ tbody td, thead th {
 							<a href="<?php echo site_url('akuntansi/rsa_up/jurnal/'.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab4)){ ?>
                         <!-- <a href="<?php echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.$result->kode_unit_subunit.'/'.explode('/', $result->str_nomor_trx)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a> -->
-                        <a href="<?php echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.urlencode(base64_encode(get_no_spp($result->str_nomor_trx,'trx_nomor_up'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->str_nomor_trx,'trx_nomor_gup'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab9)){ ?>
-                        <a href="<?php echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.urlencode(base64_encode(get_no_spp($result->str_nomor_trx,'trx_nomor_up'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+                        <a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->str_nomor_trx,'trx_nomor_gup'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab6)){ ?>
 							<a href="<?php echo site_url('akuntansi/rsa_pup/jurnal/?spm='.urlencode($result->str_nomor_trx));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
                         <?php }elseif(isset($tab5)){ ?>

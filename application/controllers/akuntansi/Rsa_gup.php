@@ -1494,7 +1494,8 @@
                                 /////////////
                                     
                                     $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
-                                   // var_dump($data_spp);die;
+
+                                   // var_dump($nomor_trx_spp);die;
                                     
 //                                    if($data_url != ''){
                                     $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
