@@ -698,39 +698,46 @@ class Kuitansi_model extends CI_Model {
 
     public function get_no_spp_ls($no_spm)
     {
-        $hasil = $this->db->where('str_nomor_trx_spm',$no_spm)->select('str_nomor_trx')->get('rsa_kuitansi')->row_array();
+        // $hasil = $this->db->where('str_nomor_trx_spm',$no_spm)->select('str_nomor_trx')->get('rsa_kuitansi')->row_array();
 
         // var_dump($hasil);
         // die();
-        return $hasil['str_nomor_trx'];
+        // return $hasil['str_nomor_trx'];
+        return $this->get_no_spp($no_spm);
     }
 
     public function get_no_spp_em($no_spm)
     {
-        $this->db->select(array('kode_unit_subunit','nomor_trx'));
-        $where = $this->db->get_where('trx_nomor_em',array('str_nomor_trx' => $no_spm))->row_array();
-        $where['aktif'] = 1;
-        $where['jenis'] = 'SPP';
-        $hasil = $this->db->get_where('trx_nomor_em',$where)->row_array();
+        // $this->db->select(array('kode_unit_subunit','nomor_trx'));
+        // $where = $this->db->get_where('trx_nomor_em',array('str_nomor_trx' => $no_spm))->row_array();
+        // $where['aktif'] = 1;
+        // $where['jenis'] = 'SPP';
+        // $hasil = $this->db->get_where('trx_nomor_em',$where)->row_array();
 
-        if ($hasil != null){
-            return $hasil['str_nomor_trx'];
-        }
+        // if ($hasil != null){
+        //     return $hasil['str_nomor_trx'];
+        // }
+
+        return $this->get_no_spp($no_spm);
 
     }
 
-    public function get_no_spp($no_spm,$table)
+    public function get_no_spp($no_spm,$table = null)
     {
-        $this->db->select(array('kode_unit_subunit','nomor_trx'));
-        $where = $this->db->get_where($table,array('str_nomor_trx' => $no_spm))->row_array();
-        $where['aktif'] = 1;
-        $where['jenis'] = 'SPP';
-        $hasil = $this->db->get_where($table,$where)->row_array();
+        // $this->db->select(array('kode_unit_subunit','nomor_trx'));
+        // $where = $this->db->get_where($table,array('str_nomor_trx' => $no_spm))->row_array();
+        // $where['aktif'] = 1;
+        // $where['jenis'] = 'SPP';
+        // $hasil = $this->db->get_where($table,$where)->row_array();
 
+        // if ($hasil != null){
+        //     return $hasil['str_nomor_trx'];
+        // }
+        $hasil = $this->db->get_where('trx_spp_spm',array('str_nomor_trx_spm' => $no_spm))->row_array();
         if ($hasil != null){
-            return $hasil['str_nomor_trx'];
+            return $hasil['str_nomor_trx_spp'];
         }
-
+ 
     }
 
     

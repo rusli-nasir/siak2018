@@ -1576,7 +1576,7 @@ class Kuitansi extends MY_Controller {
               $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_em($this->data['query'][$key]['no_spm']);          
             }
             if ($this->data['query'][$key]['jenis'] == 'KS') {
-              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_tambah_ks');         
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_ks');         
             }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
@@ -1989,7 +1989,7 @@ class Kuitansi extends MY_Controller {
               $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_em($this->data['query'][$key]['no_spm']);          
             }
             if ($this->data['query'][$key]['jenis'] == 'KS') {
-              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_tambah_ks');         
+              $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_ks');         
             }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
