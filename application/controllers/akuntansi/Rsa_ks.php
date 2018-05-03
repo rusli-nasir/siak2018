@@ -393,6 +393,7 @@
             }
                 }
 
+
                 function spm_ks_lihat($url = ''){
 
 
@@ -412,6 +413,8 @@
                             $arr_url = explode('/', $url);
                             $kd_unit = $this->unit_model->get_kd_unit_by_alias($arr_url[1]);
                             $tahun = $arr_url[4] ;
+                            // $subdata['id_kuitansi'] = $id_kuitansi;
+
 
 
                 //set data for main template
@@ -598,6 +601,7 @@
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
+
                 // $data['main_content']           = $this->load->view("rsa_permintaan/spm_permintaan_lihat",$subdata,TRUE);
                 // $this->load->view('main_template',$data);
                 $data['main_content']           = $this->load->view("akuntansi/view_rsa/spm_permintaan_lihat",$subdata,TRUE);
@@ -609,6 +613,7 @@
             else{
                 redirect('welcome','refresh');  // redirect ke halaman home
             }
+
           }
                 
                 function spm_ks($url = ''){

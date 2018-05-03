@@ -269,7 +269,7 @@ tbody td, thead th {
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>	
 					<?php if($result->jenis=='TP'){ ?>
-						<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>	
+						<a href="<?php echo site_url('akuntansi/rsa_tup_nihil/spm_tup_nihil_lihat_99/'.urlencode(base64_encode(get_no_spp($result->str_nomor_trx_spm,'trx_nomor_tup_nihil')))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>	
 					<?php }elseif($result->jenis=='LK'){ ?>
 						<a href="<?php echo site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 					<?php }elseif($result->jenis=='LN'){ ?>
@@ -329,6 +329,13 @@ tbody td, thead th {
 </div>
 
 <?php
+function get_no_spp($spm,$tabel)
+{
+	$ci =& get_instance();
+	$ci->load->model('akuntansi/Kuitansi_model','Kuitansi_model');
+	return $ci->Kuitansi_model->get_no_spp($spm,$tabel);
+}
+
 function get_pengeluaran($id_kuitansi){
 	$ci =& get_instance();
 

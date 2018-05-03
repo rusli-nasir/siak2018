@@ -1,7 +1,7 @@
 <?php
     if (!defined('BASEPATH')) exit('No direct script access allowed');
     
-    class rsa_gup extends CI_Controller{
+    class rsa_tup_nihil extends CI_Controller{
 /* -------------- Constructor ------------- */
             
             private $cur_tahun;
@@ -11,7 +11,7 @@
                 $this->cur_tahun = $this->setting_model->get_tahun();
             $this->load->library(array('form_validation','option','Url_encoder','shorturl'));
             $this->load->helper('form');
-            $this->load->model(array('rsa_gup_model','akun_model','setting_up_model','kuitansi_model','kuitansipengembalian_model'));
+            $this->load->model(array('rsa_tup_nihil_model','akun_model','setting_up_model','kuitansi_model','kuitansipengembalian_model'));
             $this->load->model("user_model");
                         $this->load->model("unit_model");
                         $this->load->model('menu_model');
@@ -26,7 +26,7 @@
         function index(){
                     if($this->check_session->user_session()){
                         $data['cur_tahun'] = $this->cur_tahun ;
-                        $subdata['jenis']           = 'gup';
+                        $subdata['jenis']           = 'tup_nihil';
                         $data['main_content']   = $this->load->view('rsa_pengesahan/index',$subdata,TRUE);
                         // $data['main_menu']   = $this->load->view('form_login','',TRUE);
                         $list["menu"] = $this->menu_model->show();
@@ -38,47 +38,27 @@
                         redirect('welcome','refresh');  // redirect ke halaman home
                     }
         }
-        
-        //define method daftar_unit()
-        function daftar_rsa_up(){
-            if($this->check_session->user_session() && $this->check_session->get_level()==2){
-                //set data for main template
-                $data['user_menu']  = $this->load->view('user_menu','',TRUE);
-                $data['main_menu']  = $this->load->view('main_menu','',TRUE);       
-                $subdata_rsa_up['result_rsa_up']        = $this->rsa_up_model->search_rsa_up();
-                $subdata['opt_unit_kepeg']      = $this->option->opt_unit_kepeg();
-                $subdata['row_rsa_up']          = $this->load->view("rsa_up/row_rsa_up",$subdata_rsa_up,TRUE);
-                $data['main_content']           = $this->load->view("rsa_up/daftar_rsa_up",$subdata,TRUE);
-                $this->load->view('main_template',$data);
-            }
-            else{
-                redirect('home','refresh'); // redirect ke halaman home
-            }       
-        }
-        function input_rsa_up(){
-            if($this->check_session->user_session() && $this->check_session->get_level()==13){
-                //set data for main template
-                $data['user_menu']  = $this->load->view('user_menu','',TRUE);
-                $data['main_menu']  = $this->load->view('main_menu','',TRUE);       
-                //$subdata_rsa_up['result_rsa_up']      = $this->rsa_up_model->search_rsa_up();
-                //$subdata['row_rsa_up']            = $this->load->view("rsa_up/row_rsa_up",$subdata_rsa_up,TRUE);
-                $subdata['opt_unit_kepeg']      = $this->option->opt_unit_kepeg();
-                $data['main_content']           = $this->load->view("rsa_up/input_rsa_up",$subdata,TRUE);
-                $this->load->view('main_template',$data);
-            }
-            else{
-                redirect('home','refresh'); // redirect ke halaman home
-            }       
-        }
+
                 
-                function create_spp_gup(){
+                function create_spp_tup_nihil(){
                     if($this->check_session->user_session() && (($this->check_session->get_level()==13)||($this->check_session->get_level()==100))){
                         if($this->input->post('rel_kuitansi')){
-                            
+
                             $array_id = $this->input->post('rel_kuitansi');
                             $array_id_pengembalian = $this->input->post('rel_kuitansi_pengembalian');
 
-                            $str_nomor_trx_spm_gup = $this->input->post('str_nomor_trx_spm_gup');
+                            $str_nomor_trx_spm_tup = $this->input->post('str_nomor_trx_spm_tup');
+
+                            // CHECK APAKAH nomer_spm_tup MEMANG BENAR BISA DBUAT SPP
+
+                            $status = $this->rsa_tup_nihil_model->get_status_spm_tup($str_nomor_trx_spm_tup);
+
+                            if($status == '1'){
+                                    $this->load->library('user_agent');
+                                    $this->session->set_flashdata('message', '<div class="alert alert-danger" style="text-align:center"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> Tidak bisa, karena SPM TUP-NIHIL yang terkait sudah diproses <u>NIHIL</u>.</div>');
+
+                                    redirect($this->agent->referrer());
+                                }
 
                             // CHECK APAKAH KUITANSI MEMANG BENAR BISA DIBUAT SPP
                             $dataList = substr($array_id, 1, -1);
@@ -105,46 +85,42 @@
                                 $data_pengembalian = urlencode($this->shorturl->_encode_string_array($data_pengembalian)) ;
 
 
-                                $data_pengembalian_ = urldecode($data_pengembalian);
-                                $data_pengembalian_ = $this->shorturl->_decode_string_array($data_pengembalian_);
-
-                                $data_pengembalian_ = base64_decode($data_pengembalian_);
-
-                                // echo $data_pengembalian_; die;
-
-
                                 // $this->session->set_flashdata('array_id', $data);
                                 // $this->session->set_flashdata('array_id_pengembalian', $data_pengembalian);
+
                                 $this->session->set_tempdata('array_id', $data, 300);
                                 $this->session->set_tempdata('array_id_pengembalian', $data_pengembalian, 300);
 
-                                $this->session->set_tempdata('str_nomor_trx_spm_gup', $str_nomor_trx_spm_gup, 300);
+                                $this->session->set_tempdata('str_nomor_trx_spm_tup', $str_nomor_trx_spm_tup, 300);
                                 
-
                             // redirect(site_url('rsa_tup/spp_tup/' . $data . '/' . $data_pengembalian));
-                            if($data_pengembalian_ == '[]'){
-                                redirect(site_url('rsa_gup/spp_gup/')) ;
-                            }else{
-                                redirect(site_url('rsa_gup_nihil/spp_gup_nihil/')) ;
-                            }
+                            redirect(site_url('rsa_tup_nihil/spp_tup_nihil/')) ;
                         }
                         
                     }
                 }
                 
             
-                function spp_gup(){
+                function spp_tup_nihil(){
                     if($this->check_session->user_session() && (($this->check_session->get_level()==13)||($this->check_session->get_level()==100))){
 
 
                         // $data_url = $this->session->flashdata('array_id');
                         //$data_url_pengembalian = $this->session->flashdata('array_id_pengembalian');
 
+                        // var_dump($this->session->tempdata()); die;
+
                         if($this->session->tempdata('array_id')!=null){
                             $data_url = $this->session->tempdata('array_id');
                             $data_url_pengembalian = $this->session->tempdata('array_id_pengembalian');
                         }else{
-                            redirect('kuitansi/daftar_kuitansi/GP');
+                            redirect('kuitansi/daftar_kuitansi/TP');
+                        }
+
+                        if($this->session->tempdata('str_nomor_trx_spm_tup')!=null){
+                            $str_nomor_trx_spm_tup = $this->session->tempdata('str_nomor_trx_spm_tup');
+                        }else{
+                            redirect('kuitansi/daftar_kuitansi/TP');
                         }
                         
 
@@ -153,7 +129,7 @@
 
 
 
-                                $id_max_nomor = $this->rsa_gup_model->get_nomor_spp_urut($this->check_session->get_unit(),$this->cur_tahun) ;
+                                $id_max_nomor = $this->rsa_tup_nihil_model->get_nomor_spp_urut($this->check_session->get_unit(),$this->cur_tahun) ;
 
                                 $id_max_nomor = $id_max_nomor + 1 ;
 
@@ -279,11 +255,11 @@
                                     $subdata['tgl_spp'] = '';
 
 
-                                    $nomor_trx_ = $this->rsa_gup_model->get_nomor_next_spp($this->check_session->get_unit(),$this->cur_tahun);
+                                    $nomor_trx_ = $this->rsa_tup_nihil_model->get_nomor_next_spp($this->check_session->get_unit(),$this->cur_tahun);
 
                                     setlocale(LC_ALL, 'id_ID.utf8');$bln = strftime("%h");$thn = strftime("%Y");
 
-                                    $nomor_trx = $nomor_trx_.'/'.$this->check_session->get_alias().'/'.'SPP-GUP'.'/'.strtoupper($bln).'/'.$thn;
+                                    $nomor_trx = $nomor_trx_.'/'.$this->check_session->get_alias().'/'.'SPP-TUP-NIHIL'.'/'.strtoupper($bln).'/'.$thn;
 
                                     setlocale(LC_ALL, 'id_ID.utf8');$subdata['bulan'] = strftime("%B");  
 
@@ -310,8 +286,8 @@
                                     // echo '<pre>';
                                     // var_dump($data__);die;
 
-                                    // $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun5digit($data__,'GP');
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    // $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun5digit($data__,'TUP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     // echo '<pre>';
                                     // var_dump($data_akun_pengeluaran);die;
@@ -321,7 +297,7 @@
                                     // echo '<pre>';
                                     // var_dump($rincian_akun_pengeluaran);die;
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     // echo '<pre>';
                                     // var_dump($data_spp_pajak);die;
@@ -351,7 +327,7 @@
                                     
                                     $data_akun_rkat = $this->kuitansi_model->get_pengeluaran_by_akun_rkat($data___);
                                     
-                                    // $nomor_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx);
+                                    // $nomor_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx);
 
                                         
                                     $data_akun_before = $this->kuitansi_model->get_akun_before_by_unit($this->check_session->get_unit(),$this->cur_tahun);
@@ -377,14 +353,14 @@
 
     //                                    echo '<pre>';print_r($data___lalu);echo '</pre>';die;
 
-                                        // $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun5digit_lalu($data___lalu,'GP');
+                                        // $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun5digit_lalu($data___lalu,'TUP');
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TUP');
                                     
                                     }
                                         
 
-                                    // $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx);
+                                    // $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx);
 //                                    echo '<pre>';print_r($rincian_akun_pengeluaran);echo '</pre>';die;
 
                                     // echo '<pre>';
@@ -404,7 +380,10 @@
                                 // }
 
                                 $subdata['id_nomor'] = $id_max_nomor;
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
+
+
+                                $subdata['str_nomor_trx_spm_tup'] = $str_nomor_trx_spm_tup ;
 
                                 // var_dump($subdata);die;
 
@@ -427,10 +406,10 @@
             }
                 }
 
-            function spp_gup_lihat($url = ''){
+            function spp_tup_nihil_lihat($url = ''){
 
 
-                    if($this->check_session->user_session() && (($this->check_session->get_level()==11)||($this->check_session->get_level()==2)||($this->check_session->get_level()==3)||($this->check_session->get_level()==13)||($this->check_session->get_level()==17)||($this->check_session->get_level()==14)||($this->check_session->get_level()==100))){
+                    if($this->check_session->user_session() && (($this->check_session->get_level()==11)||($this->check_session->get_level()==2)||($this->check_session->get_level()==3)||($this->check_session->get_level()==13)||($this->check_session->get_level()==14)||($this->check_session->get_level()==100))){
 
 
                             $url = urldecode($url);
@@ -454,16 +433,16 @@
                 $data['main_menu']  = $this->load->view('main_menu','',TRUE);       
                 //$subdata_rsa_up['result_rsa_up']      = $this->rsa_up_model->search_rsa_up();
                                 
-                                // $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($this->check_session->get_unit(),$this->cur_tahun);
+                                // $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil($this->check_session->get_unit(),$this->cur_tahun);
 
 
                                 $nomor_trx_spp = $url ;
                                 
                                 
-                                $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
 
-                                // echo $dokumen_gup ; die;
+                                // echo $dokumen_tup_nihil ; die;
 
                                 if(strlen($kd_unit)==2){
                                     $subdata['unit_kerja'] = $this->unit_model->get_nama($kd_unit);
@@ -502,11 +481,11 @@
 
                                     $nomor_trx = $nomor_trx_spp ;
 
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx);
                                     
                                     $du = '' ;
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -535,7 +514,7 @@
 //                                        $pengeluaran = 0;
 //                                    }
 
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -598,7 +577,7 @@
 
 
 
-    //                                if(($dokumen_gup == '') || ($dokumen_gup == 'SPP-DITOLAK') || ($dokumen_gup == 'SPM-DITOLAK')){
+    //                                if(($dokumen_tup_nihil == '') || ($dokumen_tup_nihil == 'SPP-DITOLAK') || ($dokumen_tup_nihil == 'SPM-DITOLAK')){
     //                                    $subdata['siap_spp'] = 'ok';
     //                                }else{
     //                                    $subdata['siap_spp'] = 'no_ok';
@@ -632,8 +611,8 @@
                                     // echo '<pre>';
                                     // var_dump($data__);die;
 
-                                    // $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun5digit($data__,'GP');
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    // $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun5digit($data__,'TUP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     // echo '<pre>';
                                     // var_dump($data_akun_pengeluaran);die;
@@ -643,13 +622,12 @@
                                     // echo '<pre>';
                                     // var_dump($rincian_akun_pengeluaran);die;
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     // echo '<pre>';
                                     // var_dump($data_spp_pajak);die;
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__,$tahun);
-                                    // vdebug($data_rekap_pajak);
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__,$tahun);
 
                                     // echo '<pre>';
@@ -685,7 +663,7 @@
                                     
                                     $data_akun_rkat = $this->kuitansi_model->get_pengeluaran_by_akun_rkat($data___);
                                     
-                                    // $nomor_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx);
+                                    // $nomor_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx);
 
                                         
                                     $data_akun_before = $this->kuitansi_model->get_akun_before_by_unit($kd_unit,$tahun);
@@ -711,14 +689,14 @@
 
     //                                    echo '<pre>';print_r($data___lalu);echo '</pre>';die;
 
-                                        // $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun5digit_lalu($data___lalu,'GP');
+                                        // $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun5digit_lalu($data___lalu,'TUP');
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TUP');
                                     
                                     }
                                     
 
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
                                 // // }
@@ -726,12 +704,13 @@
 
                                 $daftar_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_kuitansi_by_url_id(base64_decode(urldecode($du_p)));
 
+                                // vdebug($daftar_kuitansi_pengembalian);
+
                                 $subdata['data_akun_pengeluaran'] = $data_akun_pengeluaran;
                                 $subdata['rincian_akun_pengeluaran'] = $rincian_akun_pengeluaran;
                                 $subdata['data_akun_rkat'] = $data_akun_rkat;
                                 $subdata['data_akun_pengeluaran_lalu'] = $data_akun_pengeluaran_lalu;
                                 $subdata['data_spp_pajak'] = $data_spp_pajak;
-                                // vdebug($subdata['data_spp_pajak']);
                                 $subdata['data_rekap_pajak'] = $data_rekap_pajak;
                                 $subdata['data_rekap_bruto'] = $data_rekap_bruto;
                                 $subdata['rincian_keluaran'] = $rincian_keluaran;
@@ -741,12 +720,12 @@
                                 $subdata['daftar_kuitansi_pengembalian'] = $daftar_kuitansi_pengembalian;
                                 $subdata['nomor_spp'] = $nomor_trx_spp;
 
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
                                 $subdata['doc'] = $dokumen;
                                 
-                                // $subdata['ket'] = $this->rsa_gup_model->lihat_ket($this->check_session->get_unit(),$this->cur_tahun);
+                                // $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket($this->check_session->get_unit(),$this->cur_tahun);
                                 $subdata['detail_ppk']  = $this->user_model->get_detail_rsa_user($kd_unit,'14');
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx); //$kd_unit,$tahun);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx); //$kd_unit,$tahun);
                                 
                 $data['main_content']           = $this->load->view("rsa_pengesahan/spp_pengesahan_lihat",$subdata,TRUE);
                 $this->load->view('main_template',$data);
@@ -756,7 +735,7 @@
             }
                 }
 
-            function spm_gup($url = ''){
+            function spm_tup_nihil($url = ''){
 
                     if($this->check_session->user_session() && (($this->check_session->get_level()==14)||($this->check_session->get_level()==100))){           
                             $hash_url = $url;                                                                     
@@ -790,7 +769,7 @@
                                         $subdata['alias'] = $this->unit_model->get_alias($this->check_session->get_unit());
                                 }
                                 
-                                $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
                                 // echo $dokumen ; die;
                               
@@ -802,9 +781,9 @@
                                  
 
 
-                                $id_nomor = $this->rsa_gup_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
+                                $id_nomor = $this->rsa_tup_nihil_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
 
-                                // echo $id_nomor_gup; die;
+                                // echo $id_nomor_tup_nihil; die;
                                 
                                 $data_spp = (object)array(
                                     'jumlah_bayar' => '0',
@@ -833,11 +812,11 @@
                                 /////////////
 
                                     
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx_spp);
 //                                    var_dump($data_spp);die;
                                     
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -871,7 +850,7 @@
 
                                         // echo $pengeluaran; die;
 
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -962,11 +941,11 @@
                                         'array_id' => json_decode($array_id)
                                     );
 
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__,$this->cur_tahun);
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__,$this->cur_tahun);
@@ -1005,12 +984,12 @@
                                             'kode_akun4digit' => $data_akun4digit_before
                                         );
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TUP');
                                     
                                     }
                                     
 
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
 
@@ -1036,20 +1015,20 @@
 
                                 $subdata['hash_url'] = $hash_url;
 
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
                                 
                                 
-                                $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator($this->check_session->get_unit());
+                                $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator($this->check_session->get_unit());
 
-                                // $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator_by_spm($nomor_trx_spm);
+                                // $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator_by_spm($nomor_trx_spm);
                                 
-                                $subdata['tgl_spm_kpa'] = $this->rsa_gup_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kpa'] = $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_verifikator'] = $this->rsa_gup_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_verifikator'] = $this->rsa_tup_nihil_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_kbuu'] = $this->rsa_gup_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kbuu'] = $this->rsa_tup_nihil_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
 
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx_spp);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx_spp);
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
@@ -1061,7 +1040,7 @@
             }
                 }
                 
-            function spm_gup_lanjut($url = ''){
+            function spm_tup_nihil_lanjut($url = ''){
 
                     if($this->check_session->user_session() && (($this->check_session->get_level()==14)||($this->check_session->get_level()==100))){                                                                              
 
@@ -1094,7 +1073,7 @@
                                         $subdata['alias'] = $this->unit_model->get_alias($this->check_session->get_unit());
                                 }
                                 
-                                $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
                                 // echo $dokumen ; die;
                               
@@ -1104,9 +1083,9 @@
                                 $nomor_trx_spp = $url ;
 
 
-                                $id_nomor = $this->rsa_gup_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
+                                $id_nomor = $this->rsa_tup_nihil_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
 
-                                // echo $id_nomor_gup; die;
+                                // echo $id_nomor_tup_nihil; die;
                                 
                                 $data_spp = (object)array(
                                     'jumlah_bayar' => '0',
@@ -1135,11 +1114,11 @@
                                 /////////////
 
                                     
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx_spp);
 //                                    var_dump($data_spp);die;
                                     
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -1173,7 +1152,7 @@
 
                                         // echo $pengeluaran; die;
 
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -1244,9 +1223,9 @@
                                 
                                 
                                     
-                                    $nomor_trx_ = $this->rsa_gup_model->get_nomor_next_spm($this->check_session->get_unit(),$this->cur_tahun);
+                                    $nomor_trx_ = $this->rsa_tup_nihil_model->get_nomor_next_spm($this->check_session->get_unit(),$this->cur_tahun);
                                     setlocale(LC_ALL, 'id_ID.utf8');$bln = strftime("%h");
-                                    $nomor_trx_spm = $nomor_trx_.'/'.$this->check_session->get_alias().'/'.'SPM-GUP'.'/'.strtoupper($bln).'/'.$this->cur_tahun;
+                                    $nomor_trx_spm = $nomor_trx_.'/'.$this->check_session->get_alias().'/'.'SPM-TUP-NIHIL'.'/'.strtoupper($bln).'/'.$this->cur_tahun;
                                     
 //                                    echo $nomor_trx_spp ; die;
                                     
@@ -1258,13 +1237,13 @@
 
                                                                 );
 
-                                    // var_dump($subdata['detail_gup_spm']);die;
+                                    // var_dump($subdata['detail_tup_nihil_spm']);die;
                                     
 //                                    $subdata['detail_pic']  = $this->user_model->get_detail_rsa_user($this->check_session->get_unit(),'13');
                                     
                                     $subdata['detail_ppk']  = $this->user_model->get_detail_rsa_user($this->check_session->get_unit(),'14');
                                     $subdata['detail_kpa']  = $this->user_model->get_detail_rsa_user($this->check_session->get_unit(),'2');
-                                    $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator(substr($this->check_session->get_unit(),0,2));
+                                    $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator(substr($this->check_session->get_unit(),0,2));
                                     $subdata['detail_kuasa_buu']  = $this->user_model->get_detail_rsa_user('99','11');
                                     $subdata['detail_buu']  = $this->user_model->get_detail_rsa_user('99','5');
                                     
@@ -1284,7 +1263,7 @@
                                     $subdata['cur_tahun_spm'] = $this->cur_tahun;
                                     $subdata['tgl_spm'] = '';
 
-    //                                if(($dokumen_gup == '') || ($dokumen_gup == 'SPP-DITOLAK') || ($dokumen_gup == 'SPM-DITOLAK')){
+    //                                if(($dokumen_tup_nihil == '') || ($dokumen_tup_nihil == 'SPP-DITOLAK') || ($dokumen_tup_nihil == 'SPM-DITOLAK')){
     //                                    $subdata['siap_spp'] = 'ok';
     //                                }else{
     //                                    $subdata['siap_spp'] = 'no_ok';
@@ -1310,14 +1289,13 @@
                                         'array_id' => json_decode($array_id)
                                     );
 
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__,$this->cur_tahun);
-
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__,$this->cur_tahun);
 
                                         $data_akun4digit = array();
@@ -1354,12 +1332,12 @@
                                             'kode_akun4digit' => $data_akun4digit_before
                                         );
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TP');
                                     
                                     }
                                     
 
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
 
@@ -1383,21 +1361,21 @@
                                 $subdata['nomor_spp'] = $nomor_trx_spp;
 
 
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
                                 
                                 $subdata['nomor_spm'] = $nomor_trx_spm;
                                 
-                                $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator($this->check_session->get_unit());
+                                $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator($this->check_session->get_unit());
 
-                                // $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator_by_spm($nomor_trx_spm);
+                                // $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator_by_spm($nomor_trx_spm);
                                 
-                                $subdata['tgl_spm_kpa'] = $this->rsa_gup_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kpa'] = $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_verifikator'] = $this->rsa_gup_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_verifikator'] = $this->rsa_tup_nihil_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_kbuu'] = $this->rsa_gup_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kbuu'] = $this->rsa_tup_nihil_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
 
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx_spp);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx_spp);
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
@@ -1410,8 +1388,7 @@
                 }
 
 
-            function spm_gup_lihat_99($url,$kd_unit,$tahun,$id_kuitansi = null){
-                // die($url);
+            function spm_tup_nihil_lihat_99($url,$kd_unit,$tahun,$id_kuitansi = null){
 
                     if(1){
 
@@ -1427,7 +1404,6 @@
                             $kd_unit = $this->unit_model->get_kd_unit_by_alias($arr_url[1]);
                             $tahun = $arr_url[4] ;
                             $subdata['id_kuitansi'] = $id_kuitansi; 
-
 
 
                 //set data for main template
@@ -1453,20 +1429,20 @@
 
                                 $nomor_trx_spp = $url ;
 
-                                // echo $nomor_trx_spp; die;
+                                // echo $nomor_trx_spm; die;
                                 
                                 
-                                $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
-                                // echo $dokumen_gup ; die;
+                                // echo $dokumen_tup_nihil ; die;
                               
                                 $subdata['doc'] = $dokumen;
                                 
-//                                $subdata['tgl_spm'] = $this->rsa_gup_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
+//                                $subdata['tgl_spm'] = $this->rsa_tup_nihil_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
                                 
-                                // $nomor_trx_spp = $this->rsa_gup_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
+                                // $nomor_trx_spp = $this->rsa_tup_nihil_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
 
-                                $nomor_trx_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx_spp);
+                                $nomor_trx_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx_spp);
 
                                 // echo $nomor_trx_spm ; die;
                                 
@@ -1493,11 +1469,13 @@
                                 /// SPP ///
                                 /////////////
                                     
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx_spp);
+                                    // echo $nomor_trx_spp;
+                                    // die();
                                    // var_dump($data_spp);die;
                                     
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -1530,7 +1508,7 @@
 //                                    }
 
                                         // echo $pengeluaran; die;
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -1596,7 +1574,7 @@
                                 /// SPM ///
                                 /////////////
                                     
-                                    $data_spm = $this->rsa_gup_model->get_data_spm($nomor_trx_spm);
+                                    $data_spm = $this->rsa_tup_nihil_model->get_data_spm($nomor_trx_spm);
                                     // var_dump($data_spm);die;
                                     $subdata['detail_spm']  = array(
                                                                     'nom' => $data_spm->jumlah_bayar,
@@ -1663,14 +1641,13 @@
                                         'array_id' => json_decode($array_id)
                                     );
 
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__,$tahun);
-                                    // vdebug($data_rekap_pajak);
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__,$tahun);
 
                                         $data_akun4digit = array();
@@ -1707,12 +1684,12 @@
                                             'kode_akun4digit' => $data_akun4digit_before
                                         );
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TUP');
                                     
                                     }
                                     
 
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
 
@@ -1736,23 +1713,23 @@
                                 $subdata['nomor_spp'] = $nomor_trx_spp;
 
 
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
                                 
                                 $subdata['nomor_spm'] = $nomor_trx_spm;
                                 
-                                $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator_by_spm($nomor_trx_spm);
+                                $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator_by_spm($nomor_trx_spm);
 
                                 // var_dump($subdata['detail_verifikator']) ; die;
 
-                                // echo $this->rsa_gup_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
+                                // echo $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
                                 
-                                $subdata['tgl_spm_kpa'] = $this->rsa_gup_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kpa'] = $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_verifikator'] = $this->rsa_gup_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_verifikator'] = $this->rsa_tup_nihil_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_kbuu'] = $this->rsa_gup_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kbuu'] = $this->rsa_tup_nihil_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
 
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx_spp);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx_spp);
 
                                 // var_dump($subdata) ; die;
                                 
@@ -1768,121 +1745,8 @@
                 redirect('welcome','refresh');  // redirect ke halaman home
             }
         }
-
-        function lspg($garbage, $id){
-            $this->load->helper('lspg');
-
-            $sql = "SELECT id_tr_sppls FROM kepeg_tr_spmls WHERE id_spmls =".$id;
-            $nomor_sppls = $this->db->query($sql)->row()->id_tr_sppls;
-
-
-            $subdata['spm'] = $this->spmls($garbage, $id);
-            $subdata['spp'] = $this->sppls($garbage, $nomor_sppls);
-
-            $this->data['content'] = $this->load->view("akuntansi/bukti_lspg",$subdata,TRUE);
-            $this->load->view('akuntansi/content_template',$this->data);
-        }
-
-        function sppls($garbage, $id){
-            $this->load->model("user_model");
-            $this->load->model("cantik_model");
-            $d['id'] = $id;
-            $sql = "SELECT * FROM kepeg_tr_sppls WHERE id_sppls =".$d['id'];
-            $sub = $this->db->query($sql)->result();
-            $akun = explode(",",$sub[0]->detail_belanja);
-            $sql = "SELECT * FROM rsa_detail_belanja_ WHERE id_rsa_detail!=0 AND";
-            $i=0;
-            foreach ($akun as $k => $v) {
-                $vSQL2[$i]="kode_usulan_belanja LIKE '".substr($v, 0, -3)."' AND kode_akun_tambah LIKE '".substr($v, -3)."'";
-                $i++;
-            }
-            $vSQL2 = implode(" OR ", $vSQL2);
-            $sql = $sql."(".$vSQL2.") ORDER BY kode_akun_tambah ASC";
-            $akun = $this->db->query($sql)->result();
-            $subdata['cur_tahun'] = $sub[0]->tahun;
-            $subdata['cur_bulan'] = $this->wordMonthShort($this->getMonth($sub['0']->tanggal));
-            $subdata['tgl_spp'] = $sub[0]->tanggal;
-            $subdata['unit_kerja'] = $this->session->userdata('username');
-            $subdata['unit_id'] = $this->session->userdata('kode_unit');
-            $subdata['alias'] = $this->session->userdata('alias');
-            $subdata['detail_up'] = $sub[0];
-            $subdata['akun_detail'] = $akun;
-            $jm = strlen($sub[0]->id_sppls);
-            $subdata['id_sppls'] = "";
-            for($i=0;$i<(5-$jm);$i++){
-                $subdata['id_sppls'] .= "0";
-            }
-//                $subdata['detail_pic'] = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
-            $subdata['id_sppls'] .= $sub[0]->id_sppls;
-            return $this->load->view("akuntansi/form-sppls",$subdata,TRUE);
-        }
-
-        function spmls($garbage, $id){
-            $this->load->model("user_model");
-            $this->load->model("cantik_model");
-            $d['id'] = $id;
-            $sql = "SELECT a.*, b.untuk_bayar, b.penerima, b.alamat, b.nama_bank, b.rekening, b.npwp FROM kepeg_tr_spmls a LEFT JOIN kepeg_tr_sppls b ON b.id_sppls = a.id_tr_sppls WHERE id_spmls =".intval($d['id']);
-        // echo $sql; exit;
-            $sub = $this->db->query($sql)->result();
-            $akun = explode(",",$sub[0]->detail_belanja);
-            $sql = "SELECT * FROM rsa_detail_belanja_ WHERE id_rsa_detail!=0 AND";
-            $i=0;
-            foreach ($akun as $k => $v) {
-                $vSQL2[$i]="kode_usulan_belanja LIKE '".substr($v, 0, -3)."' AND kode_akun_tambah LIKE '".substr($v, -3)."'";
-                $i++;
-            }
-            $vSQL2 = implode(" OR ", $vSQL2);
-            $sql = $sql."(".$vSQL2.") ORDER BY kode_akun_tambah ASC";
-            $akun = $this->db->query($sql)->result();
-            $subdata['cur_tahun'] = $sub[0]->tahun;
-            $subdata['cur_bulan'] = $this->wordMonthShort($this->getMonth($sub['0']->tanggal));
-            $subdata['tgl_spp'] = $sub[0]->tanggal;
-            $subdata['unit_kerja'] = $sub[0]->namaunitsukpa;
-        // $subdata['unit_id'] = $this->check_session->get_unit();
-            $subdata['alias'] = "WR2";
-            $subdata['detail_up'] = $sub[0];
-            $subdata['akun_detail'] = $akun;
-            $jm = strlen($sub[0]->id_spmls);
-            $subdata['id_spmls'] = "";
-            for($i=0;$i<(5-$jm);$i++){
-                $subdata['id_spmls'] .= "0";
-            }
-            $subdata['id_spmls'] .= $sub[0]->id_spmls;
-        // $subdata['bpp'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '13');
-        // $subdata['ppk'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '14');
-            $subdata['kpa'] = $this->user_model->get_detail_rsa_user($sub[0]->unitsukpa, '2');
-            $subdata['buu'] = $this->user_model->get_detail_rsa_user('99', '5');
-            $subdata['kbuu'] = $this->user_model->get_detail_rsa_user('99', '11');
-//        if(intval($_SESSION['rsa_level'])==3){
-//          $subdata['bver'] = $this->user_model->get_detail_rsa_user_by_username($_SESSION['rsa_username']);
-//        }
-            return $this->load->view("akuntansi/form-spmls",$subdata,TRUE);
-        }
-
-        function wordMonthShort($nilai){
-            switch(intval($nilai)){
-                case 1 : return "Jan";break;
-                case 2 : return "Feb";break;
-                case 3 : return "Mar";break;
-                case 4 : return "Apr";break;
-                case 5 : return "Mei";break;
-                case 6 : return "Jun";break;
-                case 7 : return "Jul";break;
-                case 8 : return "Agu";break;
-                case 9 : return "Sep";break;
-                case 10 : return "Okt";break;
-                case 11 : return "Nov";break;
-                case 12 : return "Des";break;
-            }
-        }
-
-        function getMonth($date){
-            $exp=explode(" ",$date);
-            $exl=explode("-",$exp[0]);
-            return $exl[1];
-        }
                 
-                function spm_gup_kpa($url = ''){
+                function spm_tup_nihil_kpa($url = ''){
 
                     if($this->check_session->user_session() && (($this->check_session->get_level()==2)||($this->check_session->get_level()==100))){
 
@@ -1917,27 +1781,27 @@
 //                                $subdata['detail_pic']  = $this->user_model->get_detail_rsa_user($this->check_session->get_unit(),'13');
                                 
                                 
-                                $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
 
 
-                                // $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($this->check_session->get_unit(),$this->cur_tahun);
+                                // $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil($this->check_session->get_unit(),$this->cur_tahun);
 
-                                // echo $dokumen_gup ; die;
+                                // echo $dokumen_tup_nihil ; die;
                               
-                                $subdata['doc_gup'] = $dokumen ;
+                                $subdata['doc_tup_nihil'] = $dokumen ;
                                 
-//                                $subdata['tgl_spm'] = $this->rsa_gup_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
+//                                $subdata['tgl_spm'] = $this->rsa_tup_nihil_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
                                 
-                                // $nomor_trx_spp = $this->rsa_gup_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
+                                // $nomor_trx_spp = $this->rsa_tup_nihil_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
 
                                 $nomor_trx_spp = $url ;
 
                                 // echo $nomor_trx_spp; 
 
-                                $id_nomor = $this->rsa_gup_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
+                                $id_nomor = $this->rsa_tup_nihil_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
 
-                                // echo $id_nomor_gup; die;
+                                // echo $id_nomor_tup_nihil; die;
                                 
                                 $data_spp = (object)array(
                                     'jumlah_bayar' => '0',
@@ -1963,11 +1827,11 @@
 
                                 
                                     
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx_spp);
 //                                    var_dump($data_spp);die;
                                     
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -2001,7 +1865,7 @@
 
                                         // echo $pengeluaran; die;
 
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -2060,7 +1924,7 @@
 
 
 
-    //                                if(($dokumen_gup == '') || ($dokumen_gup == 'SPP-DITOLAK') || ($dokumen_gup == 'SPM-DITOLAK')){
+    //                                if(($dokumen_tup_nihil == '') || ($dokumen_tup_nihil == 'SPP-DITOLAK') || ($dokumen_tup_nihil == 'SPM-DITOLAK')){
     //                                    $subdata['siap_spp'] = 'ok';
     //                                }else{
     //                                    $subdata['siap_spp'] = 'no_ok';
@@ -2074,11 +1938,11 @@
 
                                 
                                     
-                                    $nomor_trx_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx_spp);
+                                    $nomor_trx_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx_spp);
 
                                     // echo $nomor_trx_spm; die;  
 
-                                    $data_spm = $this->rsa_gup_model->get_data_spm($nomor_trx_spm);
+                                    $data_spm = $this->rsa_tup_nihil_model->get_data_spm($nomor_trx_spm);
                                     // var_dump($data_spm);die;
                                     $subdata['detail_spm']  = array(
                                                                     'nom' => $data_spm->jumlah_bayar,
@@ -2145,11 +2009,11 @@
                                         'array_id' => json_decode($array_id)
                                     );
 
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__,$this->cur_tahun);
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__,$this->cur_tahun);
@@ -2188,12 +2052,12 @@
                                             'kode_akun4digit' => $data_akun4digit_before
                                         );
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TUP');
                                     
                                     }
                                     
 
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
 
@@ -2218,21 +2082,21 @@
                                 $subdata['nomor_spp'] = $nomor_trx_spp;
 
 
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
                                 
                                 $subdata['nomor_spm'] = $nomor_trx_spm;
                                 
-                                $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator_by_spm($nomor_trx_spm);
+                                $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator_by_spm($nomor_trx_spm);
 
-                                // echo $this->rsa_gup_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
+                                // echo $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
                                 
-                                $subdata['tgl_spm_kpa'] = $this->rsa_gup_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kpa'] = $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_verifikator'] = $this->rsa_gup_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_verifikator'] = $this->rsa_tup_nihil_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_kbuu'] = $this->rsa_gup_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kbuu'] = $this->rsa_tup_nihil_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
 
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx_spp);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx_spp);
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
@@ -2245,7 +2109,7 @@
                 }
 
 
-                function spm_gup_verifikator($url = ''){
+                function spm_tup_nihil_verifikator($url = ''){
 
                     if($this->check_session->user_session() && (($this->check_session->get_level()==3)||($this->check_session->get_level()==100))){
 
@@ -2286,27 +2150,27 @@
                                 }
                                 
                                 
-                                $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
 
 
-                                // $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($this->check_session->get_unit(),$this->cur_tahun);
+                                // $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil($this->check_session->get_unit(),$this->cur_tahun);
 
-                                // echo $dokumen_gup ; die;
+                                // echo $dokumen_tup_nihil ; die;
                               
                                 $subdata['doc'] = $dokumen;
                                 
-//                                $subdata['tgl_spm'] = $this->rsa_gup_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
+//                                $subdata['tgl_spm'] = $this->rsa_tup_nihil_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
                                 
-                                // $nomor_trx_spp = $this->rsa_gup_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
+                                // $nomor_trx_spp = $this->rsa_tup_nihil_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
 
                                 $nomor_trx_spp = $url ;
 
                                 // echo $nomor_trx_spp; die;
 
-                                $id_nomor = $this->rsa_gup_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
+                                $id_nomor = $this->rsa_tup_nihil_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
 
-                                // echo $id_nomor_gup; die;
+                                // echo $id_nomor_tup_nihil; die;
                                 
                                 $data_spp = (object)array(
                                     'jumlah_bayar' => '0',
@@ -2331,13 +2195,13 @@
                                 $du_p = '' ;
 
                                 
-                                // if(($dokumen_gup == 'SPM-DRAFT-PPK')){
+                                // if(($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                     
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx_spp);
 //                                    var_dump($data_spp);die;
                                     
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -2371,7 +2235,7 @@
 
                                         // echo $pengeluaran; die;
 
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -2430,7 +2294,7 @@
 
 
 
-    //                                if(($dokumen_gup == '') || ($dokumen_gup == 'SPP-DITOLAK') || ($dokumen_gup == 'SPM-DITOLAK')){
+    //                                if(($dokumen_tup_nihil == '') || ($dokumen_tup_nihil == 'SPP-DITOLAK') || ($dokumen_tup_nihil == 'SPM-DITOLAK')){
     //                                    $subdata['siap_spp'] = 'ok';
     //                                }else{
     //                                    $subdata['siap_spp'] = 'no_ok';
@@ -2450,15 +2314,15 @@
                                     
                                 // }
                                 
-                                // if(($dokumen_gup == 'SPM-DRAFT-PPK')){
+                                // if(($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                     
-                                    // $nomor_trx_spm = $this->rsa_gup_model->get_nomor_spm($this->check_session->get_unit(),$this->cur_tahun);  
+                                    // $nomor_trx_spm = $this->rsa_tup_nihil_model->get_nomor_spm($this->check_session->get_unit(),$this->cur_tahun);  
                                     
-                                    $nomor_trx_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx_spp);
+                                    $nomor_trx_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx_spp);
 
                                     // echo $nomor_trx_spm; die;  
 
-                                    $data_spm = $this->rsa_gup_model->get_data_spm($nomor_trx_spm);
+                                    $data_spm = $this->rsa_tup_nihil_model->get_data_spm($nomor_trx_spm);
                                     // var_dump($data_spm);die;
                                     $subdata['detail_spm']  = array(
                                                                     'nom' => $data_spm->jumlah_bayar,
@@ -2529,13 +2393,13 @@
                                         'array_id' => json_decode($array_id)
                                     );
 
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     // echo '<pre>'; var_dump($data_akun_pengeluaran); die;
 
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__,$tahun);
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__,$tahun);
@@ -2574,12 +2438,12 @@
                                             'kode_akun4digit' => $data_akun4digit_before
                                         );
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TUP');
                                     
                                     }
                                     
 
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
 
@@ -2604,24 +2468,24 @@
                                 $subdata['nomor_spp'] = $nomor_trx_spp;
 
 
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
                                 
                                 $subdata['nomor_spm'] = $nomor_trx_spm;
                                 
-                                $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator_by_spm($nomor_trx_spm);
+                                $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator_by_spm($nomor_trx_spm);
 
 
                                 // var_dump($subdata['detail_verifikator']) ; die;
 
-                                // echo $this->rsa_gup_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
+                                // echo $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
                                 
-                                $subdata['tgl_spm_kpa'] = $this->rsa_gup_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kpa'] = $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_verifikator'] = $this->rsa_gup_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_verifikator'] = $this->rsa_tup_nihil_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_kbuu'] = $this->rsa_gup_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kbuu'] = $this->rsa_tup_nihil_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
 
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx_spp);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx_spp);
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
@@ -2634,7 +2498,7 @@
                 }
 
 
-                function spm_gup_kbuu($url = ''){
+                function spm_tup_nihil_kbuu($url = ''){
 
                     if($this->check_session->user_session() && (($this->check_session->get_level()==11)||($this->check_session->get_level()==100))){
                 //set data for main template
@@ -2684,27 +2548,27 @@
                                 }
                                 
                                 
-                                $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
 
 
-                                // $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($this->check_session->get_unit(),$this->cur_tahun);
+                                // $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil($this->check_session->get_unit(),$this->cur_tahun);
 
-                                // echo $dokumen_gup ; die;
+                                // echo $dokumen_tup_nihil ; die;
                               
                                 $subdata['doc'] = $dokumen;
                                 
-//                                $subdata['tgl_spm'] = $this->rsa_gup_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
+//                                $subdata['tgl_spm'] = $this->rsa_tup_nihil_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
                                 
-                                // $nomor_trx_spp = $this->rsa_gup_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
+                                // $nomor_trx_spp = $this->rsa_tup_nihil_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
 
                                 $nomor_trx_spp = $url ;
 
                                 // echo $nomor_trx_spp; die;
 
-                                $id_nomor = $this->rsa_gup_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
+                                $id_nomor = $this->rsa_tup_nihil_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
 
-                                // echo $id_nomor_gup; die;
+                                // echo $id_nomor_tup_nihil; die;
                                 
                                 $data_spp = (object)array(
                                     'jumlah_bayar' => '0',
@@ -2729,13 +2593,13 @@
                                 $du_p = '' ;
 
                                 
-                                // if(($dokumen_gup == 'SPM-DRAFT-PPK')){
+                                // if(($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                     
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx_spp);
 //                                    var_dump($data_spp);die;
                                     
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -2769,7 +2633,7 @@
 
                                         // echo $pengeluaran; die;
 
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -2828,7 +2692,7 @@
 
 
 
-    //                                if(($dokumen_gup == '') || ($dokumen_gup == 'SPP-DITOLAK') || ($dokumen_gup == 'SPM-DITOLAK')){
+    //                                if(($dokumen_tup_nihil == '') || ($dokumen_tup_nihil == 'SPP-DITOLAK') || ($dokumen_tup_nihil == 'SPM-DITOLAK')){
     //                                    $subdata['siap_spp'] = 'ok';
     //                                }else{
     //                                    $subdata['siap_spp'] = 'no_ok';
@@ -2847,15 +2711,15 @@
                                     
                                 // }
                                 
-                                // if(($dokumen_gup == 'SPM-DRAFT-PPK')){
+                                // if(($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                     
-                                    // $nomor_trx_spm = $this->rsa_gup_model->get_nomor_spm($this->check_session->get_unit(),$this->cur_tahun);  
+                                    // $nomor_trx_spm = $this->rsa_tup_nihil_model->get_nomor_spm($this->check_session->get_unit(),$this->cur_tahun);  
                                     
-                                    $nomor_trx_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx_spp);
+                                    $nomor_trx_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx_spp);
 
                                     // echo $nomor_trx_spm; die;  
 
-                                    $data_spm = $this->rsa_gup_model->get_data_spm($nomor_trx_spm);
+                                    $data_spm = $this->rsa_tup_nihil_model->get_data_spm($nomor_trx_spm);
                                     // var_dump($data_spm);die;
                                     $subdata['detail_spm']  = array(
                                                                     'nom' => $data_spm->jumlah_bayar,
@@ -2926,13 +2790,13 @@
                                         'array_id' => json_decode($array_id)
                                     );
 
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'GP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun4digit($data__,'TP');
 
                                     // echo '<pre>'; var_dump($data_akun_pengeluaran); die;
 
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
 
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__,$tahun);
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__,$tahun);
@@ -2971,12 +2835,12 @@
                                             'kode_akun4digit' => $data_akun4digit_before
                                         );
 
-                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'GP');
+                                        $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun4digit_lalu($data___lalu,'TUP');
                                     
                                     }
                                     
 
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
 
@@ -3001,27 +2865,42 @@
                                 $subdata['nomor_spp'] = $nomor_trx_spp;
 
 
-                                $subdata['jenis'] = 'gup';
+                                $subdata['jenis'] = 'tup_nihil';
                                 
                                 $subdata['nomor_spm'] = $nomor_trx_spm;
                                 
-                                $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator_by_spm($nomor_trx_spm);
+                                $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator_by_spm($nomor_trx_spm);
 
                                 // var_dump($subdata['detail_verifikator']) ; die;
 
-                                // echo $this->rsa_gup_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
+                                // echo $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
                                 
-                                $subdata['tgl_spm_kpa'] = $this->rsa_gup_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kpa'] = $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_verifikator'] = $this->rsa_gup_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_verifikator'] = $this->rsa_tup_nihil_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_kbuu'] = $this->rsa_gup_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kbuu'] = $this->rsa_tup_nihil_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
 
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx_spp);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx_spp);
+
 
                                 $this->load->model('kas_undip_model');
-                                
-                                $subdata['kas_undip'] = $this->kas_undip_model->get_saldo_kas_all_akun();//get_akun_kas6_saldo();//(
+
+                                $trx_tup_to_nihil = $this->rsa_tup_nihil_model->get_trx_tup_to_nihil_by_spp_tup_nihil($nomor_trx_spp);
+
+                                $kas_undip = $this->kas_undip_model->get_data_kas_by_spm_cair($trx_tup_to_nihil->str_nomor_trx_spm_tup);
+
+                                $subdata['kas_undip'] = $kas_undip ;
+
+                                $kas_undip_saldo = $this->kas_undip_model->get_saldo_kas_by_akun($kas_undip->kd_akun_kas);
+
+                                // var_dump($kas_undip_saldo[0]); die;
+
+                                $subdata['kas_undip_saldo'] = $kas_undip_saldo[0]->saldo ;
+
+                                // $subdata['kas_undip'] = $this->kas_undip_model->get_saldo_kas_all_akun();//get_akun_kas6_saldo();//(
+
+                                // $subdata['kas_undip'] = $this->kas_undip_model->get_saldo_kas_all_akun();//get_akun_kas6_saldo();//(
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
@@ -3034,7 +2913,7 @@
                 }
 
 
-                function spm_gup_lihat_99_($url,$kd_unit="",$tahun=""){
+                function spm_tup_nihil_lihat_99_($url,$kd_unit="",$tahun=""){
                      if($this->check_session->user_session() && (($this->check_session->get_level()==14)||($this->check_session->get_level()==100)||($this->check_session->get_level()==17)||($this->check_session->get_level()==11))){
 
                         $url = urldecode($url);
@@ -3074,27 +2953,27 @@
                                 }
                                 
                                 
-                                $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($url);
+                                $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($url);
 
 
 
-                                // $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($this->check_session->get_unit(),$this->cur_tahun);
+                                // $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil($this->check_session->get_unit(),$this->cur_tahun);
 
-                                // echo $dokumen_gup ; die;
+                                // echo $dokumen_tup_nihil ; die;
                               
-                                $subdata['doc_gup'] = $dokumen_gup;
+                                $subdata['doc_tup_nihil'] = $dokumen_tup_nihil;
                                 
-//                                $subdata['tgl_spm'] = $this->rsa_gup_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
+//                                $subdata['tgl_spm'] = $this->rsa_tup_nihil_model->get_tgl_spm($this->check_session->get_unit(),$this->cur_tahun);
                                 
-                                // $nomor_trx_spp = $this->rsa_gup_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
+                                // $nomor_trx_spp = $this->rsa_tup_nihil_model->get_nomor_spp($this->check_session->get_unit(),$this->cur_tahun); 
 
                                 $nomor_trx_spp = $url ;
 
                                 // echo $nomor_trx_spp; die;
 
-                                $id_nomor_gup = $this->rsa_gup_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
+                                $id_nomor_tup_nihil = $this->rsa_tup_nihil_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
 
-                                // echo $id_nomor_gup; die;
+                                // echo $id_nomor_tup_nihil; die;
                                 
                                 $data_spp = (object)array(
                                     'jumlah_bayar' => '0',
@@ -3119,13 +2998,13 @@
                                 $du_p = '' ;
 
                                 
-                                // if(($dokumen_gup == 'SPM-DRAFT-PPK')){
+                                // if(($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                     
-                                    $data_spp = $this->rsa_gup_model->get_data_spp($nomor_trx_spp);
+                                    $data_spp = $this->rsa_tup_nihil_model->get_data_spp($nomor_trx_spp);
 //                                    var_dump($data_spp);die;
                                     
 //                                    if($data_url != ''){
-                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi = $this->kuitansi_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     $kuitansi_d = array();
                                     if(!empty($data_kuitansi)){
                                         foreach($data_kuitansi as $dk){
@@ -3159,7 +3038,7 @@
 
                                         // echo $pengeluaran; die;
 
-                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'GUP');
+                                    $data_kuitansi_pengembalian = $this->kuitansipengembalian_model->get_id_detail_by_str_nomor_spp($nomor_trx_spp,'TUP');
                                     // var_dump($data_kuitansi_pengembalian); die;
                                     $kuitansi_d_pengembalian = array();
                                     if(!empty($data_kuitansi_pengembalian)){
@@ -3193,7 +3072,7 @@
 
                                        // echo $data_spp->jumlah_pengembalian ; die ;
 
-                                    $subdata['detail_gup']   = array(
+                                    $subdata['detail_tup_nihil']   = array(
                                                                     'nom' => $data_spp->jumlah_bayar,
                                                                     'pengembalian' => $data_spp->jumlah_pengembalian ,
                                                                     'terbilang' => $data_spp->terbilang, 
@@ -3218,7 +3097,7 @@
 
 
 
-    //                                if(($dokumen_gup == '') || ($dokumen_gup == 'SPP-DITOLAK') || ($dokumen_gup == 'SPM-DITOLAK')){
+    //                                if(($dokumen_tup_nihil == '') || ($dokumen_tup_nihil == 'SPP-DITOLAK') || ($dokumen_tup_nihil == 'SPM-DITOLAK')){
     //                                    $subdata['siap_spp'] = 'ok';
     //                                }else{
     //                                    $subdata['siap_spp'] = 'no_ok';
@@ -3238,17 +3117,17 @@
                                     
                                 // }
                                 
-                                // if(($dokumen_gup == 'SPM-DRAFT-PPK')){
+                                // if(($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                     
-                                    // $nomor_trx_spm = $this->rsa_gup_model->get_nomor_spm($this->check_session->get_unit(),$this->cur_tahun);  
+                                    // $nomor_trx_spm = $this->rsa_tup_nihil_model->get_nomor_spm($this->check_session->get_unit(),$this->cur_tahun);  
                                     
-                                    $nomor_trx_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx_spp);
+                                    $nomor_trx_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx_spp);
 
                                     // echo $nomor_trx_spm; die;  
 
-                                    $data_spm = $this->rsa_gup_model->get_data_spm($nomor_trx_spm);
+                                    $data_spm = $this->rsa_tup_nihil_model->get_data_spm($nomor_trx_spm);
                                     // var_dump($data_spm);die;
-                                    $subdata['detail_gup_spm']  = array(
+                                    $subdata['detail_tup_nihil_spm']  = array(
                                                                     'nom' => $data_spm->jumlah_bayar,
                                                                     'pengembalian' => $data_spp->jumlah_pengembalian ,
                                                                     'terbilang' => $data_spm->terbilang, 
@@ -3318,11 +3197,11 @@
                                         'array_id' => json_decode($array_id)
                                     );
 //                                    print_r($data__);die;
-                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun5digit($data__,'GP');
+                                    $data_akun_pengeluaran = $this->kuitansi_model->get_pengeluaran_by_akun5digit($data__,'TUP');
 
                                     $rincian_akun_pengeluaran = $this->kuitansi_model->get_rekap_detail_kuitansi($data__);
                                    // echo '<pre>';print_r($rincian_akun_pengeluaran);echo '</pre>';die;
-                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'GP');
+                                    $data_spp_pajak = $this->kuitansi_model->get_spp_pajak($data__,'TP');
 
                                     $data_rekap_pajak = $this->kuitansi_model->get_rekap_pajak_by_array_id($data__);
                                     $data_rekap_bruto = $this->kuitansi_model->get_rekap_bruto_by_array_id($data__);
@@ -3344,26 +3223,26 @@
                                     
                                     $data_akun_rkat = $this->kuitansi_model->get_pengeluaran_by_akun_rkat($data___);
                                     
-                                    $nomor_spm = $this->rsa_gup_model->get_spm_by_spp($nomor_trx_spp);
+                                    $nomor_spm = $this->rsa_tup_nihil_model->get_spm_by_spp($nomor_trx_spp);
                                     
 //                                    echo $nomor_spm_cair_before; die;
                                     
                                     if(empty($nomor_spm)){
                                         
-                                        $data_akun_before = $this->kuitansi_model->get_gup_akun_before_by_unit($kd_unit,$tahun);
+                                        $data_akun_before = $this->kuitansi_model->get_tup_nihil_akun_before_by_unit($kd_unit,$tahun);
                                     
 //                                        var_dump($data_akun_before); die;
                                         
                                     }else{
                                         
-                                        $nomor_spm_cair_before = $this->rsa_gup_model->get_nomer_spm_cair_lalu($kd_unit,$tahun);
+                                        $nomor_spm_cair_before = $this->rsa_tup_nihil_model->get_nomer_spm_cair_lalu($kd_unit,$tahun);
 
                                         // echo $nomor_spm_cair_before ; die;
                                         
-                                        $data_akun_before = $this->kuitansi_model->get_gup_akun_before_by_spm($nomor_spm);
+                                        $data_akun_before = $this->kuitansi_model->get_tup_nihil_akun_before_by_spm($nomor_spm);
 
                                         if($nomor_spm_cair_before != $nomor_spm){
-                                             $data_akun_before = $this->kuitansi_model->get_gup_akun_before_by_unit($kd_unit,$tahun);
+                                             $data_akun_before = $this->kuitansi_model->get_tup_nihil_akun_before_by_unit($kd_unit,$tahun);
                                         }
                                     
 //                                        var_dump($data_akun_before); die;
@@ -3387,12 +3266,12 @@
 
         //                                    echo '<pre>';print_r($data___lalu);echo '</pre>';die;
 
-                                            $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun5digit_lalu($data___lalu,'GP');
+                                            $data_akun_pengeluaran_lalu = $this->kuitansi_model->get_pengeluaran_by_akun5digit_lalu($data___lalu,'TUP');
                                         
                                         }
                                         
                                         
-                                    $rincian_keluaran = $this->rsa_gup_model->get_keluaran($nomor_trx_spp);
+                                    $rincian_keluaran = $this->rsa_tup_nihil_model->get_keluaran($nomor_trx_spp);
                                     
                                     $daftar_kuitansi = $this->kuitansi_model->get_kuitansi_by_url_id(base64_decode(urldecode($du)));
                                     
@@ -3407,7 +3286,7 @@
 
                                 // var_dump($data_spp_pajak); die;
 
-                                $subdata['id_nomor_gup'] = $id_nomor_gup ;
+                                $subdata['id_nomor_tup_nihil'] = $id_nomor_tup_nihil ;
                                 
                                 $subdata['data_akun_pengeluaran'] = $data_akun_pengeluaran;
                                 $subdata['rincian_akun_pengeluaran'] = $rincian_akun_pengeluaran;
@@ -3425,19 +3304,19 @@
                                 
                                 $subdata['nomor_spm'] = $nomor_trx_spm;
                                 
-                                $subdata['detail_verifikator']  = $this->rsa_gup_model->get_verifikator_by_spm($nomor_trx_spm);
+                                $subdata['detail_verifikator']  = $this->rsa_tup_nihil_model->get_verifikator_by_spm($nomor_trx_spm);
 
                                 // var_dump($subdata['detail_verifikator']) ; die;
 
-                                // echo $this->rsa_gup_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
+                                // echo $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spm($nomor_trx_spp); die;
                                 
-                                $subdata['tgl_spm_kpa'] = $this->rsa_gup_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kpa'] = $this->rsa_tup_nihil_model->get_tgl_spm_kpa_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_verifikator'] = $this->rsa_gup_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_verifikator'] = $this->rsa_tup_nihil_model->get_tgl_spm_verifikator_by_spp($nomor_trx_spp);
                                 
-                                $subdata['tgl_spm_kbuu'] = $this->rsa_gup_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
+                                $subdata['tgl_spm_kbuu'] = $this->rsa_tup_nihil_model->get_tgl_spm_kbuu_by_spp($nomor_trx_spp);
 
-                                $subdata['ket'] = $this->rsa_gup_model->lihat_ket_by_str_trx($nomor_trx_spp);
+                                $subdata['ket'] = $this->rsa_tup_nihil_model->lihat_ket_by_str_trx($nomor_trx_spp);
 
                                 $this->load->model('akun_kas6_model');
 
@@ -3445,7 +3324,7 @@
                                 
                 //$subdata['opt_unit_kepeg']        = $this->option->opt_unit_kepeg();
 //                                var_dump($subdata);die;
-                $data['main_content']           = $this->load->view("rsa_gup/spm_gup_lihat",$subdata,TRUE);
+                $data['main_content']           = $this->load->view("rsa_tup_nihil/spm_tup_nihil_lihat",$subdata,TRUE);
                 $this->load->view('main_template',$data);
             } 
             else{
@@ -3465,12 +3344,12 @@
 //                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==3)||($this->check_session->get_level()==11))){
 //                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
 //                             $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
-//                             $subdata['unit_usul']       = $this->rsa_gup_model->get_gup_unit_usul_verifikator($user->id,$tahun);
-//                             $subdata['subunit_usul']        = $this->rsa_gup_model->get_gup_subunit_usul_verifikator($user->id,$tahun);
+//                             $subdata['unit_usul']       = $this->rsa_tup_nihil_model->get_tup_nihil_unit_usul_verifikator($user->id,$tahun);
+//                             $subdata['subunit_usul']        = $this->rsa_tup_nihil_model->get_tup_nihil_subunit_usul_verifikator($user->id,$tahun);
 // //                            echo '<pre>';var_dump($subdata['subunit_usul']);echo '</pre>';die;
 //                             $subdata['cur_tahun'] =  $tahun;
 // //                            $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
-//                             $data['main_content']       = $this->load->view("rsa_gup/daftar_unit",$subdata,TRUE);
+//                             $data['main_content']       = $this->load->view("rsa_tup_nihil/daftar_unit",$subdata,TRUE);
 //                             /*  Load main template  */
 //     //          echo '<pre>';var_dump($subdata['unit_usul_impor']);echo '</pre>';die;
 //                             $this->load->view('main_template',$data);
@@ -3495,11 +3374,11 @@
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
                             $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
 //                            $subdata['unit_usul']         = $this->rsa_up_model->get_up_unit_usul_verifikator($user->id,$tahun);
-                            $subdata['unit_usul']       = $this->rsa_gup_model->get_gup_unit_usul_verifikator($user->id,$tahun);
+                            $subdata['unit_usul']       = $this->rsa_tup_nihil_model->get_tup_nihil_unit_usul_verifikator($user->id,$tahun);
                             
-                            $subdata['subunit_usul']        = $this->rsa_gup_model->get_gup_subunit_usul_verifikator($user->id,$tahun);
+                            $subdata['subunit_usul']        = $this->rsa_tup_nihil_model->get_tup_nihil_subunit_usul_verifikator($user->id,$tahun);
                             $subdata['cur_tahun'] =  $tahun;
-                            $subdata['jenis'] =  'gup';
+                            $subdata['jenis'] =  'tup_nihil';
 //                            $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
 
                             // echo '<pre>';var_dump($subdata);echo '</pre>';die;
@@ -3526,11 +3405,11 @@
                     /* check session    */
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11))){
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
-                            $subdata['unit_usul']       = $this->rsa_gup_model->get_gup_unit_usul($tahun);
+                            $subdata['unit_usul']       = $this->rsa_tup_nihil_model->get_tup_nihil_unit_usul($tahun);
                             // echo '<pre>';var_dump($subdata['unit_usul']);echo '</pre>';die;
-                            $subdata['subunit_usul']        = $this->rsa_gup_model->get_gup_subunit_usul($tahun);
+                            $subdata['subunit_usul']        = $this->rsa_tup_nihil_model->get_tup_nihil_subunit_usul($tahun);
                             $subdata['cur_tahun'] =  $tahun;
-                            $subdata['jenis'] =  'gup';
+                            $subdata['jenis'] =  'tup_nihil';
 //                            $subdata['opt_sumber_dana']   = $this->option->sumber_dana();
                             $data['main_content']       = $this->load->view("rsa_pengesahan/daftar_unit_kbuu",$subdata,TRUE);
                             /*  Load main template  */
@@ -3578,7 +3457,7 @@
                     }
                 }
                 
-                function usulkan_spp_gup(){
+                function usulkan_spp_tup_nihil(){
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13))){
                         if($this->input->post('proses')){
                             // die;
@@ -3591,7 +3470,7 @@
                             $kd_unit = $this->check_session->get_unit()=='99'?$this->input->post('kd_unit'):$this->check_session->get_unit();
                             $tahun = $this->input->post('tahun')?$this->input->post('tahun'):$this->cur_tahun;
 
-                            $id_nomor_gup = $this->input->post('id_nomor_gup') ;
+                            $id_nomor_tup_nihil = $this->input->post('id_nomor_tup_nihil') ;
 
                             $rel_kuitansi_ = $this->input->post('rel_kuitansi');
                             $rel_kuitansi = urldecode($rel_kuitansi_);
@@ -3648,46 +3527,36 @@
                             
                             if((($c_subkomponen > 0) && ($c_subkomponen == $c_keluaran) && ($jml_kuitansi > 0))||($jml_kuitansi_pengembalian >0)){
                                 
-                                $data = array(
-                                    'kode_unit_subunit' => $kd_unit,
-                                    'nomor_trx' => $nomor_[0],
-                                    'str_nomor_trx' => $nomor_trx,
-                                    'jenis' => $jenis,
-                                    'tgl_proses' => date("Y-m-d H:i:s"),
-                                    'aktif' => '1',
-                                    'bulan' => $bulan,
-                                    'tahun' => $tahun,
-                                );
-
-    //                            echo $rel_kuitansi; die;
-
-    //                            die;
-                               // var_dump($data);die;
-
-                                // $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($kd_unit,$tahun,$id_nomor_gup);
-
-                                // $check_exist_gup = $this->rsa_gup_model->check_exist_gup($nomor_trx,$this->cur_tahun);
-
-                                // echo $dokumen_gup ; die ;
-                                
-                                // if($dokumen_gup == 'SPM-FINAL-KBUU'){
-                                //     $dokumen_gup = '' ;
-                                // }
-
-                                // if((!$check_exist_gup)&&(($dokumen_gup == '')||($dokumen_gup == 'SPP-DITOLAK')||($dokumen_gup == 'SPM-DITOLAK-KPA')||($dokumen_gup == 'SPM-DITOLAK-VERIFIKATOR')||($dokumen_gup == 'SPM-DITOLAK-KBUU'))){
 
 
-                                $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($nomor_trx);
+                                $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($nomor_trx);
 
-                                $check_exist_gup = $this->rsa_gup_model->check_exist_gup($nomor_trx,$this->cur_tahun);
+                                $check_exist_tup_nihil = $this->rsa_tup_nihil_model->check_exist_tup_nihil($nomor_trx,$this->cur_tahun);
 
-                                if((!$check_exist_gup)&&($dokumen_gup == '')){
+                                if((!$check_exist_tup_nihil)&&($dokumen_tup_nihil == '')){
 
                                 // if(true){
 
-                                // if($dokumen_gup == ''){
+                                // if($dokumen_tup_nihil == ''){
 
-                                    if($this->rsa_gup_model->proses_nomor_spp_gup($kd_unit,$data)){
+                                    // echo '<pre>' ;
+                                    // var_dump($this->input->post());
+                                    // die;
+
+                                    $tgl_proses = date("Y-m-d H:i:s") ;
+
+                                    $data = array(
+                                        'kode_unit_subunit' => $kd_unit,
+                                        'nomor_trx' => $nomor_[0],
+                                        'str_nomor_trx' => $nomor_trx,
+                                        'jenis' => $jenis,
+                                        'tgl_proses' => $tgl_proses,
+                                        'aktif' => '1',
+                                        'bulan' => $bulan,
+                                        'tahun' => $tahun,
+                                    );
+
+                                    if($this->rsa_tup_nihil_model->proses_nomor_spp_tup_nihil($kd_unit,$data)){
 
                                         // $tgl_spp_dibuat = $this->input->post('tgl_spp_dibuat');
 
@@ -3697,7 +3566,7 @@
 
                                         $data_spp = array(
                                             'kode_unit_subunit' => $kd_unit,
-                                            'nomor_trx_spp' => $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx),
+                                            'nomor_trx_spp' => $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx),
                                             'str_nomor_trx' => $nomor_trx,
                                             'alias_spp' =>  $this->input->post('alias_spp'),
                                             'jumlah_bayar' => $this->input->post('jumlah_bayar'),
@@ -3712,7 +3581,7 @@
                                             'tahun' => $tahun,
                                             'nmbendahara' => $this->input->post('nmbendahara'),
                                             'nipbendahara' => $this->input->post('nipbendahara'),
-                                            'tgl_spp' => date("Y-m-d H:i:s"),
+                                            'tgl_spp' => $tgl_proses,
                                             'data_kuitansi' => $rel_kuitansi,
                                             'jumlah_pengembalian' => $this->input->post('jumlah_pengembalian'),
                                             'data_kuitansi_pengembalian' => $rel_kuitansi_pengembalian,
@@ -3723,16 +3592,16 @@
                                         $data = array(
                                             'kode_unit_subunit' => $kd_unit,
                                             'posisi' => $proses,
-                                            'id_trx_nomor_gup' => $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx),
+                                            'id_trx_nomor_tup_nihil' => $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx),
                                             'ket' => $ket,
                                             'aktif' => '1',
                                             'tahun' => $tahun,
-                                            'tgl_proses' => date("Y-m-d H:i:s")
+                                            'tgl_proses' => $tgl_proses,
                                         );
 
                                        // var_dump($data_spp);die;
 
-                                        if($this->rsa_gup_model->proses_gup($kd_unit,$data,$id_nomor_gup) && $this->rsa_gup_model->proses_data_spp($data_spp)){
+                                        if($this->rsa_tup_nihil_model->proses_tup_nihil($kd_unit,$data,$id_nomor_tup_nihil) && $this->rsa_tup_nihil_model->proses_data_spp($data_spp)){
                                             $keluaran = json_decode($this->input->post('keluaran'));
                                             $data = array();
                                             foreach($keluaran as $kel){
@@ -3740,18 +3609,18 @@
                                                     $data[] = array(
                                                         'str_nomor_trx_spp' => $nomor_trx,
                                                         'kode_usulan_rka' => $kel[0],
-                                                        'jenis' => 'GUP',
+                                                        'jenis' => 'TUP',
                                                         'keluaran' => urldecode($kel[1]),
                                                         'volume' => $kel[2],
                                                         'satuan' => $kel[3],
                                                         'kode_unit_subunit' => $kd_unit,
                                                         'tahun' => $this->cur_tahun,
-                                                        'tgl_proses' => date("Y-m-d H:i:s"),
+                                                        'tgl_proses' => $tgl_proses,
                                                     );
                                                 }
                                             }
 
-                                            $this->rsa_gup_model->insert_keluaran($data);
+                                            $this->rsa_tup_nihil_model->insert_keluaran($data);
 
                                             $data = array(
                                                 'rel_kuitansi' => $rel_kuitansi,
@@ -3767,13 +3636,27 @@
 
                                             $this->kuitansipengembalian_model->insert_spp($data_pengembalian);
 
-                                            $this->rsa_gup_model->proses_gup_spp_rka($data);
+                                            $this->rsa_tup_nihil_model->proses_tup_nihil_spp_rka($data);
 
-                                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
+                                            // INSERT TO TRX_KS_TO_NIHIL //
+
+                                            $ks_to_nihil = array(
+                                                    'kode_unit_subunit' => $kd_unit,
+                                                    'str_nomor_trx_spm_tup' => $this->input->post('str_nomor_trx_spm_tup'),
+                                                    'str_nomor_trx_spp_tup_nihil' => $nomor_trx,
+                                                    'tgl_proses_tup' => $tgl_proses,
+                                                    'tahun' => $this->cur_tahun,
+                                                    'aktif' => '1',
+                                                );
+
+                                            $this->rsa_tup_nihil_model->insert_tup_to_nihil($ks_to_nihil);
+
+                                            $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM TUP-NIHIL anda berhasil disubmit.</div>');
 
                                             $this->session->unset_tempdata('array_id');
                                             $this->session->unset_tempdata('array_id_pengembalian');
-                                            
+                                            $this->session->unset_tempdata('str_nomor_trx_spm_tup');
+
                                             echo "sukses";
 
                                         }else{
@@ -3801,7 +3684,7 @@
                         }
                 }
                 
-                function usulkan_spm_gup(){
+                function usulkan_spm_tup_nihil(){
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==14))){
                         if($this->input->post('proses')){
                             $proses = $this->input->post('proses');
@@ -3810,7 +3693,7 @@
                             $nomor_ = explode('/',$nomor_trx);
                             $bulan = $nomor_[3];
 
-                            $id_nomor_gup = $this->input->post('id_nomor_gup') ;
+                            $id_nomor_tup_nihil = $this->input->post('id_nomor_tup_nihil') ;
 
                             $nomor_spp_ = explode('/',$nomor_trx_spp);
 
@@ -3835,47 +3718,35 @@
                                 redirect(site_url('/'));
                             }
 
-                            // echo $rel_kuitansi_pengembalian ; 
-
-                            // $jml_kuitansi = count(json_decode($rel_kuitansi)) ; 
-                            // $jml_kuitansi_pengembalian = count(json_decode($rel_kuitansi_pengembalian)) ; 
-
-
-                            // echo $id_nomor_gup; die;
-
-                            // echo '<pre>';
-                            // var_dump($this->input->post()); die;
                             
-                            $data = array(
-                                'kode_unit_subunit' => $kd_unit,
-                                'nomor_trx' => $nomor_[0],
-                                'str_nomor_trx' => $nomor_trx,
-                                'jenis' => $jenis,
-                                'tgl_proses' => date("Y-m-d H:i:s"),
-                                'aktif' => '1',
-                                'bulan' => $bulan,
-                                'tahun' => $tahun,
+                            $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($nomor_trx_spp);
 
-                            );
-                            
-                            
-                            $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($nomor_trx_spp);
+                            $check_exist_tup_nihil = $this->rsa_tup_nihil_model->check_exist_tup_nihil($nomor_trx,$this->cur_tahun);
 
-                            $check_exist_gup = $this->rsa_gup_model->check_exist_gup($nomor_trx,$this->cur_tahun);
-
-                            // echo $dokumen_gup; die;
-
-                            // echo '<pre>' ; var_dump($this->input->post()); die;
-                            
-                            if((!$check_exist_gup)&&($dokumen_gup == 'SPP-FINAL')){
+                             
+                            if((!$check_exist_tup_nihil)&&($dokumen_tup_nihil == 'SPP-FINAL')){
 
 
                                 // echo '<pre>' ; var_dump($this->input->post()); die;
-                                
-                                if($this->rsa_gup_model->proses_nomor_spm_gup($kd_unit,$data) ){
 
-                                    $id_trx_nomor_gup = $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx_spp) ;
-                                    $id_trx_nomor_gup_spm = $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx) ;
+                                $tgl_proses = date("Y-m-d H:i:s") ;
+
+                                $data = array(
+                                    'kode_unit_subunit' => $kd_unit,
+                                    'nomor_trx' => $nomor_[0],
+                                    'str_nomor_trx' => $nomor_trx,
+                                    'jenis' => $jenis,
+                                    'tgl_proses' => date("Y-m-d H:i:s"),
+                                    'aktif' => '1',
+                                    'bulan' => $bulan,
+                                    'tahun' => $tahun,
+
+                                );
+                                
+                                if($this->rsa_tup_nihil_model->proses_nomor_spm_tup_nihil($kd_unit,$data) ){
+
+                                    $id_trx_nomor_tup_nihil = $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx_spp) ;
+                                    $id_trx_nomor_tup_nihil_spm = $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx) ;
 
                                     // $tgl_spm_dibuat = $this->input->post('tgl_spm_dibuat');
 
@@ -3885,7 +3756,7 @@
 
                                     $data_spm = array(
                                         'kode_unit_subunit' => $kd_unit,
-                                        'nomor_trx_spm' => $id_trx_nomor_gup_spm,
+                                        'nomor_trx_spm' => $id_trx_nomor_tup_nihil_spm,
                                         'str_nomor_trx' => $nomor_trx,
                                         // 'alias_spm' => $this->input->post('alias_spm'),
                                         'jumlah_bayar' => $this->input->post('jumlah_bayar'),
@@ -3910,7 +3781,7 @@
                                         'nipkbuu' => $this->input->post('nipkbuu'),
                                         'nmbuu' => $this->input->post('nmbuu'),
                                         'nipbuu' => $this->input->post('nipbuu'),
-                                        'tgl_spm' => date("Y-m-d H:i:s"),//$tgl_spm_dibuat,//date("Y-m-d H:i:s"),
+                                        'tgl_spm' => $tgl_proses,//$tgl_spm_dibuat,//date("Y-m-d H:i:s"),
                                         'data_kuitansi' => $rel_kuitansi,
                                         'jumlah_pengembalian' => $this->input->post('jumlah_pengembalian'),
                                         'data_kuitansi_pengembalian' => $rel_kuitansi_pengembalian,
@@ -3918,25 +3789,25 @@
 //                                    var_dump($data_spm);die;
                                     $data_spp_spm = array(
                                         'kode_unit_subunit' => $kd_unit,
-                                        'nomor_trx_spp' => $id_trx_nomor_gup,//$nomor_spp_[0],$this->rsa_up_model->get_id_nomor_up($jenis,$kd_unit,$this->cur_tahun),
+                                        'nomor_trx_spp' => $id_trx_nomor_tup_nihil,//$nomor_spp_[0],$this->rsa_up_model->get_id_nomor_up($jenis,$kd_unit,$this->cur_tahun),
                                         'str_nomor_trx_spp' => $nomor_trx_spp,
-                                        'nomor_trx_spm' => $id_trx_nomor_gup_spm,//$nomor_[0],
+                                        'nomor_trx_spm' => $id_trx_nomor_tup_nihil_spm,//$nomor_[0],
                                         'str_nomor_trx_spm' =>$nomor_trx,
-                                        'jenis_trx' => 'GUP',
+                                        'jenis_trx' => 'TUP-NIHIL',
                                         'tahun' => $tahun,
                                     );
                                     $data = array(
                                         'kode_unit_subunit' => $kd_unit,
                                         'posisi' => $proses,
-                                        'id_trx_nomor_gup' => $id_trx_nomor_gup,
-                                        'id_trx_nomor_gup_spm' => $id_trx_nomor_gup_spm,
+                                        'id_trx_nomor_tup_nihil' => $id_trx_nomor_tup_nihil,
+                                        'id_trx_nomor_tup_nihil_spm' => $id_trx_nomor_tup_nihil_spm,
                                         'ket' => $ket,
                                         'aktif' => '1',
                                         'tahun' => $tahun,
-                                        'tgl_proses' => date("Y-m-d H:i:s")
+                                        'tgl_proses' => $tgl_proses,
                                     );
 
-                                    if($this->rsa_gup_model->proses_gup($kd_unit,$data,$id_trx_nomor_gup)&& $this->rsa_gup_model->proses_trx_spp_spm($data_spp_spm) && $this->rsa_gup_model->proses_data_spm($data_spm)){
+                                    if($this->rsa_tup_nihil_model->proses_tup_nihil($kd_unit,$data,$id_trx_nomor_tup_nihil)&& $this->rsa_tup_nihil_model->proses_trx_spp_spm($data_spp_spm) && $this->rsa_tup_nihil_model->proses_data_spm($data_spm)){
 
                                         $data = array(
                                             'rel_kuitansi' => $rel_kuitansi,
@@ -3952,8 +3823,8 @@
 
                                         $this->kuitansipengembalian_model->insert_spm($data_pengembalian);
 
-                                        $this->rsa_gup_model->proses_gup_spm_rka($data);
-                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
+                                        $this->rsa_tup_nihil_model->proses_tup_nihil_spm_rka($data);
+                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM TUP-NIHIL anda berhasil disubmit.</div>');
                                         echo "sukses";
                                     }else{
                                         echo "gagal";
@@ -3973,7 +3844,7 @@
                     }
                 }
                 
-                function proses_spp_gup(){
+                function proses_spp_tup_nihil(){
                     if($this->input->post('proses')){
                         $proses = $this->input->post('proses');
                         $nomor_trx = $this->input->post('nomor_trx');
@@ -4006,26 +3877,18 @@
                             }
                         }
 
-                        $id_nomor_gup = $this->input->post('id_nomor_gup') ;
+                        $id_nomor_tup_nihil = $this->input->post('id_nomor_tup_nihil') ;
                             
-                            $data = array(
-                                'kode_unit_subunit' => $kd_unit,
-                                'posisi' => $proses,
-                                'id_trx_nomor_gup' => $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx),
-                                'ket' => $ket,
-                                'aktif' => '1',
-                                'tahun' => $tahun,
-                                'tgl_proses' => date("Y-m-d H:i:s")
-                            );
+                            
 
                         // echo '<pre>';   
                         // var_dump($this->input->post());die;
                         
                         $ok = FALSE ;
                             
-                        // $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($kd_unit,$tahun);
+                        // $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil($kd_unit,$tahun);
 
-                        $dokumen = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($nomor_trx);
+                        $dokumen = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($nomor_trx);
                         
                         if(($proses == 'SPP-FINAL')&&($dokumen == 'SPP-DRAFT')){
                             $ok = TRUE ;
@@ -4039,11 +3902,24 @@
                         
                         if($ok){
 //                            echo 'jos'; die;
-                            // echo $kd_unit . ' - ' . $id_nomor_gup ;
+                            // echo $kd_unit . ' - ' . $id_nomor_tup_nihil ;
                             // echo '<pre>';
                             // var_dump($data);
                             // die;
-                            if($this->rsa_gup_model->proses_gup($kd_unit,$data,$id_nomor_gup)){
+
+                            $tgl_proses = date("Y-m-d H:i:s") ;
+
+                            $data = array(
+                                'kode_unit_subunit' => $kd_unit,
+                                'posisi' => $proses,
+                                'id_trx_nomor_tup_nihil' => $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx),
+                                'ket' => $ket,
+                                'aktif' => '1',
+                                'tahun' => $tahun,
+                                'tgl_proses' => $tgl_proses, // date("Y-m-d H:i:s")
+                            );
+
+                            if($this->rsa_tup_nihil_model->proses_tup_nihil($kd_unit,$data,$id_nomor_tup_nihil)){
 
                                 if($proses == 'SPP-DITOLAK'){ // APABILA PPK SUKPA MENOLAK SPP
                                     
@@ -4051,7 +3927,7 @@
                                         'str_nomor_trx' => $nomor_trx,
                                         'rel_kuitansi' => $rel_kuitansi,
                                     );
-                                    $this->rsa_gup_model->tolak_gup_spp_rka($data);
+                                    $this->rsa_tup_nihil_model->tolak_tup_nihil_spp_rka($data);
                                     $data = array(
                                         'rel_kuitansi' => $rel_kuitansi,
 //                                        'str_nomor_trx' => $nomor_trx,
@@ -4064,8 +3940,11 @@
                                     $this->kuitansi_model->tolak_spp($data);
 
                                     $this->kuitansipengembalian_model->tolak_spp($data_pengembalian);
+
+                                    $this->rsa_tup_nihil_model->nonaktifkan_status_spp_tup($nomor_trx);
                                 }
-                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
+                                $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM TUP-NIHIL anda berhasil disubmit.</div>');
+
                                 echo "sukses";
                             }else{
                                 echo "gagal";
@@ -4079,7 +3958,7 @@
                     }
                 }
                 
-                function proses_spm_gup(){
+                function proses_spm_tup_nihil(){
                     if($this->input->post('proses')){
                         $proses = $this->input->post('proses');
                         $nomor_trx = $this->input->post('nomor_trx');
@@ -4113,45 +3992,36 @@
                             }
                         }
 
-                        $id_nomor_gup = $this->input->post('id_nomor_gup') ;
+                        $id_nomor_tup_nihil = $this->input->post('id_nomor_tup_nihil') ;
                         
-                        // echo $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx); die;
+                        // echo $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx); die;
                             
 
-                        $data = array(
-                                    'kode_unit_subunit' => $kd_unit,
-                                    'posisi' => $proses,
-                                    'id_trx_nomor_gup' => $id_nomor_gup,
-                                    'id_trx_nomor_gup_spm' => $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx),
-                                    'ket' => $ket,
-                                    'aktif' => '1',
-                                    'tahun' => $tahun,
-                                    'tgl_proses' => date("Y-m-d H:i:s"),
-                                );
+                        
                             
                             // echo '<pre>'; var_dump($this->input->post()); die;
                             
                             $ok = FALSE ;
                             
-                            $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup($kd_unit,$tahun,$id_nomor_gup);
+                            $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil($kd_unit,$tahun,$id_nomor_tup_nihil);
 
-                            // echo 'a : ' .$dokumen_gup; die;
+                            // echo 'a : ' .$dokumen_tup_nihil; die;
 
-                            if(($proses == 'SPM-DRAFT-KPA')&&($dokumen_gup == 'SPM-DRAFT-PPK')){
+                            if(($proses == 'SPM-DRAFT-KPA')&&($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                 $ok = TRUE ;
-                            }elseif(($proses == 'SPM-DITOLAK-KPA')&&($dokumen_gup == 'SPM-DRAFT-PPK')){
+                            }elseif(($proses == 'SPM-DITOLAK-KPA')&&($dokumen_tup_nihil == 'SPM-DRAFT-PPK')){
                                 $ok = TRUE ;
-                            }elseif(($proses == 'SPM-FINAL-VERIFIKATOR')&&($dokumen_gup == 'SPM-DRAFT-KPA')){
+                            }elseif(($proses == 'SPM-FINAL-VERIFIKATOR')&&($dokumen_tup_nihil == 'SPM-DRAFT-KPA')){
                                 $ok = TRUE ;
-                            }elseif(($proses == 'SPM-DITOLAK-VERIFIKATOR')&&($dokumen_gup == 'SPM-DRAFT-KPA')){
+                            }elseif(($proses == 'SPM-DITOLAK-VERIFIKATOR')&&($dokumen_tup_nihil == 'SPM-DRAFT-KPA')){
                                 $ok = TRUE ;
-                            }elseif(($proses == 'SPM-FINAL-KBUU')&&($dokumen_gup == 'SPM-FINAL-VERIFIKATOR')){
+                            }elseif(($proses == 'SPM-FINAL-KBUU')&&($dokumen_tup_nihil == 'SPM-FINAL-VERIFIKATOR')){
                                 $ok = TRUE ;
-                            }elseif(($proses == 'SPM-DITOLAK-KBUU')&&($dokumen_gup == 'SPM-FINAL-VERIFIKATOR')){
+                            }elseif(($proses == 'SPM-DITOLAK-KBUU')&&($dokumen_tup_nihil == 'SPM-FINAL-VERIFIKATOR')){
                                 $ok = TRUE ;
-                            }elseif(($proses == 'SPM-FINAL-BUU')&&($dokumen_gup == 'SPM-FINAL-KBUU')){
+                            }elseif(($proses == 'SPM-FINAL-BUU')&&($dokumen_tup_nihil == 'SPM-FINAL-KBUU')){
                                 $ok = TRUE ;
-                            }elseif(($proses == 'SPM-DITOLAK-BUU')&&($dokumen_gup == 'SPM-FINAL-KBUU')){
+                            }elseif(($proses == 'SPM-DITOLAK-BUU')&&($dokumen_tup_nihil == 'SPM-FINAL-KBUU')){
                                 $ok = TRUE ;
                             }else{
                                 $ok = FALSE;
@@ -4164,11 +4034,24 @@
                             
                             if($ok){
                            // echo 'jos';die;
-                            $nomor_trx_spm = $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx) ;
+                            $nomor_trx_spm = $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx) ;
 
                             // echo $nomor_trx_spm; die;
+
+                            $tgl_proses = date("Y-m-d H:i:s");
+
+                            $data = array(
+                                    'kode_unit_subunit' => $kd_unit,
+                                    'posisi' => $proses,
+                                    'id_trx_nomor_tup_nihil' => $id_nomor_tup_nihil,
+                                    'id_trx_nomor_tup_nihil_spm' => $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx),
+                                    'ket' => $ket,
+                                    'aktif' => '1',
+                                    'tahun' => $tahun,
+                                    'tgl_proses' => $tgl_proses,
+                                );
                             
-                            if($this->rsa_gup_model->proses_gup($kd_unit,$data,$id_nomor_gup)){
+                            if($this->rsa_tup_nihil_model->proses_tup_nihil($kd_unit,$data,$id_nomor_tup_nihil)){
                                 if(substr($proses,0,11) == 'SPM-DITOLAK'){
                                     
                                     $data = array(
@@ -4176,7 +4059,7 @@
                                         'rel_kuitansi' => $rel_kuitansi,
                                     );
 //                                    var_dump(base64_decode(urldecode($rel_kuitansi)));die;
-                                    $this->rsa_gup_model->tolak_gup_spm_rka($data);
+                                    $this->rsa_tup_nihil_model->tolak_tup_nihil_spm_rka($data);
 
                                     $data = array(
                                         'rel_kuitansi' => $rel_kuitansi,
@@ -4191,6 +4074,11 @@
                                     $this->kuitansi_model->tolak_spm($data);
 
                                     $this->kuitansipengembalian_model->tolak_spm($data_pengembalian);
+
+                                    $str_nomor_trx_spp = $this->rsa_tup_nihil_model->get_spp_by_spm($nomor_trx);
+
+                                    $this->rsa_tup_nihil_model->nonaktifkan_status_spp_tup($str_nomor_trx_spp);
+
                                 }
                                 if($this->check_session->get_level() == 3){
                                     $verifikator = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
@@ -4198,19 +4086,19 @@
                                         'nomor_trx_spm' => $nomor_trx_spm,
                                         'str_nomor_trx_spm' => $nomor_trx,
                                         'kode_unit_subunit' => $kd_unit,
-                                        'jenis_trx' => 'GUP',
+                                        'jenis_trx' => 'TUP-NIHIL',
                                         'id_rsa_user_verifikator' => $verifikator->id,
                                         'tahun' => $tahun,
-                                        'tgl_proses' => date("Y-m-d H:i:s")
+                                        'tgl_proses' => $tgl_proses,
                                     );
-                                    if($this->rsa_gup_model->proses_verifikator_gup($data_verifikator)){
-                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
+                                    if($this->rsa_tup_nihil_model->proses_verifikator_tup_nihil($data_verifikator)){
+                                        $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM TUP-NIHIL anda berhasil disubmit.</div>');
                                         echo "sukses";
                                     }else{
                                         echo "gagal";
                                     }
                                 }else{
-                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM TUP-NIHIL anda berhasil disubmit.</div>');
                                     echo "sukses";
                                 }
                             }else{
@@ -4226,20 +4114,20 @@
 
                 // function tes_(){
 
-                //     $data_gup_to_nihil = array(
+                //     $data_tup_nihil_to_nihil = array(
                 //                     'kode_unit_subunit' => '71',
-                //                     'str_nomor_trx_spm_gup' => '00003/LPM/SPM-TUP-NIHIL/JUN/2017',
-                //                     'tgl_proses_gup' => '2017-07-10 14:22:47',
+                //                     'str_nomor_trx_spm_tup_nihil' => '00003/LPM/SPM-TUP-NIHIL/JUN/2017',
+                //                     'tgl_proses_tup_nihil' => '2017-07-10 14:22:47',
                 //                     'tahun' => '2017',
                 //                     'status' => '1',
                 //                 );
 
-                //     // var_dump($data_gup_to_nihil) ; die ;
+                //     // var_dump($data_tup_nihil_to_nihil) ; die ;
 
-                //     var_dump($this->rsa_gup_model->tup_to_nihil($data_gup_to_nihil)) ; die ;
+                //     var_dump($this->rsa_tup_nihil_model->tup_to_nihil($data_tup_nihil_to_nihil)) ; die ;
                 // }
                 
-                function proses_final_gup(){
+                function proses_final_tup_nihil(){
                     if($this->input->post('proses')){
                         $proses = $this->input->post('proses');
                         $nomor_trx_spm = $this->input->post('nomor_trx');
@@ -4248,7 +4136,7 @@
                         $ket = $this->input->post('ket')?$this->input->post('ket'):'';
                         $kd_unit = $this->input->post('kd_unit');
 
-                        
+                        $nomor_trx_spm_cair = $this->input->post('nomor_trx_spm_cair');
                         
                         $rel_kuitansi_ = $this->input->post('rel_kuitansi');
                         $rel_kuitansi = urldecode($rel_kuitansi_);
@@ -4266,63 +4154,64 @@
                             redirect(site_url('/'));
                         }
 
-                        // $id_trx_nomor_gup = $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx_spp) ;
-                        $id_trx_nomor_gup = $this->input->post('id_nomor_gup') ;
-                        $id_trx_nomor_gup_spm = $this->rsa_gup_model->get_id_nomor_gup_by_nomor_trx($nomor_trx_spm) ;
+                        // $id_trx_nomor_tup_nihil = $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx_spp) ;
+                        $id_trx_nomor_tup_nihil = $this->input->post('id_nomor_tup_nihil') ;
+                        $id_trx_nomor_tup_nihil_spm = $this->rsa_tup_nihil_model->get_id_nomor_tup_nihil_by_nomor_trx($nomor_trx_spm) ;
 
-                        $nomor_trx_spp = $this->rsa_gup_model->get_spp_by_spm($nomor_trx_spm);
+                        $nomor_trx_spp = $this->rsa_tup_nihil_model->get_spp_by_spm($nomor_trx_spm);
 
-                        $tgl_proses = date("Y-m-d H:i:s") ;
-
-                        $data = array(
-                                    'kode_unit_subunit' => $kd_unit,
-                                    'posisi' => $proses,
-                                    'id_trx_nomor_gup' => $id_trx_nomor_gup,
-                                    'id_trx_nomor_gup_spm' => $id_trx_nomor_gup_spm,
-                                    'ket' => $ket,
-                                    'aktif' => '1',
-                                    'tahun' => $this->input->post('tahun'),
-                                    'tgl_proses' => $tgl_proses,
-                                );
+                        
                         
                         $ok = FALSE ;
                             
-                        $dokumen_gup = $this->rsa_gup_model->check_dokumen_gup_by_str_trx($nomor_trx_spp);
+                        $dokumen_tup_nihil = $this->rsa_tup_nihil_model->check_dokumen_tup_nihil_by_str_trx($nomor_trx_spp);
 
                         // echo '<pre>' ; var_dump($this->input->post()); die;
                         
-                        if(($proses == 'SPM-FINAL-KBUU')&&($dokumen_gup == 'SPM-FINAL-VERIFIKATOR')){
+                        if(($proses == 'SPM-FINAL-KBUU')&&($dokumen_tup_nihil == 'SPM-FINAL-VERIFIKATOR')){
                             $ok = TRUE ;
                         }else{
                             $ok = FALSE;
                         }
 
-                        // echo '<pre>'; var_dump($this->input->post()); die;
+                        
                             
                         if($ok){
-                            
-                           $tgl_proses = date("Y-m-d H:i:s");
 
-                           // echo '<pre>'; var_dump($this->input->post()); die;
-                           
+                            // echo '<pre>'; var_dump($this->input->post()); die;
+
+                            // die;
                             
-                            if($this->rsa_gup_model->proses_gup($kd_unit,$data,$id_trx_nomor_gup)){
+                            $tgl_proses = date("Y-m-d H:i:s") ;
+
+                            $data = array(
+                                        'kode_unit_subunit' => $kd_unit,
+                                        'posisi' => $proses,
+                                        'id_trx_nomor_tup_nihil' => $id_trx_nomor_tup_nihil,
+                                        'id_trx_nomor_tup_nihil_spm' => $id_trx_nomor_tup_nihil_spm,
+                                        'ket' => $ket,
+                                        'aktif' => '1',
+                                        'tahun' => $this->input->post('tahun'),
+                                        'tgl_proses' => $tgl_proses,
+                                    );
+
+                            // echo '<pre>'; var_dump($this->input->post()); die;
+                            
+                            if($this->rsa_tup_nihil_model->proses_tup_nihil($kd_unit,$data,$id_trx_nomor_tup_nihil)){
 
                                 // PENGEMBALIAN KE BENDAHARA
 
-
                                 // echo '<pre>'; var_dump($this->input->post()); die;
 
-                                
                                 $this->load->model('kas_bendahara_model');
-                                $kd_akun_up = $this->kas_bendahara_model->get_kas_bendahara_kd_akun($kd_unit,'UP',$this->cur_tahun);
-                                // echo $kd_akun_up; die;
-                                $saldo_ben = $this->kas_bendahara_model->get_kas_bendahara_by_kd_akun_and_unit($kd_akun_up,$kd_unit,'UP',$this->cur_tahun);
+                                $kd_akun_tup = $this->kas_bendahara_model->get_kas_bendahara_kd_akun_by_spm($nomor_trx_spm_cair);
+                                $saldo_ben = $this->kas_bendahara_model->get_kas_bendahara_by_spm($nomor_trx_spm_cair);
 
                                 $kredit = $this->input->post('kredit');
-                                $debet = $kredit ;
-                                $sisa = $saldo_ben - $kredit ;
-                                $saldo = $sisa + $debet ;
+                                $debet = 0 ; // $kredit ;
+                                $sisa = 0 ; // $saldo_ben - $kredit ;
+                                $saldo = 0 ; // $sisa + $debet ;
+                                $pengembalian = $this->input->post('jumlah_pengembalian');
                                 // echo 'k : ' . $kredit . '<br>' ;
                                 // echo 'd : ' . $debet . '<br>' ;
                                 // echo 's : ' . $sisa . '<br>' ; 
@@ -4330,20 +4219,22 @@
 
                                 $data = array(
                                     'tgl_trx' => $tgl_proses,
-                                    'kd_akun_kas' => $kd_akun_up,
+                                    'kd_akun_kas' => $kd_akun_tup,
                                     'kd_unit' => $kd_unit,
                                     'deskripsi' => $this->input->post('deskripsi'),//'KREDIT TUP UNIT ' . $kd_unit,//$this->input->post('deskripsi'),
-                                    'jenis' => 'UP',
-                                    'no_spm' => $this->input->post('nomor_trx'),
+                                    'jenis' => 'TUP',
+                                    'no_spm' => $nomor_trx_spm_cair, // $this->input->post('nomor_trx'),
+                                    'no_spm_pengembalian' => $this->input->post('nomor_trx'),
                                     'kredit' => $kredit,
                                     'debet' => $debet,
+                                    'pengembalian' => $pengembalian,
                                     'saldo' => $saldo, // $saldo_ben->saldo - $this->input->post('kredit'), // DI '0' KAN KARENA AKAN DIKEMBALIKAN
                                     'aktif' => '1',
                                     'tahun' => $this->input->post('tahun'),
                                 );
                                 
                                 // $this->load->model('kas_bendahara_model');
-                                // $saldo_ben = $this->kas_bendahara_model->get_kas_bendahara_gup($kd_unit,$this->input->post('tahun'));
+                                // $saldo_ben = $this->kas_bendahara_model->get_kas_bendahara_tup_nihil($kd_unit,$this->input->post('tahun'));
 
                                
 
@@ -4355,28 +4246,28 @@
 
                                 $kd_akun_kas = $this->input->post('kd_akun_kas') ;
                                 $nominal = $this->input->post('nominal') ;
-                                $saldo = $this->kas_undip_model->get_nominal($kd_akun_kas) - $nominal ;
+                                $saldo = $this->kas_undip_model->get_nominal($kd_akun_kas) ; // - $nominal ;
 
                                 $data_kas = array(
                                     'tgl_trx' => $tgl_proses,
                                     'kd_akun_kas' => $kd_akun_kas,
                                     'kd_unit' => $kd_unit,//'99',
-                                    'deskripsi' => $this->input->post('deskripsi'),//'PEMBAYARAN GUP UNIT ' . $kd_unit,
+                                    'deskripsi' => $this->input->post('deskripsi'),//'PEMBAYARAN TUP-NIHIL UNIT ' . $kd_unit,
                                     'no_spm' => $this->input->post('nomor_trx'),
-                                    'debet' => '0',
-                                    'kredit' => $nominal,
-                                    'saldo' => $saldo,
+                                    'debet' => $pengembalian,
+                                    'kredit' => 0,//$nominal,
+                                    'saldo' => $saldo + $pengembalian,
                                     'aktif' => '1',
                                     'tahun' => $this->input->post('tahun'),
                                 );
 
                                 $data_spm_cair = array(
-                                    'no_urut' => $this->rsa_gup_model->get_next_urut_spm_cair($this->input->post('tahun')),
+                                    'no_urut' => $this->rsa_tup_nihil_model->get_next_urut_spm_cair($this->input->post('tahun')),
 //                                    'nomor_trx_spm' => $this->rsa_up_model->get_id_nomor_up('SPM',$kd_unit,$this->input->post('tahun')),//,$nomor,
                                     'str_nomor_trx_spm' => $nomor_trx_spm,
                                     'str_nomor_trx_spp' => $nomor_trx_spp,
                                     'kode_unit_subunit' => $kd_unit,
-                                    'jenis_trx' => 'GUP',
+                                    'jenis_trx' => 'TUP-NIHIL',
                                     'nominal' => $nominal,
                                     'tgl_proses' => $tgl_proses,
                                     'bulan' => $nomor_[3],
@@ -4385,15 +4276,15 @@
 
     //                            var_dump($data_spm_cair);die;
 
-                                // $data_gup_to_nihil = array(
+                                // $data_tup_nihil_to_nihil = array(
                                 //     'kode_unit_subunit' => $kd_unit,
-                                //     'str_nomor_trx_spm_gup' => $nomor_trx_spm,
-                                //     'tgl_proses_gup' => date('Y-m-d H:i:s'),
+                                //     'str_nomor_trx_spm_tup_nihil' => $nomor_trx_spm,
+                                //     'tgl_proses_tup_nihil' => date('Y-m-d H:i:s'),
                                 //     'tahun' => $this->input->post('tahun'),
                                 //     'status' => '0',
                                 // );
 
-                                if($this->rsa_gup_model->final_gup($kd_unit,$data) && $this->kas_undip_model->isi_trx($data_kas) && $this->rsa_gup_model->spm_cair($data_spm_cair)){
+                                if($this->rsa_tup_nihil_model->final_tup_nihil($kd_unit,$data) && $this->kas_undip_model->isi_trx($data_kas) && $this->rsa_tup_nihil_model->spm_cair($data_spm_cair)){
                                     
                                     // $saldo_ben = $this->kas_bendahara_model->get_kas_bendahara($kd_unit,$this->input->post('tahun'));
                                 
@@ -4410,7 +4301,7 @@
                                     //     'tahun' => $this->input->post('tahun'),
                                     // );
                                     
-                                    // $this->rsa_gup_model->final_gup($kd_unit,$data_debet);
+                                    // $this->rsa_tup_nihil_model->final_tup_nihil($kd_unit,$data_debet);
                                     
                                     $data = array(
                                         'rel_kuitansi' => $rel_kuitansi,
@@ -4427,10 +4318,17 @@
 
                                     $this->kuitansipengembalian_model->set_cair($data_pengembalian);
 
-                                    $this->rsa_gup_model->proses_gup_cair_rka($data);
+                                    $this->rsa_tup_nihil_model->proses_tup_nihil_cair_rka($data);
 
+                                    $data_tup_nihil = array(
+                                            'str_nomor_trx_spp_tup_nihil' => $nomor_trx_spp,
+                                            'str_nomor_trx_spm_tup_nihil' => $nomor_trx_spm,
+                                            'tgl_proses_tup_nihil' => $tgl_proses,
+                                        );
+
+                                    $this->rsa_tup_nihil_model->proses_tup_to_nihil($data_tup_nihil);
                                             
-                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM GUP anda berhasil disubmit.</div>');
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" style="text-align:center"><span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span> SPP/SPM TUP-NIHIL anda berhasil disubmit.</div>');
                                     echo "sukses";
                                 }else{
                                     echo "gagal";
@@ -4681,10 +4579,10 @@
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==13))){
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
                             $subdata['cur_tahun']           = $tahun;
-                            $subdata['daftar_spp']          = $this->rsa_gup_model->get_daftar_spp($kode_unit_subunit,$tahun);
+                            $subdata['daftar_spp']          = $this->rsa_tup_nihil_model->get_daftar_spp($kode_unit_subunit,$tahun);
 //                            echo '<pre>';var_dump($subdata['daftar_spp']);echo '</pre>';die;
                             
-                            $subdata['jenis']           = 'gup';
+                            $subdata['jenis']           = 'tup_nihil';
 
                             $data['main_content']           = $this->load->view("rsa_pengesahan/daftar_spp",$subdata,TRUE);
                             /*  Load main template  */
@@ -4712,9 +4610,9 @@
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==14)||($this->check_session->get_level()==2))){
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
                             $subdata['cur_tahun']           = $tahun;
-                            // $subdata['daftar_spm']          = $this->rsa_gup_model->get_daftar_spm($kode_unit_subunit,$tahun);
-                            $subdata['daftar_spp']          = $this->rsa_gup_model->get_daftar_spp($kode_unit_subunit,$tahun);
-                            $subdata['jenis']           = 'gup';
+                            // $subdata['daftar_spm']          = $this->rsa_tup_nihil_model->get_daftar_spm($kode_unit_subunit,$tahun);
+                            $subdata['daftar_spp']          = $this->rsa_tup_nihil_model->get_daftar_spp($kode_unit_subunit,$tahun);
+                            $subdata['jenis']           = 'tup_nihil';
                            // echo '<pre>';var_dump($subdata['daftar_spp']);echo '</pre>';die;
                             $data['main_content']           = $this->load->view("rsa_pengesahan/daftar_spm",$subdata,TRUE);
                             /*  Load main template  */
@@ -4742,10 +4640,10 @@
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==11))){
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
                             $subdata['cur_tahun']           = $tahun;
-                            $subdata['jenis']           = 'gup';
+                            $subdata['jenis']           = 'tup_nihil';
                             $subdata['kode_unit']           = $kode_unit_subunit;
-                            // $subdata['daftar_spm']          = $this->rsa_gup_model->get_daftar_spm($kode_unit_subunit,$tahun);
-                            $subdata['daftar_spm']          = $this->rsa_gup_model->get_daftar_spp($kode_unit_subunit,$tahun);
+                            // $subdata['daftar_spm']          = $this->rsa_tup_nihil_model->get_daftar_spm($kode_unit_subunit,$tahun);
+                            $subdata['daftar_spm']          = $this->rsa_tup_nihil_model->get_daftar_spp($kode_unit_subunit,$tahun);
 //                            echo '<pre>';var_dump($subdata['daftar_spp']);echo '</pre>';die;
                             $data['main_content']           = $this->load->view("rsa_pengesahan/daftar_spm_kbuu",$subdata,TRUE);
                             /*  Load main template  */
@@ -4773,10 +4671,10 @@
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==14)||($this->check_session->get_level()==2)||($this->check_session->get_level()==3))){
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
                             $subdata['cur_tahun']           = $tahun;
-                            $subdata['jenis']           = 'gup';
+                            $subdata['jenis']           = 'tup_nihil';
                             $subdata['kode_unit']           = $kode_unit_subunit;
-                            // $subdata['daftar_spm']          = $this->rsa_gup_model->get_daftar_spm($kode_unit_subunit,$tahun);
-                            $subdata['daftar_spm']          = $this->rsa_gup_model->get_daftar_spp($kode_unit_subunit,$tahun);
+                            // $subdata['daftar_spm']          = $this->rsa_tup_nihil_model->get_daftar_spm($kode_unit_subunit,$tahun);
+                            $subdata['daftar_spm']          = $this->rsa_tup_nihil_model->get_daftar_spp($kode_unit_subunit,$tahun);
                            // echo '<pre>';var_dump($subdata['daftar_spm']);echo '</pre>';die;
                             $data['main_content']           = $this->load->view("rsa_pengesahan/daftar_spm_verifikator",$subdata,TRUE);
                             /*  Load main template  */
@@ -4804,9 +4702,9 @@
                     if($this->check_session->user_session() && (($this->check_session->get_level()==100)||($this->check_session->get_level()==14)||($this->check_session->get_level()==2))){
                             $data['main_menu']              = $this->load->view('main_menu','',TRUE);
                             $subdata['cur_tahun']           = $tahun;
-                            $subdata['jenis']           = 'gup';
-                            // $subdata['daftar_spm']          = $this->rsa_gup_model->get_daftar_spm($kode_unit_subunit,$tahun);
-                            $subdata['daftar_spp']          = $this->rsa_gup_model->get_daftar_spp($kode_unit_subunit,$tahun);
+                            $subdata['jenis']           = 'tup_nihil';
+                            // $subdata['daftar_spm']          = $this->rsa_tup_nihil_model->get_daftar_spm($kode_unit_subunit,$tahun);
+                            $subdata['daftar_spp']          = $this->rsa_tup_nihil_model->get_daftar_spp($kode_unit_subunit,$tahun);
 //                            echo '<pre>';var_dump($subdata['daftar_spp']);echo '</pre>';die;
                             $data['main_content']           = $this->load->view("rsa_pengesahan/daftar_spm_kpa",$subdata,TRUE);
                             /*  Load main template  */
@@ -4827,7 +4725,7 @@
 
                         $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
 
-                        $notif = $this->rsa_gup_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
+                        $notif = $this->rsa_tup_nihil_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
 
                         echo $notif ;
                     }
@@ -4844,9 +4742,9 @@
 
                         $user = $this->user_model->get_detail_rsa_user_by_username($this->check_session->get_username());
 
-                        $notif_gup = $this->rsa_gup_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
+                        $notif_tup_nihil = $this->rsa_tup_nihil_model->get_notif_approve($kode_unit_subunit,$level,$user->id);
 
-                        echo $notif_gup ;
+                        echo $notif_tup_nihil ;
                     }
 
                 }
@@ -4855,7 +4753,7 @@
                     $q = $this->input->get('query');
                     $d = array('untuk_bayar'=>$q);
                     $kode_unit_subunit = $this->check_session->get_unit();
-                    $data = $this->rsa_gup_model->get_data_untuk_pekerjaan($d['untuk_bayar'],$kode_unit_subunit,$this->cur_tahun);
+                    $data = $this->rsa_tup_nihil_model->get_data_untuk_pekerjaan($d['untuk_bayar'],$kode_unit_subunit,$this->cur_tahun);
                     $json = [];
 
                     if(!empty($data)){
@@ -4871,7 +4769,7 @@
                 function get_data_penerima(){
                     $q = $this->input->get('query');
                     $kode_unit_subunit = $this->check_session->get_unit();
-                    $data = $this->rsa_gup_model->get_data_penerima($q,$kode_unit_subunit,$this->cur_tahun);
+                    $data = $this->rsa_tup_nihil_model->get_data_penerima($q,$kode_unit_subunit,$this->cur_tahun);
                     $json = [];
                     
                     if(!empty($data)){
@@ -4896,7 +4794,7 @@
                     $q = $this->input->get('query');
                     $d = array('penerima'=>$q);
                     $kode_unit_subunit = $this->check_session->get_unit();
-                    $data = $this->rsa_gup_model->get_data_json($d,$kode_unit_subunit,$this->cur_tahun);
+                    $data = $this->rsa_tup_nihil_model->get_data_json($d,$kode_unit_subunit,$this->cur_tahun);
                     $json = [];
                     
                     if(!empty($data)){
@@ -4907,6 +4805,19 @@
                     }
 
                     echo json_encode($json);
+                }
+
+                function check_tup_nihil_done(){
+                    if($this->input->post()){
+                        $no_spm = $this->input->post('no_spm');
+
+                        if($this->rsa_tup_nihil_model->check_tup_nihil_done($no_spm) == '1'){ // IF 1 = BARU BISA TRX NIHIL
+                            echo 'ok' ;
+                        }else{
+                            echo 'no' ;
+                        }
+
+                    }
                 }
                 
         

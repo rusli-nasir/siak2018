@@ -179,7 +179,7 @@ tbody td, thead th {
 				<tr>
 					<td style="width:4% !important"><?php echo $no; ?></td>
 					<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->str_nomor_trx_spm,'trx_nomor_tup')))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 						<?php if($this->session->userdata('level')==1){ ?>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/TUP_PENGEMBALIAN'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 						<?php }else if($this->session->userdata('level')==2){ ?>
@@ -217,6 +217,13 @@ tbody td, thead th {
 </div>
 
 <?php
+function get_no_spp($spm,$tabel)
+{
+	$ci =& get_instance();
+	$ci->load->model('akuntansi/Kuitansi_model','Kuitansi_model');
+	return $ci->Kuitansi_model->get_no_spp($spm,$tabel);
+}
+
 function get_pengeluaran($id_kuitansi){
 	$ci =& get_instance();
 

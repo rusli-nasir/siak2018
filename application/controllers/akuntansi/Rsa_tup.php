@@ -441,9 +441,10 @@
 
                                 $nomor_trx_spp = $url ;
 
-                                // echo $nomor_trx_spm; die;
+                                // echo $nomor_trx_spp; die;
 
                                 $id_nomor = $this->rsa_tup_model->get_nomor_spp_urut_by_nomor_spp($nomor_trx_spp) ;
+
                                 
                                 
                                 $dokumen = $this->rsa_tup_model->check_dokumen_tup_by_str_trx($url);
@@ -472,8 +473,8 @@
                                     
                                     $data_spp = $this->rsa_tup_model->get_data_spp($nomor_trx_spp);
                                    //  echo $nomor_trx_spp;
-                                   // //print_r($data_spp);
-                                   //  die;
+                                   // // //print_r($data_spp);
+                                   //  die();
                                     $subdata['detail_permintaan']   = array(
                                                                     'nom' => $data_spp->jumlah_bayar,
                                                                     'terbilang' => $data_spp->terbilang, 
