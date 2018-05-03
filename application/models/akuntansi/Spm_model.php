@@ -454,7 +454,7 @@ class Spm_model extends CI_Model {
             $tabel_kredit = "kas_undip";
 
             if ($jenis == 'KS'){
-              $tabel_debet = 'kas_kerjasama';
+              $tabel_debet = 'kas_bendahara';
             }
 
             $this->db
@@ -508,15 +508,16 @@ class Spm_model extends CI_Model {
             $inti['kas_akun_kredit'] = $sal_univ['akun_6'] ." - ". $sal_univ['nama'];
 
             if ($jenis == 'KS'){
-              $akun_kerjasama_permintaan = $this->Akun_model->get_akun_kerjasama_permintaan();
+              // $akun_kerjasama_permintaan = $this->Akun_model->get_akun_kerjasama_permintaan();
 
-              $inti['akun_debet'] = $akun_kerjasama_permintaan['akun_debet']['akun_6'];
+              $inti['akun_debet'] = $this->input->post('kas_akun_debet');
               // $inti['akun_debet'] = $debet['kd_akun_kas'];
-              $inti['akun_kredit'] = $kredit['kd_akun_kas'];
-              $inti['akun_debet_kas'] = $debet['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($debet['kd_akun_kas']);
-              $inti['akun_kredit_kas'] = $kredit['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($kredit['kd_akun_kas']);
+              // $inti['akun_kredit'] = $kredit['kd_akun_kas'];
+              // $inti['akun_debet_kas'] = $debet['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($debet['kd_akun_kas']);
+              // $inti['akun_kredit_kas'] = $kredit['kd_akun_kas'] .' - '. $this->Akun_model->get_nama_akun($kredit['kd_akun_kas']);
               // echo "<pre>";
               // print_r($akun_kerjasama_permintaan);die;
+              // vdebug($inti);
               
               // die('aaa');
             }

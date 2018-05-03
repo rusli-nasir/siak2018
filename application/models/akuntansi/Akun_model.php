@@ -18,20 +18,76 @@ class Akun_model extends CI_Model {
     {
     	return array(
     		'akun_debet' => array(
-    							'akun_6' => "523159",
-    							'nama' => $this->get_nama_akun("523159")
+    							array(
+	    							'akun_6' => "533111",
+	    							'nama' => $this->get_nama_akun("533111")
+    							),
+    							array(
+	    							'akun_6' => "533112",
+	    							'nama' => $this->get_nama_akun("533112")
+    							),
+    							array(
+	    							'akun_6' => "533121",
+	    							'nama' => $this->get_nama_akun("533121")
+    							),
+    							array(
+	    							'akun_6' => "533122",
+	    							'nama' => $this->get_nama_akun("533122")
+    							),
+    							array(
+	    							'akun_6' => "533123",
+	    							'nama' => $this->get_nama_akun("533123")
+    							),
+    							array(
+	    							'akun_6' => "533131",
+	    							'nama' => $this->get_nama_akun("533131")
+    							),
+    							array(
+	    							'akun_6' => "533132",
+	    							'nama' => $this->get_nama_akun("533132")
+    							),
     						),
     		'akun_kredit' => array(
-    							'akun_6' => "911101",
-    							'nama' => $this->get_nama_akun("911101")
+    							array(
+	    							'akun_6' => "911142",
+	    							'nama' => $this->get_nama_akun("911142")
+    							)
     						),
     		'akun_debet_akrual' => array(
-    							'akun_6' => "723159",
-    							'nama' => $this->get_nama_akun("723159")
+    							array(
+	    							'akun_6' => "733111",
+	    							'nama' => $this->get_nama_akun("733111")
+    							),
+    							array(
+	    							'akun_6' => "733112",
+	    							'nama' => $this->get_nama_akun("733112")
+    							),
+    							array(
+	    							'akun_6' => "733121",
+	    							'nama' => $this->get_nama_akun("733121")
+    							),
+    							array(
+	    							'akun_6' => "733122",
+	    							'nama' => $this->get_nama_akun("733122")
+    							),
+    							array(
+	    							'akun_6' => "733123",
+	    							'nama' => $this->get_nama_akun("733123")
+    							),
+    							array(
+	    							'akun_6' => "733131",
+	    							'nama' => $this->get_nama_akun("733131")
+    							),
+    							array(
+	    							'akun_6' => "733132",
+	    							'nama' => $this->get_nama_akun("733132")
+    							),
     						),
     		'akun_kredit_akrual' => array(
-    							'akun_6' => "111148",
-    							'nama' => $this->get_nama_akun("111148")
+    							array(
+	    							'akun_6' => "111163",
+	    							'nama' => $this->get_nama_akun("111163")
+    							)
     						)
     	);
     }

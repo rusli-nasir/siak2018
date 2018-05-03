@@ -1,5 +1,6 @@
 
 <script src="<?php echo base_url();?>/assets/akuntansi/js/selectize.js"></script>
+<script src="<?php echo base_url();?>/assets/akuntansi/js/vue.js"></script>
 <link href="<?php echo base_url();?>/assets/akuntansi/css/selectize.bootstrap3.css" rel="stylesheet">
 
 <div class="row">
@@ -30,7 +31,7 @@
 $array_spm = $this->Spm_model->get_jenis_spm();
 
 if($jenis=='NK'){
-  $no_bukti = substr($str_nomor_trx_spm, 6, 3).substr($str_nomor_trx_spm, 0, 5); 
+  $no_bukti = substr($str_nomor_trx_spm, 5, 3).substr($str_nomor_trx_spm, 0, 4); 
 }else{
   $no_bukti = $no_bukti;
 }
@@ -121,7 +122,7 @@ if($jenis=='NK'){
 </div>
 
 <!-- Text input-->
-<fieldset>
+<fieldset id="app">
   <legend>
     <div class="col-md-2 control-label">Jurnal Basis Kas</div>
     <div class="col-md-5 control-label">Jurnal Basis Akrual</div>
@@ -131,14 +132,14 @@ if($jenis=='NK'){
     <label class="col-md-2 control-label" for="kas_akun_debet">Akun Debet</label>  
     <div class="col-md-3">
       <?php if ($jenis == 'KS'): ?>
-        <input id="kas_akun_debet" name="kas_akun_debet_view" value="<?php echo $akun_debet['akun_6'].' - '.$akun_debet['nama'] ?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>   
-        <input id="kas_akun_debet" name="kas_akun_debet" value="<?php echo $akun_debet['akun_6']?>"  type="hidden" >   
-        <!-- <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
+        <!-- <input id="kas_akun_debet" name="kas_akun_debet_view" value="<?php echo $akun_debet['akun_6'].' - '.$akun_debet['nama'] ?>"  type="text" placeholder="Akun Debet" class="form-control input-md" required="" disabled>   
+        <input id="kas_akun_debet" name="kas_akun_debet" value="<?php echo $akun_debet['akun_6']?>"  type="hidden" >    -->
+        <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="" v-model="akun" >
           <option value="">Pilih Akun</option>
-          <?php foreach ($akun_sal as $each_sal): ?>
+          <?php foreach ($akun_debet as $each_sal): ?>
             <option value="<?php echo $each_sal['akun_6'] ?>" ><?php echo $each_sal['akun_6'].' - '.$each_sal['nama'] ?></option>  
           <?php endforeach ?>
-        </select> -->
+        </select>
       <?php elseif ($jenis == 'TUP_PENGEMBALIAN'): ?>
         <select id="kas_akun_debet" name="kas_akun_debet" class="form-control" required="">
             <option value="<?php echo $akun_sal_debet['akun_6'] ?>"  ><?php echo $akun_sal_debet['akun_6']. " - ".$akun_sal_debet['nama'] ?></option>
@@ -171,10 +172,12 @@ if($jenis=='NK'){
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
       <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
-      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="">
-          <!-- <option value="">Pilih Akun</option> -->
+      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="" <?php if ($jenis == 'KS'): ?> :value="akun_debet_akrual" readonly<?php endif ?>  >
           <?php if ($jenis == 'KS'): ?>
-                <option value="<?php echo $akun_debet_akrual['akun_6'] ?>" ><?php echo $akun_debet_akrual['akun_6'].' - '.$akun_debet_akrual['nama'] ?></option>  
+              <option value="">Pilih Akun</option>
+              <?php foreach ($akun_debet_akrual as $in_akun_debet_akrual): ?>
+                <option value="<?php echo $in_akun_debet_akrual['akun_6'] ?>" ><?php echo $in_akun_debet_akrual['akun_6'].' - '.$in_akun_debet_akrual['nama'] ?></option>  
+              <?php endforeach ?>
           <?php elseif ($jenis == 'EM'): ?>
                 <option value="<?php echo $akun_debet_akrual_em['akun_6'] ?>" ><?php echo $akun_debet_akrual_em['akun_6'].' - '.$akun_debet_akrual_em['nama'] ?></option>  
           <?php elseif ($jenis == 'TUP_PENGEMBALIAN' or (($jenis == 'TUP') and $this->session->userdata('kode_unit') == 63)): ?>
@@ -263,12 +266,12 @@ if($jenis=='NK'){
         <?php if ($jenis == 'EM'): ?>
           <option value="<?php echo $akun_kredit_em['akun_6'] ?>" ><?php echo $akun_kredit_em['akun_6'].' - '.$akun_kredit_em['nama'] ?></option>  
         <?php elseif ($jenis == 'KS'): ?>
-          <option value="<?php echo $akun_kredit['akun_6'] ?>" ><?php echo $akun_kredit['akun_6'].' - '.$akun_kredit['nama'] ?></option>  
+          <!-- <option value="<?php echo $akun_kredit['akun_6'] ?>" ><?php echo $akun_kredit['akun_6'].' - '.$akun_kredit['nama'] ?></option>   -->
           <!-- <option value="<?php echo $akun_kredit ?>" selected><?php echo $akun_kredit_kas?></option> -->
-          <!-- <option value="">Pilih Akun</option>
+          <!-- <option value="">Pilih Akun</option> -->
           <?php foreach ($akun_kredit as $each_sal): ?>
             <option value="<?php echo $each_sal['akun_6'] ?>" ><?php echo $each_sal['akun_6'].' - '.$each_sal['nama'] ?></option>  
-          <?php endforeach ?> -->
+          <?php endforeach ?> 
         <?php elseif (!in_array($jenis,$array_spm) or $jenis == 'LSPHK3' or $jenis != 'NK'): ?>
           <option value="<?php echo $akun_sal['akun_6'] ?>" selected><?php echo $akun_sal['akun_6']. " - ".$akun_sal['nama'] ?></option>
         <?php elseif (in_array($jenis,$array_spm) and $jenis != 'LSPHK3' and $jenis != 'NK'): ?>
@@ -285,7 +288,10 @@ if($jenis=='NK'){
     <div class="col-md-3">
       <select id="akun_kredit_akrual" name="akun_kredit_akrual" class="form-control" required="">
         <?php if ($jenis == 'KS'): ?>
-          <option value="<?php echo $akun_kredit_akrual['akun_6'] ?>" ><?php echo $akun_kredit_akrual['akun_6'].' - '.$akun_kredit_akrual['nama'] ?></option>  
+          <!-- <option value="">Pilih Akun</option> -->
+          <?php foreach ($akun_kredit_akrual as $in_akun_kredit_akrual): ?>
+            <option value="<?php echo $in_akun_kredit_akrual['akun_6'] ?>" ><?php echo $in_akun_kredit_akrual['akun_6'].' - '.$in_akun_kredit_akrual['nama'] ?></option>  
+          <?php endforeach ?>
         <?php elseif ($jenis == 'EM'): ?>
           <option value="<?php echo $akun_kredit_akrual_em['akun_6'] ?>" ><?php echo $akun_kredit_akrual_em['akun_6'].' - '.$akun_kredit_akrual_em['nama'] ?></option>  
         <?php else: ?>
@@ -355,10 +361,30 @@ if($jenis=='NK'){
 </form>
 <script>
 
-  var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
-  var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  <?php if ($jenis != 'KS'): ?>
+    var $select1 = $('#akun_debet_akrual').selectize();  // This initializes the selectize control
+    var selectize1 = $select1[0].selectize; // This stores the selectize object to a variable (with name 'selectize')
+  <?php endif ?>
 
   <?php if (isset($akun_debet_akrual) and $jenis != 'KS'): ?>
         selectize1.setValue('<?=$akun_debet_akrual?>');  
+  <?php endif ?>
+
+  <?php if ($jenis == 'KS'): ?>
+    app = new Vue({
+      'el' : '#app',
+      'data' : {
+                akun : ''
+      },
+      'computed' : {
+                akun_debet_akrual : function () {
+                  if (this.akun == '') {
+                    return ""
+                  }else{
+                    return this.akun.replace(/^.{1}/g, '7');
+                  }
+                },
+      }
+    })
   <?php endif ?>
 </script>

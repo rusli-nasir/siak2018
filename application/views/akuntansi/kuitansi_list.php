@@ -309,12 +309,15 @@ tbody td, thead th {
 					$pajak = get_detail_pajak($result->no_bukti, $result->jenis); 
 					?>
 					<td style="width:350px">
-					<?php if ($pajak==null) echo "pajak kosong"; ?>
-					<?php foreach ($pajak as $entry_pajak): ?>
-		              
-		              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
-		              
-		          <?php endforeach ?>
+					<?php if ($pajak==null): ?>
+						pajak kosong
+					<?php else: ?>
+						<?php foreach ($pajak as $entry_pajak): ?>
+			              
+			              	<?php echo $entry_pajak['nama_akun'].' '.$entry_pajak['persen_pajak']." (Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.').')<br/>'; ?>
+			              
+			          	<?php endforeach ?>
+					<?php endif ?>
 		          	</td>
 					<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
 				</tr>

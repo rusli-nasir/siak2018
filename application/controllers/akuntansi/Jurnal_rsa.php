@@ -156,6 +156,7 @@ class Jurnal_rsa extends MY_Controller {
             // echo "<pre>";
             // print_r($kuitansi['jenis']);die();
 
+            // vdebug($entry);
             // print_r($checker);die();
             // print_r($kuitansi);die();
             // print_r($entry);die();
@@ -276,6 +277,8 @@ class Jurnal_rsa extends MY_Controller {
 
                 $isian['jumlah_debet'] = $isian['jumlah_kredit'] = $isian['pengeluaran'];
 
+                // vdebug($isian);
+
                 // print_r($isian);die();
             }
             else if ($jenis == 'GUP_PENGEMBALIAN'){
@@ -358,6 +361,8 @@ class Jurnal_rsa extends MY_Controller {
                     $isian['akun_kredit'] = $akun_kerjasama_permintaan['akun_kredit'];
                     $isian['akun_kredit_akrual'] = $akun_kerjasama_permintaan['akun_kredit_akrual'];
 
+                    // vdebug($isian);
+
                     // echo "<pre>";
                     // print_r($akun_kerjasama_permintaan);
                     // die();
@@ -433,6 +438,7 @@ class Jurnal_rsa extends MY_Controller {
                 }
 
                 $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit('all');
+                // vdebug($isian);
 
 
                 // print_r($isian);die();

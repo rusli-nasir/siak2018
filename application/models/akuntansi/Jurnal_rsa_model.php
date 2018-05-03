@@ -82,7 +82,8 @@ class Jurnal_rsa_model extends CI_Model {
 
         $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
 
-
+        $hasil['kode_akun'] = $this->db->query("SELECT SUBSTR(kode_usulan_belanja,-6) as kode_akun FROM $tabel_detail WHERE id_kuitansi=".$hasil['id_kuitansi'])->row_array()['kode_akun'];
+        $hasil['kode_usulan_belanja'] = $this->db->query("SELECT kode_usulan_belanja FROM $tabel_detail WHERE id_kuitansi=".$hasil['id_kuitansi'])->row_array()['kode_usulan_belanja'];
 
         $hasil['kode_unit'] = substr($hasil['kode_unit'], 0,2);
         $hasil['unit_kerja'] = $this->db2->get_where('unit',array('kode_unit'=>$hasil['kode_unit']))->row_array()['nama_unit'];
@@ -98,6 +99,7 @@ class Jurnal_rsa_model extends CI_Model {
         $query = "SELECT SUM(rsa_2018.$tabel_detail.volume*rsa_2018.$tabel_detail.harga_satuan) AS pengeluaran FROM $tabel,$tabel_detail WHERE $tabel.id_kuitansi = $tabel_detail.id_kuitansi AND $tabel.id_kuitansi=$id_kuitansi GROUP BY rsa_2018.$tabel.id_kuitansi";
         $hasil['pengeluaran'] = number_format($this->db->query($query)->row_array()['pengeluaran'],2,',','.');
 
+
         // print_r($hasil);
         // print_r($tabel_detail);
 
@@ -112,6 +114,9 @@ class Jurnal_rsa_model extends CI_Model {
         $tabel_detail = 'rsa_kuitansi_detail_pengembalian';
 
         $hasil = $this->db->get_where($tabel,array('id_kuitansi'=>$id_kuitansi))->row_array();
+
+        $hasil['kode_akun'] = $this->db->query('SELECT SUBSTR(kode_usulan_belanja,-6) as kode_akun FROM $tabel_detail WHERE id_kuitansi='.$hasil['id_kuitansi'])->row_array()['kode_akun'];
+        $hasil['kode_usulan_belanja'] = $this->db->query('SELECT kode_usulan_belanja FROM $tabel_detail WHERE id_kuitansi='.$hasil['id_kuitansi'])->row_array()['kode_usulan_belanja'];
 
 
 

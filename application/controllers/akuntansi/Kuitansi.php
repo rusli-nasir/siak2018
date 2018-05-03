@@ -1261,6 +1261,8 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_tup($config['per_page'], $id, $keyword, $kode_unit);
 
+		vdebug($this->data['query']->result());
+
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 0)->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 1)->num_rows();
 		
@@ -1681,7 +1683,7 @@ class Kuitansi extends MY_Controller {
 	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp_em($this->data['query'][$key]['no_spm']);        	
             }
             if ($this->data['query'][$key]['jenis'] == 'KS') {
-	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_tambah_ks');        	
+	            $this->data['query'][$key]['no_spp'] = $this->Kuitansi_model->get_no_spp($this->data['query'][$key]['no_spm'],'trx_nomor_ks');        	
             }
             $this->data['query'][$key] = (object) $this->data['query'][$key];
         }
