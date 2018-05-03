@@ -1261,8 +1261,6 @@ class Kuitansi extends MY_Controller {
 
 		$this->data['query'] = $this->Kuitansi_model->read_tup($config['per_page'], $id, $keyword, $kode_unit);
 
-		vdebug($this->data['query']->result());
-
 		$this->data['kuitansi_non_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 0)->num_rows();
 		$this->data['kuitansi_jadi'] = $this->Kuitansi_model->total_tup('SPM-FINAL-KBUU', 1)->num_rows();
 		
