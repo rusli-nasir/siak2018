@@ -41,6 +41,7 @@ class Anggaran extends MY_Controller {
 		}
 
 		$data = $this->upload->data();
+        //print_r($data);die();
 
 		$file = $data['full_path'];
 
