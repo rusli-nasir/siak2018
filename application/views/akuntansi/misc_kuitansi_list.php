@@ -243,9 +243,10 @@ tbody td, thead th {
 					<?php elseif ($jenis == 'EM'): ?>
 						<?php 
 							// $no_spp = $ci->Kuitansi_model->get_no_spp_em($result->str_nomor_trx);
+
 						 ?>
 						<td>						
-							<a href="<?php echo site_url('akuntansi/rsa_em/spm_em_lihat_99/'.urlencode(base64_encode($no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<a href="<?php echo site_url('akuntansi/rsa_em/spm_em_lihat_99/'.urlencode(base64_encode($result->str_nomor_trx))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<a href="<?php echo site_url('akuntansi/jurnal_rsa/input_jurnal/'.$result->id_kuitansi).'/EM'; ?>"><button type="button" class="btn btn-sm btn-danger">Isi Jurnal</button></a>
 						</td>
 						<td><?php echo date("d/m/Y", strtotime($result->tgl_kuitansi)); ?></td>
