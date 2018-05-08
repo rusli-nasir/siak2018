@@ -242,7 +242,7 @@ tbody td, thead th {
 						<td><?php echo get_pengeluaran($result->id_kuitansi); ?></td>
 					<?php elseif ($jenis == 'EM'): ?>
 						<?php 
-							$no_spp = $ci->Kuitansi_model->get_no_spp_em($result->str_nomor_trx);
+							// $no_spp = $ci->Kuitansi_model->get_no_spp_em($result->str_nomor_trx);
 						 ?>
 						<td>						
 							<a href="<?php echo site_url('akuntansi/rsa_em/spm_em_lihat_99/'.urlencode(base64_encode($no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
