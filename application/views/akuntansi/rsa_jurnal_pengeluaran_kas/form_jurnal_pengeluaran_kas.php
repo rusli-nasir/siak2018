@@ -34,6 +34,9 @@
 
 <!-- Text input-->
 <?php
+$ci =& get_instance();
+$ci->load->model('akuntansi/Akun_model', 'Akun_model');
+
 $array_spm = $this->Spm_model->get_jenis_spm();
 
 if($jenis=='NK'){
@@ -205,10 +208,11 @@ if($jenis=='NK'){
             ?>
 
           <?php else: ?>
-              <?php foreach($query_1->result() as $result){ ?>
+              <option value="">Pilih Akun</option>
+              <?php if ($query_1 != null) foreach($query_1->result() as $result){ ?>
                 <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
               <?php } ?>
-              <?php foreach($query_2->result() as $result){ ?>
+              <?php if ($query_2 != null)foreach($query_2->result() as $result){ ?>
                 <option value="<?php echo $result->akun_6; ?>"><?php echo $result->akun_6.' - '.$result->nama; ?></option>
               <?php } ?>
               <option value="">
@@ -216,12 +220,7 @@ if($jenis=='NK'){
                 $akun['kode_akun'][0] = 7;
                 ?>
                 <option value="<?=$akun['kode_akun']?>"><?=$akun['kode_akun'].' - ';
-                $uraian_akun = explode(' ', $akun['nama_akun']);
-                if($uraian_akun[0]!='beban'){
-                  $uraian_akun[0] = 'Beban';
-                }
-                $hasil_uraian = implode(' ', $uraian_akun);
-                echo $hasil_uraian;
+                echo $ci->Akun_model->konversi_nama_akun_belanja($akun['nama_akun'])
                 ?></option>
                 <?php
               }
@@ -278,10 +277,10 @@ if($jenis=='NK'){
           <?php foreach ($akun_kredit as $each_sal): ?>
             <option value="<?php echo $each_sal['akun_6'] ?>" ><?php echo $each_sal['akun_6'].' - '.$each_sal['nama'] ?></option>  
           <?php endforeach ?> 
-        <?php elseif (!in_array($jenis,$array_spm) or $jenis == 'LSPHK3' or $jenis != 'NK'): ?>
-          <option value="<?php echo $akun_sal['akun_6'] ?>" selected><?php echo $akun_sal['akun_6']. " - ".$akun_sal['nama'] ?></option>
         <?php elseif (in_array($jenis,$array_spm) and $jenis != 'LSPHK3' and $jenis != 'NK'): ?>
           <option value="<?php echo $akun_kredit ?>" selected><?php echo $kas_akun_kredit?></option>
+        <?php elseif (!in_array($jenis,$array_spm) or $jenis == 'LSPHK3' or $jenis != 'NK'): ?>
+          <option value="<?php echo $akun_sal['akun_6'] ?>" selected><?php echo $akun_sal['akun_6']. " - ".$akun_sal['nama'] ?></option>
         <?php endif ?>
       </select>
     </div>
@@ -394,5 +393,9 @@ if($jenis=='NK'){
                 },
       }
     })
+  <?php endif ?>
+
+  <?php if ($jenis == 'TUP' OR $jenis == 'GUP'): ?>
+    $('#akun_kredit_akrual').val(<?=$kode_akun?>);
   <?php endif ?>
 </script>

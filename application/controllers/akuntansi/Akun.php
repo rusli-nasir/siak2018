@@ -51,6 +51,43 @@ class Akun extends MY_Controller {
         $this->load->view('akuntansi/crud/manage',$output,false);
 	}
 
+	public function manage_relasi_akun_unit(){
+		$crud = new grocery_CRUD(); 
+
+		$crud
+			->set_table('akuntansi_relasi_unit')
+			->set_subject('Relasi Akun')
+		;
+
+
+		$unit = $this->db2->get('unit')->result_array();
+    	$array_unit = array();
+		foreach ($unit as $entry) {
+			$array_unit[$entry['kode_unit']] = $entry['nama_unit'];
+		}
+		$array_unit['9999'] = 'Penerimaan';
+		$array_unit['all'] = 'Semua (All)';
+
+		// vdebug($array_unit);
+
+		$crud->field_type('kode_unit','dropdown',$array_unit);
+		$crud->set_primary_key('kode_akun', 'akun_belanja_filtered');
+		$crud->set_relation('kode_akun','akun_belanja_filtered','nama_akun');
+
+		$crud->set_theme('bootstrap');
+		$crud->unset_bootstrap();
+		$crud->unset_jquery();
+		$crud->unset_jquery_ui();
+
+		$output = $crud->render(); 
+        $output->title = "Manajemen Relasi Akun Unit";
+        $data = array();
+        $data['content'] = $this->load->view('akuntansi/crud/manage',$output,true);
+
+        $this->load->view('akuntansi/content_template',$data,false);
+		
+	}
+
 	public function list_akun()
 	{
 		$this->data['array_jenis'] = ['akuntansi_aset','akuntansi_hutang','akuntansi_lra','akuntansi_sal','akuntansi_pembiayaan','akuntansi_aset_bersih'];

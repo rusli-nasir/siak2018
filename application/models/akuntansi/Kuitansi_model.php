@@ -818,10 +818,10 @@ class Kuitansi_model extends CI_Model {
         }
 
         if($limit!=null OR $start!=null){
-            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tup_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx  AND
-            (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit");
+            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tup_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx  AND debet != 0 AND
+            (str_nomor_trx LIKE '%$keyword%') $unit LIMIT $start, $limit"); 
         }else{
-            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tup_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND
+            $query = $this->db->query("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tup_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND debet != 0 AND
             (str_nomor_trx LIKE '%$keyword%') $unit");
         }
         // die("SELECT *, str_nomor_trx AS str_nomor_trx_spm, id_trx_spm_tup_data AS id_kuitansi, CONCAT(untuk_bayar,'; Penerima : ',penerima) AS uraian, kd_akun_kas AS kode_akun FROM trx_spm_tup_data, trx_tup, kas_bendahara WHERE nomor_trx_spm = id_trx_nomor_tup_spm AND posisi='SPM-FINAL-KBUU' AND flag_proses_akuntansi=0 AND no_spm = str_nomor_trx AND

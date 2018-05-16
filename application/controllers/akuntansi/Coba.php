@@ -38,6 +38,13 @@ class Coba extends MY_Controller {
         // print_r($tabel);
     }
 
+    public function konversi_nama_akun($value='')
+    {
+        $nama = "[ JANGAN DIPAKAI LAGI ! ] Belanja Gaji Pokok Dosen PNS";
+        echo $nama . "<br/>";
+        echo  $this->Akun_model->konversi_nama_akun_belanja($nama);
+    }
+
     public function array_mesh() {
         // Combine multiple associative arrays and sum the values for any common keys
         // The function can accept any number of arrays as arguments

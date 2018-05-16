@@ -1,0 +1,18 @@
+INSERT INTO `akuntansi_pajak` (`id_akun_pajak`, `kode_akun`, `nama_akun`, `jenis_pajak`) VALUES
+(1,	'411121',	'PPh Pasal 21',	'PPh_Ps_21'),
+(2,	'411122',	'PPh Pasal 22',	'PPh_Ps_22'),
+(3,	'411124',	'PPh Pasal 23',	'PPh_Ps_23'),
+(4,	'411127',	'PPh Pasal 26',	'PPh_Ps_26'),
+(5,	'411128',	'PPh Final',	'PPh_final'),
+(6,	'411211',	'PPN Dalam Negeri',	'PPN'),
+(7,	'423911',	'Peneriman Kembali Belanja Pegawai Pusat TAYL',	'potongan'),
+(8,	'423951',	'Penerimaan Kembali Belanja Pegawai TAYL',	'potongan'),
+(9,	'423957',	'Penerimaan Kembali Belanja Bantuan Sosial TAYL',	'potongan'),
+(10,	'811111',	'Penerimaan Setoran/Potongan PFK 10% Gaji PNS Pusat',	'potongan'),
+(11,	'811131',	'Penerimaan Setoran/Potongan PFK 2% Iuran Jaminan Kesehatan BPJS',	'potongan'),
+(12,	'811132',	'Penerimaan Setoran/Potongan PFK 8% Gaji PNS Pusat',	'potongan'),
+(13,	'811211',	'Penerimaan Setoran/Potongan PFK 2% Gaji Terusan',	'potongan'),
+(14,	'811911',	'Penerimaan Setoran/Potongan PFK Tabungan Wajib Perumahan PNS Pusat',	'potongan'),
+(15,	'423141',	'Pendapatan Sewa Rumah Dinas/Rumah Negeri',	'potongan'),
+(16,	'811135',	'Penerimaan/Setoran PFK 2% BPJS dr Pusat',	'potongan'),
+(17,	'811212',	'Penerimaan/Setoran PFK 2% Gaji Terusan Daerah',	'potongan');

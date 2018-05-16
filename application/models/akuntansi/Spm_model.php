@@ -372,6 +372,11 @@ class Spm_model extends CI_Model {
           	$inti['no_bukti'] = $this->generate_no_bukti($inti['str_nomor_trx'],$jenis);
             $inti['kode_usulan_belanja'] = $this->generate_kode_kegiatan($inti,$jenis);
 
+            if ($jenis == 'TUP' or $jenis == 'GUP'){
+              $hasil = $this->db->get_where('kas_bendahara', array('no_spm' => $inti['str_nomor_trx_spm']))->row_array();
+              $inti['kode_akun'] = $hasil?$hasil['kd_akun_kas']:null;
+            }
+
             if ($jenis == 'KS'){
               $inti['akun_debet'] = $debet['kd_akun_kas'];
               $inti['akun_kredit'] = $kredit['kd_akun_kas'];
