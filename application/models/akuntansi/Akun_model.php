@@ -490,5 +490,18 @@ class Akun_model extends CI_Model {
     	return $this->db->get_where('akuntansi_aset_6',array('kode_unit' => 'bbm'))->row_array();
     }
 
+    public function konversi_nama_akun_belanja($nama)
+    {
+    	$first_word = explode(' ',trim($nama));
+    	$first_word = strtolower($first_word[0]);
+    	if (stripos($nama,'JANGAN DIPAKAI LAGI')){
+    		return '[ JANGAN DIPAKAI LAGI ! ]' . $this->konversi_nama_akun_belanja(str_replace('[ JANGAN DIPAKAI LAGI ! ]','',$nama));
+    	}elseif($first_word != 'belanja'){
+    		return "Beban ". $nama; 
+    	}else{
+    		return str_replace('Belanja','Beban',$nama);
+    	}
+    }
+
     
 }

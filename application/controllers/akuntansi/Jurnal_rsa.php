@@ -337,6 +337,7 @@ class Jurnal_rsa extends MY_Controller {
             }
             else if (in_array($jenis,$this->Spm_model->get_jenis_spm())){
                 $isian = $this->Spm_model->get_spm_input($id_kuitansi,$jenis);
+                // vdebug($isian);
                 // echo "<pre>";
                 // print_r($isian);
                 // die();
@@ -400,7 +401,7 @@ class Jurnal_rsa extends MY_Controller {
                     $kode_unit = $this->session->userdata('kode_unit');
                     $isian['akun_sal'] = $this->Jurnal_rsa_model->get_akun_sal_by_unit($this->session->userdata('kode_unit'));
                     $isian['akun_sal_debet'] = $isian['akun_sal'];
-                    $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_sole_rekening_of_unit($kode_unit)->result(); // pakai indeks array yanga sama dengan TUP pengembalian SPBU, 
+                    $isian['akun_debet_akrual_tup_pengembalian'] = $this->Jurnal_rsa_model->get_sole_rekening_of_unit($kode_unit)->result(); // pakai indeks array yanga sama dengan TUP pengembalian SPBU,
                     $isian['direct'] = array('debet_akrual');
                 }
             }
@@ -448,19 +449,32 @@ class Jurnal_rsa extends MY_Controller {
             $isian['query_2'] = $this->Memorial_model->read_akun('akuntansi_hutang_6');
 
             $isian['akun_belanja'] = $this->Akun_belanja_rsa_model->get_all_akun_belanja();
+
+            if (isset($isian['kode_akun']) AND substr($isian['kode_akun'],0,1) == 8){
+                $isian['query_1'] = array();
+                $isian['akun_belanja'] = array();
+            }
+
+
             $this->data['tab'] = 'beranda';
             $this->data['menu1'] = true;
             $isian['jenis'] = $jenis;
              //get rekening by unit
             if ($this->session->userdata('kode_unit') == 63 and ($jenis == 'TUP_PENGEMBALIAN' or $jenis == 'TUP')){
                 $isian['akun_kas'] = $this->Jurnal_rsa_model->get_sole_rekening_of_unit($kode_unit)->result();
+            }elseif ($jenis == 'TUP' or $jenis == 'GUP'){
+                $isian['query_1'] = array();
+                $isian['query_2'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'));
+                $isian['akun_belanja'] = array();
+                $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
             }elseif ($jenis != 'KS'){
                 $isian['akun_kas'] = $this->Jurnal_rsa_model->get_rekening_by_unit($this->session->userdata('kode_unit'))->result();
             }
          //    echo "<pre>";
             // echo "<pre>";
+            // vdebug($isian);
             // print_r($isian);die();
-	        // print_r($isian['akun_kas']);die();
+            // print_r($isian['akun_kas']);die();
 	        // $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian);
 			$this->data['content'] = $this->load->view('akuntansi/rsa_jurnal_pengeluaran_kas/form_jurnal_pengeluaran_kas',$isian,true);
 			$this->load->view('akuntansi/content_template',$this->data,false);
