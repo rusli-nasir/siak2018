@@ -32,6 +32,19 @@ class Jurnal_rsa_model extends CI_Model {
         
     }
 
+    public function get_akun_invalid(){
+        $kuitansi_jadi = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND status='proses' AND unit_kerja = '{$this->session->userdata('kode_unit')}'")->result_array();  
+        $akun_belanja_invalid = $this->db2->query("SELECT DISTINCT kode_akun,nama_akun FROM `akun_belanja` WHERE `nama_akun` LIKE '[ JANGAN%'")->result_array();
+        foreach ($kuitansi_jadi as $key => $value) {
+            foreach ($akun_belanja_invalid as $values) {
+                if ($value['akun_debet'] == $values['kode_akun']) {
+                    $arr_invalid[] = $value;
+                }
+            }
+        }    
+        return $arr_invalid;
+    }
+
     public function check_kuitansi_exist($check)
     {
         // $this->db->where($check);

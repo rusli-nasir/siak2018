@@ -9,6 +9,7 @@ class Kuitansi extends MY_Controller {
         $this->cek_session_in();
         $this->load->model('akuntansi/Kuitansi_model', 'Kuitansi_model');
         $this->load->model('akuntansi/Spm_model', 'spm_model');
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'jurnal_rsa_model');
         $this->data['db2'] = $this->load->database('rba',TRUE);
     }
 
@@ -1666,8 +1667,19 @@ class Kuitansi extends MY_Controller {
 		$this->pagination->initialize($config); 
 		$this->data['halaman'] = $this->pagination->create_links();
 
-		$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit, $jenis);
-		$this->data['query'] = $this->data['query']->result_array();
+		if ($jenis == 'invalid') {
+        	$this->data['query'] = $this->Jurnal_rsa_model->get_akun_invalid();
+        	$this->data['menu99'] = true;
+        	$this->data['menu2'] = null;
+        }else{
+        	$this->data['query'] = $this->Kuitansi_model->read_kuitansi_jadi($config['per_page'], $id, $keyword, $kode_unit, $jenis);
+        	$this->data['query'] = $this->data['query']->result_array();
+        }
+        // echo "<pre>";
+        // print_r ($this->data['query']);
+        // die();
+		// $this->data['query'] = $this->data['query']->result_array();
+
         $this->load->model('akuntansi/Akun_model');
         foreach($this->data['query'] as $key=>$value){
             $this->data['query'][$key]['nama_akun_debet'] = $this->Akun_model->get_nama_akun($this->data['query'][$key]['akun_debet']);
@@ -1729,10 +1741,28 @@ class Kuitansi extends MY_Controller {
         }
 
         $this->data['jenis'] = $jenis;
-
-		$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_list',$this->data,true);
+        if ($jenis == 'invalid') {
+        	$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_invalid',$this->data,true);
+        }else{
+        	$temp_data['content'] = $this->load->view('akuntansi/kuitansi_jadi_list',$this->data,true);
+        }
 		$this->load->view('akuntansi/content_template',$temp_data,false);
 	}
+
+	// public function get_akun_invalid(){
+	// 	$kuitansi_jadi = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND status='proses' AND unit_kerja = '{$this->session->userdata('kode_unit')}'")->result_array();	
+	// 	$akun_belanja_invalid =  $this->data['db2']->query("SELECT * FROM `akun_belanja` WHERE `nama_akun` LIKE '[ JANGAN%'")->result_array();
+	// 	foreach ($kuitansi_jadi as $key => $value) {
+	// 		foreach ($akun_belanja_invalid as $values) {
+	// 			if ($value['akun_debet'] == $values['kode_akun']) {
+	// 				$arr_invalid[] = $value;
+	// 			}
+	// 		}
+	// 	}	
+	// 	echo "<pre>";
+	// 	print_r ($arr_invalid);
+	// 	die();
+	// }
 
 	public function jadi_ls($id = 0){
 		$this->data['menu1'] = null;

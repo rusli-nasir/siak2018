@@ -55,49 +55,12 @@ tbody td, thead th {
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Kuitansi Jadi</li>
+		<li class="active">Kuitansi Jadi Akun Tidak Terpakai</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
-<ul class="nav nav-tabs">
-  <li role="presentation" class="<?php if(isset($tab1)){ if($tab1==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/UP/1'); ?>">UP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->up_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->up_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab2)){ if($tab2==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/PUP/1'); ?>">PUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->pup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->pup_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab3)){ if($tab3==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GP/1'); ?>">GUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_jadi; ?></span></a></li>
-    <li role="presentation" class="<?php if(isset($tab9)){ if($tab9==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GUP/1'); ?>">GU&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gu_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gu_jadi; ?></span></a></li>
-  <!-- <li role="presentation" class="<?php if(isset($tab4)){ if($tab4==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GP_NIHIL/1'); ?>">GUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_jadi; ?></span></a></li> -->
-  <li role="presentation" class="<?php if(isset($tab5)){ if($tab5==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP/1'); ?>">TUP&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab6)){ if($tab6==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_NIHIL/1'); ?>">TUP Nihil&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_nihil_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab11)){ if($tab11==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/LK'); ?>">LS-K&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->lk_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->lk_jadi; ?></span></a></li>
-    <li role="presentation" class="<?php if(isset($tab12)){ if($tab12==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/LN'); ?>">LS-NK&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ln_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ln_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab8)){ if($tab8==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi_spm'); ?>">LS - PG&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->spm_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->spm_jadi; ?></span></a></li>
 
-  <li role="presentation" class="<?php if(isset($tab_tup_pengembalian_jadi)){ if($tab_tup_pengembalian_jadi==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/TUP_PENGEMBALIAN/1'); ?>">TUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->tup_pengembalian_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->tup_pengembalian_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab_gup_pengembalian_jadi)){ if($tab_gup_pengembalian_jadi==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GUP_PENGEMBALIAN/1'); ?>">GUP Peng.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_pengembalian_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_pengembalian_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab_gup_nihil_jadi)){ if($tab_gup_nihil_jadi==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/GUP_NIHIL/1'); ?>">GUP Nihil.&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->gup_nihil_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->gup_nihil_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab_em)){ if($tab_em==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/EM/1'); ?>">E Money&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->em_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->em_jadi; ?></span></a></li>
-  <li role="presentation" class="<?php if(isset($tab_ks)){ if($tab_ks==true) echo 'active'; } ?>"><a href="<?php echo site_url('akuntansi/kuitansi/jadi/KS/1'); ?>">KS&nbsp;&nbsp;<span class="badge <?= $jumlah_notifikasi->ks_jadi ? "badge-notify" : ""; ?> right"><?= $jumlah_notifikasi->ks_jadi; ?></span></a></li>
-</ul>
 <div class="row">
-	<div class="col-sm-9">
-		<h1 class="page-header">Kuitansi Jadi <?php if($this->session->userdata('kode_unit')!=null){ echo get_nama_unit($this->session->userdata('kode_unit')); } ?></h1>
-		<div class="row">
-			<div class="col-sm-4">
-				<div class="box-t">
-					<?php echo 'Total Kuitansi Diverifikasi: <br/><span style="color:green;font-size:16pt;">'.$kuitansi_ok.'</span>'; ?>
-				</div>			
-			</div>
-			<div class="col-sm-4">
-				<div class="box-t">
-					<?php echo 'Total Kuitansi Direvisi: <br/><span style="color:orange;font-size:16pt;">'.$kuitansi_revisi.'</span>'; ?>
-				</div>				
-			</div>
-			<div class="col-sm-4">
-				<div class="box-t">
-					<?php echo 'Total Belum di Verifikasi: <br/><span style="color:#000;font-size:16pt;">'.$kuitansi_pasif.'</span>'; ?>
-				</div>
-			</div>
-		</div>		
-	</div>
 	<div class="col-sm-3" align="right">
 	</div>
 </div><!--/.row-->
@@ -183,10 +146,9 @@ tbody td, thead th {
 					<td style="width:110px;">						
 							
                             <?php if(isset($tab1)){ ?>
-								<!-- <a href="<?php $r=up_get_details($result->no_spm); echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]).'/'.$tahun;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a> -->
-								<a href="<?php echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm,'trx_nomor_up'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<a href="<?php $r=up_get_details($result->no_spm); echo site_url('akuntansi/rsa_gup/up/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab6) or isset($tab10)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_tup_nihil/spm_tup_nihil_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup_nihil'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab11)){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab12)){ ?>
@@ -196,11 +158,11 @@ tbody td, thead th {
 							<?php } else if(isset($tab_ks)){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_ks/spm_ks_lihat/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab5)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab9)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_gup'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->no_spm)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab_tup_pengembalian_jadi)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_tup_nihil/spm_tup_nihil_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab_gup_pengembalian_jadi)){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->no_spm)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php }else{ ?>
@@ -211,6 +173,7 @@ tbody td, thead th {
 								<a href="<?php echo site_url('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$result->id_kuitansi_jadi.'/revisi'); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
 							<?php }else{ ?>
 								<a href="<?php echo site_url('akuntansi/jurnal_rsa/detail_kuitansi/'.$result->id_kuitansi_jadi.'/lihat'); ?>"><button type="button" class="btn btn-sm btn-danger">Detil</button></a>
+								<a href="<?php echo site_url('akuntansi/jurnal_rsa/edit_kuitansi_jadi/'.$result->id_kuitansi_jadi); ?>"><button type="button" class="btn btn-sm btn-success">Revisi</button></a>
 							<?php } ?>
 						<?php }else if($this->session->userdata('level')==2){ ?>
 							<?php if($result->flag==1 AND ($result->status=='proses' OR $result->status=='direvisi')){ ?>
@@ -310,14 +273,6 @@ function get_unit($unit){
 		return $result->alias;
 	}
 }
-
-function get_no_spp($spm,$tabel)
-{
-	$ci =& get_instance();
-	$ci->load->model('akuntansi/Kuitansi_model','Kuitansi_model');
-	return $ci->Kuitansi_model->get_no_spp($spm,$tabel);
-}
-
 function get_nama_unit($unit){
 	$ci =& get_instance();
 	$ci->db2 = $ci->load->database('rba', true);

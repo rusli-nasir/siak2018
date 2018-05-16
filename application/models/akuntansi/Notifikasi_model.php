@@ -6,6 +6,7 @@ class Notifikasi_model extends CI_Model {
         parent::__construct();
         $this->load->database('default', TRUE);
         $this->db2 = $this->load->database('rba',TRUE);
+        $this->load->model('akuntansi/Jurnal_rsa_model', 'jurnal_rsa_model');
     }    
     
     function get_jumlah_notifikasi(){
@@ -130,8 +131,9 @@ class Notifikasi_model extends CI_Model {
         
         $result['kuitansi'] = $result['up'] + $result['pup'] + $result['gup'] + $result['gu'] + $result['gup_nihil'] + $result['tup'] + $result['tup_nihil']  + $result['lk'] + $result['ln'] + $result['spm'] + $result['tup_pengembalian'] + $result['gup_pengembalian'] + $result['ks'] + $result['em'];
         
-        $query2 = $this->db->query("SELECT jenis, COUNT(jenis) as c FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND $condstr $unit_jadi GROUP BY jenis");
-                                
+        // $query2 = $this->db->query("SELECT jenis, COUNT(jenis) as c FROM akuntansi_kuitansi_jadi WHERE tipe<>'pajak' AND $condstr $unit_jadi GROUP BY jenis");
+         $query2 = $this->db->query("SELECT jenis, COUNT(jenis) as c FROM akuntansi_kuitansi_jadi ak WHERE tipe<>'pajak' AND $condstr $unit_jadi AND ak.akun_debet NOT IN (select kode_akun from rba_2018.akun_belanja ab where ab.nama_akun LIKE '[ JANGAN%') GROUP BY ak.jenis");
+                                 
         $result['gup_jadi'] = 0;
         $result['gu_jadi'] = 0;
         $result['ls_jadi'] = 0;
@@ -147,6 +149,7 @@ class Notifikasi_model extends CI_Model {
         $result['gup_pengembalian_jadi'] = 0;
         $result['ks_jadi'] = 0;
         $result['em_jadi'] = 0;
+        $result['akun_invalid'] = count($this->Jurnal_rsa_model->get_akun_invalid());
 
         foreach($query2->result_array() as $sub_query){
             $key = $sub_query['jenis'];
@@ -192,7 +195,7 @@ class Notifikasi_model extends CI_Model {
         // print_r($result);die();
 
         // $result['sudah'] = $temp;
-
+      
         return (object)$result;
 	}
 

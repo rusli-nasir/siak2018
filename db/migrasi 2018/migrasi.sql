@@ -276,7 +276,8 @@ CREATE VIEW akuntansi_aset_2 AS SELECT DISTINCT kode_akun2digit as id_aset_aset_
 CREATE VIEW akuntansi_aset_3 AS SELECT DISTINCT kode_akun3digit as id_aset_3, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, nama_akun3digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 1 ORDER BY akun_1;
 CREATE VIEW akuntansi_aset_4 AS SELECT DISTINCT kode_akun4digit as id_aset_4, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, nama_akun4digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 1 ORDER BY akun_1;
 CREATE VIEW akuntansi_aset_5 AS SELECT DISTINCT kode_akun5digit as id_aset_5, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, kode_akun5digit as akun_5, nama_akun5digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 1 ORDER BY akun_1;
-CREATE VIEW akuntansi_aset_6 AS SELECT DISTINCT kode_akun as id_aset_6, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, kode_akun5digit as akun_5, kode_akun as akun_6, nama_akun as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 1 ORDER BY akun_1;
+CREATE VIEW `akuntansi_aset_6` AS select distinct `rb`.`kode_akun` AS `id_aset_6`,`rb`.`kode_akun1digit` AS `akun_1`,`rb`.`kode_akun2digit` AS `akun_2`,`rb`.`kode_akun3digit` AS `akun_3`,`rb`.`kode_akun4digit` AS `akun_4`,`rb`.`kode_akun5digit` AS `akun_5`,`rb`.`kode_akun` AS `akun_6`,`rb`.`nama_akun` AS `nama`,`ar`.`kode_unit` AS `kode_unit` from (`rba_2018`.`akun_belanja` `rb` left join `rsa_2018`.`akuntansi_relasi_unit` `ar` on((`rb`.`kode_akun` = `ar`.`kode_akun`))) where (`rb`.`kode_akun1digit` = 1) order by `rb`.`kode_akun1digit`;
+-- CREATE VIEW akuntansi_aset_6 AS SELECT DISTINCT kode_akun as id_aset_6, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, kode_akun5digit as akun_5, kode_akun as akun_6, nama_akun as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 1 ORDER BY akun_1;
 CREATE VIEW akuntansi_hutang_1 AS SELECT DISTINCT kode_akun1digit as id_akuntansi_hutang_1, kode_akun1digit as akun_1, nama_akun1digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 2;
 CREATE VIEW akuntansi_hutang_2 AS SELECT DISTINCT kode_akun2digit as id_hutang_aset_2, kode_akun1digit as akun_1, kode_akun2digit as akun_2, nama_akun2digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 2 ORDER BY akun_1;
 CREATE VIEW akuntansi_hutang_3 AS SELECT DISTINCT kode_akun3digit as id_hutang_3, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, nama_akun3digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 2 ORDER BY akun_1;
@@ -306,7 +307,8 @@ CREATE VIEW akuntansi_sal_2 AS SELECT DISTINCT kode_akun2digit as id_sal_aset_2,
 CREATE VIEW akuntansi_sal_3 AS SELECT DISTINCT kode_akun3digit as id_sal_3, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, nama_akun3digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 9 ORDER BY akun_1;
 CREATE VIEW akuntansi_sal_4 AS SELECT DISTINCT kode_akun4digit as id_sal_4, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, nama_akun4digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 9 ORDER BY akun_1;
 CREATE VIEW akuntansi_sal_5 AS SELECT DISTINCT kode_akun5digit as id_sal_5, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, kode_akun5digit as akun_5, nama_akun5digit as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 9 ORDER BY akun_1;
-CREATE VIEW akuntansi_sal_6 AS SELECT DISTINCT kode_akun as id_sal_6, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, kode_akun5digit as akun_5, kode_akun as akun_6, nama_akun as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 9 ORDER BY akun_1;
+CREATE VIEW `akuntansi_sal_6` AS select distinct `rb`.`kode_akun` AS `id_sal_6`,`rb`.`kode_akun1digit` AS `akun_1`,`rb`.`kode_akun2digit` AS `akun_2`,`rb`.`kode_akun3digit` AS `akun_3`,`rb`.`kode_akun4digit` AS `akun_4`,`rb`.`kode_akun5digit` AS `akun_5`,`rb`.`kode_akun` AS `akun_6`,`rb`.`nama_akun` AS `nama`,`ar`.`kode_unit` AS `kode_unit` from (`rba_2018`.`akun_belanja` `rb` left join `rsa_2018`.`akuntansi_relasi_unit` `ar` on((`rb`.`kode_akun` = `ar`.`kode_akun`))) where (`rb`.`kode_akun1digit` = 9) order by `rb`.`kode_akun1digit`;
+-- CREATE VIEW akuntansi_sal_6 AS SELECT DISTINCT kode_akun as id_sal_6, kode_akun1digit as akun_1, kode_akun2digit as akun_2, kode_akun3digit as akun_3, kode_akun4digit as akun_4, kode_akun5digit as akun_5, kode_akun as akun_6, nama_akun as nama FROM rba_2018.akun_belanja WHERE kode_akun1digit = 9 ORDER BY akun_1;
 
 DROP TABLE IF EXISTS `akun_belanja`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `akun_belanja` AS select `rba_2018`.`akun_belanja`.`id_akun_belanja` AS `id_akun_belanja`,`rba_2018`.`akun_belanja`.`kode_akun1digit` AS `kode_akun1digit`,`rba_2018`.`akun_belanja`.`nama_akun1digit` AS `nama_akun1digit`,`rba_2018`.`akun_belanja`.`kode_akun2digit` AS `kode_akun2digit`,`rba_2018`.`akun_belanja`.`nama_akun2digit` AS `nama_akun2digit`,`rba_2018`.`akun_belanja`.`kode_akun3digit` AS `kode_akun3digit`,`rba_2018`.`akun_belanja`.`nama_akun3digit` AS `nama_akun3digit`,`rba_2018`.`akun_belanja`.`kode_akun4digit` AS `kode_akun4digit`,`rba_2018`.`akun_belanja`.`nama_akun4digit` AS `nama_akun4digit`,`rba_2018`.`akun_belanja`.`kode_akun5digit` AS `kode_akun5digit`,`rba_2018`.`akun_belanja`.`nama_akun5digit` AS `nama_akun5digit`,`rba_2018`.`akun_belanja`.`kode_akun` AS `kode_akun`,`rba_2018`.`akun_belanja`.`nama_akun` AS `nama_akun`,`rba_2018`.`akun_belanja`.`sumber_dana` AS `sumber_dana` from `rba_2018`.`akun_belanja` where (`rba_2018`.`akun_belanja`.`kode_akun1digit` = 5) group by `rba_2018`.`akun_belanja`.`kode_akun`;
@@ -453,5 +455,25 @@ INSERT INTO `akuntansi_menu_by_level` (`id_menu`, `level_user`) VALUES
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 
+-- 7_akun_pajak
+
+INSERT INTO `akuntansi_pajak` (`id_akun_pajak`, `kode_akun`, `nama_akun`, `jenis_pajak`) VALUES
+(1,	'411121',	'PPh Pasal 21',	'PPh_Ps_21'),
+(2,	'411122',	'PPh Pasal 22',	'PPh_Ps_22'),
+(3,	'411124',	'PPh Pasal 23',	'PPh_Ps_23'),
+(4,	'411127',	'PPh Pasal 26',	'PPh_Ps_26'),
+(5,	'411128',	'PPh Final',	'PPh_final'),
+(6,	'411211',	'PPN Dalam Negeri',	'PPN'),
+(7,	'423911',	'Peneriman Kembali Belanja Pegawai Pusat TAYL',	'potongan'),
+(8,	'423951',	'Penerimaan Kembali Belanja Pegawai TAYL',	'potongan'),
+(9,	'423957',	'Penerimaan Kembali Belanja Bantuan Sosial TAYL',	'potongan'),
+(10,	'811111',	'Penerimaan Setoran/Potongan PFK 10% Gaji PNS Pusat',	'potongan'),
+(11,	'811131',	'Penerimaan Setoran/Potongan PFK 2% Iuran Jaminan Kesehatan BPJS',	'potongan'),
+(12,	'811132',	'Penerimaan Setoran/Potongan PFK 8% Gaji PNS Pusat',	'potongan'),
+(13,	'811211',	'Penerimaan Setoran/Potongan PFK 2% Gaji Terusan',	'potongan'),
+(14,	'811911',	'Penerimaan Setoran/Potongan PFK Tabungan Wajib Perumahan PNS Pusat',	'potongan'),
+(15,	'423141',	'Pendapatan Sewa Rumah Dinas/Rumah Negeri',	'potongan'),
+(16,	'811135',	'Penerimaan/Setoran PFK 2% BPJS dr Pusat',	'potongan'),
+(17,	'811212',	'Penerimaan/Setoran PFK 2% Gaji Terusan Daerah',	'potongan');
 
 

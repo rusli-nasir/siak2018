@@ -26,6 +26,12 @@
   </center>
 </legend>
 
+<?php if (isset($akun_invalid)): ?>
+<div class="alert alert-danger">
+  <strong style="font-size:20px">Peringatan! Akun sudah tidak dipakai, Jurnal sesuai yang tertampil.</strong>
+</div>
+<?php endif ?>
+
 <!-- Text input-->
 <?php
 $array_spm = $this->Spm_model->get_jenis_spm();
@@ -334,12 +340,14 @@ if($jenis=='NK'){
           <td width="30%">Jumlah</td>
         </thead>
         <tbody>
-          <?php foreach ($pajak as $entry_pajak): ?>
-            <tr>
-              <td><?php echo $entry_pajak['nama_akun'] ?></td>
-              <td><?php echo "Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.') ?> </td>
-            </tr>
-          <?php endforeach ?>
+            <?php foreach ($pajak as $entry_pajak): ?>
+              <tr>
+                <td><?php 
+                $entry_pajak['nama_akun'] = (isset($entry_pajak['nama_akun']) ? $entry_pajak['nama_akun'] : '');
+                echo $entry_pajak['nama_akun'] ?></td>
+                <td><?php echo "Rp. ".number_format($entry_pajak['rupiah_pajak'],2,',','.') ?> </td>
+              </tr>
+            <?php endforeach ?>
         </tbody>
       </table>
     </div>
