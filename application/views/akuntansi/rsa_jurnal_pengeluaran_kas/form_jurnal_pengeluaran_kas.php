@@ -181,7 +181,7 @@ if($jenis=='NK'){
     <label class="col-md-1 control-label" for="akun_debet_akrual">Akun Debet</label>
     <div class="col-md-3">
       <!-- <input id="akun_debet_akrual" name="akun_debet_akrual_" type="text" placeholder="Akun Debet" class="form-control input-md" required=""> -->
-      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="" <?php if ($jenis == 'KS'): ?> :value="akun_debet_akrual" readonly<?php endif ?>  >
+      <select id="akun_debet_akrual" name="akun_debet_akrual" class="form-control" required="" <?php if ($jenis == 'KS'): ?> :value="akun_debet_akrual" readonly<?php endif ?> >
           <?php if ($jenis == 'KS'): ?>
               <option value="">Pilih Akun</option>
               <?php foreach ($akun_debet_akrual as $in_akun_debet_akrual): ?>

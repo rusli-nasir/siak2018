@@ -1901,9 +1901,9 @@ class Kuitansi extends MY_Controller {
         $this->data['kuitansi_pasif'] = $this->data['kuitansi_pasif_2'] + $this->data['kuitansi_pasif_1'];
         $this->data['kuitansi_revisi'] = $this->Kuitansi_model->read_total(array('status'=>'revisi', 'tipe<>'=>'pajak', 'jenis'=>'NK', 'flag'=>1,'unit_kerja'=>$this->session->userdata('kode_unit')), 'akuntansi_kuitansi_jadi')->num_rows();
 		
-        echo "<pre>";
-        print_r ($this->data);
-        die();
+        // echo "<pre>";
+        // print_r ($this->data);
+        // die();
         /*print_r($this->data['query']);
         die();*/
 

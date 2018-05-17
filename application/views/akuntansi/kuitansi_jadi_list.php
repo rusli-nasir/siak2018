@@ -185,6 +185,8 @@ tbody td, thead th {
                             <?php if(isset($tab1)){ ?>
 								<!-- <a href="<?php $r=up_get_details($result->no_spm); echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]).'/'.$tahun;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a> -->
 								<a href="<?php echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm,'trx_nomor_up'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } else if(isset($tab3)){ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup_nihil'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab6) or isset($tab10)){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_tup_nihil/spm_tup_nihil_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup_nihil'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php } else if(isset($tab11)){ ?>

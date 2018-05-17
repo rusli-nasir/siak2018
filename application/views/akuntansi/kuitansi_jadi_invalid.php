@@ -55,7 +55,7 @@ tbody td, thead th {
 <div class="row">
 	<ol class="breadcrumb">
 		<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-		<li class="active">Kuitansi Jadi Akun Tidak Terpakai</li>
+		<li class="active">Kuitansi Jadi Akun Tidak Dipakai Lagi</li>
 	</ol>
 </div><!--/.row-->
 <hr/>
@@ -145,25 +145,25 @@ tbody td, thead th {
 					<td style="width:2% !important;"><?php echo $no; ?></td>
 					<td style="width:110px;">						
 							
-                            <?php if(isset($tab1)){ ?>
-								<a href="<?php $r=up_get_details($result->no_spm); echo site_url('akuntansi/rsa_gup/up/'.$r->kode_unit_subunit.'/'.explode('/', $result->no_spm)[4]);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab6) or isset($tab10)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab11)){ ?>
+                            <?php if($result->jenis == 'UP'){ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_up/spm_up_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm,'trx_nomor_up'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } else if($result->jenis == 'TUP_NIHIL' or $result->jenis == 'TUP_PENGEMBALIAN'){ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_tup_nihil/spm_tup_nihil_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup_nihil'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } else if($result->jenis == 'LK'){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_lsk/spm_lsk_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab12)){ ?>
+							<?php } else if($result->jenis == 'LN'){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_lsnk/spm_lsnk_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab_em)){ ?>
+							<?php } else if($result->jenis == 'EM'){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_em/spm_em_lihat_99/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab_ks)){ ?>
+							<?php } else if($result->jenis == 'KS'){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_ks/spm_ks_lihat/'.urlencode(base64_encode($result->no_spp))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab5)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_tambah_tup/spm_tambah_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab9)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->no_spm)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab_tup_pengembalian_jadi)){ ?>
-								<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode($result->no_spm))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi;?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
-							<?php } else if(isset($tab_gup_pengembalian_jadi)){ ?>
+							<?php } else if($result->jenis == 'TUP'){ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_tup/spm_tup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } else if($result->jenis == 'GUP'){ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_gup'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+								<?php } else if($result->jenis == 'GP'){ ?>
+								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode(get_no_spp($result->no_spm, 'trx_nomor_tup_nihil'))).'/'.$this->session->userdata('kode_unit').'/'.$tahun.'/'.$result->id_kuitansi);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
+							<?php } else if($result->jenis == 'GUP_PENGEMBALIAN'){ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_gup/spm_gup_lihat_99/'.urlencode(base64_encode($result->no_spm)).'/'.$this->session->userdata('kode_unit').'/'.$tahun);?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
 							<?php }else{ ?>
 								<a href="<?php echo site_url('akuntansi/rsa_gup/jurnal/'.$result->id_kuitansi.'/?spm='.urlencode($result->no_spm));?>" target="_blank"><button type="button" class="btn btn-sm btn-primary">Bukti</button></a>
@@ -282,6 +282,13 @@ function get_nama_unit($unit){
 	foreach($q as $result){
 		return $result->nama_unit;
 	}
+}
+
+function get_no_spp($spm,$tabel)
+{
+	$ci =& get_instance();
+	$ci->load->model('akuntansi/Kuitansi_model','Kuitansi_model');
+	return $ci->Kuitansi_model->get_no_spp($spm,$tabel);
 }
 
 function get_tabel_by_jenis($jenis)
