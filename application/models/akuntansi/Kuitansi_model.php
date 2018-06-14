@@ -271,12 +271,14 @@ class Kuitansi_model extends CI_Model {
             $filter_unit = '';
         }
 
+        $date_now = gmdate('Y');
+
         if($limit!=null OR $start!=null){
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $filter_unit LIMIT $start, $limit");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') AND tanggal LIKE '%".$date_now."%' $filter_unit LIMIT $start, $limit");
         }else{
             $query = $this->db->query("SELECT * FROM akuntansi_kuitansi_jadi WHERE tipe='$tipe' AND  
-            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') $filter_unit");
+            (no_bukti LIKE '%$keyword%' OR no_spm LIKE '%$keyword%') AND tanggal LIKE '%".$date_now."%' $filter_unit");
         }
         return $query;
     }
